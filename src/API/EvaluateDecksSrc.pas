@@ -1514,7 +1514,7 @@ begin
   ep.Threads := Threads;
   ep.Surge := bIsSurge;
 
-  hFileMapObj := CreateFileMapping(INVALID_HANDLE_VALUE, Nil, PAGE_READWRITE, 0, 256, 'Global\IterateDecksSharedMemory');
+  hFileMapObj := CreateFileMapping(INVALID_HANDLE_VALUE, Nil, PAGE_READWRITE, 0, 256, 'Local\IterateDecksSharedMemory');
   if (hFileMapObj = 0) then
     //ошибочка вышла
     ShowMessage('Не могу создать FileMapping!')

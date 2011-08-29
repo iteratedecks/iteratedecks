@@ -269,7 +269,7 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 #include <windows.h>
 //#include "Aclapi.h"
 
-#define SM_NAME		"Global\\IterateDecksSharedMemory"
+#define SM_NAME		"Local\\IterateDecksSharedMemory"
 #define MAX_DECKSTRING_SIZE	1024
 struct EVAL_PARAMS
 {
