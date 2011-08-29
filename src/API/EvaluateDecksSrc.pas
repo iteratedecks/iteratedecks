@@ -12,7 +12,8 @@ uses
   cxClasses, cxGridCustomView, cxGrid, cxCalendar, IdBaseComponent, IdComponent,
   IdTCPConnection, IdTCPClient, IdHTTP, OleCtrls, SHDocVw_EWB, EwbCore,
   EmbeddedWB, WinInet, ComCtrls, cxListView, Jpeg, cxCheckComboBox,
-  cxCurrencyEdit, ActiveX, cxSpinEdit, cxRadioGroup, cxGroupBox, DBClient;
+  cxCurrencyEdit, ActiveX, cxSpinEdit, cxRadioGroup, cxGroupBox, DBClient,
+  GIFImg, ShellApi;
 
 const
   MAX_CARD_COUNT = 600;
@@ -187,6 +188,8 @@ type
     bSaveBot: TcxButton;
     bTopVisual: TcxButton;
     bBotVisual: TcxButton;
+    xgmlogo: TcxImage;
+    teamliquidlogo: TcxImage;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -251,9 +254,6 @@ type
     procedure vTopDataControllerRecordChanged(
       ADataController: TcxCustomDataController; ARecordIndex,
       AItemIndex: Integer);
-    procedure vTopStylesGetContentStyle(Sender: TcxCustomGridTableView;
-      ARecord: TcxCustomGridRecord; AItem: TcxCustomGridTableItem;
-      out AStyle: TcxStyle);
     procedure vTopCustomDrawCell(Sender: TcxCustomGridTableView;
       ACanvas: TcxCanvas; AViewInfo: TcxGridTableDataCellViewInfo;
       var ADone: Boolean);
@@ -273,6 +273,10 @@ type
     procedure bSaveBotClick(Sender: TObject);
     procedure bTopVisualClick(Sender: TObject);
     procedure bBotVisualClick(Sender: TObject);
+    procedure xgmlogoClick(Sender: TObject);
+    procedure teamliquidlogoClick(Sender: TObject);
+    procedure vTopKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure vBotKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
  private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -908,6 +912,22 @@ begin
   end;
 end;
 
+procedure TEvaluateDecksForm.vBotKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (key = 46) OR (key = 8) then
+  with vBot.DataController do
+  begin
+    SetValue(FocusedRecordIndex,vTopID.Index,-1);
+    SetValue(FocusedRecordIndex,vTopName.Index,NULL);
+    SetValue(FocusedRecordIndex,vTopFaction.Index,NULL);
+    SetValue(FocusedRecordIndex,vTopWait.Index,NULL);
+    SetValue(FocusedRecordIndex,vTopAttack.Index,NULL);
+    SetValue(FocusedRecordIndex,vTopHealth.Index,NULL);
+    SetValue(FocusedRecordIndex,vTopSkills.Index,NULL);
+  end;
+end;
+
 procedure TEvaluateDecksForm.vBotNamePropertiesValidate(Sender: TObject;
   var DisplayValue: Variant; var ErrorText: TCaption; var Error: Boolean);
 var
@@ -1052,6 +1072,22 @@ begin
   end;
 end;
 
+procedure TEvaluateDecksForm.vTopKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (key = 46) OR (key = 8) then
+  with vTop.DataController do
+  begin
+    SetValue(FocusedRecordIndex,vTopID.Index,-1);
+    SetValue(FocusedRecordIndex,vTopName.Index,NULL);
+    SetValue(FocusedRecordIndex,vTopFaction.Index,NULL);
+    SetValue(FocusedRecordIndex,vTopWait.Index,NULL);
+    SetValue(FocusedRecordIndex,vTopAttack.Index,NULL);
+    SetValue(FocusedRecordIndex,vTopHealth.Index,NULL);
+    SetValue(FocusedRecordIndex,vTopSkills.Index,NULL);
+  end;
+end;
+
 procedure TEvaluateDecksForm.vTopNamePropertiesValidate(Sender: TObject;
   var DisplayValue: Variant; var ErrorText: TCaption; var Error: Boolean);
 var
@@ -1098,10 +1134,9 @@ begin
   end;
 end;
 
-procedure TEvaluateDecksForm.vTopStylesGetContentStyle(
-  Sender: TcxCustomGridTableView; ARecord: TcxCustomGridRecord;
-  AItem: TcxCustomGridTableItem; out AStyle: TcxStyle);
+procedure TEvaluateDecksForm.xgmlogoClick(Sender: TObject);
 begin
+  ShellExecute(Handle, 'open', 'http://xgm.ru/?username=NETRAT', nil, nil, SW_SHOWNORMAL) ;
 end;
 
 {function TEvaluateDecksForm.GetCardID(CardName: string): integer;
@@ -2114,6 +2149,11 @@ begin
       end;
       iHoverTag := -1;
   end;
+end;
+
+procedure TEvaluateDecksForm.teamliquidlogoClick(Sender: TObject);
+begin
+  ShellExecute(Handle, 'open', 'http://www.teamliquid.net', nil, nil, SW_SHOWNORMAL) ;
 end;
 
 function TEvaluateDecksForm.GetRarity(Rarity: integer): string;
