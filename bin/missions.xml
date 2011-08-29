@@ -1,0 +1,4865 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+	<mission>
+		<id>1</id>
+		<name>Mission 1</name>
+		<picture>mission1.jpg</picture>
+		<location_id>1</location_id>
+		<num_to_complete>1</num_to_complete>
+		<x>420</x>
+		<y>180</y>
+		<xp>2</xp>
+		<energy>2</energy>
+		<money>15</money>
+		<commander>1046</commander>
+		<desc>Enemy forces are weak and scattered. You should have no
+			trouble defeating them.</desc>
+		<speech>
+			<line commander='1049'>Commander, the Raiders have been spotted gathering just outside the Spire.  Attack them now!</line>
+		</speech>
+		<deck>
+			<card>501</card>
+			<card>501</card>
+			<card>501</card>
+		</deck>
+		<rewards>
+			<card>64</card>
+			<card>64</card>
+		</rewards>
+	</mission>
+
+
+	<mission>
+		<id>2</id>
+		<name>Mission 2</name>
+		<picture>mission2.jpg</picture>
+		<location_id>1</location_id>
+		<num_to_complete>1</num_to_complete>
+		<x>380</x>
+		<y>230</y>
+		<xp>3</xp>
+		<energy>3</energy>
+		<money>25</money>
+		<commander>1046</commander>
+		<desc>Enemy force contains armored Infiltrators.  Use units with high attack or pierce to defeat them.</desc>
+		<speech>
+			<line commander='1049'>The Spire is safe for now, but we must push the Raiders out of Ashrock.</line>
+		</speech>
+		<banter>Typhon Vex is coming... you will burn to the ground!</banter>
+		<deck>
+			<card>501</card>
+			<card>504</card>
+			<card>504</card>
+			<card>502</card>
+		</deck>
+		<rewards>
+			<card>3</card>
+			<card>3</card>
+		</rewards>
+		<req>1</req>
+	</mission>
+
+	<mission>
+		<id>3</id>
+		<name>Mission 3</name>
+		<num>3</num>
+		<picture>mission3.jpg</picture>
+		<location_id>1</location_id>
+		<num_to_complete>2</num_to_complete>
+		<x>330</x>
+		<y>190</y>
+		<xp>4</xp>
+		<energy>4</energy>
+		<money>30</money>
+		<commander>1046</commander>
+		<desc>Defeat all of the enemy forces in the vicinity.</desc>
+		<speech>
+			<line commander='1049'>Typhon Vex...he's one of the most ruthless Raider commanders.  If he's on the way, the Arctic Guard is in grave danger.  We must move!</line>
+		</speech>
+		<banter>Your Emperor is dead - Acheron belongs to us!</banter>
+		<deck>
+			<card>501</card>
+			<card>504</card>
+			<card>31</card>
+			<card>502</card>
+		</deck>
+		<rewards>
+			<card>31</card>
+		</rewards>
+		<req>2</req>
+	</mission>
+
+	<mission>
+		<id>4</id>
+		<name>Mission 4</name>
+		<picture>mission4.jpg</picture>
+		<location_id>1</location_id>
+		<num_to_complete>2</num_to_complete>
+		<x>150</x>
+		<y>170</y>
+		<xp>5</xp>
+		<energy>4</energy>
+		<money>50</money>
+		<commander>1046</commander>
+		<desc>Enemy force is being escorted by an Artemis tank.  It is powerful, but slow.  Destroy it before it is able to attack.</desc>
+		<speech commander='1049'>
+			<line>They've brought in an Artemis Tank to support Vex's assault.  Take it out before it becomes entrenched.</line>
+		</speech>
+		<banter>We're being attacked - redirect the Artemis!</banter>
+		<deck>
+			<card>504</card>
+			<card>16</card>
+			<card>31</card>
+			<card>502</card>
+		</deck>
+		<rewards>
+			<card>6</card>
+			<card>6</card>
+		</rewards>
+		<req>3</req>
+	</mission>
+
+	<mission>
+		<id>5</id>
+		<name>Mission 5</name>
+		<picture>mission5.jpg</picture>
+		<location_id>1</location_id>
+		<num_to_complete>3</num_to_complete>
+		<x>210</x>
+		<y>100</y>
+		<xp>6</xp>
+		<energy>5</energy>
+		<money>60</money>
+		<commander>1047</commander>
+		<desc>Multiple aerial units have been sighted.  Use Anti-Air to destroy them from the ground.</desc>
+		<speech>
+			<line commander='1049'>Vex is coming.  He's leading a small force of gunships.  Shoot them out of the sky!</line>
+		</speech>
+		<banter>Lord Halcyon is a fool!  Your Empire stands idly while death consumes Acheron...</banter>
+		<deck>
+			<card>507</card>
+			<card>507</card>
+			<card>29</card>
+			<card>502</card>
+		</deck>
+		<rewards>
+			<card>4</card>
+			<card>4</card>
+		</rewards>
+		<req>4</req>
+	</mission>
+
+	<mission>
+		<id>6</id>
+		<name>Mission 6</name>
+		<picture>mission6.jpg</picture>
+		<location_id>2</location_id>
+		<num_to_complete>2</num_to_complete>
+		<x>270</x>
+		<y>270</y>
+		<xp>8</xp>
+		<energy>6</energy>
+		<money>80</money>
+		<rep faction='1' amount='4' />
+		<commander>1058</commander>
+		<desc>Enemy airships patrol the border to Arctis.</desc>
+		<speech>
+			<line commander='1049'>Vex has retreated west into Cyprion.  We will engage him later - for now, our orders are to head north into Arctis, towards Norhaven.</line>
+			<line commander='1042'>Greetings, Commander.  I will be escorting you to Norhaven.</line>
+		</speech>
+		<banter>All of Arctis will bleed like Norhaven...</banter>
+		<deck>
+			<card>507</card>
+			<card>507</card>
+			<card>503</card>
+			<card>7</card>
+		</deck>
+		<rewards>
+			<card>29</card>
+			<card>1032</card>
+		</rewards>
+		<req>5</req>
+	</mission>
+
+	<mission>
+		<id>7</id>
+		<name>Mission 7</name>
+		<picture>mission7.jpg</picture>
+		<location_id>2</location_id>
+		<num_to_complete>3</num_to_complete>
+		<x>342</x>
+		<y>174</y>
+		<xp>8</xp>
+		<energy>8</energy>
+		<money>100</money>
+		<commander>1058</commander>
+		<rep faction='1' amount='6' />
+		<desc>Enemy medics are in the field and will heal injured Infantry.</desc>
+		<speech commander='1042'>
+			<line>Lord Halcyon has ordered us to destroy a Raider encampment in northern Arctis which is defending an ancient Relay.</line>
+			<line>Defeat the Raider squadron and advance towards their base.</line>
+		</speech>
+		<deck>
+			<card>7</card>
+			<card>31</card>
+			<card>503</card>
+			<card>502</card>
+			<card>168</card>
+		</deck>
+		<rewards>
+			<card>14</card>
+			<card>14</card>
+		</rewards>
+		<req>6</req>
+	</mission>
+
+	<mission>
+		<id>8</id>
+		<name>Mission 8</name>
+		<picture>mission8.jpg</picture>
+		<location_id>2</location_id>
+		<num_to_complete>3</num_to_complete>
+		<x>312</x>
+		<y>137</y>
+		<xp>9</xp>
+		<energy>8</energy>
+		<money>120</money>
+		<rep faction='1' amount='8' />
+		<commander>1058</commander>
+		<desc>Enemy tanks are able to strike us from their position, and will damage our Assault units.</desc>
+		<speech>
+			<line commander='1042'>We're almost at the Relay, but Raider tanks have entrenched and are firing on our position.</line>
+			<line commander='1042'>Burn this base to the ground..</line>
+		</speech>
+		<deck>
+			<card>503</card>
+			<card>124</card>
+			<card>124</card>
+			<card>168</card>
+			<card>16</card>
+		</deck>
+		<rewards>
+			<card>5</card>
+			<card>5</card>
+		</rewards>
+		<req>7</req>
+	</mission>
+
+	<mission>
+		<id>9</id>
+		<name>Mission 9</name>
+		<picture>mission9.jpg</picture>
+		<location_id>2</location_id>
+		<num_to_complete>4</num_to_complete>
+		<x>140</x>
+		<y>120</y>
+		<xp>11</xp>
+		<energy>10</energy>
+		<money>125</money>
+		<rep faction='1' amount='12' />
+		<commander>1058</commander>
+		<desc>A Raider encampment lies between us and the Relay.  Use Siege to destroy the enemy Structures.</desc>
+		<speech>
+			<line commander='1042'>Excellent work, Commander.  The Raider encampment has been destroyed.</line>
+			<line commander='1042'>The Relay lies just ahead.  Take out the enemy fortifications and secure control of the Orbital Cannon.</line>
+		</speech>
+		<banter>We will die before we give you the Relay!</banter>
+		<deck>
+			<card>504</card>
+			<card>29</card>
+			<card>505</card>
+			<card>123</card>
+			<card>2016</card>
+			<card>2016</card>
+		</deck>
+		<rewards>
+			<card>2015</card>
+			<card>8</card>
+		</rewards>
+		<req>8</req>
+	</mission>
+
+	<mission>
+		<id>10</id>
+		<name>Mission 10</name>
+		<picture>mission10.jpg</picture>
+		<location_id>2</location_id>
+		<num_to_complete>4</num_to_complete>
+		<x>70</x>
+		<y>200</y>
+		<xp>13</xp>
+		<energy>10</energy>
+		<money>150</money>
+		<rep faction='1' amount='15' />
+		<commander>1012</commander>
+		<desc>Norhaven has been overrun.  Purge the unknown enemy.</desc>
+		<speech>
+			<line commander='1042'>We've pushed the Raiders out of Arctis and now stand at the gates of Norhaven... but there is a terrible stench of death...</line>
+		</speech>
+		<banter>More...flesh..!</banter>
+		<speechComplete commander='1042'>
+			<line>How..?  The bloodthirsty haven't attacked a settlement in years...</line>
+		</speechComplete>
+		<deck>
+			<card>119</card>
+			<card>119</card>
+			<card>29</card>
+			<card>83</card>
+			<card>168</card>
+			<card>123</card>
+			<card>2000</card>
+		</deck>
+		<rewards>
+			<card>119</card>
+			<card>1012</card>
+		</rewards>
+		<req>9</req>
+	</mission>
+
+	<mission>
+		<id>11</id>
+		<name>Mission 11</name>
+		<picture>mission11.jpg</picture>
+		<location_id>3</location_id>
+		<num_to_complete>2</num_to_complete>
+		<x>180</x>
+		<y>30</y>
+		<xp>16</xp>
+		<energy>10</energy>
+		<money>150</money>
+		<rep faction='2' amount='4' />
+		<commander>1048</commander>
+		<desc>The Raiders are well coordinated and will rally against us.</desc>
+		<speech>
+			<line commander='1042'>We haven't seen the bloodthirsty this far east in years.  What is going on?</line>
+			<line commander='1049'>Norhaven is not your concern, Katana.  Continue south towards the Tyrolian Outpost.</line>
+		</speech>
+		<deck>
+			<card>16</card>
+			<card>16</card>
+			<card>7</card>
+			<card>7</card>
+			<card>124</card>
+			<card>118</card>
+			<card>2016</card>
+		</deck>
+		<rewards>
+			<card>11</card>
+			<card>21</card>
+		</rewards>
+		<req>10</req>
+	</mission>
+
+	<mission>
+		<id>12</id>
+		<name>Mission 12</name>
+		<picture>mission12.jpg</picture>
+		<location_id>3</location_id>
+		<num_to_complete>3</num_to_complete>
+		<x>240</x>
+		<y>100</y>
+		<xp>18</xp>
+		<energy>11</energy>
+		<money>200</money>
+		<rep faction='2' amount='5' />
+		<commander>1048</commander>
+		<desc>They are attempting to jam our assault, focus on key units then overwhelm them with full force.</desc>
+		<speech>
+			<line commander='1049'>The Outpost is home to the Imperial Techlab.  If Typhon Vex is there, he's surely trying to gain access to the Prometheus.</line>
+			<line commander='1042'>The Prometheus?  That artifact powers half of Acheron!  What does he want with it?</line>
+		</speech>
+		<deck>
+			<card>2</card>
+			<card>123</card>
+			<card>83</card>
+			<card>29</card>
+			<card>28</card>
+			<card>20</card>
+			<card>2000</card>
+		</deck>
+		<rewards>
+			<card>10</card>
+		</rewards>
+		<req>11</req>
+	</mission>
+
+	<mission>
+		<id>13</id>
+		<name>Mission 13</name>
+		<picture>mission13.jpg</picture>
+		<location_id>3</location_id>
+		<num_to_complete>3</num_to_complete>
+		<x>180</x>
+		<y>170</y>
+		<xp>20</xp>
+		<energy>12</energy>
+		<money>225</money>
+		<rep faction='2' amount='8' />
+		<commander>1048</commander>
+		<desc>The Raiders have sent an aerial force to halt our approach.</desc>
+		<speech>
+			<line commander='1049'>Send a scout team towards the northern Tyrol gate to assess their defenses.  We must stop Typhon.</line>
+			<line commander='1042'>I have a bad feeling about this...</line>
+		</speech>
+		<deck>
+			<card>507</card>
+			<card>7</card>
+			<card>7</card>
+			<card>118</card>
+			<card>118</card>
+			<card>20</card>
+			<card>2030</card>
+		</deck>
+		<rewards>
+			<card>125</card>
+		</rewards>
+		<req>12</req>
+	</mission>
+
+	<mission>
+		<id>14</id>
+		<name>Mission 14</name>
+		<picture>mission14.jpg</picture>
+		<location_id>3</location_id>
+		<num_to_complete>3</num_to_complete>
+		<x>340</x>
+		<y>190</y>
+		<xp>20</xp>
+		<energy>12</energy>
+		<money>200</money>
+		<rep faction='2' amount='8' />
+		<commander>1048</commander>
+		<desc>The Raiders have a wide variety of tanks ahead, they may be vulnerable to an aerial assault.</desc>
+		<speech>
+			<line commander='1049'>Your recon shows a weakness in the Raider foritifications.   We have no choice but to attack immediately.</line>
+		</speech>
+		<deck>
+			<card>43</card>
+			<card>16</card>
+			<card>31</card>
+			<card>51</card>
+			<card>26</card>
+			<card>118</card>
+			<card>2015</card>
+		</deck>
+		<rewards>
+			<card>68</card>
+		</rewards>
+		<req>13</req>
+	</mission>
+
+	<mission>
+		<id>15</id>
+		<name>Mission 15</name>
+		<picture>mission9.jpg</picture>
+		<location_id>3</location_id>
+		<num_to_complete>4</num_to_complete>
+		<x>290</x>
+		<y>310</y>
+		<xp>22</xp>
+		<energy>14</energy>
+		<money>240</money>
+		<rep faction='2' amount='10' />
+		<commander>1048</commander>
+		<desc>Another wave of the Raider air force is approaching!</desc>
+		<speech commander='1049'>
+			<line>Typhon has entered the Tech grounds.  Intercept him before he reaches the Prometheus.</line>
+		</speech>
+		<deck>
+			<card>2</card>
+			<card>43</card>
+			<card>20</card>
+			<card>7</card>
+			<card>28</card>
+			<card>125</card>
+			<card>2030</card>
+		</deck>
+		<rewards>
+			<card>20</card>
+			<card>118</card>
+		</rewards>
+		<req>14</req>
+	</mission>
+
+	<mission>
+		<id>16</id>
+		<name>Mission 16</name>
+		<picture>mission16.jpg</picture>
+		<location_id>3</location_id>
+		<num_to_complete>4</num_to_complete>
+		<x>370</x>
+		<y>240</y>
+		<xp>22</xp>
+		<energy>14</energy>
+		<money>250</money>
+		<rep faction='2' amount='10' />
+		<commander>1048</commander>
+		<desc>The Raiders are prepared with a well balanced defense. We need to strategize carefully</desc>
+		<speech>
+			<line commander='1042'>Typhon, what you did to Norhaven was inexcusable!</line>
+			<line commander='1063'>You waste your time following Halcyon's orders.  The bloodthirsty have awakened!</line>
+		</speech>
+		<deck>
+			<card>67</card>
+			<card>20</card>
+			<card>16</card>
+			<card>141</card>
+			<card>26</card>
+			<card>51</card>
+			<card>2006</card>
+		</deck>
+		<rewards>
+			<card>22</card>
+			<card>33</card>
+		</rewards>
+		<req>15</req>
+	</mission>
+
+	<mission>
+		<id>17</id>
+		<name>Mission 17</name>
+		<picture>mission17.jpg</picture>
+		<location_id>3</location_id>
+		<num_to_complete>4</num_to_complete>
+		<x>400</x>
+		<y>320</y>
+		<xp>24</xp>
+		<energy>15</energy>
+		<money>275</money>
+		<rep faction='2' amount='12' />
+		<commander>1048</commander>
+		<desc>More Bloodthirsty!? That Vampire will suck the life right out of our units</desc>
+		<speech>
+			<line commander='1063'>Blame your precious Empire, Katana.  The abominations created by your Empire now run loose against you.</line>
+			<line commander='1063'>Enough talk.  The Prometheus is mine.  Malika, destroy these worms!</line>
+		</speech>
+		<deck>
+			<card>2</card>
+			<card>51</card>
+			<card>119</card>
+			<card>141</card>
+			<card>26</card>
+			<card>24</card>
+			<card>88</card>
+			<card>2006</card>
+		</deck>
+		<rewards>
+			<card>128</card>
+			<card>1015</card>
+		</rewards>
+		<req>16</req>
+	</mission>
+
+	<mission>
+		<id>18</id>
+		<name>Mission 18</name>
+		<picture>mission18.jpg</picture>
+		<location_id>4</location_id>
+		<num_to_complete>3</num_to_complete>
+		<x>410</x>
+		<y>220</y>
+		<xp>23</xp>
+		<energy>14</energy>
+		<money>250</money>
+		<rep faction='2' amount='10' />
+		<commander>1013</commander>
+		<desc>The entire Blackmarsh is overrun with Bloodthirsty units.</desc>
+		<speech>
+			<line commander='1049'>Typhon has escaped to the Wasteland, in the far west, and he has the Prometheus.  It is vital tha-</line>
+			<line commander='1042'>Commander - multiple hostiles are inbound!</line>
+		</speech>
+		<deck>
+			<card>109</card>
+			<card>144</card>
+			<card>24</card>
+			<card>24</card>
+			<card>25</card>
+			<card>25</card>
+			<card>57</card>
+			<card>57</card>
+		</deck>
+		<rewards>
+			<card>24</card>
+		</rewards>
+		<req>17</req>
+	</mission>
+
+	<mission>
+		<id>19</id>
+		<name>Mission 19</name>
+		<picture>mission19.jpg</picture>
+		<location_id>4</location_id>
+		<num_to_complete>3</num_to_complete>
+		<x>330</x>
+		<y>170</y>
+		<xp>26</xp>
+		<energy>16</energy>
+		<money>275</money>
+		<rep faction='3' amount='5' />
+		<commander>1013</commander>
+		<desc>They are taking refuge in an Asylum. They will be even more vicious.</desc>
+		<speech>
+			<line commander='1042'>The Swamps of Andar have been completely overrun by the bloodthirsty.  We must find survivors!</line>
+			<line commander='1049'>Negative, Katana.  Proceed to the Wasteland immediately.</line>
+			<line commander='1042'>I refuse to let our people be slaughtered!</line>
+		</speech>
+		<deck>
+			<card>109</card>
+			<card>24</card>
+			<card>115</card>
+			<card>25</card>
+			<card>107</card>
+			<card>144</card>
+			<card>57</card>
+			<card>2012</card>
+		</deck>
+		<rewards>
+			<card>25</card>
+		</rewards>
+		<req>18</req>
+	</mission>
+
+	<mission>
+		<id>20</id>
+		<name>Mission 20</name>
+		<picture>mission20.jpg</picture>
+		<location_id>4</location_id>
+		<num_to_complete>4</num_to_complete>
+		<x>330</x>
+		<y>110</y>
+		<xp>27</xp>
+		<energy>17</energy>
+		<money>300</money>
+		<rep faction='3' amount='8' />
+		<commander>1029</commander>
+		<desc>We have to keep pushing past these Bloodthirsty and make our way to the Swamps of Andar.</desc>
+		<speech>
+			<line commander='1042'>Halcyon's main force is pushing directly west.  We're on our own for now.  We must locate any survivors!</line>
+		</speech>
+		<deck>
+			<card>109</card>
+			<card>109</card>
+			<card>24</card>
+			<card>115</card>
+			<card>107</card>
+			<card>108</card>
+			<card>57</card>
+			<card>2012</card>
+		</deck>
+		<rewards>
+			<card>57</card>
+		</rewards>
+		<req>19</req>
+	</mission>
+
+	<mission>
+		<id>21</id>
+		<name>Mission 21</name>
+		<picture>mission21.jpg</picture>
+		<location_id>4</location_id>
+		<num_to_complete>4</num_to_complete>
+		<x>210</x>
+		<y>250</y>
+		<xp>27</xp>
+		<energy>17</energy>
+		<money>325</money>
+		<rep faction='3' amount='10' />
+		<commander>1017</commander>
+		<desc>The Raiders are also entrenched here. Let's isolate them and dispatch them separately.</desc>
+		<speech>
+			<line commander='1042'>A Raider camp has been located near our position.  They must have more information about the Bloodthirsty infestation.</line>
+		</speech>
+		<deck>
+			<card>20</card>
+			<card>51</card>
+			<card>143</card>
+			<card>125</card>
+			<card>88</card>
+			<card>53</card>
+			<card>129</card>
+			<card>2006</card>
+		</deck>
+		<rewards>
+			<card>53</card>
+		</rewards>
+		<req>20</req>
+	</mission>
+
+	<mission>
+		<id>22</id>
+		<name>Mission 22</name>
+		<picture>mission22.jpg</picture>
+		<location_id>4</location_id>
+		<num_to_complete>4</num_to_complete>
+		<x>185</x>
+		<y>170</y>
+		<xp>27</xp>
+		<energy>17</energy>
+		<money>300</money>
+		<rep faction='3' amount='8' />
+		<commander>1029</commander>
+		<desc>The Bloodthirsty are swarming our position, they smelled the gore from our last battle.</desc>
+		<speech>
+			<line commander='1042'>Documents seized at the camp detail the Bloodthirsty swarm originating from the Swamps of Andar, from some sort of.. nest..?  If we don't destroy that thing, all of Acheron will fall!</line>
+		</speech>
+		<deck>
+			<card>115</card>
+			<card>115</card>
+			<card>25</card>
+			<card>107</card>
+			<card>57</card>
+			<card>144</card>
+			<card>112</card>
+			<card>2012</card>
+		</deck>
+		<rewards>
+			<card>70</card>
+			<card>1014</card>
+		</rewards>
+		<req>21</req>
+	</mission>
+
+	<mission>
+		<id>23</id>
+		<name>Mission 23</name>
+		<picture>mission23.jpg</picture>
+		<location_id>4</location_id>
+		<num_to_complete>5</num_to_complete>
+		<x>350</x>
+		<y>260</y>
+		<xp>28</xp>
+		<energy>18</energy>
+		<money>320</money>
+		<rep faction='3' amount='10' />
+		<commander>1060</commander>
+		<desc>The Bloodthirsty are coordinating together, they could overwhelm us.</desc>
+		<speech>
+			<line commander='1042'>The path south is blocked by a massive Bloodthirsty brood.  Destroy them all!</line>
+		</speech>
+		<deck>
+			<card>24</card>
+			<card>107</card>
+			<card>70</card>
+			<card>70</card>
+			<card>108</card>
+			<card>57</card>
+			<card>113</card>
+			<card>112</card>
+			<card>2012</card>
+		</deck>
+		<rewards>
+			<card>84</card>
+		</rewards>
+		<req>22</req>
+	</mission>
+
+	<mission>
+		<id>24</id>
+		<name>Mission 24</name>
+		<picture>mission24.jpg</picture>
+		<location_id>5</location_id>
+		<num_to_complete>4</num_to_complete>
+		<x>170</x>
+		<y>70</y>
+		<xp>30</xp>
+		<energy>16</energy>
+		<money>300</money>
+		<rep faction='3' amount='8' />
+		<commander>1061</commander>
+		<desc>The Bloodthirsty are accumulating in greater numbers, and they can heal their Commander!</desc>
+		<speech>
+			<line commander='1042'>We're getting a distress signal to the south.  It must be survivors!</line>
+		</speech>
+		<deck>
+			<card>109</card>
+			<card>113</card>
+			<card>169</card>
+			<card>70</card>
+			<card>115</card>
+			<card>57</card>
+			<card>144</card>
+			<card>170</card>
+			<card>2031</card>
+		</deck>
+		<rewards>
+			<card>2011</card>
+		</rewards>
+		<req>23</req>
+	</mission>
+
+	<mission>
+		<id>25</id>
+		<name>Mission 25</name>
+		<picture>mission25.jpg</picture>
+		<location_id>5</location_id>
+		<num_to_complete>5</num_to_complete>
+		<x>280</x>
+		<y>170</y>
+		<xp>32</xp>
+		<energy>16</energy>
+		<money>350</money>
+		<rep faction='3' amount='10' />
+		<commander>1017</commander>
+		<desc>The Raiders have brought powerful defensive units with thick armor.</desc>
+		<speech>
+			<line commander='1027'>Thank you - we've been holed up in here fighting off these Bloodthirsty for weeks.  We need to move west immediately.  A Xeno faction called the Enclave has launched a ground invasion.</line>
+			<line commander='1042'>The Xenos?!  Octane, take your force west to warn Lord Halcyon.  Commander, we have to destroy the nest quickly and then move to support Halcyon!</line>
+		</speech>
+		<deck>
+			<card>43</card>
+			<card>92</card>
+			<card>26</card>
+			<card>51</card>
+			<card>129</card>
+			<card>143</card>
+			<card>121</card>
+			<card>2030</card>
+			<card>2023</card>
+		</deck>
+		<rewards>
+			<card>26</card>
+			<card>1054</card>
+		</rewards>
+		<req>24</req>
+	</mission>
+
+	<mission>
+		<id>26</id>
+		<name>Mission 26</name>
+		<picture>mission26.jpg</picture>
+		<location_id>5</location_id>
+		<num_to_complete>5</num_to_complete>
+		<x>210</x>
+		<y>220</y>
+		<xp>34</xp>
+		<energy>17</energy>
+		<money>375</money>
+		<rep faction='3' amount='10' />
+		<commander>1061</commander>
+		<desc>Be careful, that Bloodthirsty poison is deadly over time.</desc>
+		<speech>
+			<line commander='1042'>Scouts have triangulated the location of the Brood nest.  It's a former Imperial base...</line>
+		</speech>
+		<deck>
+			<card>145</card>
+			<card>25</card>
+			<card>70</card>
+			<card>57</card>
+			<card>44</card>
+			<card>113</card>
+			<card>170</card>
+			<card>110</card>
+			<card>2031</card>
+			<card>2032</card>
+		</deck>
+		<rewards>
+			<card>112</card>
+		</rewards>
+		<req>25</req>
+	</mission>
+
+	<mission>
+		<id>27</id>
+		<name>Mission 27</name>
+		<picture>mission27.jpg</picture>
+		<location_id>5</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>160</x>
+		<y>250</y>
+		<xp>35</xp>
+		<energy>18</energy>
+		<money>400</money>
+		<rep faction='3' amount='12' />
+		<commander>1061</commander>
+		<desc>These Bloodthirsty have a strong combination of high defense and healing.  Also their Commander can give orders to demolish our structures.</desc>
+		<speech>
+			<line commander='1042'>The stench of death grows thicker...  We are nearing the nest.  Push onward!</line>
+		</speech>
+		<deck>
+			<card>109</card>
+			<card>24</card>
+			<card>107</card>
+			<card>108</card>
+			<card>57</card>
+			<card>112</card>
+			<card>113</card>
+			<card>111</card>
+			<card>2031</card>
+			<card>3003</card>
+		</deck>
+		<rewards>
+			<card>77</card>
+		</rewards>
+		<req>26</req>
+	</mission>
+
+	<mission>
+		<id>28</id>
+		<name>Mission 28</name>
+		<picture>mission28.jpg</picture>
+		<location_id>5</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>130</x>
+		<y>165</y>
+		<xp>35</xp>
+		<energy>20</energy>
+		<money>450</money>
+		<rep faction='3' amount='15' />
+		<commander>1062</commander>
+		<desc>Their Commander is powerful and the units will work together under its order.</desc>
+		<speech>
+			<line commander='1042'>We've surrounded the bloodthirsty nest.  Destroy the Brood Mother and put an end to the Bloodthirsty threat!</line>
+		</speech>
+		<speechComplete>
+			<line commander='1042'>Excellent work, Commander!  The Brood Mother is dead, and the Bloodthirsty infestation should dissolve.</line>
+			<line commander='1042'>Make haste towards the Red Sands and rendezvous with Octane!</line>
+		</speechComplete>
+		<deck>
+			<card>115</card>
+			<card>113</card>
+			<card>44</card>
+			<card>70</card>
+			<card>70</card>
+			<card>111</card>
+			<card>116</card>
+			<card>112</card>
+			<card>2031</card>
+			<card>2031</card>
+		</deck>
+		<rewards>
+			<card>113</card>
+		</rewards>
+		<req>27</req>
+	</mission>
+
+	<mission>
+		<id>29</id>
+		<name>Mission 29</name>
+		<picture>mission29.jpg</picture>
+		<location_id>6</location_id>
+		<num_to_complete>5</num_to_complete>
+		<x>340</x>
+		<y>30</y>
+		<xp>26</xp>
+		<energy>13</energy>
+		<money>400</money>
+		<rep faction='4' amount='12' />
+		<commander>1064</commander>
+		<desc>Xeno are known for deceptively powerful tactics. They will try to defeat us with various attack styles.</desc>
+		<speech>
+			<line commander='1027'>You've come just in time, Commander.  Halcyon's forces have been cut off, and Enclave presence in the area continues to grow.</line>
+			<line commander='1027'>A small scouting group has obtained information about Halcyon's location.  Intercept them before they can alert their Command.</line>
+		</speech>
+		<deck>
+			<card>148</card>
+			<card>15</card>
+			<card>153</card>
+			<card>42</card>
+			<card>81</card>
+			<card>60</card>
+			<card>149</card>
+			<card>152</card>
+			<card>161</card>
+			<card>61</card>
+		</deck>
+		<rewards>
+			<card>60</card>
+		</rewards>
+		<req>28</req>
+	</mission>
+
+	<mission>
+		<id>30</id>
+		<name>Mission 30</name>
+		<picture>mission30.jpg</picture>
+		<location_id>6</location_id>
+		<num_to_complete>5</num_to_complete>
+		<x>335</x>
+		<y>90</y>
+		<xp>28</xp>
+		<energy>14</energy>
+		<money>500</money>
+		<rep faction='4' amount='8' />
+		<commander>1054</commander>
+		<desc>The Raiders are well prepared to defend against a Xeno attack, but the rest of their defenses are also more than adequate.</desc>
+		<speech>
+			<line commander='1027'>We need to determine the purpose behind the Enclave invasion.</line>
+			<line commander='1027'>There is a Communications Relay to the south under Raider control.  We must take it.</line>
+		</speech>
+		<deck>
+			<card>43</card>
+			<card>125</card>
+			<card>74</card>
+			<card>54</card>
+			<card>19</card>
+			<card>82</card>
+			<card>101</card>
+			<card>105</card>
+			<card>2023</card>
+			<card>3000</card>
+		</deck>
+		<rewards>
+			<card>74</card>
+		</rewards>
+		<req>29</req>
+	</mission>
+	
+	<mission>
+		<id>31</id>
+		<name>Mission 31</name>
+		<picture>mission31.jpg</picture>
+		<location_id>6</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>350</x>
+		<y>210</y>
+		<xp>32</xp>
+		<energy>17</energy>
+		<money>500</money>
+		<rep faction='5' amount='12' />
+		<commander>1054</commander>
+		<desc>The Raiders have units focused on taking out our Commander before we get close enough for an assault on the relay. </desc>
+		<speech>
+			<line commander='1027'>We've reached the Comm Relay, but Raider forces have become entrenched against Enclave forces.</line>
+			<line commander='1027'>Crush them and use the Relay to intercept Enclave communications.</line>
+		</speech>
+		<deck>
+			<card>67</card>
+			<card>82</card>
+			<card>121</card>
+			<card>92</card>
+			<card>74</card>
+			<card>142</card>
+			<card>142</card>
+			<card>49</card>
+			<card>2030</card>
+			<card>2021</card>
+		</deck>
+		<rewards>
+			<card>142</card>
+			<card>142</card>
+		</rewards>
+		<req>30</req>
+	</mission>
+
+	<mission>
+		<id>32</id>
+		<name>Mission 32</name>
+		<picture>mission32.jpg</picture>
+		<location_id>6</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>310</x>
+		<y>180</y>
+		<xp>30</xp>
+		<energy>15</energy>
+		<money>550</money>
+		<rep faction='4' amount='10' />
+		<commander>1064</commander>
+		<desc>These Xeno won't go down easy, they can regenerate after death!</desc>
+		<speech>
+			<line commander='1027'>It appears Vyander, the Enclave Commander advances towards the Wasteland.</line>
+			<line commander='1027'>They are trying to gain control of the Nexus to open a Warp Rift!  We have to stop Vyander from bringing the entire Enclave fleet against us!</line>
+		</speech>
+		<deck>
+			<card>151</card>
+			<card>151</card>
+			<card>171</card>
+			<card>61</card>
+			<card>149</card>
+			<card>71</card>
+			<card>99</card>
+			<card>161</card>
+			<card>2033</card>
+			<card>3005</card>
+		</deck>
+		<rewards>
+			<card>163</card>
+		</rewards>
+		<req>31</req>
+	</mission>
+
+	<mission>
+		<id>33</id>
+		<name>Mission 33</name>
+		<picture>mission33.jpg</picture>
+		<location_id>6</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>180</x>
+		<y>160</y>
+		<xp>31</xp>
+		<energy>15</energy>
+		<money>600</money>
+		<rep faction='5' amount='12' />
+		<commander>1054</commander>
+		<desc>It's bad news when the Raiders start copying tactics they learned from fighting Xeno.</desc>
+		<speech>
+			<line commander='1027'>Vyander continues towards the Nexus, but a large Raider force is incoming.  Destroy them quickly and pursue Vyander!</line>
+		</speech>
+		<deck>
+			<card>43</card>
+			<card>43</card>
+			<card>142</card>
+			<card>20</card>
+			<card>74</card>
+			<card>26</card>
+			<card>88</card>
+			<card>105</card>
+			<card>143</card>
+			<card>2023</card>
+		</deck>
+		<rewards>
+			<card>100</card>
+		</rewards>
+		<req>32</req>
+	</mission>
+
+	<mission>
+		<id>34</id>
+		<name>Mission 34</name>
+		<picture>mission34.jpg</picture>
+		<location_id>6</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>270</x>
+		<y>260</y>
+		<xp>33</xp>
+		<energy>16</energy>
+		<money>700</money>
+		<rep faction='5' amount='8' />
+		<commander>1064</commander>
+		<desc>Xeno are swarming out of no where, be prepared for defensive units that can strike down our force.</desc>
+		<speech>
+			<line commander='1027'>The Raiders here have been slaughtered by the Enclave, but Halcyon is trapped between Typhon's main force and the Enclave Vanguard.  We must break through!</line>
+		</speech>
+		<deck>
+			<card>161</card>
+			<card>60</card>
+			<card>148</card>
+			<card>152</card>
+			<card>163</card>
+			<card>153</card>
+			<card>42</card>
+			<card>106</card>
+			<card>3008</card>
+			<card>2035</card>
+		</deck>
+		<rewards>
+			<card>153</card>
+			<card>2033</card>
+		</rewards>
+		<req>33</req>
+	</mission>
+
+	<mission>
+		<id>35</id>
+		<name>Mission 35</name>
+		<picture>mission35.jpg</picture>
+		<location_id>6</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>250</x>
+		<y>330</y>
+		<xp>34</xp>
+		<energy>18</energy>
+		<money>725</money>
+		<rep faction='4' amount='6' />
+		<rep faction='5' amount='6' />
+		<commander>1065</commander>
+		<desc>Some of Xeno's most powerful units like the Daemon and Tremor Wyrm will band together to keep you out of the Wasteland.</desc>
+		<speech>
+			<line commander='1027'>The Enclave Coordinator, Krellus, is preparing.</line>
+		</speech>
+		<deck>
+			<card>151</card>
+			<card>148</card>
+			<card>161</card>
+			<card>152</card>
+			<card>152</card>
+			<card>106</card>
+			<card>61</card>
+			<card>99</card>
+			<card>2025</card>
+			<card>2035</card>
+		</deck>
+		<rewards>
+			<card>159</card>
+		</rewards>
+		<req>34</req>
+	</mission>
+	
+	<mission>
+		<id>36</id>
+		<name>Mission 36</name>
+		<picture>mission36.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>5</num_to_complete>
+		<x>360</x>
+		<y>150</y>
+		<xp>27</xp>
+		<energy>14</energy>
+		<money>650</money>
+		<rep faction='4' amount='10' />
+		<commander>1064</commander>
+		<desc>Xeno poison is even deadlier than the Bloodthirsty's.</desc>
+		<speech>
+			<line commander='1027'>Krellus has fallen back, but Vyander's primary force continues to advance upon the Nexus.</line>
+		</speech>
+		<deck>
+			<card>148</card>
+			<card>162</card>
+			<card>42</card>
+			<card>173</card>
+			<card>41</card>
+			<card>32</card>
+			<card>94</card>
+			<card>106</card>
+			<card>2004</card>
+			<card>3008</card>
+		</deck>
+		<rewards>
+			<card>42</card>
+		</rewards>
+		<req>35</req>
+	</mission>
+	
+	<mission>
+		<id>37</id>
+		<name>Mission 37</name>
+		<picture>mission37.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>280</x>
+		<y>120</y>
+		<xp>29</xp>
+		<energy>16</energy>
+		<money>600</money>
+		<rep faction='4' amount='10' />
+		<commander>1064</commander>
+		<desc>Enemy Xeno units are capable of copying the skills of your units.</desc>
+		<speech>
+			<line commander='1027'>Vyander is planning an aerial bombardment using the Enclave Mothership.</line>
+			<line commander='1027'>We must not let the Mothership reach Halcyon's forces!</line>
+		</speech>
+		<deck>
+			<card>147</card>
+			<card>147</card>
+			<card>154</card>
+			<card>163</card>
+			<card>75</card>
+			<card>146</card>
+			<card>171</card>
+			<card>106</card>
+			<card>2033</card>
+			<card>2034</card>
+		</deck>
+		<rewards>
+			<card>56</card>
+		</rewards>
+		<req>36</req>
+	</mission>
+	
+	<mission>
+		<id>38</id>
+		<name>Mission 38</name>
+		<picture>mission38.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>160</x>
+		<y>70</y>
+		<xp>29</xp>
+		<energy>16</energy>
+		<money>650</money>
+		<rep faction='4' amount='15' />
+		<commander>1064</commander>
+		<desc>Enemy Mothership is heavily armed.</desc>
+		<speech>
+			<line commander='1027'>The Enclave Mothership looms above.  Direct all attacks against the ship!</line>
+		</speech>
+		<deck>
+			<card>150</card>
+			<card>161</card>
+			<card>41</card>
+			<card>94</card>
+			<card>158</card>
+			<card>171</card>
+			<card>61</card>
+			<card>99</card>
+			<card>216</card>
+			<card>2034</card>
+		</deck>
+		<rewards>
+			<card>95</card>
+		</rewards>
+		<req>37</req>
+	</mission>
+	
+	<mission>
+		<id>39</id>
+		<name>Mission 39</name>
+		<picture>mission39.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>130</x>
+		<y>160</y>
+		<xp>32</xp>
+		<energy>19</energy>
+		<money>700</money>
+		<rep faction='5' amount='12' />
+		<commander>1063</commander>
+		<desc>The Raider defenses are scattered to protect against various offenses, focus your efforts to divide and conquer.</desc>
+		<speech>
+			<line commander='1027'>The Enclave has begun a full retreat, but the Nexus isn't safe yet.  Typhon's forces completely surround Halcyon and the Nexus.</line>
+		</speech>
+		<deck>
+			<card>157</card>
+			<card>74</card>
+			<card>92</card>
+			<card>26</card>
+			<card>105</card>
+			<card>121</card>
+			<card>20</card>
+			<card>3007</card>
+			<card>2021</card>
+			<card>2001</card>
+		</deck>
+		<rewards>
+			<card>3009</card>
+		</rewards>
+		<req>38</req>
+	</mission>
+	
+	<mission>
+		<id>40</id>
+		<name>Mission 40</name>
+		<picture>mission40.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>180</x>
+		<y>200</y>
+		<xp>32</xp>
+		<energy>19</energy>
+		<money>750</money>
+		<rep faction='5' amount='14' />
+		<commander>1063</commander>
+		<desc>The Raiders are on the offensive.  Destroy their strongest units and the rest will fall.</desc>
+		<speech>
+			<line commander='1027'>This is the Raider's main guard.  They are all that stand between us and Typhon.</line>
+		</speech>
+		<deck>
+			<card>20</card>
+			<card>129</card>
+			<card>88</card>
+			<card>82</card>
+			<card>105</card>
+			<card>101</card>
+			<card>143</card>
+			<card>19</card>
+			<card>54</card>
+			<card>2023</card>
+		</deck>
+		<rewards>
+			<card>92</card>
+		</rewards>
+		<req>39</req>
+	</mission>
+	
+	<mission>
+		<id>41</id>
+		<name>Mission 41</name>
+		<picture>mission41.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>100</x>
+		<y>240</y>
+		<xp>35</xp>
+		<energy>21</energy>
+		<money>800</money>
+		<rep faction='5' amount='16' />
+		<commander>1063</commander>
+		<desc>Who knows what Typhon will bring to this final showdown?</desc>
+		<speech>
+			<line commander='1027'>Typhon, your force has been shattered.  Surrender and we will give you a swift death.</line>
+			<line commander='1063'>We all stand before Death's gate!  With the Prometheus I shall obliterate the Nexus!</line>
+			<line commander='1027'>What? ...you're insane!  That will destroy Acheron!</line>
+		</speech>
+		<speechComplete>
+			<line commander='1063'>Aghh!</line>
+			<line commander='1049'>Typhon, give us the Prometheus. You have lost - the Empire controls Acheron again!</line>
+			<line commander='1063'>You control nothing, Halcyon.  Acheron itself will rise up against you.  I will return, Halcyon!</line>
+			<line commander='1042'>The ravings of a madman!</line>
+			<line commander='1049'>Commander, the Nexus has been spared.  The Enclave has been pushed back, and the Bloodthirsty attacks have ceased.</line>
+			<line commander='1049'>You have saved Acheron!</line>
+		</speechComplete>
+		<deck>
+			<card>91</card>
+			<card>37</card>
+			<card>102</card>
+			<card>92</card>
+			<card>74</card>
+			<card>28</card>
+			<card>125</card>
+			<card>105</card>
+			<card>121</card>
+			<card>3010</card>
+		</deck>
+		<rewards>
+			<card>61</card>
+		</rewards>
+		<req>40</req>
+	</mission>
+	
+	<!-- SIDE MISSIONS -->
+	
+	<mission>
+		<id>42</id>
+		<name>Imperial Traitors 1</name>
+		<picture>mission42.jpg</picture>
+		<location_id>1</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>440</x>
+		<y>70</y>
+		<xp>40</xp>
+		<energy>25</energy>
+		<money>900</money>
+		<commander>1066</commander>
+		<desc>They are powerful with Malika as their leader but will not work together as well under her order. Take out what little support they have and the rest will fall.</desc>
+		<speech commander='1046'>
+			<line>Commander, a group of rebels calling themselves the Veritas have begun raids on local Imperial encampments.  Destroy them.</line>
+		</speech>
+		<deck>
+			<card>95</card>
+			<card>95</card>
+			<card>84</card>
+			<card>103</card>
+			<card>40</card>
+			<card>186</card>
+			<card>22</card>
+			<card>90</card>
+			<card>3002</card>
+			<card>2013</card>
+		</deck>
+		<req>41</req>
+	</mission>
+
+<mission>
+		<id>43</id>
+		<name>Imperial Traitors 2</name>
+		<picture>mission43.jpg</picture>
+		<location_id>1</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>410</x>
+		<y>100</y>
+		<xp>42</xp>
+		<energy>25</energy>
+		<money>1000</money>
+		<commander>1066</commander>
+		<desc>More support units have joined them, and they have joined up with some Raiders. They will strike fast and work together.</desc>
+		<speech commander='1046'>
+			<line>Veritas claims to have discovered proof of the Imperial involvement with the Bloodthirsty outbreak in the Swamps of Andar.</line>
+			<line>Needless to say, this information cannot become public.  Find their leader and destroy the evidence.</line>
+		</speech>
+		<deck>
+			<card>38</card>
+			<card>68</card>
+			<card>92</card>
+			<card>22</card>
+			<card>103</card>
+			<card>63</card>
+			<card>39</card>
+			<card>89</card>
+			<card>77</card>
+			<card>186</card>
+			<card>3000</card>
+			<card>2021</card>
+		</deck>
+		<req>42</req>
+	</mission>
+
+<mission>
+		<id>44</id>
+		<name>Imperial Traitors 3</name>
+		<picture>mission44.jpg</picture>
+		<location_id>1</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>350</x>
+		<y>120</y>
+		<xp>45</xp>
+		<energy>25</energy>
+		<money>1100</money>
+		<commander>1067</commander>
+		<desc>The traitors and Raiders have now completely united and Malika commands both. We must focus on both forces or be overwhelmed if we ignore a side.</desc>
+		<speech commander='1046'>
+			<line>We have the traitors backed to a corner.  Wipe them out and prevent an all-out civil war.</line>
+		</speech>
+		<deck>
+			<card>68</card>
+			<card>95</card>
+			<card>92</card>
+			<card>143</card>
+			<card>105</card>
+			<card>103</card>
+			<card>22</card>
+			<card>72</card>
+			<card>37</card>
+			<card>23</card>
+			<card>67</card>
+			<card>2015</card>
+			<card>2024</card>
+		</deck>
+		<req>43</req>
+	</mission>
+
+<mission>
+		<id>45</id>
+		<name>Imperial Traitors 4</name>
+		<picture>mission45.jpg</picture>
+		<location_id>1</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>300</x>
+		<y>90</y>
+		<xp>45</xp>
+		<energy>25</energy>
+		<money>1200</money>
+		<commander>1067</commander>
+		<desc>There are more traitors than we expected. And they will coordinate as one!</desc>
+		<speech commander='1046'>
+			<line>Veritas is on the run, but they have seized control of an Imperial Armory.</line>
+			<line>They are well fortified and equipped with powerful technology, but their rebellion must end now.</line>
+		</speech>
+		<deck>
+			<card>82</card>
+			<card>79</card>
+			<card>53</card>
+			<card>20</card>
+			<card>105</card>
+			<card>103</card>
+			<card>72</card>
+			<card>90</card>
+			<card>143</card>
+			<card>40</card>
+			<card>63</card>
+			<card>54</card>
+			<card>102</card>
+			<card>2015</card>
+			<card>2015</card>
+		</deck>
+		<rewards>
+			<card>72</card>
+		</rewards>
+		<req>44</req>
+	</mission>
+	
+	<mission>
+		<id>46</id>
+		<name>Bloodthirsty Nest 1</name>
+		<picture>mission46.jpg</picture>
+		<location_id>5</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>340</x>
+		<y>260</y>
+		<xp>40</xp>
+		<energy>25</energy>
+		<money>900</money>
+		<commander>1068</commander>
+		<desc>The Bloodthirsty support for Ascaris is weak now that the Brood Mother is destroyed, but they will still defend their nest.</desc>
+		<speech commander='1042'>
+			<line>Ascaris has been destroyed, but more Bloodthirsty remain.  Destroy the nest here to eliminate the Bloodthirsty threat in this region.</line>
+		</speech>
+		<deck>
+			<card>113</card>
+			<card>170</card>
+			<card>24</card>
+			<card>169</card>
+			<card>112</card>
+			<card>25</card>
+			<card>116</card>
+			<card>36</card>
+			<card>145</card>
+			<card>2031</card>
+		</deck>
+		<req>41</req>
+	</mission>
+
+<mission>
+		<id>47</id>
+		<name>Bloodthirsty Nest 2</name>
+		<picture>mission47.jpg</picture>
+		<location_id>5</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>405</x>
+		<y>220</y>
+		<xp>42</xp>
+		<energy>25</energy>
+		<money>1000</money>
+		<commander>1068</commander>
+		<desc>More Bloodthirsty surround us as we get closer to the nest. And they are starting to cooperate with Ascaris!</desc>
+		<deck>
+			<card>115</card>
+			<card>115</card>
+			<card>113</card>
+			<card>113</card>
+			<card>57</card>
+			<card>70</card>
+			<card>169</card>
+			<card>107</card>
+			<card>36</card>
+			<card>145</card>
+			<card>2012</card>
+			<card>2012</card>
+		</deck>
+		<req>46</req>
+	</mission>
+
+<mission>
+		<id>48</id>
+		<name>Bloodthirsty Nest 3</name>
+		<picture>mission48.jpg</picture>
+		<location_id>5</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>450</x>
+		<y>250</y>
+		<xp>45</xp>
+		<energy>25</energy>
+		<money>1100</money>
+		<commander>1068</commander>
+		<desc>We were too late, the Bloodthirsty now follow Ascaris command and will heal him at the expense of themselves.</desc>
+		<deck>
+			<card>24</card>
+			<card>112</card>
+			<card>113</card>
+			<card>109</card>
+			<card>56</card>
+			<card>70</card>
+			<card>169</card>
+			<card>172</card>
+			<card>116</card>
+			<card>111</card>
+			<card>111</card>
+			<card>3004</card>
+			<card>2031</card>
+		</deck>
+		<req>47</req>
+	</mission>
+
+<mission>
+		<id>49</id>
+		<name>Bloodthirsty Nest 4</name>
+		<picture>mission49.jpg</picture>
+		<location_id>5</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>400</x>
+		<y>260</y>
+		<xp>50</xp>
+		<energy>25</energy>
+		<money>1200</money>
+		<commander>1070</commander>
+		<desc>We are at the heart of the nest where the Bloodthirsty and Ascaris will be most powerful.</desc>
+		<deck>
+			<card>24</card>
+			<card>113</card>
+			<card>112</card>
+			<card>110</card>
+			<card>70</card>
+			<card>70</card>
+			<card>145</card>
+			<card>44</card>
+			<card>172</card>
+			<card>116</card>
+			<card>111</card>
+			<card>111</card>
+			<card>3004</card>
+			<card>2012</card>
+			<card>2012</card>
+		</deck>
+		<rewards>
+			<card>172</card>
+		</rewards>
+		<req>48</req>
+	</mission>
+	
+	<mission>
+		<id>50</id>
+		<name>Xeno Invasion 1</name>
+		<picture>mission50.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>440</x>
+		<y>230</y>
+		<xp>42</xp>
+		<energy>25</energy>
+		<money>1000</money>
+		<commander>1069</commander>
+		<desc>Vyander has returned with powerful Xeno forces. Strike them while they are still regrouping from their landing.</desc>
+		<speech commander='1027'>
+			<line>The primary Enclave onslaught has been repelled, but Vyander continues to probe for weakness.  Show him there is none.</line>
+		</speech>
+		<deck>
+			<card>161</card>
+			<card>41</card>
+			<card>152</card>
+			<card>99</card>
+			<card>165</card>
+			<card>180</card>
+			<card>171</card>
+			<card>61</card>
+			<card>3002</card>
+			<card>2033</card>
+		</deck>
+		<req>41</req>
+	</mission>
+
+<mission>
+		<id>51</id>
+		<name>Xeno Invasion 2</name>
+		<picture>mission51.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>380</x>
+		<y>200</y>
+		<xp>42</xp>
+		<energy>25</energy>
+		<money>1000</money>
+		<commander>1069</commander>
+		<desc>They have regrouped and will try to demolish our forces with one group while the other attacks you Commander.</desc>
+		<deck>
+			<card>161</card>
+			<card>161</card>
+			<card>106</card>
+			<card>173</card>
+			<card>159</card>
+			<card>163</card>
+			<card>163</card>
+			<card>146</card>
+			<card>180</card>
+			<card>99</card>
+			<card>2025</card>
+			<card>2025</card>
+		</deck>
+		<req>50</req>
+	</mission>
+
+<mission>
+		<id>52</id>
+		<name>Xeno Invasion 3</name>
+		<picture>mission52.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>320</x>
+		<y>260</y>
+		<xp>45</xp>
+		<energy>25</energy>
+		<money>1100</money>
+		<commander>1069</commander>
+		<desc>They are more entrenched now, their individual units will have high health and be hard to overcome.</desc>
+		<deck>
+			<card>42</card>
+			<card>161</card>
+			<card>99</card>
+			<card>165</card>
+			<card>152</card>
+			<card>30</card>
+			<card>148</card>
+			<card>94</card>
+			<card>171</card>
+			<card>164</card>
+			<card>164</card>
+			<card>3009</card>
+			<card>2034</card>
+		</deck>
+		<req>51</req>
+	</mission>
+
+<mission>
+		<id>53</id>
+		<name>Xeno Invasion 4</name>
+		<picture>mission53.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>250</x>
+		<y>220</y>
+		<xp>50</xp>
+		<energy>25</energy>
+		<money>1200</money>
+		<commander>1069</commander>
+		<desc>This is the largest assault yet and they intend to overpower and overwhelm with their size and numbers.</desc>
+		<deck>
+			<card>158</card>
+			<card>41</card>
+			<card>30</card>
+			<card>99</card>
+			<card>152</card>
+			<card>152</card>
+			<card>159</card>
+			<card>60</card>
+			<card>173</card>
+			<card>106</card>
+			<card>61</card>
+			<card>154</card>
+			<card>164</card>
+			<card>2034</card>
+			<card>2035</card>
+		</deck>
+		<rewards>
+			<card>30</card>
+		</rewards>
+		<req>52</req>
+	</mission>
+	
+	<!-- END SIDE MISSIONS -->
+	
+	<!-- NEW MISSIONS -->
+	
+	<mission>
+		<id>54</id>
+		<name>Mission 42</name>
+		<picture>mission54.jpg</picture>
+		<location_id>8</location_id>
+		<num_to_complete>5</num_to_complete>
+		<x>190</x>
+		<y>340</y>
+		<xp>24</xp>
+		<energy>12</energy> <!-- 12 -->
+		<money>450</money> <!-- ~9.5 GPE -->
+		<rep faction='6' amount='4' />
+		<commander>1078</commander>
+		<desc>The Raiders haven't been able to amass their full forces yet. Crush them quickly and make your way further up the coast.</desc>
+		<speech>
+			<line commander='1049'>Typhon must pay for his attack on the Empire.  He has fled to his homeland on Kytos.  We must bring him back to the Empire, where he will be put on trial.</line>
+			<line commander='1049'>Our forces are stationed off the coast and are awaiting your orders.  Katana will be leading the assault.</line>
+		</speech>
+		<deck>
+			<card>174</card>
+			<card>117</card>
+			<card>117</card>
+			<card>2037</card>
+			<card>3017</card>
+			<card>26</card>
+			<card>85</card>
+			<card>197</card>
+			<card>121</card>
+			<card>125</card>
+		</deck>
+		<rewards>
+			<card>203</card>
+			<card>203</card>
+		</rewards>
+		<req>41</req>
+	</mission>
+
+<mission>
+		<id>55</id>
+		<name>Mission 43</name>
+		<picture>mission55.jpg</picture>
+		<location_id>8</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>205</x>
+		<y>260</y>
+		<xp>26</xp>
+		<energy>13</energy> <!-- 13 -->
+		<money>500</money> <!-- ~9.7 GPE -->
+		<rep faction='6' amount='5' />
+		<commander>1078</commander>
+		<desc>We're starting to encounter some of their structural defenses, but the bulk of their forces are still up ahead.</desc>
+		<speech>
+			<line commander='1042'>The initial landing was a success, but our naval force is under attack from Raider artillery above the cliffs.  Take them out or we will be cut off.</line>
+		</speech>
+		<deck>
+			<card>117</card>
+			<card>117</card>
+			<card>59</card>
+			<card>174</card>
+			<card>2021</card>
+			<card>2027</card>
+			<card>88</card>
+			<card>105</card>
+			<card>197</card>
+			<card>101</card>
+		</deck>
+		<rewards>
+			<card>174</card>
+			<card>174</card>
+		</rewards>
+		<req>54</req> <!-- 54 -->
+	</mission>
+
+<mission>
+		<id>56</id>
+		<name>Mission 44</name>
+		<picture>mission56.jpg</picture>
+		<location_id>8</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>230</x>
+		<y>210</y>
+		<xp>28</xp>
+		<energy>14</energy> <!-- 14 -->
+		<money>550</money>
+		<rep faction='6' amount='6' />
+		<commander>1078</commander>
+		<desc>Raiders are sending a Flurry of units to slow us down.</desc>
+		<speech>
+			<line commander='1042'>We are closing in on Typhon's home position.  We will be passing a civilian camp - hold your fire.</line>
+			<line commander='1049'>Belay that order, Commander.  Eliminate the local guardsmen and search the residences.</line>
+			<line commander='1042'>What?!  These are just civilians!</line>
+			<line commander='1049'>They are supporters of Typhon, and reports indicate that they may be hiding a weapons cache.</line>
+		</speech>
+		<deck>
+			<card>184</card>
+			<card>184</card>
+			<card>183</card>
+			<card>2020</card>
+			<card>3015</card>
+			<card>59</card>
+			<card>73</card>
+			<card>26</card>
+			<card>143</card>
+			<card>92</card>
+		</deck>
+		<rewards>
+			<card>184</card>
+			<card>184</card>
+		</rewards>
+		<req>55</req><!-- 55 -->
+	</mission>
+
+<mission>
+		<id>57</id>
+		<name>Mission 45</name>
+		<picture>mission57.jpg</picture>
+		<location_id>8</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>300</x>
+		<y>150</y>
+		<xp>33</xp>
+		<energy>16</energy> <!-- 16 -->
+		<money>650</money>
+		<rep faction='6' amount='7' />
+		<commander>1078</commander> <!-- Different Commadner for this -->
+		<desc>We're at their front door, it is here we will encounter their heaviest resistance.</desc>
+		<speech>
+			<line commander='1042'>Reports show nothing, Halcyon.  We have to move on before Typhon moves out of our reach!</line>
+			<line commander='1049'>Negative, Katana.  This camp is to be burned to the ground.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1042'>You're going to destroy the entire encampment?   Most of these people aren't even at war with us.  Our mission is only to capture Typhon, not to kill innocent people!</line>
+			<line commander='1049'>They have to be eliminated to protect the Empire.  They will continue to lay siege on us until they are destroyed.</line>
+			<line commander='1042'>I won't stand by to watch the genocide of an entire people, Halcyon.</line>
+		</speechComplete>
+		<deck>
+			<card>117</card>
+			<card>183</card>
+			<card>50</card>
+			<card>2023</card>
+			<card>3002</card>
+			<card>221</card>
+			<card>73</card>
+			<card>105</card>
+			<card>92</card>
+			<card>183</card>
+		</deck>
+		<rewards>
+			<card>183</card>
+			<card>183</card>
+		</rewards>
+		<req>56</req> <!-- 56 -->
+	</mission>
+
+<mission>
+		<id>58</id>
+		<name>Mission 46</name>
+		<picture>mission58.jpg</picture>
+		<location_id>8</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>380</x>
+		<y>200</y>
+		<xp>33</xp>
+		<energy>16</energy> <!-- 16 -->
+		<money>650</money>
+		<rep faction='6' amount='8' />
+		<commander>1076</commander>
+		<desc>Don't let the Imperial scum that seek to destroy our Raider brothers evade you.</desc>
+		<speech>
+			<line commander='1042'>I've made contact with the leader of the local guardsmen.  We cannot let Halcyon kill these civilians.</line>
+			<line commander='1026'>You expect us to believe that you're to help our people?  As we speak, the Imperial Forces target our residences.</line>
+			<line commander='1026'>If you're truly intent on protecting our people, join us in defense of the village of Athos.</line>
+			<line commander='1042'>Halcyon's brutality shocks me.  This goes against everything the Tribunal stands for.</line>
+		</speech>
+		<deck>
+			<card>208</card>
+			<card>211</card>
+			<card>84</card>
+			<card>93</card>
+			<card>21</card>
+			<card>89</card>
+			<card>63</card>
+			<card>186</card>
+			<card>2013</card>
+			<card>3000</card>
+		</deck>
+		<rewards>
+			<card>208</card>
+			<card>208</card>
+		</rewards>
+		<req>57</req><!-- 57 -->
+	</mission>
+
+<mission>
+		<id>59</id>
+		<name>Mission 47</name>
+		<picture>mission59.jpg</picture>
+		<location_id>8</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>355</x>
+		<y>120</y>
+		<xp>36</xp>
+		<energy>17</energy> <!-- 17 -->
+		<money>700</money>
+		<rep faction='6' amount='9' />
+		<commander>1076</commander>
+		<desc>The Imperials are focusing their forces and Rallying against you.</desc>
+		<speech>
+				<line commander='1026'>Thank you.  Your help... surprises me.  We know about his assault on the Imperial forces.  We're not all supporters of Typhon Vex - many of us abhor his brutal policies.</line>
+	<line commander='1042'>Then why does he remain in power?</line>
+	<line commander='1026'>Regardless of his tactics, Typhon has gathered much support as a leader, and his vision for our nation is unequaled.</line>
+		</speech>
+		<deck>
+			<card>208</card>
+			<card>39</card>
+			<card>239</card>
+			<card>203</card>
+			<card>202</card>
+			<card>34</card>
+			<card>40</card>
+			<card>175</card>
+			<card>72</card>
+			<card>90</card>
+			<card>2019</card>
+		</deck>
+		<rewards>
+			<card>2037</card>
+			<card>2037</card>
+		</rewards>
+		<req>58</req> <!-- 58 -->
+	</mission>
+
+<mission>
+		<id>60</id>
+		<name>Mission 48</name>
+		<picture>mission60.jpg</picture>
+		<location_id>8</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>350</x>
+		<y>40</y>
+		<xp>39</xp>
+		<energy>18</energy> <!-- 18 -->
+		<money>750</money>
+		<rep faction='6' amount='10' />
+		<commander>1076</commander>
+		<desc>Imperials have been using this base to provide medical support to their troops, they will fight hard to defend it.</desc>
+		<speech>
+			<line commander='1026'>I wish nothing more than to end this war with your Empire.  They will destroy us, even with Typhon's power.</line>
+	<line commander='1042'>We must find Typhon and return him to our nation for trial.  That is the only way for Lord Halcyon to be forced to stand down.</line>
+	<line commander='1026'>He is going north to the Blightlands.  We don't know what plans he has, but we will take you to him if it will make peace.</line>
+
+		</speech>
+		<deck>
+			<card>90</card>
+			<card>239</card>
+			<card>202</card>
+			<card>95</card>
+			<card>76</card>
+			<card>122</card>
+			<card>122</card>
+			<card>77</card>
+			<card>40</card>
+			<card>220</card>
+			<card>3002</card>
+			<card>2019</card>
+		</deck>
+		<rewards>
+			<card>175</card>
+			<card>175</card>
+		</rewards>
+		<req>59</req> <!-- 59 -->
+	</mission>
+	
+<!-- Sulfiris -->
+
+<mission>
+		<id>61</id>
+		<name>Mission 49</name>
+		<picture>mission61.jpg</picture>
+		<location_id>9</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>370</x>
+		<y>320</y>
+		<xp>27</xp>
+		<energy>13</energy> <!-- 13 -->
+		<money>525</money>
+		<rep faction='6' amount='11' />
+		<commander>1080</commander>
+		<desc>The acid pools of Sulfiris are deadly.</desc>
+		<speech>
+			<line commander='1026'>This land is infested with Bloodthirsty that have flooded out from the Blightlands.  We cannot avoid them for fear of alerting Typhon's forces.</line>
+
+		</speech>
+		<deck>
+			<card>27</card>
+			<card>97</card>
+			<card>201</card>
+			<card>201</card>
+			<card>200</card>
+			<card>116</card>
+			<card>111</card>
+			<card>169</card>
+			<card>2012</card>
+			<card>2005</card>
+		</deck>
+		<rewards>
+			<card>97</card>
+			<card>97</card>
+		</rewards>
+		<req>60</req> <!-- 60 -->
+	</mission>
+
+<mission> 
+		<id>62</id>
+		<name>Mission 50</name>
+		<picture>mission62.jpg</picture>
+		<location_id>9</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>190</x>
+		<y>280</y>
+		<xp>32</xp>
+		<energy>15</energy> <!-- 15 -->
+		<money>625</money>
+		<rep faction='6' amount='12' />
+		<commander>1079</commander>
+		<desc>Limited intel.  Typhon's forces are known to be powerful.</desc>
+		<speech>
+			<line commander='1026'>Typhon's left some of his forces behind to guard against the advancing Imperials.  We'll have to destroy them.</line>
+
+		</speech>
+		<deck>
+			<card>45</card>
+			<card>37</card>
+			<card>197</card>
+			<card>59</card>
+			<card>117</card>
+			<card>210</card>
+			<card>221</card>
+			<card>237</card>
+			<card>3015</card>
+			<card>2047</card>
+		</deck>
+		<rewards>
+			<card>59</card>
+			<card>59</card>
+		</rewards>
+		<req>61</req> <!-- 61 -->
+	</mission>
+
+<mission>
+		<id>63</id>
+		<name>Mission 51</name>
+		<picture>mission63.jpg</picture>
+		<location_id>9</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>160</x>
+		<y>200</y>
+		<xp>35</xp>
+		<energy>16</energy> <!-- 16 -->
+		<money>700</money>
+		<rep faction='6' amount='13' />
+		<commander>1079</commander>
+		<desc>Limited intel.  Typhon's forces are known to be powerful.</desc>
+		<speech>
+			<line commander='1026'>It appears that Typhon's march to the Blightlands is in an effort to regain control of some sort of ancient powergrid.  We must continue onwards if you want to reach him.</line>
+		</speech>
+		<deck>
+			<card>125</card>
+			<card>59</card>
+			<card>183</card>
+			<card>92</card>
+			<card>73</card>
+			<card>105</card>
+			<card>221</card>
+			<card>50</card>
+			<card>2020</card>
+			<card>2021</card>
+		</deck>
+		<rewards>
+			<card>210</card>
+			<card>210</card>
+		</rewards>
+		<req>62</req><!-- 62 -->
+	</mission>
+
+<mission>
+		<id>64</id>
+		<name>Mission 52</name>
+		<picture>mission64.jpg</picture>
+		<location_id>9</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>140</x>
+		<y>70</y>
+		<xp>40</xp>
+		<energy>18</energy> <!-- 18 -->
+		<money>800</money>
+		<rep faction='6' amount='14' />
+		<commander>1080</commander>
+		<desc>Destroy this encampment of Bloodthirsty so we no longer have to worry about them attacking us from the North anymore.</desc>
+		<speech>
+			<line commander='1026'>To reach the Blightlands, we'll have to go through the Odeus caverns.  We haven't set foot in there for years, constantly being pushed back by the Bloodthirsty.</line>
+		</speech>
+		<deck>
+			<card>27</card>
+			<card>27</card>
+			<card>204</card>
+			<card>181</card>
+			<card>207</card>
+			<card>2005</card>
+			<card>116</card>
+			<card>70</card>
+			<card>115</card>
+			<card>231</card>
+			<card>131</card>
+		</deck>
+		<rewards>
+			<card>27</card>
+			<card>27</card>
+		</rewards>
+		<req>63</req><!-- 63 -->
+	</mission>
+
+<mission>
+		<id>65</id>
+		<name>Mission 53</name>
+		<picture>mission65.jpg</picture>
+		<location_id>9</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>260</x>
+		<y>100</y>
+		<xp>43</xp>
+		<energy>19</energy> <!-- 19 -->
+		<money>875</money>
+		<rep faction='6' amount='15' />
+		<commander>1080</commander>
+		<desc>The Bloodthirsty attempt to block your entrance to the caverns with the forces they have remaining.</desc>
+		<deck>
+			<card>131</card>
+			<card>200</card>
+			<card>201</card>
+			<card>205</card>
+			<card>97</card>
+			<card>113</card>
+			<card>112</card>
+			<card>111</card>
+			<card>181</card>
+			<card>3016</card>
+			<card>2032</card>
+			<card>2031</card>
+		</deck>
+		<rewards>
+			<card>2005</card>
+			<card>2005</card>
+		</rewards>
+		<req>64</req><!-- 64 -->
+	</mission>
+
+<!-- Caverns -->
+
+<mission>
+		<id>66</id>
+		<name>Mission 54</name>
+		<picture>mission66.jpg</picture>
+		<location_id>10</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>60</x>
+		<y>340</y>
+		<xp>33</xp>
+		<energy>15</energy> <!-- 15 -->
+		<money>650</money>
+		<rep faction='7' amount='4' />
+		<commander>1074</commander>
+		<desc>The Xeno won't risk sending their airforce into these tight caverns.</desc>
+		<speech>
+			<line commander='1042'>What the... is this Xeno equipment?</line>
+	<line commander='1026'>We've had reports of Enclave activity in these caverns.  We never expected this.</line>
+	<line commander='1042'>It looks like some sort of mining operation.  What are they doing here?</line>
+		</speech>
+		<deck>
+			<card>209</card>
+			<card>134</card>
+			<card>176</card>
+			<card>32</card>
+			<card>164</card>
+			<card>94</card>
+			<card>41</card>
+			<card>161</card>
+			<card>2028</card>
+			<card>3016</card>
+		</deck>
+		<rewards>
+			<card>176</card>
+			<card>176</card>
+		</rewards>
+		<req>65</req><!-- 65 -->
+	</mission>
+
+<mission>
+		<id>67</id>
+		<name>Mission 55</name>
+		<picture>mission67.jpg</picture>
+		<location_id>10</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>185</x>
+		<y>320</y>
+		<xp>36</xp>
+		<energy>16</energy> <!-- 16 -->
+		<money>725</money>
+		<rep faction='7' amount='4' />
+		<commander>1074</commander>
+		<desc>The Xeno are focused on digging through the caverns so their forces are unfocused.</desc>
+		<speech>
+			<line commander='1042'>I've never heard reports of underground Xeno activity.  If they are gathering large amounts of neocyte, they could be growing far stronger than we realized.</line>
+	<line commander='1042'>We must bring this news back to the Empire.  Commander, scout the region. </line>
+		</speech>
+		<deck>
+			<card>185</card>
+			<card>30</card>
+			<card>176</card>
+			<card>161</card>
+			<card>178</card>
+			<card>81</card>
+			<card>178</card>
+			<card>99</card>
+			<card>3008</card>
+			<card>2025</card>
+		</deck>
+		<rewards>
+			<card>2028</card>
+			<card>1043</card>
+		</rewards>
+		<req>66</req><!-- 66 -->
+	</mission>
+
+<mission>
+		<id>68</id>
+		<name>Mission 56</name>
+		<picture>mission68.jpg</picture>
+		<location_id>10</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>450</x>
+		<y>290</y>
+		<xp>39</xp>
+		<energy>17</energy> <!-- 17 -->
+		<money>775</money>
+		<rep faction='7' amount='5' />
+		<commander>1077</commander>
+		<desc>Imperials have followed you deep into the caverns, they should also be without an air force.</desc>
+		<speech>
+			<line commander='1026'>A squad of Imperials are up ahead.  They must have stayed behind to scout the Xeno operation.</line>
+	<line commander='1042'>Let's question them about the Enclave.  Perhaps they could use our help.</line>
+
+		</speech>
+		<deck>
+			<card>22</card>
+			<card>39</card>
+			<card>63</card>
+			<card>95</card>
+			<card>211</card>
+			<card>95</card>
+			<card>122</card>
+			<card>93</card>
+			<card>3017</card>
+			<card>3016</card>
+		</deck>
+		<rewards>
+			<card>3015</card>
+			<card>3015</card>
+		</rewards>
+		<req>67</req><!-- 67 -->
+	</mission>
+
+<mission>
+		<id>69</id>
+		<name>Mission 57</name>
+		<picture>mission69.jpg</picture>
+		<location_id>10</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>100</x>
+		<y>200</y>
+		<xp>44</xp>
+		<energy>19</energy> <!-- 19 -->
+		<money>900</money>
+		<rep faction='7' amount='6' />
+		<commander>1074</commander>
+		<desc>This is the core of Xeno's mining and is well protected with large units.</desc>
+		<speech>
+			<line commander='1026'>Commander, more Xeno approach.  Defend the position!</line>
+
+		</speech>
+		<deck>
+			<card>42</card>
+			<card>15</card>
+			<card>106</card>
+			<card>2033</card>
+			<card>3016</card>
+			<card>156</card>
+			<card>213</card>
+			<card>152</card>
+			<card>126</card>
+			<card>163</card>
+		</deck>
+		<rewards>
+			<card>209</card>
+			<card>209</card>
+		</rewards>
+		<req>68</req><!-- 68 -->
+	</mission>
+
+<mission>
+		<id>70</id>
+		<name>Mission 58</name>
+		<picture>mission70.jpg</picture>
+		<location_id>10</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>370</x>
+		<y>205</y>
+		<xp>47</xp>
+		<energy>20</energy> <!-- 20 -->
+		<money>950</money>
+		<rep faction='7' amount='7' />
+		<commander>1074</commander>
+		<desc>Xeno are sending reinforcements into the mines.</desc>
+		<speech>
+			<line commander='1042'>Neocyte is a powerful source of mobile energy, and the Enclave's warp technology uses huge amounts of it.</line>
+	<line commander='1042'>If they have a mining operation this large, I shudder to think of what they are planning...</line>
+
+		</speech>
+		<deck>
+			<card>161</card>
+			<card>161</card>
+			<card>222</card>
+			<card>194</card>
+			<card>185</card>
+			<card>99</card>
+			<card>209</card>
+			<card>156</card>
+			<card>134</card>
+			<card>2028</card>
+			<card>2004</card>
+		</deck>
+		<rewards>
+			<card>213</card>
+			<card>213</card>
+		</rewards>
+		<req>69</req><!-- 69 -->
+	</mission>
+
+<mission>
+		<id>71</id>
+		<name>Mission 59</name>
+		<picture>mission71.jpg</picture>
+		<location_id>10</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>420</x>
+		<y>20</y>
+		<xp>50</xp>
+		<energy>21</energy> <!-- 21 -->
+		<money>1025</money>
+		<rep faction='7' amount='8' />
+		<commander>1075</commander>
+		<desc>The exit is near, but now the Xeno will be able to bombard with their air force.</desc>
+		<speech>
+			<line commander='1026'>This is the end of the caverns, and the entrance to the Blightlands.  The Enclave has reinforced this position.</line>
+	<line commander='1042'>We will have to push past.</line>
+
+		</speech>
+		<deck>
+			<card>99</card>
+			<card>152</card>
+			<card>171</card> <!-- Flying -->
+			<card>106</card>
+			<card>41</card>
+			<card>212</card> <!-- Flying -->
+			<card>212</card> <!-- Flying -->
+			<card>156</card>
+			<card>178</card>
+			<card>178</card>
+			<card>3004</card>
+			<card>2025</card>
+		</deck>
+		<rewards>
+			<card>212</card>
+			<card>212</card>
+		</rewards>
+		<req>70</req><!-- 70 -->
+	</mission>
+
+<!-- Blightlands -->
+
+<mission>
+		<id>72</id>
+		<name>Mission 60</name>
+		<picture>mission72.jpg</picture>
+		<location_id>11</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>50</x>
+		<y>270</y>
+		<xp>39</xp>
+		<energy>17</energy> <!-- 17 -->
+		<money>800</money>
+		<rep faction='7' amount='9' />
+		<commander>1075</commander>
+		<desc>Made it out before the Xeno could destroy the cave exit, but now you must fight their incoming aerial assault.</desc>
+		<speech>
+			<line commander='1042'>Commander!  The Enclave has a massive fleet stationed outside the caverns.</line>
+			<line commander='1042'>They have massive aerial superiority, so we'll have to move past on foot.  Eliminate their ground forces and march deeper into the Blight!</line>
+		</speech>
+		<deck>
+			<card>165</card>
+			<card>146</card>
+			<card>212</card>
+			<card>206</card>
+			<card>206</card>
+			<card>30</card>
+			<card>222</card>
+			<card>159</card>
+			<card>61</card>
+			<card>3009</card>
+		</deck>
+		<rewards>
+			<card>178</card>
+			<card>127</card>
+		</rewards>
+		<req>71</req><!-- 71 -->
+	</mission>
+
+<mission>
+		<id>73</id>
+		<name>Mission 61</name>
+		<picture>mission73.jpg</picture>
+		<location_id>11</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>160</x>
+		<y>330</y>
+		<xp>42</xp>
+		<energy>18</energy> <!-- 18 -->
+		<money>875</money>
+		<rep faction='7' amount='10' />
+		<commander>1081</commander>
+		<desc>The Bloodthirsty feel your presence they will rise together to expel the intruder.</desc>
+		<speech>
+			<line commander='1026'>The Blightlands are the home of the Bloodthirsty.  The buildings have been taken over.  Push through towards Typhon.</line>
+
+		</speech>
+		<deck>
+			<card>133</card>
+			<card>181</card>
+			<card>181</card>
+			<card>200</card>
+			<card>70</card>
+			<card>70</card>
+			<card>201</card>
+			<card>57</card>
+			<card>2012</card>
+			<card>2032</card>
+		</deck>
+		<rewards>
+			<card>181</card>
+			<card>181</card>
+		</rewards>
+		<req>72</req><!-- 72 -->
+	</mission>
+
+<mission>
+		<id>74</id>
+		<name>Mission 62</name>
+		<picture>mission74.jpg</picture>
+		<location_id>11</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>290</x>
+		<y>310</y>
+		<xp>43</xp>
+		<energy>18</energy> <!-- 18 -->
+		<money>900</money>
+		<rep faction='7' amount='11' />
+		<commander>1081</commander>
+		<desc>The Bloodthirsty have identified us as the threat and are focused at destroying us.</desc>
+		<speech>
+			<line commander='1042'>The Empire came here once before, but were pushed back by enemy forces.</line>
+	<line commander='1026'>It's as hostile as it was then.</line>
+
+		</speech>
+		<deck>
+			<card>133</card>
+			<card>181</card>
+			<card>207</card>
+			<card>44</card>
+			<card>131</card>
+			<card>116</card>
+			<card>70</card>
+			<card>111</card>
+			<card>3007</card>
+			<card>3017</card>
+		</deck>
+		<rewards>
+			<card>204</card>
+			<card>204</card>
+		</rewards>
+		<req>73</req><!-- 73 -->
+	</mission>
+
+<mission>
+		<id>75</id>
+		<name>Mission 63</name>
+		<picture>mission75.jpg</picture>
+		<location_id>11</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>350</x>
+		<y>260</y>
+		<xp>46</xp>
+		<energy>19</energy> <!-- 19 -->
+		<money>950</money>
+		<rep faction='7' amount='12' />
+		<commander>1077</commander>
+		<desc>The Imperials have discovered your objective and will do anything to stop you.</desc>
+		<speech>
+			<line commander='1026'>Reports indicate a massive Nexus in the northwest of the Blightlands.  This is surely Typhon's target.</line>
+	<line commander='1042'>A Nexus?!  The same that supplies power to the Empire?</line>
+	<line commander='1026'>Yes.  Typhon must be intending to activate the Kytos Nexus and power his Raider guard.</line>
+	<line commander='1026'>Commander, an Imperial intercept force is attacking us!</line>
+
+		</speech>
+		<deck> 
+			<card>238</card>
+			<card>89</card>
+			<card>72</card>
+			<card>239</card>
+			<card>208</card>
+			<card>122</card>
+			<card>122</card>
+			<card>220</card>
+			<card>3016</card>
+			<card>3000</card>
+		</deck>
+		<rewards>
+			<card>201</card>
+			<card>201</card>
+		</rewards>
+		<req>74</req><!-- 74 -->
+	</mission>
+
+<mission>
+		<id>76</id>
+		<name>Mission 64</name>
+		<picture>mission76.jpg</picture>
+		<location_id>11</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>340</x>
+		<y>200</y>
+		<xp>49</xp> <!-- ~2.38 smooth up to 2.45 or 2.5 -->
+		<energy>20</energy> <!-- 20 -->
+		<money>1025</money> <!-- 12.4, smooth curve up to 13.2 -->
+		<rep faction='7' amount='13' />
+		<commander>1077</commander>
+		<desc>The Imperials are throwing everything they have at you, don't fail!</desc>
+		<speech>
+			<line commander='1042'>When our Nexus was activated, it completely leveled the region.  Is Typhon insane?!</line>
+	<line commander='1026'>He will stop at nothing to get back at the Empire.  If he can power the continent, his might will rival even the Empire's.</line>
+
+		</speech>
+		<deck> 
+			<card>103</card>
+			<card>63</card>
+			<card>95</card>
+			<card>89</card>
+			<card>40</card>
+			<card>122</card>
+			<card>220</card>
+			<card>186</card>
+			<card>3017</card>
+			<card>3016</card>
+			<card>72</card>
+		</deck>
+		<rewards>
+			<card>122</card>
+		</rewards>
+		<req>75</req><!-- 75 -->
+	</mission>
+
+<mission>
+		<id>77</id>
+		<name>Mission 65</name>
+		<picture>mission77.jpg</picture>
+		<location_id>11</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>180</x>
+		<y>200</y>
+		<xp>52</xp> <!-- ~2.38 smooth up to 2.45 or 2.5 -->
+		<energy>21</energy> <!-- 21 -->
+		<money>1100</money> <!-- 12.4, smooth curve up to 13.2 -->
+		<rep faction='7' amount='14' />
+		<commander>1081</commander>
+		<desc>The Bloodthirsty are drawn here.  They will try to surround you.</desc>
+		<speech>
+			<line commander='1026'>Typhon has gained control of the Nexus.  A horde of Bloodthirsty stand between us.</line>
+	<line commander='1042'>If Typhon activates the Nexus, we could all be destroyed.  There is no time to waste.</line>
+
+		</speech>
+		<deck>
+			<card>133</card>
+			<card>131</card>
+			<card>200</card>
+			<card>200</card>
+			<card>231</card>
+			<card>113</card>
+			<card>116</card>
+			<card>111</card>
+			<card>205</card>
+			<card>204</card>
+			<card>2032</card>
+			<card>2017</card>
+		</deck>
+		<rewards>
+			<card>2017</card>
+		</rewards>
+		<req>76</req><!-- 76 -->
+	</mission>
+
+<mission>
+		<id>78</id>
+		<name>Mission 66</name>
+		<picture>mission78.jpg</picture>
+		<location_id>11</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>140</x>
+		<y>180</y>
+		<xp>55</xp> <!-- ~2.5 EPX -->
+		<energy>22</energy> <!-- 22 -->
+		<money>1175</money> <!-- ~13.35 EPG -->
+		<rep faction='7' amount='15' />
+		<commander>1081</commander>
+		<desc>I've never seen a horde of Bloodthirsty this large...</desc>
+		<speech>
+			<line commander='1026'>The horizon is red with the Blight.  Typhon is inside, but the Bloodthirsty are surrounding the Nexus.</line>
+	<line commander='1042'>Prepare the assault.  Imperial forces on the northeast side are drawing attention from the bulk of the swarm.  We must act now.  Attack!</line>
+
+		</speech>
+		<speechComplete>
+			<line commander='1047'>Yurich, hahaha!  You wish to challenge me for this power?</line>
+	<line commander='1026'>It's not about power, Typhon - it's about our state!  You would kill us all for your own lust and vengeance?</line>
+	<line commander='1047'>It's too late for words, Yurich.  The countdown has started, and there's nothing to stop it.  Eventually, the Nexus will open.  </line>
+	<line commander='1047'>An inferno will consume this land, just like Asphodel.  But in its fires, our country will be reborn - a might yet unseen on this planet.</line>
+	<line commander='1047'>I will close my fist around the Empire and extinguish it's flame!</line>
+		</speechComplete>
+		<deck>
+			<card>131</card>
+			<card>200</card>
+			<card>172</card>
+			<card>205</card>
+			<card>113</card>
+			<card>70</card>
+			<card>70</card>
+			<card>113</card>
+			<card>116</card>
+			<card>231</card>
+			<card>187</card>
+			<card>2012</card>
+			<card>2012</card>
+		</deck>
+		<rewards>
+			<card>200</card>
+		</rewards>
+		<req>77</req><!-- 77 -->
+	</mission>
+	
+	<mission>
+		<id>79</id>
+		<name>Homeland Defenders 1</name>
+		<picture>mission79.jpg</picture>
+		<location_id>8</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>60</x>
+		<y>70</y>
+		<xp>56</xp>
+		<energy>25</energy> <!-- They are all 25 -->
+		<money>1100</money>
+		<commander>1057</commander>
+		<desc>The Raiders have assembled a quick force, they will die to defend their territory.</desc>
+		<speech commander='1026'>
+			<line>Typhon's guard is killing civilians claiming them to be traitors.  We must put an end to their madness!</line>
+		</speech>
+		<deck>
+			<card>59</card>
+			<card>184</card>
+			<card>117</card>
+			<card>221</card>
+			<card>37</card>
+			<card>23</card>
+			<card>91</card>
+			<card>247</card>
+			<card>2024</card>
+			<card>3009</card>
+		</deck>
+		<req>78</req>
+	</mission>
+
+	<mission>
+		<id>80</id>
+		<name>Homeland Defenders 2</name>
+		<picture>mission80.jpg</picture>
+		<location_id>8</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>130</x>
+		<y>130</y>
+		<xp>59</xp>
+		<energy>25</energy>
+		<money>1200</money>
+		<commander>1057</commander>
+		<desc>The Raiders were able to amass a much heavier force, these units won't go down as easy.</desc>
+		<deck>
+			<card>73</card>
+			<card>49</card>
+			<card>121</card>
+			<card>125</card>
+			<card>92</card>
+			<card>102</card>
+			<card>197</card>
+			<card>221</card>
+			<card>50</card>
+			<card>85</card>
+			<card>3017</card>
+			<card>2020</card>
+		</deck>
+		<req>79</req>
+	</mission>
+
+	<mission>
+		<id>81</id>
+		<name>Homeland Defenders 3</name>
+		<picture>mission81.jpg</picture>
+		<location_id>8</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>180</x>
+		<y>160</y>
+		<xp>61</xp>
+		<energy>25</energy>
+		<money>1300</money>
+		<commander>1028</commander>
+		<desc>The Raiders have a new weapon, and it's HUGE!</desc>
+		<deck>
+			<card>73</card>
+			<card>260</card>
+			<card>183</card>
+			<card>85</card>
+			<card>59</card>
+			<card>125</card>
+			<card>105</card>
+			<card>143</card>
+			<card>88</card>
+			<card>37</card>
+			<card>23</card>
+			<card>2021</card>
+			<card>2023</card>
+		</deck>
+		<req>80</req>
+	</mission>
+
+	<mission>
+		<id>82</id>
+		<name>Homeland Defenders 4</name>
+		<picture>mission82.jpg</picture>
+		<location_id>8</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>200</x>
+		<y>60</y>
+		<xp>65</xp>
+		<energy>25</energy>
+		<money>1400</money>
+		<commander>1028</commander>
+		<desc>The last of the Raiders in the area have banded together, this will be a tough battle.</desc>
+		<deck>
+			<card>260</card>
+			<card>247</card>
+			<card>101</card>
+			<card>221</card>
+			<card>189</card>
+			<card>105</card>
+			<card>92</card>
+			<card>37</card>
+			<card>183</card>
+			<card>183</card>
+			<card>85</card>
+			<card>237</card>
+			<card>2021</card>
+			<card>2038</card>
+			<card>2038</card>
+		</deck>
+		<rewards>
+			<card>260</card>
+		</rewards>
+		<req>81</req>
+	</mission>
+	
+	<mission>
+		<id>83</id>
+		<name>Halcyon's Elite 1</name>
+		<picture>mission83.jpg</picture>
+		<location_id>9</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>420</x>
+		<y>220</y>
+		<xp>56</xp>
+		<energy>25</energy>
+		<money>1100</money>
+		<commander>1053</commander>
+		<desc>Large Imperial forces are attempting to block our progress.</desc>
+		<speech commander='1026'>
+			<line>Imperial forces have become entrenched in Sulfuris, and are planning a larger siege on our compounds in Kor.</line>
+		</speech>
+		<deck>
+			<card>246</card>
+			<card>63</card>
+			<card>77</card>
+			<card>84</card>
+			<card>202</card>
+			<card>72</card>
+			<card>175</card>
+			<card>122</card>
+			<card>2013</card>
+			<card>3002</card>
+		</deck>
+		<req>78</req>
+	</mission>
+
+	<mission>
+		<id>84</id>
+		<name>Halcyon's Elite 2</name>
+		<picture>mission84.jpg</picture>
+		<location_id>9</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>360</x>
+		<y>200</y>
+		<xp>59</xp>
+		<energy>25</energy>
+		<money>1200</money>
+		<commander>1053</commander>
+		<desc>More Imperials are coming, they have more units in Sulfuris than the Bloodthirsty!</desc>
+		<deck>
+			<card>192</card>
+			<card>90</card>
+			<card>40</card>
+			<card>220</card>
+			<card>208</card>
+			<card>86</card>
+			<card>175</card>
+			<card>104</card>
+			<card>238</card>
+			<card>18</card>
+			<card>2011</card>
+			<card>2027</card>
+		</deck>
+		<req>83</req>
+	</mission>
+
+	<mission>
+		<id>85</id>
+		<name>Halcyon's Elite 3</name>
+		<picture>mission85.jpg</picture>
+		<location_id>9</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>320</x>
+		<y>250</y>
+		<xp>61</xp>
+		<energy>25</energy>
+		<money>1300</money>
+		<commander>1056</commander>
+		<desc>The weapon prototype must have been completed, it's at the head of the next Imperial force.</desc>
+		<deck>
+			<card>239</card>
+			<card>238</card>
+			<card>259</card>
+			<card>103</card>
+			<card>84</card>
+			<card>246</card>
+			<card>95</card>
+			<card>72</card>
+			<card>122</card>
+			<card>202</card>
+			<card>2019</card>
+			<card>3004</card>
+			<card>3017</card>
+		</deck>
+		<req>84</req>
+	</mission>
+
+	<mission>
+		<id>86</id>
+		<name>Halcyon's Elite 4</name>
+		<picture>mission86.jpg</picture>
+		<location_id>9</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>290</x>
+		<y>170</y>
+		<xp>65</xp>
+		<energy>25</energy>
+		<money>1400</money>
+		<commander>1056</commander>
+		<desc>All the Imperials searching Sulfuris have come together, be prepared!</desc>
+		<deck>
+			<card>186</card>
+			<card>89</card>
+			<card>103</card>
+			<card>39</card>
+			<card>220</card>
+			<card>80</card>
+			<card>239</card>
+			<card>122</card>
+			<card>86</card>
+			<card>259</card>
+			<card>208</card>
+			<card>192</card>
+			<card>22</card>
+			<card>2011</card>
+			<card>2014</card>
+		</deck>
+		<rewards>
+			<card>259</card>
+		</rewards>
+		<req>85</req>
+	</mission>
+
+	<mission>
+		<id>87</id>
+		<name>Creature Combo 1</name>
+		<picture>mission87.jpg</picture>
+		<location_id>11</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>400</x>
+		<y>320</y>
+		<xp>56</xp>
+		<energy>25</energy>
+		<money>1100</money>
+		<commander>1030</commander>
+		<desc>Both the Bloodthirsty and Xenos would rather destroy you before fighting each other.</desc>
+		<speech commander='1026'>
+			<line>Something strange is happening - the Bloodthirsty and some Xeno units are moving in on our position... together!</line>
+		</speech>
+		<deck>
+			<card>27</card>
+			<card>204</card>
+			<card>131</card>
+			<card>178</card>
+			<card>206</card>
+			<card>30</card>
+			<card>126</card>
+			<card>231</card>
+			<card>187</card>
+			<card>3018</card>
+		</deck>
+		<req>78</req>
+	</mission>
+
+	<mission>
+		<id>88</id>
+		<name>Creature Combo 2</name>
+		<picture>mission88.jpg</picture>
+		<location_id>11</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>430</x>
+		<y>260</y>
+		<xp>59</xp>
+		<energy>25</energy>
+		<money>1200</money>
+		<commander>1030</commander>
+		<desc>As long as we are the ones resisting both groups will identify us as the threat.</desc>
+		<deck>
+			<card>152</card>
+			<card>153</card>
+			<card>41</card>
+			<card>30</card>
+			<card>249</card>
+			<card>200</card>
+			<card>181</card>
+			<card>172</card>
+			<card>113</card>
+			<card>206</card>
+			<card>2005</card>
+			<card>2032</card>
+		</deck>
+		<req>87</req>
+	</mission>
+
+	<mission>
+		<id>89</id>
+		<name>Creature Combo 3</name>
+		<picture>mission89.jpg</picture>
+		<location_id>11</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>480</x>
+		<y>200</y>
+		<xp>61</xp>
+		<energy>25</energy>
+		<money>1300</money>
+		<commander>1039</commander>
+		<desc>I've never seen a Bloodthirsty like that before, it fights like a Xeno!</desc>
+		<deck>
+			<card>172</card>
+			<card>112</card>
+			<card>248</card>
+			<card>111</card>
+			<card>225</card>
+			<card>200</card>
+			<card>134</card>
+			<card>222</card>
+			<card>213</card>
+			<card>41</card>
+			<card>99</card>
+			<card>209</card>
+			<card>2034</card>
+		</deck>
+		<req>88</req>
+	</mission>
+
+	<mission>
+		<id>90</id>
+		<name>Creature Combo 4</name>
+		<picture>mission90.jpg</picture>
+		<location_id>11</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>380</x>
+		<y>120</y>
+		<xp>65</xp>
+		<energy>25</energy>
+		<money>1400</money>
+		<commander>1039</commander>
+		<desc>Both Xeno and Bloodthirsty are sending all they got, fight for your lives!</desc>
+		<deck>
+			<card>212</card>
+			<card>156</card>
+			<card>173</card>
+			<card>152</card>
+			<card>161</card>
+			<card>41</card>
+			<card>111</card>
+			<card>205</card>
+			<card>231</card>
+			<card>204</card>
+			<card>169</card>
+			<card>116</card>
+			<card>187</card>
+			<card>2035</card>
+			<card>2031</card>
+		</deck>
+		<rewards>
+			<card>225</card>
+		</rewards>
+		<req>89</req>
+	</mission>
+	
+	<!-- 1st Area - 6 Missions -->
+
+	<mission>
+		<id>91</id>
+		<name>Mission 67</name>
+		<picture>mission91.jpg</picture>
+		<location_id>12</location_id>
+		<num_to_complete>5</num_to_complete>
+		<x>80</x>
+		<y>160</y>
+		<xp>26</xp> <!-- ~2.2 -->
+		<energy>12</energy> <!-- 12 -->
+		<money>500</money> <!-- ~10.5 GPE -->
+		<rep faction='8' amount='4' />
+		<commander>1023</commander>
+		<desc>The air around is crippling. Your units may go down easier.</desc>
+		<speech>
+			<line commander='1042'>Commander! I’m glad you are alright; I only awoke moments before you. </line>
+	<line commander='1042'>I’ve heard of this place, this is Tartarus.  The Nexus must have warped us here, but I have no idea where Yurich is. </line>
+	<line commander='1042'>Bloodthirsty are approaching! I’m sure you feel as weak as I do, but we must fight them off. </line>
+		</speech>
+		<deck>
+			<card>297</card>
+			<card>265</card>
+			<card>265</card>
+			<card>266</card>
+			<card>280</card>
+			<card>113</card>
+			<card>116</card>
+			<card>172</card>
+			<card>2055</card>
+			<card>3025</card>
+		</deck>
+		<rewards>
+			<card>265</card>
+		</rewards>
+		<req>78</req>
+	</mission>
+
+	<mission>
+		<id>92</id>
+		<name>Mission 68</name>
+		<picture>mission92.jpg</picture>
+		<location_id>12</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>190</x>
+		<y>200</y>
+		<xp>27</xp> <!-- ~2.23 -->
+		<energy>12</energy> <!-- 12 -->
+		<money>525</money> <!-- ~10.8 GPE -->
+		<rep faction='8' amount='5' />
+		<commander>1023</commander>
+		<desc>The Bloodthirsty are aware of us and are taking advantage of our weakened state.</desc>
+		<speech>
+			<line commander='1042'>I realized why we are so weak. It’s the atmosphere, it’s thick and poisonous. The Bloodthirsty seem to be attracted to our decaying flesh.</line>
+		</speech>
+		<deck>
+			<card>251</card>
+			<card>265</card>
+			<card>278</card>
+			<card>299</card>
+			<card>262</card>
+			<card>279</card>
+			<card>204</card>
+			<card>111</card>
+			<card>2049</card>
+			<card>3026</card>
+		</deck>
+		<rewards>
+			<card>278</card>
+		</rewards>
+		<req>91</req>
+	</mission>
+
+	<mission>
+		<id>93</id>
+		<name>Mission 69</name>
+		<picture>mission93.jpg</picture>
+		<location_id>12</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>280</x>
+		<y>200</y>
+		<xp>32</xp> <!-- ~2.28 -->
+		<energy>14</energy> <!-- 14 -->
+		<money>625</money> <!-- ~11.2 GPE -->
+		<rep faction='8' amount='5' />
+		<commander>1085</commander>
+		<desc>Halcyon's men are brave and will fight through any obstacle.</desc>
+		<speech>
+			<line commander='1042'>Halcyon’s forces weren’t anywhere near the Nexus.  Halcyon must have sent them through.  He’s sending his own soldiers to die!</line>
+			<line commander='1083'>The Traitors! They must be assisting Typhon, kill them while they are weak.</line>
+		</speech>
+		<deck>
+			<card>281</card>
+			<card>304</card>
+			<card>269</card>
+			<card>283</card>
+			<card>283</card>
+			<card>282</card>
+			<card>90</card>
+			<card>2057</card>
+			<card>2019</card>
+			<card>2054</card>
+		</deck>
+		<rewards>
+			<card>269</card>
+		</rewards>
+		<req>92</req>
+	</mission>
+
+	<mission>
+		<id>94</id>
+		<name>Mission 70</name>
+		<picture>mission94.jpg</picture>
+		<location_id>12</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>330</x>
+		<y>130</y>
+		<xp>35</xp> <!-- ~2.31 -->
+		<energy>15</energy> <!-- 15 -->
+		<money>675</money> <!-- ~11.4 GPE -->
+		<rep faction='8' amount='6' />
+		<commander>1084</commander>
+		<desc>The Bloodthirsty are spreading out and attacking in wide ranges.</desc>
+		<speech>
+			<line commander='1042'>Lucina was a fool to underestimate us; we will catch up with her later.</line>
+			<line commander='1042'>Those suits they were wearing must protect them from the atmosphere. Enough of them are intact to protect our troops!</line>
+		</speech>
+		<deck>
+			<card>279</card>
+			<card>296</card>
+			<card>46</card>
+			<card>262</card>
+			<card>295</card>
+			<card>295</card>
+			<card>292</card>
+			<card>248</card>
+			<card>70</card>
+			<card>2052</card>
+		</deck>
+		<rewards>
+			<card>295</card>
+		</rewards>
+		<req>93</req>
+	</mission>
+
+	<mission>
+		<id>95</id>
+		<name>Mission 71</name>
+		<picture>mission95.jpg</picture>
+		<location_id>12</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>360</x>
+		<y>270</y>
+		<xp>37</xp> <!-- ~2.33 -->
+		<energy>16</energy> <!-- 16 -->
+		<money>750</money> <!-- ~11.8 GPE -->
+		<rep faction='8' amount='7' />
+		<commander>1084</commander>
+		<desc>They are surrounding us in swarms. Push through!</desc>
+		<speech>
+			<line commander='1042'>Ha! These suits are great! The Bloodthirsty are no match for us now.</line>
+			<line commander='1042'>Lucina mentioned Typhon, I should have known he would be here, but I can’t imagine what he could want.  Either way we must stop him!</line>
+		</speech>
+		<deck>
+			<card>303</card>
+			<card>289</card>
+			<card>296</card>
+			<card>292</card>
+			<card>299</card>
+			<card>113</card>
+			<card>111</card>
+			<card>225</card>
+			<card>205</card>
+			<card>2052</card>
+			<card>3024</card>
+		</deck>
+		<rewards>
+			<card>292</card>
+		</rewards>
+		<req>94</req>
+	</mission>
+
+	<mission>
+		<id>96</id>
+		<name>Mission 72</name>
+		<picture>mission96.jpg</picture>
+		<location_id>12</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>430</x>
+		<y>200</y>
+		<xp>40</xp> <!-- ~2.36 -->
+		<energy>17</energy> <!-- 17 -->
+		<money>825</money> <!-- ~12 GPE -->
+		<rep faction='8' amount='8' />
+		<commander>1084</commander>
+		<desc>We just need to get through this last mass of Bloodthirsty and we will make it through.</desc>
+		<speech>
+			<line commander='1042'>The Bloodthirsty are becoming much more aggressive.  They must not want us to venture deeper into Tartarus.</line>
+		</speech>
+		<deck>
+			<card>263</card>
+			<card>279</card>
+			<card>262</card>
+			<card>265</card>
+			<card>231</card>
+			<card>69</card>
+			<card>111</card>
+			<card>116</card>
+			<card>187</card>
+			<card>217</card>
+			<card>2031</card>
+			<card>2052</card>
+		</deck>
+		<rewards>
+			<card>262</card>
+		</rewards>
+		<req>95</req>
+	</mission>
+
+<!-- 2nd Area - 7 Missions -->
+
+	<mission>
+		<id>97</id>
+		<name>Mission 73</name>
+		<picture>mission97.jpg</picture>
+		<location_id>13</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>40</x>
+		<y>160</y>
+		<xp>30</xp> <!-- ~2.32 -->
+		<energy>13</energy> <!-- 13 -->
+		<money>600</money> <!-- ~11.6 GPE -->
+		<rep faction='8' amount='9' />
+		<commander>1086</commander>
+		<desc>Raiders have also set up in Tartarus. Whatever their plan is we can't let them succeed.</desc>
+		<speech>
+			<line commander='1041'>Typhon, we have retrieved the data you requested, sending it now. I only hope it will be enough to access the power within.</line>
+			<line commander='1041'>Intruders! Send back up. We will hold them off.</line>
+		</speech>
+		<deck>
+			<card>270</card>
+			<card>276</card>
+			<card>272</card>
+			<card>301</card>
+			<card>121</card>
+			<card>143</card>
+			<card>125</card>
+			<card>183</card>
+			<card>2038</card>
+			<card>2056</card>
+		</deck>
+		<rewards>
+			<card>2057</card>
+		</rewards>
+		<req>96</req>
+	</mission>
+
+	<mission>
+		<id>98</id>
+		<name>Mission 74</name>
+		<picture>mission98.jpg</picture>
+		<location_id>13</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>140</x>
+		<y>210</y>
+		<xp>33</xp> <!-- ~2.36 -->
+		<energy>14</energy> <!-- 14 -->
+		<money>675</money> <!-- ~12 GPE -->
+		<rep faction='8' amount='10' />
+		<commander>1084</commander>
+		<desc>The Bloodthirsty were preparing to take out the Raider encampment we just came from. Now we have to deal with them!</desc>
+		<speech>
+			<line commander='1042'>It was too bad we couldn’t get more information before we were spotted. We will have to look for clues about this data Barracus mentioned.</line>
+		</speech>
+		<deck>
+			<card>267</card>
+			<card>207</card>
+			<card>44</card>
+			<card>115</card>
+			<card>169</card>
+			<card>205</card>
+			<card>296</card>
+			<card>46</card>
+			<card>251</card>
+			<card>2055</card>
+		</deck>
+		<rewards>
+			<card>1083</card>
+		</rewards>
+		<req>97</req>
+	</mission>
+
+	<mission>
+		<id>99</id>
+		<name>Mission 75</name>
+		<picture>mission99.jpg</picture>
+		<location_id>13</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>240</x>
+		<y>250</y>
+		<xp>36</xp> <!-- ~2.4 -->
+		<energy>15</energy> <!-- 15 -->
+		<money>725</money> <!-- ~12.3 GPE -->
+		<rep faction='8' amount='11' />
+		<commander>1084</commander>
+		<desc>Tartarus is making the Bloodthirsty even more powerful, they have found ways to deflect our attacks back at us!</desc>
+		<speech>
+			<line commander='1042'>The air reeks of death. I can smell it even through our suits. We must be careful because we may not be able to survive deeper into Tartarus.</line>
+		</speech>
+		<deck>
+			<card>264</card>
+			<card>273</card>
+			<card>298</card>
+			<card>303</card>
+			<card>302</card>
+			<card>70</card>
+			<card>116</card>
+			<card>172</card>
+			<card>187</card>
+			<card>3025</card>
+		</deck>
+		<rewards>
+			<card>264</card>
+		</rewards>
+		<req>98</req>
+	</mission>
+
+	<mission>
+		<id>100</id>
+		<name>Mission 76</name>
+		<picture>mission100.jpg</picture>
+		<location_id>13</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>250</x>
+		<y>120</y>
+		<xp>37</xp> <!-- ~2.46 -->
+		<energy>15</energy> <!-- 15 -->
+		<money>750</money> <!-- ~12.5 GPE -->
+		<rep faction='8' amount='12' />
+		<commander>1084</commander>
+		<desc>Be careful with how you choose to attack them because it could come back to haunt us.</desc>
+		<speech>
+			<line commander='1042'>It seems like the Raiders have been mining. If they found anything they must have taken it because I don’t see anything special.</line>
+		</speech>
+		<deck>
+			<card>279</card>
+			<card>293</card>
+			<card>131</card>
+			<card>264</card>
+			<card>264</card>
+			<card>204</card>
+			<card>200</card>
+			<card>231</card>
+			<card>3026</card>
+			<card>2025</card>
+		</deck>
+		<rewards>
+			<card>275</card>
+		</rewards>
+		<req>99</req>
+	</mission>
+
+	<mission>
+		<id>101</id>
+		<name>Mission 77</name>
+		<picture>mission101.jpg</picture>
+		<location_id>13</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>340</x>
+		<y>140</y>
+		<xp>40</xp> <!-- ~2.49 -->
+		<energy>16</energy> <!-- 16 -->
+		<money>825</money> <!-- ~12.5 GPE -->
+		<rep faction='8' amount='13' />
+		<commander>1084</commander>
+		<desc>They are sucking the life out of fallen comrades.</desc>
+		<speech>
+			<line commander='1042'>The atmosphere is getting even thicker; it’s almost impossible to see.  The shadows! The Bloodthirsty are trying to ambush us!</line>
+		</speech>
+		<deck>
+			<card>303</card>
+			<card>24</card>
+			<card>109</card>
+			<card>57</card>
+			<card>116</card>
+			<card>113</card>
+			<card>187</card>
+			<card>181</card>
+			<card>292</card>
+			<card>279</card>
+		</deck>
+		<rewards>
+			<card>2055</card>
+		</rewards>
+		<req>100</req>
+	</mission>
+
+	<mission>
+		<id>102</id>
+		<name>Mission 78</name>
+		<picture>mission102.jpg</picture>
+		<location_id>13</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>360</x>
+		<y>200</y>
+		<xp>45</xp> <!-- ~2.52 -->
+		<energy>18</energy> <!-- 18 -->
+		<money>925</money> <!-- ~12.8 GPE -->
+		<rep faction='8' amount='14' />
+		<commander>1086</commander>
+		<desc>More Raiders have appeared to avenge their fallen brothers.</desc>
+		<speech>
+			<line commander='1042'>I think I can see an opening through the thickness. I hope it clears up because I don’t think I can stand this much longer.</line>
+			<line commander='1042'>The Raiders back-up is coming. And they don’t look too happy to see us.</line>
+		</speech>
+		<deck>
+			<card>270</card>
+			<card>183</card>
+			<card>221</card>
+			<card>92</card>
+			<card>285</card>
+			<card>284</card>
+			<card>301</card>
+			<card>290</card>
+			<card>198</card>
+			<card>3027</card>
+			<card>2023</card>
+		</deck>
+		<rewards>
+			<card>272</card>
+		</rewards>
+		<req>101</req>
+	</mission>
+
+	<mission>
+		<id>103</id>
+		<name>Mission 79</name>
+		<picture>mission103.jpg</picture>
+		<location_id>13</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>470</x>
+		<y>190</y>
+		<xp>49</xp> <!-- ~2.55 -->
+		<energy>19</energy> <!-- 19 -->
+		<money>1000</money> <!-- ~13.2 GPE -->
+		<rep faction='8' amount='15' />
+		<commander>1087</commander>
+		<desc>We are surrounded by Bloodthirsty and they are going to strike fast.</desc>
+		<speech>
+			<line commander='1042'>Wait here Commander. The atmosphere seems to have cleared up, but the next area is covered in acid that is setting off its own gases.</line>
+			<line commander='1042'>I’m not sure we can survive even with our current equipment.</line>
+			<line commander='1042'>Bloodthirsty are coming up from behind! There are too many of them. No time to worry about the unknown, retreat into the opening.</line>
+			<line commander='1042'>They lead us into a trap, more Bloodthirsty were waiting for us. We must make a stand!</line>
+		</speech>
+		<deck>
+			<card>293</card>
+			<card>289</card>
+			<card>111</card>
+			<card>135</card>
+			<card>169</card>
+			<card>217</card>
+			<card>172</card>
+			<card>200</card>
+			<card>187</card>
+			<card>273</card>
+			<card>113</card>
+			<card>2049</card>
+		</deck>
+		<rewards>
+			<card>46</card>
+		</rewards>
+		<req>102</req>
+	</mission>
+
+<!-- 3rd Area - 6 Missions -->
+
+	<mission>
+		<id>104</id>
+		<name>Mission 80</name>
+		<picture>mission104.jpg</picture>
+		<location_id>14</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>60</x>
+		<y>80</y>
+		<xp>35</xp> <!-- ~2.5 -->
+		<energy>14</energy> <!-- 14 -->
+		<money>700</money> <!-- ~12.5 GPE -->
+		<rep faction='9' amount='4' />
+		<commander>1085</commander>
+		<desc>The Imperials came expecting to fight Bloodthirsty, but will settle for destroying you.</desc>
+		<speech>
+			<line commander='1042'>I can’t believe we made it out of that alive. At least we know we can survive here, but I would still stay away from the acid.</line>
+			<line commander='1083'>Thanks for clearing out that horde of Bloodthirsty for us and confirming we can survive this deep into Tartarus. You have outlived your worth.</line>
+		</speech>
+		<deck>
+			<card>271</card>
+			<card>277</card>
+			<card>269</card>
+			<card>246</card>
+			<card>269</card>
+			<card>304</card>
+			<card>40</card>
+			<card>95</card>
+			<card>2057</card>
+			<card>2011</card>
+		</deck>
+		<rewards>
+			<card>277</card>
+		</rewards>
+		<req>103</req>
+	</mission>
+
+	<mission>
+		<id>105</id>
+		<name>Mission 81</name>
+		<picture>mission105.jpg</picture>
+		<location_id>14</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>120</x>
+		<y>100</y>
+		<xp>38</xp> <!-- ~2.53 -->
+		<energy>15</energy> <!-- 15 -->
+		<money>775</money> <!-- ~12.8 GPE -->
+		<rep faction='9' amount='6' />
+		<commander>1087</commander>
+		<desc>The Bloodthirsty could smell the Imperial from a mile away, but found you instead.</desc>
+		<speech>
+			<line commander='1042'>Is the ground moving? It feels like a pulse. The sooner we can get out of here the better. But we are going to have to fight some Bloodthirsty along the way.</line>
+		</speech>
+		<deck>
+			<card>278</card>
+			<card>278</card>
+			<card>248</card>
+			<card>70</card>
+			<card>113</card>
+			<card>225</card>
+			<card>296</card>
+			<card>273</card>
+			<card>280</card>
+			<card>3024</card>
+		</deck>
+		<rewards>
+			<card>286</card>
+		</rewards>
+		<req>104</req>
+	</mission>
+
+	<mission>
+		<id>106</id>
+		<name>Mission 82</name>
+		<picture>mission106.jpg</picture>
+		<location_id>14</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>160</x>
+		<y>180</y>
+		<xp>41</xp> <!-- ~2.57 -->
+		<energy>16</energy> <!-- 16 -->
+		<money>850</money> <!-- ~13.1 GPE -->
+		<rep faction='9' amount='7' />
+		<commander>1087</commander>
+		<desc>The Bloodthirsty are attacking furiously!</desc>
+		<speech>
+			<line commander='1042'>This place is alive! There are veins coming out of the ground. They are pumping the acid through to spores and geysers.</line>
+			<line commander='1042'>The Raiders have been harvesting the acid. Maybe Typhon is trying to weaponize it? Either way he must be close to his goal, we have to hurry.</line>
+		</speech>
+		<deck>
+			<card>62</card>
+			<card>200</card>
+			<card>181</card>
+			<card>231</card>
+			<card>111</card>
+			<card>70</card>
+			<card>262</card>
+			<card>298</card>
+			<card>2032</card>
+			<card>2051</card>
+		</deck>
+		<rewards>
+			<card>1005</card>
+		</rewards>
+		<req>105</req>
+	</mission>
+
+	<mission>
+		<id>107</id>
+		<name>Mission 83</name>
+		<picture>mission107.jpg</picture>
+		<location_id>14</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>220</x>
+		<y>260</y>
+		<xp>44</xp> <!-- ~2.6 -->
+		<energy>16</energy> <!-- 16 -->
+		<money>900</money> <!-- ~13.3 GPE -->
+		<rep faction='9' amount='8' />
+		<commander>1090</commander>
+		<desc>These are some of the Raiders most elite units, ordered to protect Typhon, they will be tough.</desc>
+		<speech>
+			<line commander='1042'>This must be what Typhon was looking for, the veins all lead back to this Monstrosity, but what is it!</line>
+			<line commander='1047'>The base of this beautiful creation leads directly to all the power I will ever need.</line>
+			<line commander='1047'>And you are too late to stop me! Barracus will take care of you now.</line>
+		</speech>
+		<deck>
+			<card>105</card>
+			<card>215</card>
+			<card>247</card>
+			<card>270</card>
+			<card>285</card>
+			<card>301</card>
+			<card>260</card>
+			<card>102</card>
+			<card>23</card>
+			<card>2046</card>
+		</deck>
+		<rewards>
+			<card>285</card>
+		</rewards>
+		<req>106</req>
+	</mission>
+
+	<mission>
+		<id>108</id>
+		<name>Mission 84</name>
+		<picture>mission108.jpg</picture>
+		<location_id>14</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>320</x>
+		<y>280</y>
+		<xp>48</xp> <!-- ~2.64 -->
+		<energy>18</energy> <!-- 18 -->
+		<money>975</money> <!-- ~13.5 GPE -->
+		<rep faction='9' amount='9' />
+		<commander>1088</commander>
+		<desc>The Bloodthirsty are becoming more aggressive and will do anything to prevent you from proceeding further.</desc>
+		<speech>
+			<line commander='1042'>I’ve learned from Barracus that Typhon intends to absorb the power of Tartarus from the core.</line>
+			<line commander='1042'>When he does, everything in Tartarus will collapse upon itself and destroy everything inside, or worse warp everything back to Acheron.</line>
+		</speech>
+		<deck>
+			<card>109</card>
+			<card>115</card>
+			<card>296</card>
+			<card>70</card>
+			<card>225</card>
+			<card>201</card>
+			<card>200</card>
+			<card>292</card>
+			<card>263</card>
+			<card>3004</card>
+			<card>2012</card>
+		</deck>
+		<rewards>
+			<card>2052</card>
+		</rewards>
+		<req>107</req>
+	</mission>
+
+	<mission>
+		<id>109</id>
+		<name>Mission 85</name>
+		<picture>mission109.jpg</picture>
+		<location_id>14</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>460</x>
+		<y>320</y>
+		<xp>54</xp> <!-- ~2.7 -->
+		<energy>20</energy> <!-- 20 -->
+		<money>1100</money> <!-- ~14.0 GPE -->
+		<rep faction='9' amount='10' />
+		<commander>1089</commander>
+		<desc>The Imperials were only toying with you before, now they are intent on stopping you.</desc>
+		<speech>
+			<line commander='1042'>The Bloodthirsty are merely a distraction, we must stop Typhon!</line>
+			<line commander='1083'>They are the least of your problems.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1042'>This is pointless, we are both trying to stop Typhon. Right now we are just wasting time while he plots to destroy Acheron!</line>
+			<line commander='1083'>And how do you expect us to trust a group of traitors.</line>
+			<line commander='1042'>How should we trust anyone who is foolish enough to continue following Halcyon? He has become as corrupt and power-hungry as Typhon.</line>
+			<line commander='1042'>What was that explosion!? Enough of this, head for the core.</line>
+		</speechComplete>
+		<deck>
+			<card>282</card>
+			<card>283</card>
+			<card>304</card>
+			<card>281</card>
+			<card>220</card>
+			<card>259</card>
+			<card>86</card>
+			<card>95</card>
+			<card>89</card>
+			<card>72</card>
+			<card>3027</card>
+			<card>2057</card>
+		</deck>
+		<rewards>
+			<card>283</card>
+		</rewards>
+		<req>108</req>
+	</mission>
+
+<!-- 4th Area - 5 Missions -->
+
+	<mission>
+		<id>110</id>
+		<name>Mission 86</name>
+		<picture>mission110.jpg</picture>
+		<location_id>15</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>50</x>
+		<y>290</y>
+		<xp>43</xp> <!-- ~2.66 -->
+		<energy>16</energy> <!-- 16 -->
+		<money>850</money> <!-- ~13.4 GPE -->
+		<rep faction='9' amount='11' />
+		<commander>1088</commander>
+		<desc>The Bloodthirsty are not sending everything to attack you, some are hanging back to protect the core.</desc>
+		<speech>
+			<line commander='1083'>If you are sincere about stopping Typhon then I will give you a chance, but I don’t trust being anywhere near you. We split up.</line>
+			<line commander='1042'>I couldn’t agree more.</line>
+			<line commander='1042'>Great, as soon as Lucina leaves we are the ones being attacked by Bloodthirsty. I only hope she has run into bigger problems than us.</line>
+		</speech>
+		<deck>
+			<card>289</card>
+			<card>273</card>
+			<card>276</card>
+			<card>293</card>
+			<card>172</card>
+			<card>135</card>
+			<card>217</card>
+			<card>115</card>
+			<card>3005</card>
+			<card>2012</card>
+		</deck>
+		<rewards>
+			<card>299</card>
+		</rewards>
+		<req>109</req>
+	</mission>
+
+	<mission>
+		<id>111</id>
+		<name>Mission 87</name>
+		<picture>mission111.jpg</picture>
+		<location_id>15</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>120</x>
+		<y>190</y>
+		<xp>49</xp> <!-- ~2.69 -->
+		<energy>18</energy> <!-- 18 -->
+		<money>1000</money> <!-- ~13.8 GPE -->
+		<rep faction='9' amount='12' />
+		<commander>1088</commander>
+		<desc>The closer we get to the core, the more Bloodthirsty are going to attack us.</desc>
+		<speech>
+			<line commander='1042'>I don’t see Typhon anywhere. We should stay away from the core for as long as possible. Typhon may have done something to make it unstable.</line>
+		</speech>
+		<deck>
+			<card>231</card>
+			<card>205</card>
+			<card>279</card>
+			<card>201</card>
+			<card>204</card>
+			<card>262</card>
+			<card>116</card>
+			<card>97</card>
+			<card>2031</card>
+			<card>2051</card>
+		</deck>
+		<rewards>
+			<card>2053</card>
+		</rewards>
+		<req>110</req>
+	</mission>
+
+	<mission>
+		<id>112</id>
+		<name>Mission 88</name>
+		<picture>mission112.jpg</picture>
+		<location_id>15</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>170</x>
+		<y>120</y>
+		<xp>52</xp> <!-- ~2.72 -->
+		<energy>19</energy> <!-- 19 -->
+		<money>1075</money> <!-- ~14.0 GPE -->
+		<rep faction='9' amount='13' />
+		<commander>1088</commander>
+		<desc>Bloodthirsty coming from above, they are enormous!</desc>
+		<speech>
+			<line commander='1042'>The Bloodthirsty are sacrificing themselves to keep us away from the core; it is almost as if more than their lives depends on maintaining it.</line>
+		</speech>
+		<deck>
+			<card>116</card>
+			<card>289</card>
+			<card>111</card>
+			<card>135</card>
+			<card>262</card>
+			<card>273</card>
+			<card>296</card>
+			<card>264</card>
+			<card>265</card>
+			<card>2031</card>
+			<card>3024</card>
+		</deck>
+		<rewards>
+			<card>3027</card>
+		</rewards>
+		<req>111</req>
+	</mission>
+
+	<mission>
+		<id>113</id>
+		<name>Mission 89</name>
+		<picture>mission113.jpg</picture>
+		<location_id>15</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>230</x>
+		<y>150</y>
+		<xp>55</xp> <!-- ~2.76 -->
+		<energy>20</energy> <!-- 20 -->
+		<money>1125</money> <!-- ~14.2 GPE -->
+		<rep faction='9' amount='14' />
+		<commander>1088</commander>
+		<desc>We must defeat these Bloodthirsty quickly.</desc>
+		<speech>
+			<line commander='1042'>Typhon! He is heading directly for the core!</line>
+			<line commander='1083'>We’re pinned down over here. Do whatever it takes to stop Typhon!</line>
+		</speech>
+		<deck>
+			<card>266</card>
+			<card>292</card>
+			<card>296</card>
+			<card>298</card>
+			<card>279</card>
+			<card>70</card>
+			<card>62</card>
+			<card>169</card>
+			<card>204</card>
+			<card>308</card>
+			<card>3005</card>
+			<card>2051</card>
+		</deck>
+		<rewards>
+			<card>282</card>
+		</rewards>
+		<req>112</req>
+	</mission>
+
+	<mission>
+		<id>114</id>
+		<name>Mission 90</name>
+		<picture>mission114.jpg</picture>
+		<location_id>15</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>270</x>
+		<y>200</y>
+		<xp>62</xp> <!-- ~2.76 -->
+		<energy>22</energy> <!-- 22 -->
+		<money>1275</money> <!-- ~14.2 GPE -->
+		<rep faction='9' amount='15' />
+		<commander>1088</commander>
+		<desc>This is the Bloodthirsty's last stand to stop you from reaching the core. Destroy them and you will reach Typhon!</desc>
+		<speech>
+			<line commander='1042'>I don’t understand why the Bloodthirsty are ignoring Typhon, if he succeeds he may destroy them all!</line>
+		</speech>
+		<speechComplete>
+			<line commander='1042'>Typhon has made it to the core and is being engulfed by the red glowing light emitting from it. There may still be time to stop him. Fire everything!</line>
+			<line commander='1047'>Ha! You fools! Your attacks are useless against me now. My power is beyond limits and will be the end of you all. (The light surrounding Typhon expands out in a burst and then everything fades to darkness.</line>
+		</speechComplete>
+		<deck>
+			<card>293</card>
+			<card>279</card>
+			<card>296</card>
+			<card>263</card>
+			<card>113</card>
+			<card>111</card>
+			<card>262</card>
+			<card>273</card>
+			<card>292</card>
+			<card>231</card>
+			<card>69</card>
+			<card>2031</card>
+			<card>2052</card>
+		</deck>
+		<rewards>
+			<card>293</card>
+		</rewards>
+		<req>113</req>
+	</mission>
+	
+	<!-- Blight Side Missions -->
+	
+	<mission>
+		<id>115</id>
+		<name>Displaced Raiders 1</name>
+		<picture>mission115.jpg</picture>
+		<location_id>12</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>380</x>
+		<y>150</y>
+		<xp>55</xp>
+		<energy>25</energy>
+		<money>1150</money>
+		<commander>1091</commander>
+		<desc>Their anger is making them aggressive, perhaps too aggressive.</desc>
+		<speech>
+			<line commander='1086'>There! Those are the ones responsible for Yurich's death! Destroy them!</line>
+		</speech>
+		<deck>
+			<card>254</card>
+			<card>270</card>
+			<card>247</card>
+			<card>215</card>
+			<card>285</card>
+			<card>290</card>
+			<card>47</card>
+			<card>101</card>
+			<card>125</card>
+			<card>2046</card>
+		</deck>
+		<req>114</req>
+	</mission>
+	
+	<mission>
+		<id>116</id>
+		<name>Displaced Raiders 2</name>
+		<picture>mission116.jpg</picture>
+		<location_id>12</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>360</x>
+		<y>190</y>
+		<xp>60</xp>
+		<energy>25</energy>
+		<money>1250</money>
+		<commander>1091</commander>
+		<desc>Overwhelming them with numbers will only inspire them to fight harder.</desc>
+		<speech>
+			<line commander='1042'>The Raiders are too stubborn to ever believe we were aligned with Yurich.</line>
+			<line commander='1042'>If Yurich is dead we must find his killer. He may have information on Typhon.</line>
+		</speech>
+		<deck>
+			<card>285</card>
+			<card>284</card>
+			<card>301</card>
+			<card>301</card>
+			<card>183</card>
+			<card>73</card>
+			<card>23</card>
+			<card>189</card>
+			<card>92</card>
+			<card>143</card>
+			<card>2056</card>
+			<card>3027</card>
+		</deck>
+		<req>115</req>
+	</mission>
+	
+	<mission>
+		<id>117</id>
+		<name>Displaced Raiders 3</name>
+		<picture>mission117.jpg</picture>
+		<location_id>12</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>320</x>
+		<y>220</y>
+		<xp>65</xp>
+		<energy>25</energy>
+		<money>1350</money>
+		<commander>1092</commander>
+		<desc>They may hit hard, but their actions are slow.</desc>
+		<speech>
+			<line commander='1078'>That's them! I saw Yurich myself right before they hurled him over the cliff edge.</line>
+			<line commander='1042'>Still being accused. At least we know where to look now.</line>
+		</speech>
+		<deck>
+			<card>321</card>
+			<card>270</card>
+			<card>121</card>
+			<card>58</card>
+			<card>237</card>
+			<card>260</card>
+			<card>247</card>
+			<card>272</card>
+			<card>125</card>
+			<card>43</card>
+			<card>105</card>
+			<card>3011</card>
+			<card>2020</card>
+		</deck>
+		<req>116</req>
+	</mission>
+
+	<mission>
+		<id>118</id>
+		<name>Displaced Raiders 4</name>
+		<picture>mission118.jpg</picture>
+		<location_id>12</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>280</x>
+		<y>270</y>
+		<xp>70</xp>
+		<energy>25</energy>
+		<money>1450</money>
+		<commander>1092</commander>
+		<desc>The enemy forces are assembling quicker, they will not sit around while we attack any longer.</desc>
+		<speech>
+			<line commander='1042'>This should be the area... Yurich's badge! he left a note for us.</line>
+			<line commander='1042'>Katana - Had to disappear, more going on than we know. - Yurich</line>
+			<line commander='1042'>P.S. You may need to fight some of my comrades.</line>
+		</speech>
+		<deck>
+			<card>321</card>
+			<card>290</card>
+			<card>254</card>
+			<card>91</card>
+			<card>247</card>
+			<card>105</card>
+			<card>143</card>
+			<card>92</card>
+			<card>198</card>
+			<card>47</card>
+			<card>183</card>
+			<card>59</card>
+			<card>301</card>
+			<card>2021</card>
+			<card>3022</card>
+		</deck>
+		<rewards>
+			<card>321</card>
+		</rewards>
+		<req>117</req>
+	</mission>
+
+	<mission>
+		<id>119</id>
+		<name>Corrupted Forces 1</name>
+		<picture>mission119.jpg</picture>
+		<location_id>13</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>210</x>
+		<y>290</y>
+		<xp>55</xp>
+		<energy>25</energy>
+		<money>1150</money>
+		<commander>1093</commander>
+		<desc>The units are powerful but mostly divided. Careful of the units that may help all units</desc>
+		<speech>
+			<line commander='1042'>Raiders, Imperials and Bloodthirsty! There is no way we can sneak by them we have to fight.</line>
+		</speech>
+		<deck>
+			<card>40</card>
+			<card>304</card>
+			<card>183</card>
+			<card>301</card>
+			<card>245</card>
+			<card>221</card>
+			<card>263</card>
+			<card>56</card>
+			<card>279</card>
+			<card>2010</card>
+		</deck>
+		<req>114</req>
+	</mission>
+
+	<mission>
+		<id>120</id>
+		<name>Corrupted Forces 2</name>
+		<picture>mission120.jpg</picture>
+		<location_id>13</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>310</x>
+		<y>280</y>
+		<xp>60</xp>
+		<energy>25</energy>
+		<money>1250</money>
+		<commander>1093</commander>
+		<desc>Part of the battle has turned its focus towards you.</desc>
+		<speech>
+			<line commander='1042'>At least they are unfocused, but we must remain cautious if we are to survive this massive battle.</line>
+		</speech>
+		<deck>
+			<card>131</card>
+			<card>200</card>
+			<card>264</card>
+			<card>230</card>
+			<card>317</card>
+			<card>307</card>
+			<card>92</card>
+			<card>239</card>
+			<card>95</card>
+			<card>318</card>
+			<card>3024</card>
+			<card>2057</card>
+		</deck>
+		<req>119</req>
+	</mission>
+
+	<mission>
+		<id>121</id>
+		<name>Corrupted Forces 3</name>
+		<picture>mission121.jpg</picture>
+		<location_id>13</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>380</x>
+		<y>260</y>
+		<xp>65</xp>
+		<energy>25</energy>
+		<money>1350</money>
+		<commander>1094</commander>
+		<desc>They are beginning to coordinate their attacks against us!</desc>
+		<speech>
+			<line commander='1042'>Their forces are starting to wear down, but what is left is focusing on us!</line>
+		</speech>
+		<deck>
+			<card>322</card>
+			<card>246</card>
+			<card>283</card>
+			<card>238</card>
+			<card>54</card>
+			<card>245</card>
+			<card>105</card>
+			<card>231</card>
+			<card>187</card>
+			<card>113</card>
+			<card>116</card>
+			<card>2024</card>
+			<card>2027</card>
+		</deck>
+		<req>120</req>
+	</mission>
+
+	<mission>
+		<id>122</id>
+		<name>Corrupted Forces 4</name>
+		<picture>mission122.jpg</picture>
+		<location_id>13</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>440</x>
+		<y>240</y>
+		<xp>70</xp>
+		<energy>25</energy>
+		<money>1450</money>
+		<commander>1094</commander>
+		<desc>The enemy is pulling everything together to bring us down.</desc>
+		<speech>
+			<line commander='1042'>We've almost pushed through. If we break up these forces we will be able to focus our efforts against Typhon.</line>
+		</speech>
+		<deck>
+			<card>322</card>
+			<card>40</card>
+			<card>84</card>
+			<card>95</card>
+			<card>285</card>
+			<card>270</card>
+			<card>143</card>
+			<card>102</card>
+			<card>279</card>
+			<card>263</card>
+			<card>320</card>
+			<card>169</card>
+			<card>3025</card>
+			<card>2032</card>
+			<card>2058</card>
+		</deck>
+		<rewards>
+			<card>322</card>
+		</rewards>
+		<req>121</req>
+	</mission>
+
+	<mission>
+		<id>123</id>
+		<name>Mutant Bloodthirsty 1</name>
+		<picture>mission123.jpg</picture>
+		<location_id>14</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>260</x>
+		<y>50</y>
+		<xp>55</xp>
+		<energy>25</energy>
+		<money>1150</money>
+		<commander>1095</commander>
+		<desc>They are going straight for the Commander while protecting their own.</desc>
+		<speech>
+			<line commander='1042'>Incoming Bloodthirsty! They are massive, and much different from the ones we have been fighting.</line>
+		</speech>
+		<deck>
+			<card>111</card>
+			<card>169</card>
+			<card>264</card>
+			<card>230</card>
+			<card>279</card>
+			<card>296</card>
+			<card>299</card>
+			<card>273</card>
+			<card>2031</card>
+			<card>3026</card>
+		</deck>
+		<req>114</req>
+	</mission>
+
+	<mission>
+		<id>124</id>
+		<name>Mutant Bloodthirsty 2</name>
+		<picture>mission124.jpg</picture>
+		<location_id>14</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>320</x>
+		<y>80</y>
+		<xp>60</xp>
+		<energy>25</energy>
+		<money>1250</money>
+		<commander>1095</commander>
+		<desc>The Bloodthisrty are beginning to attack in packs.</desc>
+		<speech commander='1042'>
+			<line>Those Bloodthirsty are unlike any we have seen so far, we should investigate it may provide clues as to what is going on.</line>
+		</speech>
+		<deck>
+			<card>308</card>
+			<card>293</card>
+			<card>298</card>
+			<card>248</card>
+			<card>113</card>
+			<card>70</card>
+			<card>204</card>
+			<card>172</card>
+			<card>302</card>
+			<card>303</card>
+			<card>2049</card>
+			<card>2005</card>
+		</deck>
+		<req>123</req>
+	</mission>
+
+	<mission>
+		<id>125</id>
+		<name>Mutant Bloodthirsty 3</name>
+		<picture>mission125.jpg</picture>
+		<location_id>14</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>390</x>
+		<y>120</y>
+		<xp>65</xp>
+		<energy>25</energy>
+		<money>1350</money>
+		<commander>1096</commander>
+		<desc>The Bloodthirsty are banding around some of the largest ones we have ever seen.</desc>
+		<speech>
+		<line commander='1042'>Its the acid we have seen all over Tartarus.</line>
+		<line commander='1042'>When it touches the Bloodthirsty they start growing monstrous mutations.</line>
+		</speech>
+		<deck>
+			<card>323</card>
+			<card>225</card>
+			<card>263</card>
+			<card>135</card>
+			<card>116</card>
+			<card>46</card>
+			<card>265</card>
+			<card>62</card>
+			<card>320</card>
+			<card>308</card>
+			<card>205</card>
+			<card>3006</card>
+			<card>2031</card>
+		</deck>
+		<req>124</req>
+	</mission>
+
+	<mission>
+		<id>126</id>
+		<name>Mutant Bloodthirsty 4</name>
+		<picture>mission126.jpg</picture>
+		<location_id>14</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>430</x>
+		<y>180</y>
+		<xp>70</xp>
+		<energy>25</energy>
+		<money>1450</money>
+		<commander>1096</commander>
+		<desc>They have become much more aggressive, strike quickly!</desc>
+		<speech>
+			<line commander='1042'>That body is almost covered in that acid, but the Bloodthirsty walk past it like they don't even notice.</line>
+			<line commander='1042'>Maybe... Shoot! We've been spotted!</line>
+		</speech>
+		<deck>
+			<card>323</card>
+			<card>242</card>
+			<card>295</card>
+			<card>289</card>
+			<card>296</card>
+			<card>262</card>
+			<card>231</card>
+			<card>113</card>
+			<card>69</card>
+			<card>36</card>
+			<card>205</card>
+			<card>298</card>
+			<card>3018</card>
+			<card>2052</card>
+			<card>2012</card>
+		</deck>
+		<rewards>
+			<card>323</card>
+		</rewards>
+		<req>125</req>
+	</mission>
+	
+	<!-- END Blight Side Missions -->
+	
+	<!-- END MISSIONS -->
+	
+	<location>
+		<id>1</id>
+		<name>Ashrock</name>
+		<picture>AshrockMap</picture>
+		<picture_file>ashrockmap.jpg</picture_file>
+		<effect x='292' y='220'>ashrockeffects.swf</effect>
+		<battlefield>ashrock.png</battlefield>
+		<nav>Nav1</nav>
+	</location>
+
+	<location>
+		<id>2</id>
+		<name>Arctis</name>
+		<picture>ArctisMap2</picture>
+		<picture_file>arctismap.jpg</picture_file>
+		<battlefield>arctis.png</battlefield>
+		<effect x='292' y='220'>arctissnow.swf</effect>
+		<extraEffect req='8'>arctisfire.swf</extraEffect>
+		<nav>Nav2</nav>
+		<req>5</req>
+	</location>
+	
+	<location>
+		<id>3</id>
+		<name>Cyprion</name>
+		<picture>TyrolMap</picture>
+		<picture_file>cyprionmap.png</picture_file>
+		<battlefield>tyrol.png</battlefield>
+		<effect x='292' y='220'>cyprioneffects.swf</effect>
+		<nav>Nav3</nav>
+		<req>10</req>
+	</location>
+	
+	<location>
+		<id>4</id>
+		<name>Blackmarsh</name>
+		<picture>BlackMarshMap</picture>
+		<picture_file>blackmarsh.png</picture_file>
+		<battlefield>blackmarshbattleground.png</battlefield>
+		<effect x='292' y='220'>blackmarsheffects.swf</effect>
+		<nav>Nav5</nav>
+		<req>17</req>
+	</location>
+	
+	<location>
+		<id>5</id>
+		<name>Swamps of Andar</name>
+		<picture>SwampsofAndarMap</picture>
+		<picture_file>swampsofandarmap.jpg</picture_file>
+		<battlefield>swampsofandar.png</battlefield>
+		<effect x='292' y='220'>swampeffects.swf</effect>
+		<nav>Nav4</nav>
+		<req>23</req>
+	</location>
+	
+	<location>
+		<id>6</id>
+		<name>The Red Sands</name>
+		<picture>RedSandsMap</picture>
+		<picture_file>redsandsmap.jpg</picture_file>
+		<battlefield>battlefield2.jpg</battlefield>
+		<effect x='292' y='220'>redsandseffects.swf</effect>
+		<nav>Nav6</nav>
+		<req>28</req>
+	</location>
+
+	<location>
+		<id>7</id>
+		<name>Wasteland</name>
+		<picture>WastelandMap</picture>
+		<picture_file>wastelandmap.png</picture_file>
+		<battlefield>wasteland.png</battlefield>
+		<effect x='292' y='220'>wastelandeffects.swf</effect>
+		<nav>Nav7</nav>
+		<req>35</req>
+	</location>
+	
+	<location>
+		<id>8</id>
+		<name>Kor Encampment</name>
+		<picture>RaiderMap</picture>
+		<effect x='292' y='220'>raidermap.swf</effect>
+		<nav>Nav8</nav>
+		<req>41</req>
+	</location>
+	
+	<location>
+		<id>9</id>
+		<name>Sulfuris</name>
+		<picture>SulfurSwampMap</picture>
+		<effect x='292' y='220'>sulfurswamps.swf</effect>
+		<nav>Nav9</nav>
+		<req>60</req>
+	</location>
+	
+	<location>
+		<id>10</id>
+		<name>Odeus Mines</name>
+		<picture>CaveMap</picture>
+		<nav>Nav10</nav>
+		<req>65</req>
+	</location>
+	
+	<location>
+		<id>11</id>
+		<name>Blightlands</name>
+		<picture>BlightlandsMap</picture>
+		<effect x='292' y='220'>blightlandsFX.swf</effect>
+		<nav>Nav11</nav>
+		<req>71</req>
+	</location>
+	
+	<location>
+		<id>12</id>
+		<name>Tartarus Cliffs</name>
+		<picture>Tartarus1Map</picture>
+		<effect x='292' y='220'>Tartarus1FX.swf</effect>
+		<nav>Nav12</nav>
+		<req>78</req>
+	</location>
+	
+	<location>
+		<id>13</id>
+		<name>Razogoth's Grave</name>
+		<picture>Tartarus2Map</picture>
+		<effect x='292' y='220'>Tartarus2FX.swf</effect>
+		<nav>Nav13</nav>
+		<req>96</req> <!-- 96 -->
+	</location>
+	
+	<location>
+		<id>14</id>
+		<name>Breeding Pits</name>
+		<picture>Tartarus3Map</picture>
+		<effect x='292' y='220'>Tartarus3FX.swf</effect>
+		<nav>Nav14</nav>
+		<req>103</req> <!-- 103 -->
+	</location>
+	
+	<location>
+		<id>15</id>
+		<name>Tartarus Core</name>
+		<picture>Tartarus4Map</picture>
+		<effect x='292' y='220'>Tartarus4FX.swf</effect>
+		<nav>Nav15</nav>
+		<req>109</req> <!-- 109 -->
+	</location>
+	
+	<faction>
+		<id>1</id>
+		<location_id>2</location_id>
+		<name>Arctis Vanguard</name>
+		<icon>Faction1Icon</icon>
+		<repbase>200</repbase>
+		<reward id='1'>
+			<rep_level>1</rep_level>
+			<rep_req>200</rep_req>
+			<cost>150</cost>
+			<card>17</card>
+		</reward>
+		<reward id='2'>
+			<rep_level>2</rep_level>
+			<rep_req>800</rep_req>
+			<cost>2000</cost>
+			<card>18</card>
+		</reward>
+		<reward id='3'>
+			<rep_level>3</rep_level>
+			<rep_req>2000</rep_req>
+			<cost>10000</cost>
+			<card>1019</card>
+		</reward>
+	</faction>
+
+	<faction>
+		<id>2</id>
+		<location_id>3</location_id>
+		<location_id>4</location_id>
+		<name>Tyrol's Champions</name>
+		<icon>Faction2Icon</icon>
+		<repbase>300</repbase>
+		<reward id='1'>
+			<rep_level>1</rep_level>
+			<rep_req>200</rep_req>
+			<cost>150</cost>
+			<card>67</card>
+		</reward>
+		<reward id='2'>
+			<rep_level>2</rep_level>
+			<rep_req>800</rep_req>
+			<cost>2000</cost>
+			<card>19</card>
+		</reward>
+		<reward id='3'>
+			<rep_level>3</rep_level>
+			<rep_req>2000</rep_req>
+			<cost>6000</cost>
+			<card>2004</card>
+		</reward>
+	</faction>
+	
+	<faction>
+		<id>3</id>
+		<location_id>4</location_id>
+		<location_id>5</location_id>
+		<name>Blood Shield</name>
+		<icon>Faction4Icon</icon>
+		<repbase>400</repbase>
+		<reward id='1'>
+			<rep_level>1</rep_level>
+			<rep_req>200</rep_req>
+			<cost>150</cost>
+			<card>169</card>
+		</reward>
+		<reward id='2'>
+			<rep_level>2</rep_level>
+			<rep_req>800</rep_req>
+			<cost>1200</cost>
+			<card>1031</card>
+		</reward>
+		<reward id='3'>
+			<rep_level>3</rep_level>
+			<rep_req>2000</rep_req>
+			<cost>8000</cost>
+			<card>54</card>
+		</reward>
+	</faction>
+	
+	<faction>
+		<id>4</id>
+		<location_id>6</location_id>
+		<location_id>7</location_id>
+		<name>The Protectorate</name>
+		<icon>Faction3Icon</icon>
+		<repbase>500</repbase>
+		<reward id='1'>
+			<rep_level>1</rep_level>
+			<rep_req>200</rep_req>
+			<cost>100</cost>
+			<card>2029</card>
+		</reward>
+		<reward id='2'>
+			<rep_level>2</rep_level>
+			<rep_req>800</rep_req>
+			<cost>2000</cost>
+			<card>36</card>
+		</reward>
+		<reward id='3'>
+			<rep_level>3</rep_level>
+			<rep_req>2000</rep_req>
+			<cost>8000</cost>
+			<card>91</card>
+		</reward>
+	</faction>
+	
+	<faction>
+		<id>5</id>
+		<location_id>6</location_id>
+		<location_id>7</location_id>
+		<name>The Outriders</name>
+		<icon>Faction5Icon</icon>
+		<repbase>600</repbase>
+		<reward id='1'>
+			<rep_level>1</rep_level>
+			<rep_req>200</rep_req>
+			<cost>100</cost>
+			<card>165</card>
+		</reward>
+		<reward id='2'>
+			<rep_level>2</rep_level>
+			<rep_req>800</rep_req>
+			<cost>2750</cost>
+			<card>3010</card>
+		</reward>
+		<reward id='3'>
+			<rep_level>3</rep_level>
+			<rep_req>2000</rep_req>
+			<cost>8000</cost>
+			<card>126</card>
+		</reward>
+	</faction>
+	
+	<faction>
+		<id>6</id>
+		<location_id>8</location_id>
+		<location_id>9</location_id>
+		<name>Forsaken Ones</name>
+		<icon>ForsakenReputationIcon</icon>
+		<repbase>700</repbase>
+		<reward id='1'>
+			<rep_level>1</rep_level>
+			<rep_req>200</rep_req>
+			<cost>250</cost>
+			<card>2047</card>
+		</reward>
+		<reward id='2'>
+			<rep_level>2</rep_level>
+			<rep_req>800</rep_req>
+			<cost>2500</cost>
+			<card>50</card>
+		</reward>
+		<reward id='3'>
+			<rep_level>3</rep_level>
+			<rep_req>2000</rep_req>
+			<cost>12000</cost>
+			<card>239</card>
+		</reward>
+	</faction>
+
+	<faction>
+		<id>7</id>
+		<location_id>10</location_id>
+		<location_id>11</location_id>
+		<name>The Purge</name>
+		<icon>PurgeReputationIcon</icon>
+		<repbase>800</repbase>
+		<reward id='1'>
+			<rep_level>1</rep_level>
+			<rep_req>200</rep_req>
+			<cost>250</cost>
+			<card>238</card>
+		</reward>
+		<reward id='2'>
+			<rep_level>2</rep_level>
+			<rep_req>800</rep_req>
+			<cost>2500</cost>
+			<card>222</card>
+		</reward>
+		<reward id='3'>
+			<rep_level>3</rep_level>
+			<rep_req>2000</rep_req>
+			<cost>12000</cost>
+			<card>205</card>
+		</reward>
+	</faction>
+	
+	<faction>
+		<id>8</id>
+		<location_id>12</location_id>
+		<location_id>13</location_id>
+		<name>Tartarus Pact</name>
+		<icon>TartarusFactionIcon</icon>
+		<repbase>900</repbase>
+		<reward id='1'>
+			<rep_level>1</rep_level>
+			<rep_req>200</rep_req>
+			<cost>250</cost>
+			<card>300</card>
+		</reward>
+		<reward id='2'>
+			<rep_level>2</rep_level>
+			<rep_req>800</rep_req>
+			<cost>2500</cost>
+			<card>3025</card>
+		</reward>
+		<reward id='3'>
+			<rep_level>3</rep_level>
+			<rep_req>2000</rep_req>
+			<cost>12000</cost>
+			<card>303</card>
+		</reward>
+	</faction>
+	
+	<faction>
+		<id>9</id>
+		<location_id>14</location_id>
+		<location_id>15</location_id>
+		<name>New Order</name>
+		<icon>NewOrderFactionIcon</icon>
+		<repbase>1000</repbase>
+		<reward id='1'>
+			<rep_level>1</rep_level>
+			<rep_req>200</rep_req>
+			<cost>250</cost>
+			<card>302</card>
+		</reward>
+		<reward id='2'>
+			<rep_level>2</rep_level>
+			<rep_req>800</rep_req>
+			<cost>2500</cost>
+			<card>281</card>
+		</reward>
+		<reward id='3'>
+			<rep_level>3</rep_level>
+			<rep_req>2000</rep_req>
+			<cost>12000</cost>
+			<card>301</card>
+		</reward>
+	</faction>
+	
+</root>

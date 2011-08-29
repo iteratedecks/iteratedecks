@@ -1,0 +1,3 @@
+DLL is just a configuration of EXE with additional exported functions.
+Microsoft Visual Studio 2008 and 2010 are both supported.
+API is built on CodeGear RAD Studio 2007 with Indy 10.5.8.0 (included in RAD Studio) and ExpressQuantumGrid Suite 6.33, which is not included in RAD Studio and is purchasable on devexpress.com.

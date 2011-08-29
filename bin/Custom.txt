@@ -1,0 +1,55 @@
+// This is a comment line
+// Special symbols are ':', ',', '[',']','(' and ')', don't use them in deck names or card names
+// Also avoid using symbol '"', because it interferes with string adapter CommaText,
+// which is used to extract card names in API, DLL uses another string adapter and it doesn't recognize '"'
+// Every deck definition starts with deck name
+// deck name is followed by ':' and then by card names
+// card names start with commander name and then followed by rest of cards
+// separated by comma ','
+// You can use square brackets [ and ] to use card ID instead of card name or after card name,
+// ID has higher priority and in second case card name will be ignored
+// You can also use brackets ( and ) after card name to determine count of same copies of card in deck 
+// Decks are indexed by name, if decks have same names, latest will overwrite all previous decks
+// Cards from <Hidden> set can only be accessed by ID
+// Examples:
+// Example1:Atlas,Devastator(10)
+// Example2:Atlas,Devastator(10)
+// Example3:Atlas,Devastator(1)
+// Example4:Atlas,[1](1)
+// Example5:Atlas,[1](10)
+// Example6:Atlas,[1]
+Azure Spam:Dracorex,Azure Reaper,Azure Reaper,Azure Reaper,Azure Reaper,Sustainer Xolan,Sustainer Xolan,Sustainer Xolan,Vaporwing,Rifter,Apex
+Big Guns:Yurich,Colossus,Colossus,Colossus,Colossus,Colossus,Colossus,Colossus,Goliath,Demolition Bot,Dozer Tank
+Blood Grinder DR4 by Diadem:Malort,Blood Grunt,Blood Grunt,Blood Grunt,Blood Grunt,Blood Grunt,Blood Grunt,Blood Grunt,Blood Grunt,Blood Grunt,Blood Grunt
+Bloodthirsty Rush:Lord of Tartarus,Hatchet,Hatchet,Hatchet,Hatchet,Mawcor,Mawcor,Asylum,Asylum,Warehouse,Venomous Raptor
+CF4 rewards by Ryo_Sangnoir:Atlas,Tiamat,Omega,Predator,Shapeshifter,Hunter,Arc Trooper
+Daemon Spam:Vyander,Daemon,Daemon,Daemon,Daemon,Daemon,Sustainer Xolan,Sustainer Xolan,Sustainer Xolan,Xeno Mothership,Electromagnetic Pulse
+Hatchet Spam:Lord of Tartarus,Hatchet,Hatchet,Hatchet,Hatchet,Hatchet,Hatchet,Mawcor,Asylum,Asylum,Asylum
+Heavy Metal:Dracorex,Bolide Walker,Poseidon,Aegis,Omega,Pummeller,Azure Reaper,Metalhead,Dominated Hatchlings,Shapeshifter,Dozer Tank
+Heavy Tanks:Dracorex,Aegis,Aegis,Bolide Walker,Bolide Walker,Pummeller,Pummeller,Rifter,Nimbus,Poseidon,Titan
+Imperial Rewards:Eva,Sharpshooter,Sharpshooter,Sharpshooter,Trident,Trident,Warehouse,Warehouse,Tiamat,Exodrone,Poseidon
+Initiative Grab:Atlas,Sabre,Sabre,Electromagnetic Pulse,Electromagnetic Pulse,Predator,Omega,Tiamat,Titan,Poseidon,Stealthy Niaq
+Irradiated Infanty Rush:Aiko,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Predator,Tiamat,Mortar Bunker
+Irradithad:Thadius,ComSat Terminal,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry
+Jam Rush:Dracorex,Missile Launcher,Missile Launcher,Missile Launcher,Gatling Tower,Gatling Tower,Gatling Tower,Hellion,Loki's Scion,Stealthy Niaq
+Lionhunt:Freddie,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Hellion,Hellion,Hellion,Hellion,Hellion
+MB Annihilator:Dracorex,Bolide Walker,Bolide Walker,Nimbus,Harbor Command,Harbor Command,Aegis,Blood Pool,Blood Pool,Blood Wall,Blood Wall
+Megapunch:Atlas,Colossus,Colossus,Colossus,Colossus,Electromagnetic Pulse,Electromagnetic Pulse,Dozer Tank,Command Center,Gatling Tower,Missile Silo
+Metalmania:Dracorex,Metalhead,Metalhead,Metalhead,Metalhead,Remote Analyzer,Remote Analyzer,Helios,Poseidon,Fortifier,Titan
+Pummeller Pool:Dracorex,Pummeller,Pummeller,Pummeller,Pummeller,Pummeller,Blood Pool,Blood Pool,Blood Pool,Draconian Queen,Valefar
+Purifying Poison by Hakdo:Thadius,Tiamat,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Sabre,Sabre,Sabre,Stormrunner,Stormrunner
+Quakers:Dracorex,Earthquake Generator,Earthquake Generator,Earthquake Generator,Earthquake Generator,Vaporwing,Vaporwing,Sustainer Xolan,Sustainer Xolan,Phoenix,Bolster Xeno
+Raider Muscle:Yurich,Toxic Cannon,Toxic Cannon,Toxic Cannon,Colossus,Havoc,Goliath,Earthquake Generator,Command Center,Dozer Tank,Bulldozer
+Raider Striker Anti-Imperial Purger:Yurich,Bolide Walker,Bolide Walker,Omega,Poseidon,Chronos,Chronos,Chronos,Titan,Electromagnetic Pulse,Electromagnetic Pulse
+Sawblade/Striker Rush DR4 by 1337th Warlord  lunarscape:Thadius,Tiamat,Devastator,Sawblade,Sawblade,Sawblade,Sawblade,Sawblade,Sawblade,Sawblade,Full Power
+Slowroll:Dracorex,Aegis,Fortifier,Bolide Walker,Kraken,Pummeller,Rifter,Titan,Draconian Queen,Mend Wounds,Electromagnetic Pulse
+Starwars:Duncan,Cannon Walker,Cannon Walker,Cannon Walker,Cannon Walker,Command Center,Command Center,Command Center,Salvager,Salvager,Omega
+Strike Rush:Atlas,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Predator,Hunter,Mech Walker,Omega,Tiamat
+Taste the Rainbow:Atlas,Tiamat,Omega,Predator,Stealthy Niaq,Azure Reaper,Trident,Dozer Tank,Sharpshooter,Bulldozer,Mortar Bunker
+Toxic Evasion:Atlas,Toxic Cannon,Toxic Cannon,Sharpshooter,Sharpshooter,Warehouse,Warehouse,Azure Reaper,Azure Reaper,Rifter,Stealthy Niaq
+Trident Spam:Atlas,Trident,Trident,Trident,Trident,Trident,Trident,Trident,Warehouse,Warehouse,Exodrone
+Versatile Raiders:Dracorex,Colossus,Colossus,Cannon Walker,Cannon Walker,Toxic Cannon,Toxic Cannon,Azure Reaper,Azure Reaper,Command Center,Dozer Tank
+Wall Stall MB:Dracorex,Blood Wall,Blood Wall,Nimbus,Tesla Cannon,Tesla Cannon,Tesla Cannon,Tesla Cannon,Tesla Cannon,Enforcer Mech,Titan
+Wallstall:Dracorex,Missile Silo,Missile Silo,Missile Silo,Blood Wall,Blood Wall,Command Center,Command Center,Tesla Cannon,Tesla Cannon,Gun Raven
+Xeno Assault:Vyander,Azure Reaper,Azure Reaper,Azure Reaper,Sustainer Xolan,Sustainer Xolan,Rifter,Bolster Xeno,Stealthy Niaq,Dominated Hatchlings,Loki's Scion
+Xeno Rush:Invasion Coordinator,Dominated Hatchlings,Dominated Hatchlings,Sustainer Xolan,Sustainer Xolan,Predator,Apex,Stealthy Niaq,Daemon,Warehouse,Mortar Bunker
