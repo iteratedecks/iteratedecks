@@ -13,7 +13,7 @@ uses
   IdTCPConnection, IdTCPClient, IdHTTP, OleCtrls, SHDocVw_EWB, EwbCore,
   EmbeddedWB, WinInet, ComCtrls, cxListView, Jpeg, cxCheckComboBox,
   cxCurrencyEdit, ActiveX, cxSpinEdit, cxRadioGroup, cxGroupBox, DBClient,
-  GIFImg, ShellApi;
+  GIFImg, ShellApi, cxCheckListBox, cxGridBandedTableView;
 
 const
   MAX_CARD_COUNT = 600;
@@ -190,6 +190,33 @@ type
     bBotVisual: TcxButton;
     xgmlogo: TcxImage;
     teamliquidlogo: TcxImage;
+    tsBatch: TcxTabSheet;
+    clbTestAgainst: TcxCheckListBox;
+    cbBIterations: TcxComboBox;
+    bBRun: TcxButton;
+    gBatchResult: TcxGrid;
+    cxGridLevel3: TcxGridLevel;
+    lNote: TcxLabel;
+    vBatchResult: TcxGridBandedTableView;
+    vcbAgainst: TcxGridBandedColumn;
+    vcbFWins: TcxGridBandedColumn;
+    vcbFGames: TcxGridBandedColumn;
+    vcbFAvgD: TcxGridBandedColumn;
+    vcbFAvgDA: TcxGridBandedColumn;
+    vcbFAvgS: TcxGridBandedColumn;
+    vcbFAvgSA: TcxGridBandedColumn;
+    vcbFNet: TcxGridBandedColumn;
+    vcbFRatio: TcxGridBandedColumn;
+    vcbFLoss: TcxGridBandedColumn;
+    vcbSWins: TcxGridBandedColumn;
+    vcbSLoss: TcxGridBandedColumn;
+    vcbSGames: TcxGridBandedColumn;
+    vcbSRatio: TcxGridBandedColumn;
+    vcbSAvgD: TcxGridBandedColumn;
+    vcbSAvgDA: TcxGridBandedColumn;
+    vcbSAvgS: TcxGridBandedColumn;
+    vcbSAvgSA: TcxGridBandedColumn;
+    vcbSNet: TcxGridBandedColumn;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -277,6 +304,7 @@ type
     procedure teamliquidlogoClick(Sender: TObject);
     procedure vTopKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure vBotKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure bBRunClick(Sender: TObject);
  private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -473,6 +501,85 @@ begin
   result := result + AddLine('Protection',64,false);
   result := result + AddLine('Augment',65,false);
   result := result + AddLine('Mist',66,false);
+end;
+
+function IterateDecks(Exe: string; Cwd: string; Seed: DWORD; AtkDeck: string; DefDeck: string; RaidID: integer; GamesPerThread: DWORD; Threads: DWORD; bIsSurge: boolean): RESULTS;
+var
+  SI: TStartupInfo;
+  PI: TProcessInformation;
+
+  hFileMapObj: THandle;
+  lpBaseAddress: PChar;
+  ep: TEvalParams;
+begin
+  ep.RaidID := RaidID;
+  StrPCopy(ep.AtkDeck,AtkDeck);
+  StrPCopy(ep.DefDeck,DefDeck);
+{  StrPCopy(ep.AtkDeck,'Thadius,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Rocket Infantry');
+  StrPCopy(ep.DefDeck,'Vyander,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing');
+  StrPCopy(ep.AtkDeck,'Dracorex,Azure Reaper,Azure Reaper,Azure Reaper,Azure Reaper,Sustainer Xolan,Sustainer Xolan,Sustainer Xolan,Vaporwing,Rifter,Apex');
+  StrPCopy(ep.DefDeck,'Dracorex,Azure Reaper,Azure Reaper,Azure Reaper,Azure Reaper,Sustainer Xolan,Sustainer Xolan,Sustainer Xolan,Vaporwing,Rifter,Apex');
+}
+  ep.Seed := Seed;
+  ep.GamesPerThread := GamesPerThread;
+  ep.Threads := Threads;
+  ep.Surge := bIsSurge;
+
+  hFileMapObj := CreateFileMapping(INVALID_HANDLE_VALUE, Nil, PAGE_READWRITE, 0, 256, 'Local\IterateDecksSharedMemory');
+  if (hFileMapObj = 0) then
+    //ошибочка вышла
+    ShowMessage('Не могу создать FileMapping!')
+  else
+  begin
+    //подключим FileMapping к адресному пространству
+    //и получим начальный адрес данных
+    lpBaseAddress := MapViewOfFile(hFileMapObj, FILE_MAP_ALL_ACCESS, 0, 0, 0);
+  end;
+  if lpBaseAddress = nil then
+    //ошибочка вышла
+    ShowMessage('Не могу подключить FileMapping!');
+
+  try
+    with SI do
+    begin
+      FillChar(SI, SizeOf(SI), 0);
+      cb := SizeOf(SI);
+      dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
+      wShowWindow := SW_HIDE;
+      hStdInput := GetStdHandle(STD_INPUT_HANDLE); // don't redirect stdin
+      hStdOutput := GetStdHandle(STD_OUTPUT_HANDLE); // don't redirect stdin
+      hStdError := GetStdHandle(STD_ERROR_HANDLE); // don't redirect stdin
+      //hStdOutput := StdOutPipeWrite;
+      //hStdError := StdOutPipeWrite;
+    end;
+    CopyMemory(lpBaseAddress,Addr(ep),SizeOf(ep));
+
+    if CreateProcess(nil, PChar(Exe),
+                            nil, nil, True, 0, nil,
+                            PChar(Cwd), SI, PI) then
+      try
+        {repeat
+          WasOK := ReadFile(StdOutPipeRead, Buffer, 255, BytesRead, nil);
+          if BytesRead > 0 then
+          begin
+            Buffer[BytesRead] := #0;
+            Result := Result + Buffer;
+          end;
+        until not WasOK or (BytesRead = 0); }
+        WaitForSingleObject(PI.hProcess, INFINITE);
+      finally
+        CloseHandle(PI.hThread);
+        CloseHandle(PI.hProcess);
+      end;
+  finally
+    CopyMemory(Addr(ep),lpBaseAddress,SizeOf(ep));
+
+    result := ep.Result;
+
+    UnMapViewOfFile(lpBaseAddress);
+    //освободим объект FileMapping
+    CloseHandle(hFileMapObj);
+  end;
 end;
 
 function TEvaluateDecksForm.GetIndexFromID(Id: string): integer;
@@ -1242,6 +1349,147 @@ begin
         end;
 end;
 
+procedure TEvaluateDecksForm.bBRunClick(Sender: TObject);
+  var
+  i, games, rec, seed, id: integer;
+  sl1,sl2: TStringList;
+  r: RESULTS;
+  rand, tc: DWORD;
+  dt: TDateTime;
+
+  atk, def: string;
+  ret: LongWord;
+
+  LibHandle: THandle;
+  bImages: boolean;
+  s:string;
+  p1: pchar;
+begin
+  vBatchResult.DataController.RecordCount := 0;
+
+  sl1 := TStringList.Create;
+  sl2 := TStringList.Create;
+
+  bImages := (imgTop.Hint <> '');
+
+  with EvaluateDecksForm do
+  try
+    if bImages then
+    begin
+      sl1.Add(imgTop.Hint);
+      for i := 0 to MAX_DECK_SIZE - 1 do
+        if (Assigned(TopDeck[i])) then
+          if (TopDeck[i].Hint <> '') then
+            sl1.Add(TopDeck[i].Hint);
+    end
+    else
+    begin
+      with vTop.DataController do
+      for i := 0 to RecordCount - 1 do
+        if (not VarIsNull(Values[i,vTopId.Index])) and (not VarIsNull(Values[i,vTopName.Index])) then
+        begin
+          id := values[i,vTopID.Index];
+          s := Values[i,vTopName.Index];
+          if Cards[remapminidinversed[id]].CardType = 1 then
+            sl1.Insert(0,s)
+          else
+            if s <> '' then
+              sl1.Add(s);
+        end;
+    end;
+
+    games := StrToInt(cbBIterations.Text);
+
+    atk := StringReplace(sl1.CommaText,'"','',[rfReplaceAll]);
+      tc := seThreads.Value;
+
+    if (atk = '') then
+    begin
+      ShowMessage('Your deck is empty.');
+      exit;
+    end;
+
+  for i := 0 to clbTestAgainst.Count - 1 do
+  begin
+    if not clbTestAgainst.Items[i].Checked then
+      continue;
+
+    GetMem(p1, cMaxBuffer); // initialize
+    with TStringList.Create do
+    try
+      sl2.CommaText := GetCustomDeck(clbTestAgainst.Items[i].Text,p1,cMaxBuffer);
+    finally
+      FreeMem(p1);
+    end;
+
+    def := StringReplace(sl2.CommaText,'"','',[rfReplaceAll]);
+    if (def = '') then
+    begin
+      //ShowMessage('One of the decks is empty.');
+      continue;
+    end;
+    with vBatchResult.DataController do
+    begin
+      AppendRecord;
+      rec := RecordCount-1;
+      Values[rec,vcbAgainst.Index] := StringReplace(def,',',', ',[rfReplaceAll]);
+    end;
+
+      if cbRandomSeed.Checked then
+      begin
+        seed := random(MaxInt);
+        seSeed.Text := IntToStr(seed);
+      end
+      else
+        try
+          seed := StrToInt(seSeed.Text);
+        except
+          seed := 0;
+        end;
+
+      r := IterateDecks('IterateDecks.exe',sLocalDir,seed,atk,def,-1,games div tc,tc,false);
+
+    with vBatchResult.DataController do
+      begin
+        Values[rec,vcbFWins.Index] := r.Win;
+        Values[rec,vcbFLoss.Index] := r.Loss;
+        Values[rec,vcbFGames.Index] := games;
+        Values[rec,vcbFRatio.Index] := r.Win / games;
+        Values[rec,vcbFAvgD.Index] := r.Points / games;
+        Values[rec,vcbFAvgDA.Index] := r.AutoPoints / games;
+        Values[rec,vcbFAvgS.Index] := r.LPoints / games;
+        Values[rec,vcbFAvgSA.Index] := r.LAutoPoints / games;
+        Values[rec,vcbFNet.Index] := Integer(r.Points - r.LPoints) / games;
+      end;
+
+    Application.ProcessMessages;
+
+      r := IterateDecks('IterateDecks.exe',sLocalDir,seed,atk,def,-1,games div tc,tc,true);
+
+    with vBatchResult.DataController do
+      begin
+        Values[rec,vcbSWins.Index] := r.Win;
+        Values[rec,vcbSLoss.Index] := r.Loss;
+        Values[rec,vcbSGames.Index] := games;
+        Values[rec,vcbSRatio.Index] := r.Win / games;
+        Values[rec,vcbSAvgD.Index] := r.Points / games;
+        Values[rec,vcbSAvgDA.Index] := r.AutoPoints / games;
+        Values[rec,vcbSAvgS.Index] := r.LPoints / games;
+        Values[rec,vcbSAvgSA.Index] := r.LAutoPoints / games;
+        Values[rec,vcbSNet.Index] := Integer(r.Points - r.LPoints) / games;
+      end;
+
+    Application.ProcessMessages;
+
+    end;
+    //ShowMessage('Attacker wins '+inttostr(wins)+' of '+inttostr(games)+' games.');
+  finally
+    sl1.Free;
+    sl2.Free;
+  end;
+  //EndThread(0);
+end;
+
 procedure TEvaluateDecksForm.bClearClick(Sender: TObject);
 begin
   cxView.DataController.RecordCount := 0;
@@ -1266,6 +1514,11 @@ begin
   GetCustomDecksList(p1,cMaxBuffer);
   cbCustom.Properties.Items.CommaText := p1;
   cbmCustom.Properties.Items.CommaText := p1;
+  for i := 0 to cbmCustom.Properties.Items.Count - 1 do
+  begin
+    clbTestAgainst.AddItem(cbmCustom.Properties.Items[i]);
+    clbTestAgainst.Items[i].Checked := true;
+  end;
   if cbCustom.Properties.Items.Count > 0 then
   begin
     cbCustom.ItemIndex := 0;
@@ -1527,85 +1780,6 @@ begin
   end;
 end;
 
-function IterateDecks(Exe: string; Cwd: string; Seed: DWORD; AtkDeck: string; DefDeck: string; RaidID: integer; GamesPerThread: DWORD; Threads: DWORD; bIsSurge: boolean): RESULTS;
-var
-  SI: TStartupInfo;
-  PI: TProcessInformation;
-
-  hFileMapObj: THandle;
-  lpBaseAddress: PChar;
-  ep: TEvalParams;
-begin
-  ep.RaidID := RaidID;
-  StrPCopy(ep.AtkDeck,AtkDeck);
-  StrPCopy(ep.DefDeck,DefDeck);
-{  StrPCopy(ep.AtkDeck,'Thadius,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Rocket Infantry');
-  StrPCopy(ep.DefDeck,'Vyander,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing');
-  StrPCopy(ep.AtkDeck,'Dracorex,Azure Reaper,Azure Reaper,Azure Reaper,Azure Reaper,Sustainer Xolan,Sustainer Xolan,Sustainer Xolan,Vaporwing,Rifter,Apex');
-  StrPCopy(ep.DefDeck,'Dracorex,Azure Reaper,Azure Reaper,Azure Reaper,Azure Reaper,Sustainer Xolan,Sustainer Xolan,Sustainer Xolan,Vaporwing,Rifter,Apex');
-}
-  ep.Seed := Seed;
-  ep.GamesPerThread := GamesPerThread;
-  ep.Threads := Threads;
-  ep.Surge := bIsSurge;
-
-  hFileMapObj := CreateFileMapping(INVALID_HANDLE_VALUE, Nil, PAGE_READWRITE, 0, 256, 'Local\IterateDecksSharedMemory');
-  if (hFileMapObj = 0) then
-    //ошибочка вышла
-    ShowMessage('Не могу создать FileMapping!')
-  else
-  begin
-    //подключим FileMapping к адресному пространству
-    //и получим начальный адрес данных
-    lpBaseAddress := MapViewOfFile(hFileMapObj, FILE_MAP_ALL_ACCESS, 0, 0, 0);
-  end;
-  if lpBaseAddress = nil then
-    //ошибочка вышла
-    ShowMessage('Не могу подключить FileMapping!');
-
-  try
-    with SI do
-    begin
-      FillChar(SI, SizeOf(SI), 0);
-      cb := SizeOf(SI);
-      dwFlags := STARTF_USESHOWWINDOW or STARTF_USESTDHANDLES;
-      wShowWindow := SW_HIDE;
-      hStdInput := GetStdHandle(STD_INPUT_HANDLE); // don't redirect stdin
-      hStdOutput := GetStdHandle(STD_OUTPUT_HANDLE); // don't redirect stdin
-      hStdError := GetStdHandle(STD_ERROR_HANDLE); // don't redirect stdin
-      //hStdOutput := StdOutPipeWrite;
-      //hStdError := StdOutPipeWrite;
-    end;
-    CopyMemory(lpBaseAddress,Addr(ep),SizeOf(ep));
-
-    if CreateProcess(nil, PChar(Exe),
-                            nil, nil, True, 0, nil,
-                            PChar(Cwd), SI, PI) then
-      try
-        {repeat
-          WasOK := ReadFile(StdOutPipeRead, Buffer, 255, BytesRead, nil);
-          if BytesRead > 0 then
-          begin
-            Buffer[BytesRead] := #0;
-            Result := Result + Buffer;
-          end;
-        until not WasOK or (BytesRead = 0); }
-        WaitForSingleObject(PI.hProcess, INFINITE);
-      finally
-        CloseHandle(PI.hThread);
-        CloseHandle(PI.hProcess);
-      end;
-  finally
-    CopyMemory(Addr(ep),lpBaseAddress,SizeOf(ep));
-
-    result := ep.Result;
-
-    UnMapViewOfFile(lpBaseAddress);
-    //освободим объект FileMapping
-    CloseHandle(hFileMapObj);
-  end;
-end;
-
 procedure TEvaluateDecksForm.bRunClick(Sender: TObject);
 {var
   ret: LongWord;
@@ -1824,6 +1998,7 @@ begin
     begin
       cbCustom.Properties.Items.Add(name);
       cbmCustom.Properties.Items.Add(name);
+      clbTestAgainst.AddItem(name);
       AppendLine(sLocalDir + sCustomDecks,line);
     end;
     slr.Free;
@@ -1850,6 +2025,7 @@ begin
       begin
         cbCustom.Properties.Items.Add(name);
         cbmCustom.Properties.Items.Add(name);
+        clbTestAgainst.AddItem(name);
         AppendLine(sLocalDir + sCustomDecks,line);
       end;
     finally
@@ -1883,6 +2059,7 @@ begin
     begin
       cbCustom.Properties.Items.Add(name);
       cbmCustom.Properties.Items.Add(name);
+      clbTestAgainst.AddItem(name);
       AppendLine(sLocalDir + sCustomDecks,line);
     end;
     slr.Free;
@@ -1909,6 +2086,7 @@ begin
       begin
         cbCustom.Properties.Items.Add(name);
         cbmCustom.Properties.Items.Add(name);
+        clbTestAgainst.AddItem(name);
         AppendLine(sLocalDir + sCustomDecks,line);
       end;
     finally
@@ -2395,6 +2573,11 @@ begin
   GetCustomDecksList(p1,cMaxBuffer);
   cbCustom.Properties.Items.CommaText := p1;
   cbmCustom.Properties.Items.CommaText := p1;
+  for i := 0 to cbmCustom.Properties.Items.Count - 1 do
+  begin
+    clbTestAgainst.AddItem(cbmCustom.Properties.Items[i]);
+    clbTestAgainst.Items[i].Checked := true;
+  end;
   if cbCustom.Properties.Items.Count > 0 then
   begin
     cbCustom.ItemIndex := 0;

@@ -786,6 +786,376 @@ object EvaluateDecksForm: TEvaluateDecksForm
         OnClick = bClearClick
       end
     end
+    object tsBatch: TcxTabSheet
+      Caption = 'Batch Eval'
+      ImageIndex = 6
+      DesignSize = (
+        784
+        646)
+      object clbTestAgainst: TcxCheckListBox
+        Left = 3
+        Top = 3
+        Width = 230
+        Height = 118
+        Items = <>
+        TabOrder = 0
+      end
+      object cbBIterations: TcxComboBox
+        Left = 239
+        Top = 3
+        Properties.DropDownListStyle = lsFixedList
+        Properties.Items.Strings = (
+          '100'
+          '200'
+          '500'
+          '1000'
+          '2000'
+          '5000'
+          '10000'
+          '20000'
+          '50000'
+          '100000'
+          '200000'
+          '500000'
+          '1000000')
+        TabOrder = 1
+        Text = '10000'
+        Width = 121
+      end
+      object bBRun: TcxButton
+        Left = 366
+        Top = 3
+        Width = 75
+        Height = 21
+        Caption = 'Run'
+        TabOrder = 2
+        OnClick = bBRunClick
+      end
+      object gBatchResult: TcxGrid
+        AlignWithMargins = True
+        Left = 3
+        Top = 127
+        Width = 772
+        Height = 510
+        Anchors = [akLeft, akTop, akRight, akBottom]
+        TabOrder = 3
+        object vBatchResult: TcxGridBandedTableView
+          NavigatorButtons.ConfirmDelete = False
+          DataController.Summary.DefaultGroupSummaryItems = <>
+          DataController.Summary.FooterSummaryItems = <
+            item
+              Kind = skAverage
+              Column = vcbFNet
+            end
+            item
+              Kind = skAverage
+              Column = vcbFAvgSA
+            end
+            item
+              Kind = skAverage
+              Column = vcbFAvgS
+            end
+            item
+              Kind = skAverage
+              Column = vcbFAvgDA
+            end
+            item
+              Kind = skAverage
+              Column = vcbFAvgD
+            end
+            item
+              Kind = skAverage
+              Column = vcbFRatio
+            end
+            item
+              Kind = skSum
+              Column = vcbFGames
+            end
+            item
+              Kind = skSum
+              Column = vcbFWins
+            end
+            item
+              Kind = skCount
+              Column = vcbAgainst
+            end
+            item
+              Kind = skSum
+              Column = vcbFLoss
+            end
+            item
+              Kind = skAverage
+              Column = vcbSNet
+            end
+            item
+              Kind = skAverage
+              Column = vcbSRatio
+            end
+            item
+              Kind = skAverage
+              Column = vcbSAvgD
+            end
+            item
+              Kind = skAverage
+              Column = vcbSAvgDA
+            end
+            item
+              Kind = skAverage
+              Column = vcbSAvgS
+            end
+            item
+              Kind = skAverage
+              Column = vcbSAvgSA
+            end
+            item
+              Kind = skSum
+              Column = vcbSWins
+            end
+            item
+              Kind = skSum
+              Column = vcbSLoss
+            end
+            item
+              Kind = skSum
+              Column = vcbSGames
+            end>
+          DataController.Summary.SummaryGroups = <>
+          OptionsCustomize.BandMoving = False
+          OptionsView.CellAutoHeight = True
+          OptionsView.ColumnAutoWidth = True
+          OptionsView.Footer = True
+          OptionsView.GroupByBox = False
+          OptionsView.Header = False
+          OptionsView.HeaderAutoHeight = True
+          Bands = <
+            item
+              Caption = 'Against deck'
+              Width = 204
+            end
+            item
+              Caption = 'Fight'
+            end
+            item
+              Caption = 'Wins'
+              Position.BandIndex = 1
+              Position.ColIndex = 0
+            end
+            item
+              Caption = 'Loss'
+              Position.BandIndex = 1
+              Position.ColIndex = 1
+            end
+            item
+              Caption = 'Games'
+              Position.BandIndex = 1
+              Position.ColIndex = 2
+            end
+            item
+              Caption = 'Win ratio'
+              Position.BandIndex = 1
+              Position.ColIndex = 3
+            end
+            item
+              Caption = 'Avg. Dmg Dealt'
+              Position.BandIndex = 1
+              Position.ColIndex = 4
+              Width = 67
+            end
+            item
+              Caption = 'Avg. Dmg Dealt (Auto)'
+              Position.BandIndex = 1
+              Position.ColIndex = 5
+              Width = 61
+            end
+            item
+              Caption = 'Avg. Dmg Suffered'
+              Position.BandIndex = 1
+              Position.ColIndex = 6
+            end
+            item
+              Caption = 'Avg. Dmg Suffered (Auto)'
+              Position.BandIndex = 1
+              Position.ColIndex = 7
+            end
+            item
+              Caption = 'Avg. net gain'
+              Position.BandIndex = 1
+              Position.ColIndex = 8
+            end
+            item
+              Caption = 'Surge'
+            end
+            item
+              Caption = 'Wins'
+              Position.BandIndex = 11
+              Position.ColIndex = 0
+            end
+            item
+              Caption = 'Loss'
+              Position.BandIndex = 11
+              Position.ColIndex = 1
+            end
+            item
+              Caption = 'Games'
+              Position.BandIndex = 11
+              Position.ColIndex = 2
+            end
+            item
+              Caption = 'Win ratio'
+              Position.BandIndex = 11
+              Position.ColIndex = 3
+            end
+            item
+              Caption = 'Avg. Dmg Dealt'
+              Position.BandIndex = 11
+              Position.ColIndex = 4
+            end
+            item
+              Caption = 'Avg. Dmg Dealt (Auto)'
+              Position.BandIndex = 11
+              Position.ColIndex = 5
+            end
+            item
+              Caption = 'Avg. Dmg Suffered'
+              Position.BandIndex = 11
+              Position.ColIndex = 6
+            end
+            item
+              Caption = 'Avg. Dmg Suffered (Auto)'
+              Position.BandIndex = 11
+              Position.ColIndex = 7
+            end
+            item
+              Caption = 'Avg. net gain'
+              Position.BandIndex = 11
+              Position.ColIndex = 8
+            end>
+          object vcbAgainst: TcxGridBandedColumn
+            Position.BandIndex = 0
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+            IsCaptionAssigned = True
+          end
+          object vcbFWins: TcxGridBandedColumn
+            DataBinding.ValueType = 'Integer'
+            Position.BandIndex = 2
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+            IsCaptionAssigned = True
+          end
+          object vcbFLoss: TcxGridBandedColumn
+            DataBinding.ValueType = 'Integer'
+            Position.BandIndex = 3
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object vcbFGames: TcxGridBandedColumn
+            DataBinding.ValueType = 'Integer'
+            Position.BandIndex = 4
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object vcbFRatio: TcxGridBandedColumn
+            DataBinding.ValueType = 'Float'
+            Position.BandIndex = 5
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object vcbFAvgD: TcxGridBandedColumn
+            DataBinding.ValueType = 'Float'
+            Position.BandIndex = 6
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object vcbFAvgDA: TcxGridBandedColumn
+            DataBinding.ValueType = 'Float'
+            Position.BandIndex = 7
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object vcbFAvgS: TcxGridBandedColumn
+            DataBinding.ValueType = 'Float'
+            Position.BandIndex = 8
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object vcbFAvgSA: TcxGridBandedColumn
+            DataBinding.ValueType = 'Float'
+            Position.BandIndex = 9
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object vcbFNet: TcxGridBandedColumn
+            DataBinding.ValueType = 'Float'
+            Position.BandIndex = 10
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object vcbSWins: TcxGridBandedColumn
+            DataBinding.ValueType = 'Integer'
+            Position.BandIndex = 12
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object vcbSLoss: TcxGridBandedColumn
+            DataBinding.ValueType = 'Integer'
+            Position.BandIndex = 13
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object vcbSGames: TcxGridBandedColumn
+            DataBinding.ValueType = 'Integer'
+            Position.BandIndex = 14
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object vcbSRatio: TcxGridBandedColumn
+            DataBinding.ValueType = 'Float'
+            Position.BandIndex = 15
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object vcbSAvgD: TcxGridBandedColumn
+            DataBinding.ValueType = 'Float'
+            Position.BandIndex = 16
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object vcbSAvgDA: TcxGridBandedColumn
+            DataBinding.ValueType = 'Float'
+            Position.BandIndex = 17
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object vcbSAvgS: TcxGridBandedColumn
+            DataBinding.ValueType = 'Float'
+            Position.BandIndex = 18
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object vcbSAvgSA: TcxGridBandedColumn
+            DataBinding.ValueType = 'Float'
+            Position.BandIndex = 19
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object vcbSNet: TcxGridBandedColumn
+            DataBinding.ValueType = 'Float'
+            Position.BandIndex = 20
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+        end
+        object cxGridLevel3: TcxGridLevel
+          GridView = vBatchResult
+        end
+      end
+      object lNote: TcxLabel
+        Left = 239
+        Top = 30
+        Caption = 'This simulations always run in blazing fast mode'
+      end
+    end
     object tsUpdate: TcxTabSheet
       Caption = 'Update DB'
       ImageIndex = 3
