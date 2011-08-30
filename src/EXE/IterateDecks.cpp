@@ -372,6 +372,17 @@ int _tmain(int argc, char* argv[])
 	Y.Deck.push_back(DB.CARD("Vaporwing"));
 	Y.Deck.push_back(DB.CARD("Vaporwing"));
 
+	printf("X hash: %s\n",X.GetHash64().c_str());
+	printf("Y hash: %s\n",Y.GetHash64().c_str());
+
+	// X hash: P3AGBW+p
+	// Y hash: QbDO+q
+
+	ActiveDeck Z((const char*)"P3AGBW+p",DB.GetPointer());
+	Z.PrintShort();
+	ActiveDeck S((const char*)"QbDO+q",DB.GetPointer());
+	S.PrintShort();
+
 	RESULTS res;
 	time_t t;
 

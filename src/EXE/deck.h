@@ -1,4 +1,5 @@
 #include <vector>
+#include <set>
 
 #define CARD_NAME_MAX_LENGTH	50 // must sync it with CARD_NAME_MAX_LENGTH in interface
 #define FILENAME_MAX_LENGTH		50 //
@@ -6,7 +7,7 @@
 
 #define DEFAULT_DECK_RESERVE_SIZE	15 // up to 20?
 
-#define CARD_MAX_ID				3500 // size of storage array
+#define CARD_MAX_ID				4000 // size of storage array
 #define MISSION_MAX_ID			150  // size of storage array
 #define RAID_MAX_ID				20  // size of storage array
 
@@ -97,6 +98,22 @@ const bool PROC50
 	return (rand()%100 < 50);
 }
 
+const unsigned short ID2BASE64(const UINT Id)
+{
+	_ASSERT(Id < 0xFFF);
+#define EncodeBase64(x) (x < 26) ? (x + 'A') : ((x < 52) ? (x + 'a' - 26) : ((x < 62) ? (x + '0' - 52) : ((x == 62) ? ('+') : ('/'))))	
+	// please keep in mind that any integer type has swapped hi and lo bytes
+	// i have swapped them here so we will have correct 2 byte string in const char* GetID64 function
+	return ((EncodeBase64(((Id >> 6) & 63)))/* << 8*/) + ((EncodeBase64((Id & 63))) << 8); // so many baneli... parenthesis!
+}
+#define BASE64ID	BASE642ID // alias
+const UINT BASE642ID(const unsigned short base64)
+{
+#define DecodeBase64(x) (((x >= 'A') && (x <= 'Z')) ? (x - 'A') : (((x >= 'a') && (x <= 'z')) ? (x - 'a' + 26) : (((x >= '0') && (x <= '9')) ? (x - '0' + 52) : ((x == '+') ? (62) : (63)))))
+	// same stuff as with ID2BASE64, hi and lo swapped
+	return DecodeBase64((base64 & 0xFF)) + DecodeBase64((base64 >> 8)) * 64;
+}
+
 class Card
 {
 private:
@@ -148,6 +165,9 @@ public:
 	Card(const UINT id, const char* name, const char* pic, const UCHAR rarity, const UCHAR type, const UCHAR faction, const UCHAR attack, const UCHAR health, const UCHAR wait, const UINT set)
 	{
 		Id = id;
+		//UINT temp = ID2BASE64(4000);
+		//printf("%s -> %d\n",(char*)&temp,BASE64ID(temp));
+		//BASE642ID(temp);
 		CopyName(name);
 		CopyPic(pic);
 		Type = type;
@@ -201,6 +221,32 @@ public:
 	~Card()	{ Destroy(); }
 	const bool IsCard() const { return (Id != 0); }
 	const UINT GetId() const { return Id; }
+	const char* GetID16(UINT &ID16Storage, bool bLowerCase = false) const
+	{
+		UCHAR c = Id & 0xF;
+		UCHAR baseA = (bLowerCase) ? ('a' - 10) : ('A' - 10); // I thought I told I don't like this style ;)
+		char *ptr = (char *)&ID16Storage;
+		c = (c < 10) ? (c + '0') : (c + baseA); 
+		ptr[2] = c;
+		c = (Id >> 4) & 0xF;
+		c = (c < 10) ? (c + '0') : (c + baseA);
+		ptr[1] = c;
+		c = (Id >> 8) & 0xF;
+		c = (c < 10) ? (c + '0') : (c + baseA);
+		ptr[0] = c;
+		ptr[3] = 0;
+		return (const char*)ptr;
+	}
+	const unsigned short GetID64() const
+	{
+		return ID2BASE64(Id);
+	}
+	const char* GetID64(UINT &ID64Storage) const
+	{
+		//ID64Storage = 0; // is it nessesary?
+		ID64Storage = GetID64();
+		return (char *)&ID64Storage;
+	}
 	const UCHAR GetAttack() const	{	return Attack;	}
 	const UCHAR GetHealth() const	{	return Health;	}
 	const UCHAR GetWait() const		{	return Wait;	}
@@ -558,6 +604,41 @@ public:
 	ActiveDeck() {}
 	~ActiveDeck() { Deck.clear(); Units.clear(); Structures.clear(); Actions.clear(); }
 public:
+	// please note, contructors don't clean up storages, must do it manually and beforehand, even copy constructor
+	ActiveDeck(const char *HashBase64, const Card *pCDB)
+	{
+		_ASSERT(pCDB);
+		_ASSERT(HashBase64);
+		unsigned short tid = 0, lastid = 0;
+		size_t len = strlen(HashBase64);
+		_ASSERT(!(len & 1)); // bytes should go in pairs
+		len = len >> 1; // div 2
+		Deck.reserve(DEFAULT_DECK_RESERVE_SIZE);
+		for (UCHAR i = 0; i < len; i++)
+		{
+			tid = BASE64ID((HashBase64[i << 1] << 8) + HashBase64[(i << 1) + 1]);
+			if (!i)
+			{
+				_ASSERT(tid < CARD_MAX_ID);
+				_ASSERT((tid >= 1000) && (tid < 2000)); // commander Id boundaries
+				Commander = PlayedCard(&pCDB[tid]);
+			}
+			else
+			{
+				_ASSERT(i || (tid < CARD_MAX_ID)); // commander card can't be encoded with RLE
+				if (tid < CARD_MAX_ID)
+				{
+					Deck.push_back(&pCDB[tid]);
+					lastid = tid;
+				}
+				else
+				{
+					for (UINT k = CARD_MAX_ID+1; k < tid; k++) // decode RLE, +1 because we already added one card
+						Deck.push_back(&pCDB[lastid]);
+				}					
+			}
+		}
+	}
 	ActiveDeck(const Card *Cmd) { Commander = PlayedCard(Cmd); Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); };
 	ActiveDeck(const ActiveDeck &D) // need copy constructor
 	{
@@ -1120,6 +1201,60 @@ public:
 			printf(Deck[i].GetName());
 		}
 		printf("]\n");
+	}
+	string GetHash64() const
+	{
+		typedef multiset<UINT> SID; // I <3 sets, they keep stuff sorted ;)
+		SID ids;
+		for (UCHAR i=0;i<Deck.size();i++)
+			ids.insert(Deck[i].GetId());
+		string s;
+		UINT tmp = 0, t = 0;
+		unsigned short lastid = 0, cnt = 1;
+		if (Commander.IsDefined())
+		{
+			tmp = ID2BASE64(Commander.GetId());
+			s.append((char*)&tmp);
+			//printf("1: %s\n",(char*)&tmp);
+		}
+		SID::iterator si = ids.begin();
+		do
+		{
+			// we can actually use Id range 4000-4095 (CARD_MAX_ID - 0xFFF) for special codes,
+			// adding RLE here
+			tmp = ID2BASE64(*si);
+			si++;
+			if (lastid == tmp)
+			{
+				// RLE, count IDs
+				cnt++;
+			}
+			if ((lastid != tmp) || (si == ids.end()))
+			{
+				if (cnt == 2)
+				{
+					t = lastid;
+					s.append((char*)&t);
+					//printf("4: %s\n",(char*)&t);
+				}
+				else
+					if (cnt > 2)
+					{
+						t = ID2BASE64(CARD_MAX_ID + cnt); // special code, RLE count
+						s.append((char*)&t); 
+						//printf("3: %s\n",(char*)&t);
+						cnt = 1;
+					}
+			}
+			if (lastid != tmp)
+			{
+				lastid = tmp;
+				s.append((char*)&tmp);
+				//printf("2: %s\n",(char*)&tmp);
+			}
+		}
+		while (si != ids.end());
+		return s;
 	}
 protected:
 	void GetTargets(VCARDS &From, UCHAR TargetFaction, PVCARDS &GetTo, bool bForInfuse = false)

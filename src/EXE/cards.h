@@ -293,6 +293,7 @@ private: // helper functions
 		return RARITY_COMMON;
 	}
 public:
+	const Card *GetPointer() const { return (const Card *)&CDB[0]; }
 	bool LoadCardXML(const char *FileName, char *returnnewcards = 0, size_t MaxBufferSize = 0)
 	{
 		pugi::xml_document doc;
