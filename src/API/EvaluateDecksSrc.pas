@@ -13,7 +13,7 @@ uses
   IdTCPConnection, IdTCPClient, IdHTTP, OleCtrls, SHDocVw_EWB, EwbCore,
   EmbeddedWB, WinInet, ComCtrls, cxListView, Jpeg, cxCheckComboBox,
   cxCurrencyEdit, ActiveX, cxSpinEdit, cxRadioGroup, cxGroupBox, DBClient,
-  GIFImg, ShellApi, cxCheckListBox, cxGridBandedTableView;
+  GIFImg, ShellApi, cxCheckListBox, cxGridBandedTableView, cxGridExportLink;
 
 const
   MAX_CARD_COUNT = 600;
@@ -217,6 +217,8 @@ type
     vcbSAvgS: TcxGridBandedColumn;
     vcbSAvgSA: TcxGridBandedColumn;
     vcbSNet: TcxGridBandedColumn;
+    bEvalExport: TcxButton;
+    bBEvalExport: TcxButton;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -305,6 +307,8 @@ type
     procedure vTopKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure vBotKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure bBRunClick(Sender: TObject);
+    procedure bEvalExportClick(Sender: TObject);
+    procedure bBEvalExportClick(Sender: TObject);
  private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -417,7 +421,10 @@ begin
         if Faction = 4 then
           result := clGray
         else
-          result := clBlack;
+          if Faction = 5 then
+            result := clTeal
+          else
+            result := clBlack;
 end;
 
 function GetAbilityList(X: Pointer): string;
@@ -437,7 +444,10 @@ function GetAbilityList(X: Pointer): string;
             result := ' Bloodthirsty'
           else
             if Id = 4 then
-              result := ' Xeno';
+              result := ' Xeno'
+            else
+              if Id = 5 then
+                result := ' Righteous';
   end;
   function GetCountString(Id: Byte): string;
   begin
@@ -599,6 +609,19 @@ begin
   ToCard.Picture := FromCard.Picture;
   ToCard.ShowHint := true;
   ToCard.Hint := FromCard.Hint;
+end;
+
+procedure TEvaluateDecksForm.bEvalExportClick(Sender: TObject);
+begin
+  with TSaveDialog.Create(self) do
+    try
+      DefaultExt := 'xls';
+      Filter := 'Excel files|*.xls';
+      if Execute then
+        ExportGridToExcel(FileName, cxGrid, False, True, True);
+    finally
+      Free;
+    end;
 end;
 
 procedure TEvaluateDecksForm.ClearCard(CardImg: TcxImage);
@@ -1328,6 +1351,19 @@ begin
     FreeMem(p1);
     Free;
   end;
+end;
+
+procedure TEvaluateDecksForm.bBEvalExportClick(Sender: TObject);
+begin
+  with TSaveDialog.Create(self) do
+    try
+      DefaultExt := 'xls';
+      Filter := 'Excel files|*.xls';
+      if Execute then
+        ExportGridToExcel(FileName, gBatchResult, False, True, True);
+    finally
+      Free;
+    end;
 end;
 
 procedure TEvaluateDecksForm.bBotVisualClick(Sender: TObject);

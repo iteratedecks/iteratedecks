@@ -357,7 +357,8 @@ object EvaluateDecksForm: TEvaluateDecksForm
               'Imperial'
               'Raider'
               'Bloodthirsty'
-              'Xeno')
+              'Xeno'
+              'Righteous')
             Properties.OnChange = cbRarityPropertiesChange
             TabOrder = 0
             Text = 'Any'
@@ -452,7 +453,8 @@ object EvaluateDecksForm: TEvaluateDecksForm
               'Imperial'
               'Raider'
               'Bloodthirsty'
-              'Xeno')
+              'Xeno'
+              'Righteous')
             Properties.OnChange = cbRarityPropertiesChange
             TabOrder = 8
             Text = 'Any'
@@ -726,41 +728,49 @@ object EvaluateDecksForm: TEvaluateDecksForm
           end
           object vcWins: TcxGridColumn
             Caption = 'Wins'
+            DataBinding.ValueType = 'Integer'
           end
           object vcGames: TcxGridColumn
             Caption = 'Games'
+            DataBinding.ValueType = 'Integer'
           end
           object vcRatio: TcxGridColumn
             Caption = 'Ratio'
+            DataBinding.ValueType = 'Float'
             PropertiesClassName = 'TcxCurrencyEditProperties'
             Properties.DisplayFormat = ',0.###;-,0.###'
           end
           object vcAvgD: TcxGridColumn
             Caption = 'Avg. Dmg Dealt'
+            DataBinding.ValueType = 'Float'
             PropertiesClassName = 'TcxCurrencyEditProperties'
             Properties.DisplayFormat = ',#.##;-,#.##'
             Width = 64
           end
           object vcAvgDA: TcxGridColumn
             Caption = 'Avg. Dmg Dealt (Auto)'
+            DataBinding.ValueType = 'Float'
             PropertiesClassName = 'TcxCurrencyEditProperties'
             Properties.DisplayFormat = ',#.##;-,#.##'
             Width = 64
           end
           object vcAvgS: TcxGridColumn
             Caption = 'Avg. Dmg Suffered'
+            DataBinding.ValueType = 'Float'
             PropertiesClassName = 'TcxCurrencyEditProperties'
             Properties.DisplayFormat = ',#.##;-,#.##'
             Width = 90
           end
           object vcAvgSA: TcxGridColumn
             Caption = 'Avg. Dmg Suffered (Auto)'
+            DataBinding.ValueType = 'Float'
             PropertiesClassName = 'TcxCurrencyEditProperties'
             Properties.DisplayFormat = ',#.##;-,#.##'
             Width = 90
           end
           object vcNet: TcxGridColumn
             Caption = 'Avg. net gain'
+            DataBinding.ValueType = 'Float'
             PropertiesClassName = 'TcxCurrencyEditProperties'
             Properties.DisplayFormat = ',#.##;-,#.##'
           end
@@ -777,13 +787,22 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Width = 121
       end
       object bClear: TcxButton
-        Left = 271
+        Left = 375
         Top = 3
         Width = 89
         Height = 21
         Caption = 'Clear history'
         TabOrder = 4
         OnClick = bClearClick
+      end
+      object bEvalExport: TcxButton
+        Left = 270
+        Top = 3
+        Width = 99
+        Height = 21
+        Caption = 'Export to Excel'
+        TabOrder = 5
+        OnClick = bEvalExportClick
       end
     end
     object tsBatch: TcxTabSheet
@@ -1154,6 +1173,15 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Left = 239
         Top = 30
         Caption = 'This simulations always run in blazing fast mode'
+      end
+      object bBEvalExport: TcxButton
+        Left = 239
+        Top = 96
+        Width = 130
+        Height = 25
+        Caption = 'Export to Excel'
+        TabOrder = 5
+        OnClick = bBEvalExportClick
       end
     end
     object tsUpdate: TcxTabSheet
