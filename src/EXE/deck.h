@@ -26,8 +26,9 @@ typedef	unsigned int UINT;
 #define FACTION_RAIDER			2
 #define FACTION_BLOODTHIRSTY	3
 #define FACTION_XENO			4
+#define FACTION_RIGHTEOUS		5
 
-char FACTIONS[5][CARD_NAME_MAX_LENGTH] = {0,"Imperial","Raider","Bloodthirsty","Xeno"};
+char FACTIONS[6][CARD_NAME_MAX_LENGTH] = {0,"Imperial","Raider","Bloodthirsty","Xeno","Righteous"};
 
 //#define TARGETSCOUNT_NONE		0				
 #define TARGETSCOUNT_ONE		0				

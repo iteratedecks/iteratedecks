@@ -263,6 +263,8 @@ private: // helper functions
 			return FACTION_BLOODTHIRSTY;
 		if (XmlID == 4)
 			return FACTION_XENO;
+		if (XmlID == 8)
+			return FACTION_RIGHTEOUS;
 		if (XmlID == 9)
 			return FACTION_RAIDER;
 		return FACTION_NONE;
@@ -323,6 +325,10 @@ public:
 					printf("Set : %d\n",Set);
 					ss = Set;
 				}*/
+				//if (Id == 426)
+				//{
+				//	printf("Apollo: %d\n",Id);
+				//}
 				Card c(Id,Name,Pic,RemapRarity(Rarity,Unique),DetectTypeByID(Id)/*(Attack,Health,Wait,Faction,(!it->child("attack").empty()),(!it->child("cost").empty()))*/,Faction,Attack,Health,Wait,Set);
 				//printf("%s: %d %d %d %d %d\n",Name,Attack,Health,Rarity,Faction,Wait);
 				//<name>Duncan</name>
