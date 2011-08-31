@@ -219,6 +219,9 @@ type
     vcbSNet: TcxGridBandedColumn;
     bEvalExport: TcxButton;
     bBEvalExport: TcxButton;
+    kongregatelogo: TcxImage;
+    googlecodelogo: TcxImage;
+    tyrantlogo: TcxImage;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -309,6 +312,9 @@ type
     procedure bBRunClick(Sender: TObject);
     procedure bEvalExportClick(Sender: TObject);
     procedure bBEvalExportClick(Sender: TObject);
+    procedure googlecodelogoClick(Sender: TObject);
+    procedure kongregatelogoClick(Sender: TObject);
+    procedure tyrantlogoClick(Sender: TObject);
  private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -812,6 +818,11 @@ begin
     ClearCard(Sender as TcxImage);
 
   UpdateButtonsVisibility;
+end;
+
+procedure TEvaluateDecksForm.kongregatelogoClick(Sender: TObject);
+begin
+  ShellExecute(Handle, 'open', 'http://www.kongregate.com/forums/65-tyrant/topics/195043-evaluate-decks-game-simulator', nil, nil, SW_SHOWNORMAL) ;
 end;
 
 procedure TEvaluateDecksForm.GenericTopMouseDown(Sender: TObject;
@@ -2383,6 +2394,11 @@ begin
    end;
 end;
 
+procedure TEvaluateDecksForm.googlecodelogoClick(Sender: TObject);
+begin
+  ShellExecute(Handle, 'open', 'http://code.google.com/p/evaluatedecks', nil, nil, SW_SHOWNORMAL) ;
+end;
+
 function TEvaluateDecksForm.LoadCardImage(C: Pointer; Index: integer): boolean;
 var
    K: integer;
@@ -2702,6 +2718,11 @@ begin
     bTopVisual.Enabled := ImageCount > 0;
     bBotVisual.Enabled := ImageCount > 0;
   end;
+end;
+
+procedure TEvaluateDecksForm.tyrantlogoClick(Sender: TObject);
+begin
+  ShellExecute(Handle, 'open', 'http://www.kongregate.com/games/synapticon/tyrant', nil, nil, SW_SHOWNORMAL) ;
 end;
 
 end.
