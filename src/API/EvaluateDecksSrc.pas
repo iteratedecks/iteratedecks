@@ -1620,8 +1620,8 @@ begin
                 ShowMessage('Error while downloading file'#13+sImagesFolder + C.Picture+#13+E.Message);
               end;
             end;
-            // load into lib
-            if FileExists(fname) then
+            // load into lib if lib was loaded ;)
+            if FileExists(fname) and (ImageCount > 0) then
               if LoadCardImage(C,ImageCount) then
                 inc(ImageCount);
 
