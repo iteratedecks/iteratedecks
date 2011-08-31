@@ -4026,7 +4026,8 @@
 		</speech>
 		<speechComplete>
 			<line commander='1042'>Typhon has made it to the core and is being engulfed by the red glowing light emitting from it. There may still be time to stop him. Fire everything!</line>
-			<line commander='1047'>Ha! You fools! Your attacks are useless against me now. My power is beyond limits and will be the end of you all. (The light surrounding Typhon expands out in a burst and then everything fades to darkness.</line>
+			<line commander='1047'>Ha! You fools! Your attacks are useless against me now. My power is beyond limits and will be the end of you all.</line>
+			<line commander='1047'>(The light surrounding Typhon expands out in a burst and then everything fades to darkness.)</line>
 		</speechComplete>
 		<deck>
 			<card>293</card>
