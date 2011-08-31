@@ -257,6 +257,7 @@ public:
 	const UCHAR GetTargetCount(const UCHAR id) const { return TargetCounts[id]; }
 	const UCHAR GetTargetFaction(const UCHAR id) const { return TargetFactions[id]; }
 	const char *GetName() const { return Name; }
+	const char *GetPicture() const { return Picture; }
 };
 
 class PlayedCard

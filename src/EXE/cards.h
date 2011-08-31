@@ -359,7 +359,8 @@ public:
 				//MSUINT::iterator mi = Index.find(c.GetName());
 				//if (mi != Index.end())
 				//	printf("Conflicted: %s : %d and %d\n",c.GetName(),mi->second,c.GetId());
-				bool isnew = (!CDB[Id].IsCard());
+				// so card should be treated as new if it's picture changed, so API would know it should download new pic
+				bool isnew = ((!CDB[Id].IsCard()) || (stricmp(CDB[Id].GetPicture(),c.GetPicture())));
 				bool ins = Insert(c,(Set > 0));
 				if (ins && returnnewcards && isnew)
 				{
