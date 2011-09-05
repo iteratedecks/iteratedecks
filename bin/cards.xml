@@ -6024,12 +6024,9 @@
 		<id>138</id>
 		<name>X-Dog, Lord of the Apocalypse</name>
 		<picture>xdog.jpg</picture>
-		<attack>1</attack>
-		<health>15</health>
-		<cost>1</cost>
-		<skill id='strike' x='1' />
-		<skill id='counter' x='1' />
-		<skill id='berserk' x='1' />
+		<attack>4</attack>
+		<health>1</health>
+		<cost>0</cost>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
 		<type>1</type> 
 	</unit>
