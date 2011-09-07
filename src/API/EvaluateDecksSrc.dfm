@@ -353,7 +353,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Top = 8
             Properties.DropDownListStyle = lsFixedList
             Properties.Items.Strings = (
-              'Any'
+              'Any faction'
               'Imperial'
               'Raider'
               'Bloodthirsty'
@@ -361,7 +361,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
               'Righteous')
             Properties.OnChange = cbRarityPropertiesChange
             TabOrder = 0
-            Text = 'Any'
+            Text = 'Any faction'
             Width = 106
           end
           object cbRarity: TcxComboBox
@@ -369,7 +369,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Top = 8
             Properties.DropDownListStyle = lsFixedList
             Properties.Items.Strings = (
-              'Any'
+              'Any rarity'
               'Common'
               'Uncommon'
               'Rare'
@@ -377,7 +377,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
               'Legendary')
             Properties.OnChange = cbRarityPropertiesChange
             TabOrder = 1
-            Text = 'Any'
+            Text = 'Any rarity'
             Width = 105
           end
           object cbType: TcxComboBox
@@ -385,14 +385,14 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Top = 8
             Properties.DropDownListStyle = lsFixedList
             Properties.Items.Strings = (
-              'Any'
+              'Any type'
               'Commander'
               'Assault'
               'Structure'
               'Action')
             Properties.OnChange = cbRarityPropertiesChange
             TabOrder = 2
-            Text = 'Any'
+            Text = 'Any type'
             Width = 106
           end
           object cbWait: TcxComboBox
@@ -400,7 +400,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Top = 35
             Properties.DropDownListStyle = lsFixedList
             Properties.Items.Strings = (
-              'Any'
+              'Any wait'
               '0 turns'
               '1 turn'
               '2 turns'
@@ -409,7 +409,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
               '6 turns')
             Properties.OnChange = cbRarityPropertiesChange
             TabOrder = 3
-            Text = 'Any'
+            Text = 'Any wait'
             Width = 65
           end
           object cbSkill: TcxComboBox
@@ -417,10 +417,10 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Top = 62
             Properties.DropDownListStyle = lsFixedList
             Properties.Items.Strings = (
-              'Any')
+              'Any skills')
             Properties.OnChange = cbSkillPropertiesChange
             TabOrder = 4
-            Text = 'Any'
+            Text = 'Any skills'
             Width = 106
           end
           object ceFilter: TcxTextEdit
@@ -449,7 +449,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Enabled = False
             Properties.DropDownListStyle = lsFixedList
             Properties.Items.Strings = (
-              'Any'
+              'Any skill target'
               'Imperial'
               'Raider'
               'Bloodthirsty'
@@ -457,7 +457,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
               'Righteous')
             Properties.OnChange = cbRarityPropertiesChange
             TabOrder = 8
-            Text = 'Any'
+            Text = 'Any skill target'
             Width = 106
           end
         end
