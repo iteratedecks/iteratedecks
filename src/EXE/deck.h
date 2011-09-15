@@ -260,7 +260,6 @@ public:
 	const char *GetName() const { return Name; }
 	const char *GetPicture() const { return Picture; }
 };
-
 class PlayedCard
 {
 typedef vector<PlayedCard> VCARDS;
@@ -448,10 +447,8 @@ public:
 
 typedef vector<PlayedCard> VCARDS;
 typedef vector<PlayedCard*> PVCARDS;
-
 class ActiveDeck
 {
-private:
 public:
 	PlayedCard Commander;
 	VCARDS Deck;
@@ -474,7 +471,7 @@ private:
 #define VALOR_HITS_COMMANDER	true
 		//printf("%s %d\n",SRC.GetName(),SRC.GetHealth());
 		_ASSERT(SRC.IsDefined() && SRC.IsAlive()); // baby, don't hurt me, no more
-		UCHAR iflurry = (SRC.GetAbility(COMBAT_FLURRY) && PROC50) ? SRC.GetAbility(COMBAT_FLURRY) : 1; // coding like a boss :) don't like this style
+		UCHAR iflurry = (SRC.GetAbility(COMBAT_FLURRY) && PROC50) ? (SRC.GetAbility(COMBAT_FLURRY)+1) : 1; // coding like a boss :) don't like this style
 		if ((index >= (UCHAR)Def.Units.size()) || (!Def.Units[index].IsAlive()) || (SRC.GetAbility(COMBAT_FEAR)))
 		{
 			// Deal DMG To Commander BUT STILL PROC50 FLURRY and PROBABLY VALOR
@@ -648,6 +645,15 @@ public:
 		Deck.reserve(D.Deck.size());
 		for (UCHAR i=0;i<D.Deck.size();i++)
 			Deck.push_back(D.Deck[i]);
+		Actions.reserve(D.Actions.size());
+		for (UCHAR i=0;i<D.Actions.size();i++)
+			Actions.push_back(D.Actions[i]);
+		Units.reserve(D.Units.size());
+		for (UCHAR i=0;i<D.Units.size();i++)
+			Units.push_back(D.Units[i]);
+		Structures.reserve(D.Structures.size());
+		for (UCHAR i=0;i<D.Structures.size();i++)
+			Structures.push_back(D.Structures[i]);
 		//for (VCARDS::iterator vi = D.Deck.begin();vi != D.Deck.end();vi++)
 		//	Deck.push_back(*vi);
 	}
@@ -665,6 +671,12 @@ public:
 		UCHAR FusionMultiplier = 1;
 		if (IsFusioned)
 			FusionMultiplier = 2;
+
+		// here is a good question - can paybacked skill be paybacked?
+		// can paybacked skill be evaded?
+		// in current model, it can't be, payback applies effect right away, without simulationg it's cast
+		// another question is - can paybacked skill be evaded? it is possible, but in this simulator it can't be
+		// both here and in branches
 
 		// enfeeble
 		aid = ACTIVATION_ENFEEBLE;
@@ -1053,7 +1065,9 @@ public:
 		VCARDS::iterator vi = Deck.begin();
 		UCHAR indx = 0;
 		if (vi != Deck.end()) // gay ass STL updates !!!
+		{
 			indx = rand() % Deck.size();
+		}
 		while(vi != Deck.end())
 		{
 			if (!indx)
@@ -1081,8 +1095,10 @@ public:
 		PlayedCard Empty;
 		UCHAR iFusionCount = 0;
 		for (UCHAR i=0;i<Structures.size();i++)
+		{
 			if (Structures[i].GetAbility(SPECIAL_FUSION) > 0)
 				iFusionCount++;
+		}
 		// action cards
 		for (UCHAR i=0;i<Actions.size();i++)
 		{
@@ -1266,5 +1282,35 @@ protected:
 		for (VCARDS::iterator vi = From.begin();vi != From.end();vi++)
 			if ((vi->IsAlive()) && (((vi->GetFaction() == TargetFaction) && (!bForInfuse)) || (TargetFaction == FACTION_NONE) || ((vi->GetFaction() != TargetFaction) && (bForInfuse))))
 				GetTo.push_back(&(*vi));
+	}
+};
+
+// this structure is used to store and return simulation result
+typedef unsigned long       DWORD;
+struct RESULTS
+{
+	DWORD Win;
+	DWORD Loss;
+	DWORD Points;
+	DWORD AutoPoints;
+	DWORD LPoints;
+	DWORD LAutoPoints;
+	RESULTS()
+	{
+		Win = 0;
+		Loss = 0;
+		Points = 0;
+		AutoPoints = 0;
+		LPoints = 0;
+		LAutoPoints = 0;
+	}
+	void Add(const RESULTS rAdd)
+	{
+		Win += rAdd.Win;
+		Loss += rAdd.Loss;
+		Points += rAdd.Points;
+		AutoPoints += rAdd.AutoPoints;
+		LPoints += rAdd.LPoints;
+		LAutoPoints += rAdd.LAutoPoints;
 	}
 };
