@@ -8061,7 +8061,7 @@
 		<icon>PoisonSkillIcon</icon>
 		<target_anim>poison.swf</target_anim>
 		<loop_anim>poisonContinued.swf</loop_anim>
-		<desc>Damage-Dependant - Damaged enemy Assault cards take damage at the beginning of its turn</desc>
+		<desc>Damage-Dependant - Assault cards that took attack damage from this unit take damage at the beginning of the poisoned unit's turn</desc>
 		<sound>PoisonSound</sound>
 		<cardValue cost='2' />
 	</skillType>
