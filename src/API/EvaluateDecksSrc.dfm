@@ -315,6 +315,10 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Caption = 'Visual'
       ImageIndex = 0
       OnShow = tsDecksShow
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object rPanel: TPanel
         Left = 434
         Top = 0
@@ -968,6 +972,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
               Caption = 'Games'
               Position.BandIndex = 1
               Position.ColIndex = 2
+              Visible = False
             end
             item
               Caption = 'Win ratio'
@@ -1018,6 +1023,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
               Caption = 'Games'
               Position.BandIndex = 11
               Position.ColIndex = 2
+              Visible = False
             end
             item
               Caption = 'Win ratio'
@@ -1187,6 +1193,10 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsUpdate: TcxTabSheet
       Caption = 'Update DB'
       ImageIndex = 3
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object bDLXML: TcxButton
         Left = 3
         Top = 3
@@ -1221,6 +1231,10 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsHelp: TcxTabSheet
       Caption = 'Tips'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         784
         646)
@@ -3911,6 +3925,10 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsSettings: TcxTabSheet
       Caption = 'Settings'
       ImageIndex = 5
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object rgEval: TcxRadioGroup
         Left = 3
         Top = 3
