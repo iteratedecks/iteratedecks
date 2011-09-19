@@ -23,6 +23,7 @@ const
   FILENAME_MAX_LENGTH = 50;
   CARD_ABILITIES_MAX = 70;
   cMaxBuffer = 65535;
+  NAME_VALUE_SEPARATOR = '%';  // just a character that goes before '[' for StringList.Sort
 type
   TCard = record
     Id: UINT;
@@ -1144,7 +1145,7 @@ begin
     LastCardIndexBot := -1
   else
   begin
-    LastCardIndexBot := (Sender as TcxComboBox).ItemIndex;
+    LastCardIndexBot := RemapMinID[(Sender as TcxComboBox).ItemIndex];
     // do checks on unique etc
     with vBot.DataController do
     begin
@@ -1845,7 +1846,7 @@ begin
           LastCardIndexBot := id;
           vBot.DataController.SetValue(i, vBotID.Index, id);
           vBot.DataController.SetValue(i, vBotName.Index, (vBotName.Properties as
-            TcxComboBoxProperties).Items[id]);
+            TcxComboBoxProperties).Items[remapMinIDInversed[id]]);
           //vTop.DataController.SetValue(i,2,id);
           //vTop.DataController.SetValue(i,3,id);
         end;
@@ -1894,7 +1895,7 @@ begin
           LastCardIndexBot := id;
           vBot.DataController.SetValue(i, vBotID.Index, id);
           vBot.DataController.SetValue(i, vBotName.Index, (vBotName.Properties as
-            TcxComboBoxProperties).Items[id]);
+            TcxComboBoxProperties).Items[remapMinIDInversed[id]]);
           //vTop.DataController.SetValue(i,2,id);
           //vTop.DataController.SetValue(i,3,id);
         end;
@@ -2244,7 +2245,7 @@ begin
         vTopID.Index])) then
       begin
         id := values[i, vTopID.Index];
-        if Cards[remapminidinversed[id]].CardType = 1 then
+        if Cards[id].CardType = 1 then
         begin
           CopyCard(Images[id], imgTop);
         end
@@ -2315,21 +2316,41 @@ end;
 procedure TEvaluateDecksForm.cbUseHiddenClick(Sender: TObject);
 var
   i, k: integer;
+  sl: TStringList;
 begin
   k := 0;
+  sl := TStringList.Create;
+  sl.NameValueSeparator := NAME_VALUE_SEPARATOR;
   (vTopName.Properties as TcxComboBoxProperties).Items.Clear;
   for i := 0 to CardsLoaded - 1 do
     if cbUseHidden.Checked or (Cards[i].CardSet > 0) then
     begin
       if Cards[i].CardSet = 0 then
-        (vTopName.Properties as TcxComboBoxProperties).Items.Add(Cards[i].Name +
-          '[' + IntToStr(Cards[i].Id) + ']')
+      begin
+        sl.Values[Cards[i].Name + '[' + IntToStr(Cards[i].Id) + ']'] := IntToStr(i);
+          {(vTopName.Properties as TcxComboBoxProperties).Items.Add(Cards[i].Name +
+            '[' + IntToStr(Cards[i].Id) + ']');
+          Items[Items.Count-1].Tag := i;}
+      end
       else
-        (vTopName.Properties as TcxComboBoxProperties).Items.Add(Cards[i].Name);
-      RemapMinID[k] := i;
+      begin
+        sl.Values[Cards[i].Name] := IntToStr(i);
+        //(vTopName.Properties as TcxComboBoxProperties).Items.Add(Cards[i].Name);
+      end;
+      {RemapMinID[k] := i;
       RemapMinIDInversed[i] := k;
-      inc(k);
+      inc(k); }
     end;
+  sl.Sort;
+  for k := 0 to sl.Count - 1 do
+  begin
+    (vTopName.Properties as TcxComboBoxProperties).Items.Add(sl.Names[k]);
+    i := StrToInt(sl.ValueFromIndex[k]);
+    RemapMinID[k] := i;
+    RemapMinIDInversed[i] := k;
+  end;
+
+  sl.Free;
 end;
 
 procedure TEvaluateDecksForm.cbUseRaidClick(Sender: TObject);
@@ -2354,6 +2375,7 @@ var
 begin
   randomize();
   sLocalDir := ExtractFilePath(ParamStr(0));
+  Caption := Application.Title;
   if SizeOf(TCard) <> GetCardSize() then
   begin
     tLoad.Enabled := false;
@@ -2478,7 +2500,7 @@ end;
 
 procedure TEvaluateDecksForm.teamliquidlogoClick(Sender: TObject);
 begin
-  ShellExecute(Handle, 'open', 'http://www.teamliquid.net', nil, nil,
+  ShellExecute(Handle, 'open', 'http://www.teamliquid.net/forum/viewmessage.php?topic_id=136013', nil, nil,
     SW_SHOWNORMAL);
 end;
 
@@ -2684,6 +2706,7 @@ var
   i, k: integer;
   Indexes: array[0..MAX_SETS_COUNT] of UINT;
   Sets: array[0..MAX_SETS_COUNT] of TCardSet;
+  sl: TStringList;
 begin
   tLoad.Enabled := false;
 
@@ -2771,6 +2794,8 @@ begin
   vTop.DataController.RecordCount := 11;
   vBot.DataController.RecordCount := 16;
 
+  sl := TStringList.Create;
+  sl.NameValueSeparator := NAME_VALUE_SEPARATOR;
   k := 0;
   (vTopName.Properties as TcxComboBoxProperties).Items.Clear;
   (vBotName.Properties as TcxComboBoxProperties).Items.Clear;
@@ -2779,20 +2804,32 @@ begin
     if cbUseHidden.Checked or (Cards[i].CardSet > 0) then
     begin
       if Cards[i].CardSet = 0 then
-        (vTopName.Properties as TcxComboBoxProperties).Items.Add(Cards[i].Name +
-          '[' + IntToStr(Cards[i].Id) + ']')
+        sl.Values[Cards[i].Name + '[' + IntToStr(Cards[i].Id) + ']'] := IntToStr(i)
+       { (vTopName.Properties as TcxComboBoxProperties).Items.Add(Cards[i].Name +
+          '[' + IntToStr(Cards[i].Id) + ']')               }
       else
-        (vTopName.Properties as TcxComboBoxProperties).Items.Add(Cards[i].Name);
+        sl.Values[Cards[i].Name] := IntToStr(i);
+       { (vTopName.Properties as TcxComboBoxProperties).Items.Add(Cards[i].Name);
       RemapMinID[k] := i;
       RemapMinIDInversed[i] := k;
-      inc(k);
+      inc(k);    }
     end;
-    if Cards[i].CardSet = 0 then
+    {if Cards[i].CardSet = 0 then
       (vBotName.Properties as TcxComboBoxProperties).Items.Add(Cards[i].Name +
         '[' + IntToStr(Cards[i].Id) + ']')
     else
-      (vBotName.Properties as TcxComboBoxProperties).Items.Add(Cards[i].Name);
+      (vBotName.Properties as TcxComboBoxProperties).Items.Add(Cards[i].Name); }
   end;
+  sl.Sort;
+  for k := 0 to sl.Count - 1 do
+  begin
+    (vTopName.Properties as TcxComboBoxProperties).Items.Add(sl.Names[k]);
+    (vBotName.Properties as TcxComboBoxProperties).Items.Add(sl.Names[k]);
+    i := StrToInt(sl.ValueFromIndex[k]);
+    RemapMinID[k] := i;
+    RemapMinIDInversed[i] := k;
+  end;
+  sl.Free;
 end;
 
 procedure TEvaluateDecksForm.tsDecksShow(Sender: TObject);
