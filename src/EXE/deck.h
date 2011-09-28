@@ -297,9 +297,12 @@ public:
 	const bool BeginTurn()
 	{
 		Effects[ACTIVATION_ENFEEBLE] = 0;
-		if (Effects[DMGDEPENDANT_POISON])
-			SufferDmg(Effects[DMGDEPENDANT_POISON]);
 		return (Health && (!Effects[ACTIVATION_JAM]) && (!Wait));
+	}
+	void ProcessPoison()
+	{
+		if (IsAlive() && (Effects[DMGDEPENDANT_POISON]))
+			SufferDmg(Effects[DMGDEPENDANT_POISON]);
 	}
 	void EndTurn()
 	{
@@ -319,15 +322,16 @@ public:
 	{
 		_ASSERT(OriginalCard);
 // Regeneration happens before the additional strikes from Flurry.
-// Regenerating does not prevent Crush damage
+// Regenerating does not prevent Crush damage		
 		if (Dmg >= Health)
 		{
+			UCHAR dealt = Health;
 			if ((OriginalCard->GetAbility(DEFENSIVE_REGENERATE))&&(PROC50))
 				Health = OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
 			else
 				Health = 0;
 			// crush damage will be dealt even if the defending unit Regenerates
-			return Health;// note that CRUSH & BACKFIRE are processed elsewhere
+			return dealt;// note that CRUSH & BACKFIRE are processed elsewhere
 		}
 		else
 			Health -= Dmg;
@@ -370,6 +374,55 @@ public:
 	const UCHAR GetRarity() const
 	{
 		return OriginalCard->GetRarity();
+	}
+	bool operator==(const PlayedCard &C) const
+	{
+		if (OriginalCard != C.OriginalCard) // better to compare ID's, but this should also work
+			return false;
+		if (Wait != C.Wait)
+			return false;
+		if (Attack != C.Attack)
+			return false;
+		if (Health != C.Health)
+			return false;
+		if (bPlayed != C.bPlayed)
+			return false;
+		if (Faction != C.Faction)
+			return false;
+		return (!memcmp(Effects,C.Effects,CARD_ABILITIES_MAX * sizeof(UCHAR)));
+	}
+	bool operator!=(const PlayedCard &C) const
+	{
+		if (OriginalCard != C.OriginalCard) // better to compare ID's, but this should also work
+			return true;
+		if (Wait != C.Wait)
+			return true;
+		if (Attack != C.Attack)
+			return true;
+		if (Health != C.Health)
+			return true;
+		if (bPlayed != C.bPlayed)
+			return true;
+		if (Faction != C.Faction)
+			return true;
+		return (memcmp(Effects,C.Effects,CARD_ABILITIES_MAX * sizeof(UCHAR)) != 0);
+	}
+	bool operator<(const PlayedCard &C) const
+	{
+		if (OriginalCard != C.OriginalCard) // better to compare ID's, but this should also work
+			return (OriginalCard < C.OriginalCard);
+		if (Wait != C.Wait)
+			return (Wait < C.Wait);
+		if (Attack != C.Attack)
+			return (Attack < C.Attack);
+		if (Health != C.Health)
+			return (Health < C.Health);
+		if (bPlayed != C.bPlayed)
+			return (bPlayed < C.bPlayed);
+		if (Faction != C.Faction)
+			return (Faction < C.Faction);
+		int mr = memcmp(Effects,C.Effects,CARD_ABILITIES_MAX * sizeof(UCHAR)) < 0;
+		return (mr < 0) && (mr != 0);
 	}
 	PlayedCard& operator=(const Card *card)
 	{
@@ -526,7 +579,7 @@ private:
 					UCHAR antiair = SRC.GetAbility(COMBAT_ANTIAIR);
 					if (targets[s]->GetAbility(DEFENSIVE_FLYING))
 					{
-						if ((!antiair) && PROC50) // missed
+						if ((!antiair) && (!SRC.GetAbility(DEFENSIVE_FLYING)) && PROC50) // missed
 							continue;
 					}
 					else antiair = 0; // has no effect if target is not flying
@@ -566,7 +619,7 @@ private:
 					if (targets[s]->GetAbility(DEFENSIVE_COUNTER))
 						SRC.SufferDmg(targets[s]->GetAbility(DEFENSIVE_COUNTER) + SRC.GetEffect(ACTIVATION_ENFEEBLE)); // counter dmg is enhanced by enfeeble
 					// if target is dead, we dont need to process this effects
-					if (targets[s]->IsAlive())
+					if (targets[s]->IsAlive() && (dmg > 0))
 					{
 						// immobilize
 						if (SRC.GetAbility(DMGDEPENDANT_IMMOBILIZE) && PROC50)
@@ -598,6 +651,7 @@ private:
 					break;
 			}
 		}
+#undef SRC
 	}
 public:
 	ActiveDeck() {}
@@ -656,6 +710,49 @@ public:
 			Structures.push_back(D.Structures[i]);
 		//for (VCARDS::iterator vi = D.Deck.begin();vi != D.Deck.end();vi++)
 		//	Deck.push_back(*vi);
+	}
+	bool operator==(const ActiveDeck &D) const
+	{
+		if (strcmp(GetHash64().c_str(),D.GetHash64().c_str()))
+			return false;
+		if (Units.size() != D.Units.size())
+			return false;
+		for (UCHAR i=0;i<Units.size();i++)
+			if (!(Units[i] == D.Units[i]))
+				return false;
+		if (Structures.size() != D.Structures.size())
+			return false;
+		for (UCHAR i=0;i<Structures.size();i++)
+			if (!(Structures[i] == D.Structures[i]))
+				return false;
+		if (Actions.size() != D.Actions.size())
+			return false;
+		for (UCHAR i=0;i<Actions.size();i++)
+			if (!(Actions[i] == D.Actions[i]))
+				return false;
+		return true;
+	}
+	bool operator<(const ActiveDeck &D) const
+	{
+		int sr = strcmp(GetHash64().c_str(),D.GetHash64().c_str());
+		if (sr)
+			return (sr < 0);
+		if (Units.size() != D.Units.size())
+			return (Units.size() < D.Units.size());
+		for (UCHAR i=0;i<Units.size();i++)
+			if (Units[i] != D.Units[i])
+				return (Units[i] < D.Units[i]);
+		if (Structures.size() != D.Structures.size())
+			return (Structures.size() < D.Structures.size());
+		for (UCHAR i=0;i<Structures.size();i++)
+			if (Structures[i] != D.Structures[i])
+				return (Structures[i] < D.Structures[i]);
+		if (Actions.size() != D.Actions.size())
+			return (Actions.size() < D.Actions.size());
+		for (UCHAR i=0;i<Actions.size();i++)
+			if (Actions[i] != D.Actions[i])
+				return (Actions[i] < D.Actions[i]);
+		return false;
 	}
 	void Add(const Card *c)
 	{
@@ -1061,6 +1158,9 @@ public:
 	}
 	void AttackDeck(ActiveDeck &Def)
 	{
+		// process poison
+		for (UCHAR i=0;i<Units.size();i++)
+			Units[i].ProcessPoison();
 		// pick a random card
 		VCARDS::iterator vi = Deck.begin();
 		UCHAR indx = 0;
@@ -1222,6 +1322,8 @@ public:
 	}
 	string GetHash64() const
 	{
+		if (Deck.empty())
+			return string();
 		typedef multiset<UINT> SID; // I <3 sets, they keep stuff sorted ;)
 		SID ids;
 		for (UCHAR i=0;i<Deck.size();i++)
