@@ -4471,6 +4471,1134 @@
 	
 	<!-- END Blight Side Missions -->
 	
+	<!-- Purity Missions -->
+	
+	<mission> 
+		<id>127</id>
+		<name>Mission 91</name>
+		<picture>mission127.jpg</picture>
+		<location_id>15</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>460</x>
+		<y>350</y>
+		<xp>23</xp>  <!-- 2.3 -->
+		<energy>10</energy>
+		<money>440</money> <!-- 11 GPE -->
+		<rep faction='10' amount='4' />
+		<commander>1088</commander>
+		<desc>The Bloodthirsty are increasing in number and growing in strength.</desc>
+		<speech>
+			<line commander='1042'>Commander, you’re okay! Quick Typhon is changing; maybe we can stop him before he gains too much power.</line>
+			<line commander='1042'>But it seems like all of the Bloodthirsty in Tartarus have been attracted here, we must fight through them!</line>
+		</speech>
+		<deck>
+			<card>326</card>
+			<card>328</card>
+			<card>323</card>
+			<card>279</card>
+			<card>296</card>
+			<card>205</card>
+			<card>204</card>
+			<card>111</card>
+			<card>2055</card>
+			<card>2069</card>
+		</deck>
+		<rewards>
+			<card>355</card>
+		</rewards>
+		<req>114</req>
+	</mission>
+
+	<mission>
+		<id>128</id>
+		<name>Mission 92</name>
+		<picture>mission128.jpg</picture>
+		<location_id>15</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>390</x>
+		<y>310</y>
+		<xp>26</xp>
+		<energy>11</energy>
+		<money>500</money>
+		<rep faction='10' amount='5' />
+		<commander>1088</commander>
+		<desc>As Typhon gains more power, so do the Bloodthirsty.</desc>
+		<speech>
+			<line commander='1042'>Don't give up! We may die here but at least it could mean the end of Typhon!</line>
+		</speech>
+		<deck>
+			<card>326</card>
+			<card>345</card>
+			<card>346</card>
+			<card>172</card>
+			<card>292</card>
+			<card>113</card>
+			<card>116</card>
+			<card>407</card>
+			<card>242</card>
+			<card>2052</card>
+		</deck>
+		<rewards>
+			<card>2069</card>
+		</rewards>
+		<req>127</req>
+	</mission>
+
+	<mission>
+		<id>129</id>
+		<name>Mission 93</name>
+		<picture>mission129.jpg</picture>
+		<location_id>15</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>320</x>
+		<y>270</y>
+		<xp>28</xp>
+		<energy>12</energy>
+		<money>550</money>
+		<rep faction='10' amount='7' />
+		<commander>1088</commander>
+		<desc>The Raiders and Bloodthisrty won't work together, but they still combine to make a powerful force.</desc>
+		<speech>
+			<line commander='1042'>Before it seems like the Bloodthirsty were ignoring Typhon. Now they are protecting him.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1042'>It's no use. We can't get anywhere near Typhon.</line>
+			<line commander='1026'>Katana! Can you hear me?</line>
+			<line commander='1042'>Yurich!? A portal...?</line>
+			<line commander='1026'>There isn't much time. Jump through!</line>
+			<line commander='1042'>Quickly Commander!</line>
+		</speechComplete>
+		<deck>
+			<card>394</card>
+			<card>183</card>
+			<card>406</card>
+			<card>407</card>
+			<card>215</card>
+			<card>339</card>
+			<card>326</card>
+			<card>346</card>
+			<card>327</card>
+			<card>345</card>
+			<card>2049</card>
+			<card>3028</card>
+		</deck>
+		<rewards>
+			<card>339</card>
+		</rewards>
+		<req>128</req>
+	</mission>
+
+<!-- 1st New Location -->
+
+	<mission>
+		<id>130</id>
+		<name>Mission 94</name>
+		<picture>mission130.jpg</picture>
+		<location_id>16</location_id>
+		<num_to_complete>5</num_to_complete>
+		<x>280</x>
+		<y>260</y>
+		<xp>26</xp>
+		<energy>11</energy>
+		<money>500</money>
+		<rep faction='10' amount='7' />
+		<commander>1114</commander>
+		<desc>The Raiders are highly coordinated under Cassandra.</desc>
+		<speech>
+			<line commander='1042'>I don't believe my eyes... Acheron is trashed, the Blight is spreading everywhere!</line>
+			<line commander='1042'>Yurich what the hell is going on? Where are we?</line>
+			<line commander='1026'>I'll explain later, we must go before...</line>
+			<line commander='1100'>Yurich, you traitor! You told us we were on a mission to bring Typhon back from Tartarus, instead you help them? You will pay for this.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1042'>Now that they are gone it is time to start explaining, Yurich.</line>
+		</speechComplete>
+		<deck>
+			<card>342</card>
+			<card>342</card>
+			<card>183</card>
+			<card>394</card>
+			<card>198</card>
+			<card>73</card>
+			<card>339</card>
+			<card>270</card>
+			<card>3000</card>
+			<card>2024</card>
+		</deck>
+		<rewards>
+			<card>342</card>
+		</rewards>
+		<req>129</req>
+	</mission>
+
+	<mission>
+		<id>131</id>
+		<name>Mission 95</name>
+		<picture>mission131.jpg</picture>
+		<location_id>16</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>365</x>
+		<y>265</y>
+		<xp>28</xp>
+		<energy>12</energy>
+		<money>550</money>
+		<rep faction='10' amount='8' />
+		<commander>1107</commander>
+		<desc>The Blight in Acheron is powering the Bloodthirsty and they are working together.</desc>
+		<speech>
+			<line commander='1026'>I awoke in Tartarus and you were nowhere to be seen. I quickly found my comrades, who had not known of my betrayal and brought me back through a portal.</line>
+			<line commander='1026'>Ever since the Nexus was activated the link between Acheron and Tartarus has become unstable.</line>
+			<line commander='1026'>Bloodthirsty like we have never seen before have been pouring through from Tartarus and the Blight is ravaging the land.</line>
+			<line commander='1026'>As to where we are... We are on an island inhabited by The Righteous.  Here comes one now, he calls himself Alaric.</line>
+			<line commander='1037'>Your assistance is required against the Bloodthirsty.</line>
+		</speech>
+		<deck>
+			<card>113</card>
+			<card>347</card>
+			<card>347</card>
+			<card>407</card>
+			<card>409</card>
+			<card>242</card>
+			<card>299</card>
+			<card>70</card>
+			<card>111</card>
+			<card>3026</card>
+		</deck>
+		<rewards>
+			<card>347</card>
+		</rewards>
+		<req>130</req>
+	</mission>
+
+	<mission>
+		<id>132</id>
+		<name>Mission 96</name>
+		<picture>mission132.jpg</picture>
+		<location_id>16</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>410</x>
+		<y>220</y>
+		<xp>29</xp>
+		<energy>12</energy>
+		<money>575</money>
+		<rep faction='10' amount='10' />
+		<commander>1107</commander>
+		<desc>The Bloodthirsty are hitting hard to try and overcome the Righteous.</desc>
+		<speech>
+			<line commander='1042'>The Righteous are really powerful against the Bloodthirsty.</line>
+			<line commander='1026'>That's not all they can do.</line>
+			<line commander='1042'>The Blight! It's disintegrating, and everything is being restored.</line>
+			<line commander='1037'>Our powers do not extend far beyond our islands. We must complete the ritual to annihilate all Bloodthirsty.</line>
+			<line commander='1026'>Go with him, I must stop Cassandra from returning to base and reporting my actions.</line>
+		</speech>
+		<deck>
+			<card>347</card>
+			<card>116</card>
+			<card>200</card>
+			<card>248</card>
+			<card>204</card>
+			<card>292</card>
+			<card>296</card>
+			<card>279</card>
+			<card>390</card>
+			<card>2069</card>
+		</deck>
+		<rewards>
+			<card>334</card>
+		</rewards>
+		<req>131</req>
+	</mission>
+
+	<mission>
+		<id>133</id>
+		<name>Mission 97</name>
+		<picture>mission133.jpg</picture>
+		<location_id>16</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>330</x>
+		<y>200</y>
+		<xp>31</xp>
+		<energy>13</energy>
+		<money>625</money>
+		<rep faction='10' amount='12' />
+		<commander>1111</commander>
+		<desc>It will be hard to break through the Righteous defenses, they protect each other.</desc>
+		<speech>
+			<line commander='1042'>What was the ritual you mentioned before?</line>
+			<line commander='1037'>Once the Pantheons have gained enough power the Sentinels will be summoned to destroy the non-believers.</line>
+			<line commander='1042'>That's insane! You will kill all of Acheron.</line>
+			<line commander='1037'>It is necessary to save the planet and maintain purity.</line>
+			<line commander='1042'>We can't let you do that.</line>
+		</speech>
+		<deck>
+			<card>288</card>
+			<card>288</card>
+			<card>348</card>
+			<card>361</card>
+			<card>55</card>
+			<card>365</card>
+			<card>330</card>
+			<card>364</card>
+			<card>294</card>
+			<card>2063</card>
+		</deck>
+		<rewards>
+			<card>288</card>
+		</rewards>
+		<req>132</req>
+	</mission>
+
+	<mission>
+		<id>134</id>
+		<name>Mission 98</name>
+		<picture>mission134.jpg</picture>
+		<location_id>16</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>370</x>
+		<y>140</y>
+		<xp>34</xp>
+		<energy>14</energy>
+		<money>675</money>
+		<rep faction='10' amount='13' />
+		<commander>1111</commander>
+		<desc>Alaric acknowledges your power and decided to focus on you as a threat.</desc>
+		<speech>
+			<line commander='1037'>Your ignorance will lead to the reign of Typhon and the eventual destruction of this world.</line>
+		</speech>
+		<deck>
+			<card>368</card>
+			<card>335</card>
+			<card>421</card>
+			<card>349</card>
+			<card>356</card>
+			<card>329</card>
+			<card>351</card>
+			<card>250</card>
+			<card>365</card>
+			<card>2061</card>
+		</deck>
+		<rewards>
+			<card>1105</card>
+		</rewards>
+		<req>133</req>
+	</mission>
+
+	<mission>
+		<id>135</id>
+		<name>Mission 99</name>
+		<picture>mission135.jpg</picture>
+		<location_id>16</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>330</x>
+		<y>120</y>
+		<xp>34</xp>
+		<energy>14</energy>
+		<money>900</money>
+		<rep faction='10' amount='15' />
+		<commander>1109</commander>
+		<desc>They are seething with anger at your presence and will strike aggressively.</desc>
+		<speech>
+			<line commander='1042'>Commander, we should let Alaric flee, maybe he will lead us to the Pantheon.</line>
+			<line commander='1101'>How did you traitors escape from Tartarus? Where is Lucina?</line>
+			<line commander='1042'>Still in Tartarus for all we know.</line>
+			<line commander='1101'>Then I shall enjoy destroying you even more.</line>
+		</speech>
+		<deck>
+			<card>338</card>
+			<card>337</card>
+			<card>422</card>
+			<card>39</card>
+			<card>220</card>
+			<card>175</card>
+			<card>202</card>
+			<card>239</card>
+			<card>2057</card>
+			<card>3031</card>
+		</deck>
+		<rewards>
+			<card>337</card>
+		</rewards>
+		<req>134</req>
+	</mission>
+
+	<mission>
+		<id>136</id>
+		<name>Mission 100</name>
+		<picture>mission136.jpg</picture>
+		<location_id>16</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>280</x>
+		<y>100</y>
+		<xp>36</xp>
+		<energy>15</energy>
+		<money>750</money>
+		<rep faction='11' amount='5' />
+		<commander>1111</commander>
+		<desc>Their proximity to each other and to the Pantheon empowers the Righteous.</desc>
+		<speech>
+			<line commander='1042'>We've lost Alaric, we'll just have to keep along the same path until we reach the Pantheon.</line>
+			<line commander='1097'>Alaric was attempting to lead you astray. I can lead you to the Pantheon.</line>
+			<line commander='1042'>You're a Righteous? Who are you and why should we trust you?</line>
+			<line commander='1097'>My name is Attalia and you should trust me because you will not stop the Pantheons in time without my assistance.</line>
+		</speech>
+		<deck>
+			<card>214</card>
+			<card>294</card>
+			<card>329</card>
+			<card>250</card>
+			<card>420</card>
+			<card>325</card>
+			<card>362</card>
+			<card>360</card>
+			<card>421</card>
+			<card>2064</card>
+			<card>3031</card>
+		</deck>
+		<rewards>
+			<card>325</card>
+		</rewards>
+		<req>135</req>
+	</mission>
+
+	<mission>
+		<id>137</id>
+		<name>Mission 101</name>
+		<picture>mission137.jpg</picture>
+		<location_id>16</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>215</x>
+		<y>90</y>
+		<xp>39</xp>
+		<energy>16</energy>
+		<money>800</money>
+		<rep faction='11' amount='7' />
+		<commander>1111</commander>
+		<desc>They will lay down their lives to protect the Pantheon.</desc>
+		<speech>
+			<line commander='1097'>There it is. This Pantheon does not have nearly enough power yet.</line>
+			<line commander='1097'>It will be simple to destroy after defeating its guardians.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1042'>The Pantheon is down, thanks for your help Attalia.</line>
+			<line commander='1097'>There are four Pantheons total, one at each island. They all must be destroyed.</line>
+		</speechComplete>
+		<deck>
+			<card>357</card>
+			<card>214</card>
+			<card>349</card>
+			<card>364</card>
+			<card>366</card>
+			<card>352</card>
+			<card>335</card>
+			<card>331</card>
+			<card>294</card>
+			<card>351</card>
+			<card>3030</card>
+			<card>2036</card>
+		</deck>
+		<rewards>
+			<card>351</card>
+		</rewards>
+		<req>136</req>
+	</mission>
+
+<!-- 2nd New Location -->
+
+	<mission>
+		<id>138</id>
+		<name>Mission 102</name>
+		<picture>mission138.jpg</picture>
+		<location_id>17</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>415</x>
+		<y>70</y>
+		<xp>32</xp>
+		<energy>13</energy>
+		<money>625</money>
+		<rep faction='11' amount='7' />
+		<commander>1110</commander>
+		<desc>They may just be scouts but they are ready to fight</desc>
+		<speech>
+			<line commander='1042'>Xeno scouts?</line>
+			<line commander='1097'>Before the Blight our islands were protected from invaders, these lands are new to them.</line>
+			<line commander='1042'>Lets take them out before they are able to report back.</line>
+		</speech>
+		<deck>
+			<card>413</card>
+			<card>354</card>
+			<card>355</card>
+			<card>274</card>
+			<card>397</card>
+			<card>132</card>
+			<card>275</card>
+			<card>286</card>
+			<card>152</card>
+			<card>2053</card>
+		</deck>
+		<rewards>
+			<card>354</card>
+		</rewards>
+		<req>137</req>
+	</mission>
+
+	<mission>
+		<id>139</id>
+		<name>Mission 103</name>
+		<picture>mission139.jpg</picture>
+		<location_id>17</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>380</x>
+		<y>110</y>
+		<xp>35</xp>
+		<energy>14</energy>
+		<money>700</money>
+		<rep faction='11' amount='8' />
+		<commander>1108</commander>
+		<desc>Attalia says Opak can be highly aggressive, but he is a smart Commander.</desc>
+		<speech>
+			<line commander='1105'>You hold the taint of Tartarus. Prepare to be crushed.</line>
+		</speech>
+		<deck>
+			<card>335</card>
+			<card>421</card>
+			<card>368</card>
+			<card>365</card>
+			<card>371</card>
+			<card>288</card>
+			<card>333</card>
+			<card>351</card>
+			<card>214</card>
+			<card>2061</card>
+		</deck>
+		<rewards>
+			<card>360</card>
+		</rewards>
+		<req>138</req>
+	</mission>
+
+	<mission>
+		<id>140</id>
+		<name>Mission 104</name>
+		<picture>mission140.jpg</picture>
+		<location_id>17</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>330</x>
+		<y>90</y>
+		<xp>37</xp>
+		<energy>15</energy>
+		<money>750</money>
+		<rep faction='11' amount='9' />
+		<commander>1106</commander>
+		<desc>Cassandra has brought a much larger force to vanquish you with.</desc>
+		<speech>
+			<line commander='1100'>We meet again, good thing Yurich filled me in.</line>
+			<line commander='1100'>How does it feel to have been so close to stopping Typhon only to be stopped by the one Raider you were foolish enough to trust.</line>
+			<line commander='1042'>What!? Well after we finish you, we'll deal with him.</line>
+		</speech>
+		<deck>
+			<card>37</card>
+			<card>396</card>
+			<card>317</card>
+			<card>270</card>
+			<card>327</card>
+			<card>341</card>
+			<card>342</card>
+			<card>372</card>
+			<card>2070</card>
+			<card>2023</card>
+		</deck>
+		<rewards>
+			<card>341</card>
+		</rewards>
+		<req>139</req>
+	</mission>
+
+	<mission>
+		<id>141</id>
+		<name>Mission 105</name>
+		<picture>mission141.jpg</picture>
+		<location_id>17</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>280</x>
+		<y>130</y>
+		<xp>40</xp>
+		<energy>16</energy>
+		<money>825</money>
+		<rep faction='11' amount='9' />
+		<commander>1108</commander>
+		<desc>Opak has brought in aerial support to stop you.</desc>
+		<speech>
+			<line commander='1042'>I can't believe Yurich would double-cross us like that.</line>
+			<line commander='1097'>She was lying. You would have been unsuccessful had you battled Typhon in his current state.</line>
+			<line commander='1042'>I'll wait til I hear that from him.</line>
+		</speech>
+		<deck>
+			<card>352</card>
+			<card>368</card>
+			<card>370</card>
+			<card>351</card>
+			<card>329</card>
+			<card>329</card>
+			<card>349</card>
+			<card>333</card>
+			<card>3030</card>
+			<card>2064</card>
+		</deck>
+		<rewards>
+			<card>333</card>
+		</rewards>
+		<req>140</req>
+	</mission>
+
+	<mission>
+		<id>142</id>
+		<name>Mission 106</name>
+		<picture>mission142.jpg</picture>
+		<location_id>17</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>220</x>
+		<y>110</y>
+		<xp>43</xp>
+		<energy>17</energy>
+		<money>900</money>
+		<rep faction='11' amount='10' />
+		<commander>1108</commander>
+		<desc>The power of the Righteous troops indicates how much more powerful this Pantheon is than the last.</desc>
+		<speech>
+			<line commander='1042'>The Righteous are becoming much more powerful. It doesn't seem possible.</line>
+			<line commander='1097'>The Righteous strength is relative to the proximity and power of the Pantheons.</line>
+			<line commander='1042'>Attalia you haven't been telling us everything. What are we getting ourselves into?</line>
+			<line commander='1097'>I will explain everything after the destruction of this Pantheon.</line>
+		</speech>
+		<deck>
+			<card>332</card>
+			<card>214</card>
+			<card>349</card>
+			<card>325</card>
+			<card>360</card>
+			<card>55</card>
+			<card>330</card>
+			<card>371</card>
+			<card>365</card>
+			<card>2063</card>
+			<card>2036</card>
+		</deck>
+		<rewards>
+			<card>250</card>
+		</rewards>
+		<req>141</req>
+	</mission>
+
+	<mission>
+		<id>143</id>
+		<name>Mission 107</name>
+		<picture>mission143.jpg</picture>
+		<location_id>17</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>190</x>
+		<y>160</y>
+		<xp>46</xp>
+		<energy>18</energy>
+		<money>950</money>
+		<rep faction='11' amount='12' />
+		<commander>1108</commander>
+		<desc>Destroy the Pantheon before its power overwhelms you.</desc>
+		<speech>
+			<line commander='1097'>This Pantheon is active, it still requires more power to summon a Sentinel, but it will aid the Righteous in battle.</line>
+		</speech>
+		<deck>
+			<card>332</card>
+			<card>364</card>
+			<card>335</card>
+			<card>352</card>
+			<card>365</card>
+			<card>366</card>
+			<card>294</card>
+			<card>357</card>
+			<card>329</card>
+			<card>288</card>
+			<card>2036</card>
+			<card>2062</card>
+		</deck>
+		<rewards>
+			<card>357</card>
+		</rewards>
+		<req>142</req>
+	</mission>
+
+<!-- 3rd Location -->
+
+	<mission>
+		<id>144</id>
+		<name>Mission 108</name>
+		<picture>mission144.jpg</picture>
+		<location_id>18</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>220</x>
+		<y>40</y>
+		<xp>35</xp>
+		<energy>14</energy> <!-- 14 -->
+		<money>725</money>
+		<rep faction='11' amount='14' />
+		<commander>1106</commander>
+		<desc>The Raiders won't stop until they have destroyed you.</desc>
+		<speech>
+			<line commander='1042'>Alright Attalia, what is going on? Why are you helping us?</line>
+			<line commander='1097'>My people, the Righteous, were inhabiting this planet long before you.</line>
+			<line commander='1097'>When we came across the Pantheons we were converted to follow the will of the Protectors.</line>
+			<line commander='1097'>Our Mission is simple, keep the planet pure.</line>
+			<line commander='1042'>Cassandra followed us, explain more later.</line>
+		</speech>
+		<deck>
+			<card>47</card>
+			<card>414</card>
+			<card>372</card>
+			<card>327</card>
+			<card>339</card>
+			<card>221</card>
+			<card>105</card>
+			<card>215</card>
+			<card>3004</card>
+			<card>2065</card>
+		</deck>
+		<rewards>
+			<card>358</card>
+		</rewards>
+		<req>143</req>
+	</mission>
+
+	<mission>
+		<id>145</id>
+		<name>Mission 109</name>
+		<picture>mission145.jpg</picture>
+		<location_id>18</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>270</x>
+		<y>60</y>
+		<xp>38</xp>
+		<energy>15</energy>
+		<money>800</money>
+		<rep faction='11' amount='15' />
+		<commander>1112</commander>
+		<desc>The Righteous are much more ground in. Protection of the Oracle is a top priority for them.</desc>
+		<speech>
+			<line commander='1097'>The reason I am helping you is because I disagree with the Summoning, and believe you are strong enough to stop them.</line>
+			<line commander='1097'>This island is protected by The Oracle, she predicted these events and the Summoning.</line>
+			<line commander='1097'>She must be defeated if the Summoning is to be prevented.</line>
+		</speech>
+		<deck>
+			<card>421</card>
+			<card>330</card>
+			<card>369</card>
+			<card>368</card>
+			<card>367</card>
+			<card>349</card>
+			<card>333</card>
+			<card>359</card>
+			<card>3016</card>
+			<card>2061</card>
+		</deck>
+		<rewards>
+			<card>2064</card>
+		</rewards>
+		<req>144</req>
+	</mission>
+
+	<mission>
+		<id>146</id>
+		<name>Mission 110</name>
+		<picture>mission146.jpg</picture>
+		<location_id>18</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>255</x>
+		<y>140</y>
+		<xp>43</xp>
+		<energy>17</energy>
+		<money>925</money>
+		<rep faction='12' amount='4' />
+		<commander>1112</commander>
+		<desc>The Oracle has trained her units to defend each other.</desc>
+		<speech>
+			<line commander='1038'>Can't you see your efforts are futile? The Sentinels will arrive and wipe you heathens from this world.</line>
+		</speech>
+		<deck>
+			<card>349</card>
+			<card>214</card>
+			<card>294</card>
+			<card>364</card>
+			<card>330</card>
+			<card>365</card>
+			<card>352</card>
+			<card>331</card>
+			<card>3031</card>
+			<card>2064</card>
+		</deck>
+		<rewards>
+			<card>359</card>
+		</rewards>
+		<req>145</req>
+	</mission>
+
+	<mission>
+		<id>147</id>
+		<name>Mission 111</name>
+		<picture>mission147.jpg</picture>
+		<location_id>18</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>210</x>
+		<y>190</y>
+		<xp>47</xp>
+		<energy>18</energy>
+		<money>1000</money>
+		<rep faction='12' amount='5' />
+		<commander>1112</commander>
+		<desc>The Righteous are finally prepping for the Xeno invasion.</desc>
+		<speech>
+			<line commander='1097'>It's a shame, we aren't worshippers, we're slaves.</line>
+			<line commander='1042'>Then how are you able to help us?</line>
+			<line commander='1097'>I come from a long line of Righteous, but have always been able to resist the Pantheon calling.</line>
+			<line commander='1097'>I choose to follow only because it is all I know.</line>
+		</speech>
+		<deck>
+			<card>421</card>
+			<card>330</card>
+			<card>369</card>
+			<card>368</card>
+			<card>367</card>
+			<card>349</card>
+			<card>333</card>
+			<card>359</card>
+			<card>3016</card>
+			<card>2061</card>
+		</deck>
+		<rewards>
+			<card>2064</card>
+		</rewards>
+		<req>146</req>
+	</mission>
+
+	<mission>
+		<id>148</id>
+		<name>Mission 112</name>
+		<picture>mission148.jpg</picture>
+		<location_id>18</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>300</x>
+		<y>205</y>
+		<xp>50</xp>
+		<energy>19</energy>
+		<money>1050</money>
+		<rep faction='12' amount='6' />
+		<commander>1110</commander>
+		<desc>The Xeno are trying to overrun the entire island.</desc>
+		<speech>
+			<line commander='1038'>The Xeno have come as expected.</line>
+			<line commander='1038'>What a foolish race, they think they can use the Blight overrun to their advantage. They will fall just the same.</line>
+		</speech>
+		<deck>
+			<card>425</card>
+			<card>353</card>
+			<card>353</card>
+			<card>336</card>
+			<card>229</card>
+			<card>287</card>
+			<card>286</card>
+			<card>30</card>
+			<card>324</card>
+			<card>2060</card>
+			<card>2071</card>
+		</deck>
+		<rewards>
+			<card>336</card>
+		</rewards>
+		<req>147</req>
+	</mission>
+
+	<mission>
+		<id>149</id>
+		<name>Mission 113</name>
+		<picture>mission149.jpg</picture>
+		<location_id>18</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>320</x>
+		<y>260</y>
+		<xp>54</xp>
+		<energy>20</energy>
+		<money>1125</money>
+		<rep faction='12' amount='7' />
+		<commander>1112</commander>
+		<desc>The Oracle took advantage of the distracting Xenos to continue powering the Pantheon.</desc>
+		<speech>
+			<line commander='1038'>I may meet my end by the end of this battle, but it doesn't affect your fate.</line>
+			<line commander='1038'>You will fall at the hands of the Sentinels.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1038'>Do you understand yet? I predicted my own demise and still could not prevent it.  What hope could you have?</line>
+			<line commander='1042'>I don't believe in predictions. If the Righteous can be stopped, we will find a way.</line>
+		</speechComplete>
+		<deck>
+			<card>350</card>
+			<card>349</card>
+			<card>294</card>
+			<card>351</card>
+			<card>329</card>
+			<card>333</card>
+			<card>335</card>
+			<card>371</card>
+			<card>330</card>
+			<card>2062</card>
+			<card>3030</card>
+			<card>3031</card>
+		</deck>
+		<rewards>
+			<card>3031</card>
+		</rewards>
+		<req>148</req>
+	</mission>
+
+<!-- 4th Location -->
+
+	<mission>
+		<id>150</id>
+		<name>Mission 114</name>
+		<picture>mission150.jpg</picture>
+		<location_id>19</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>350</x>
+		<y>80</y>
+		<xp>40</xp>
+		<energy>15</energy>
+		<money>825</money>
+		<rep faction='12' amount='9' />
+		<commander>1113</commander>
+		<desc>The Righteous have been anticipating us for awhile now.</desc>
+		<speech>
+			<line commander='1097'>The Pantheon on this island will surely be more powerful than the last two, but you still have time to destroy it.</line>
+		</speech>
+		<deck>
+			<card>350</card>
+			<card>349</card>
+			<card>214</card>
+			<card>351</card>
+			<card>333</card>
+			<card>362</card>
+			<card>348</card>
+			<card>335</card>
+			<card>3018</card>
+			<card>2061</card>
+		</deck>
+		<rewards>
+			<card>2070</card>
+		</rewards>
+		<req>149</req>
+	</mission>
+
+	<mission>
+		<id>151</id>
+		<name>Mission 115</name>
+		<picture>mission151.jpg</picture>
+		<location_id>19</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>310</x>
+		<y>130</y>
+		<xp>46</xp>
+		<energy>17</energy>
+		<money>950</money>
+		<rep faction='12' amount='10' />
+		<commander>1109</commander>
+		<desc>The Imperials have learned their tactics from the Righteous.</desc>
+		<speech>
+			<line commander='1101'>You have gotten pretty good at slaughtering Righteous, but we will not be taken so easily. We will stop you.</line>
+			<line commander='1042'>Why would Halcyon want to help the Righteous? He will be destroyed too.</line>
+			<line commander='1101'>We do not take our orders from Halcyon. We follow the Righteous and will be at their side while the Sentinels destroy the non-believers.</line>
+			<line commander='1101'>Then we will rebuild on a planet that is pure and devoid of war for once.</line>
+			<line commander='1042'>You won't solve anything. History will repeat itself and everything will be as it is now, except countless lives will have been needlessly lost.</line>
+			<line commander='1101'>We shall see.</line>
+		</speech>
+		<deck>
+			<card>423</card>
+			<card>363</card>
+			<card>344</card>
+			<card>40</card>
+			<card>90</card>
+			<card>89</card>
+			<card>282</card>
+			<card>122</card>
+			<card>95</card>
+			<card>2027</card>
+		</deck>
+		<rewards>
+			<card>338</card>
+		</rewards>
+		<req>150</req>
+	</mission>
+
+	<mission>
+		<id>152</id>
+		<name>Mission 116</name>
+		<picture>mission152.jpg</picture>
+		<location_id>19</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>250</x>
+		<y>165</y>
+		<xp>49</xp>
+		<energy>18</energy>
+		<money>1025</money>
+		<rep faction='12' amount='11' />
+		<commander>1107</commander>
+		<desc>The Bloodthirsty are starting to attack Righteous to preserve the Blight.</desc>
+		<speech>
+			<line commander='1042'>Yurich! You have a lot of nerve showing your face!</line>
+			<line commander='1026'>Katana! I can explain, put the gun down.</line>
+			<line commander='1042'>Explain first, then I'll lower my weapon.</line>
+			<line commander='1026'>I had to lie to Cassandra to save myself, I didn't think she would come back to attack you.</line>
+			<line commander='1042'>And what about having us follow Alaric, who would have killed us just the same.</line>
+			<line commander='1097'>We don't have time for this. Bloodthirsty are attacking.</line>
+		</speech>
+		<deck>
+			<card>340</card>
+			<card>346</card>
+			<card>328</card>
+			<card>416</card>
+			<card>345</card>
+			<card>407</card>
+			<card>406</card>
+			<card>263</card>
+			<card>273</card>
+			<card>2052</card>
+		</deck>
+		<rewards>
+			<card>356</card>
+		</rewards>
+		<req>151</req>
+	</mission>
+
+	<mission>
+		<id>153</id>
+		<name>Mission 117</name>
+		<picture>mission153.jpg</picture>
+		<location_id>19</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>160</x>
+		<y>190</y>
+		<xp>53</xp>
+		<energy>19</energy>
+		<money>1100</money>
+		<rep faction='12' amount='13' />
+		<commander>1113</commander>
+		<desc>Them Empress holds the highest command over the Righteous. She will be a difficult to defeat.</desc>
+		<speech>
+			<line commander='1042'>How can the Bloodthirsty be so strong if this Pantheon is so much more powerful?</line>
+			<line commander='1097'>This area has the closest link to Tartarus and it's essence fuels them.</line>
+			<line commander='1097'>We must hasten. The Righteous have been focusing on powering up this Pantheon since we have started destroying the others.</line>
+			<line commander='1026'>Yes, I was trying to explain that I thought the Sentinels were meant to defeat Typhon, I was mistaken.</line>
+			<line commander='1026'>They were created for the soul purpose of protecting the Righteous from anyone who obtained the power of Tartarus, but their solution is to destroy everything.</line>
+		</speech>
+		<deck>
+			<card>288</card>
+			<card>362</card>
+			<card>250</card>
+			<card>55</card>
+			<card>329</card>
+			<card>214</card>
+			<card>349</card>
+			<card>350</card>
+			<card>352</card>
+			<card>2062</card>
+			<card>3031</card>
+		</deck>
+		<rewards>
+			<card>1099</card>
+		</rewards>
+		<req>152</req>
+	</mission>
+
+	<mission>
+		<id>154</id>
+		<name>Mission 118</name>
+		<picture>mission154.jpg</picture>
+		<location_id>19</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>210</x>
+		<y>220</y>
+		<xp>59</xp>
+		<energy>21</energy>
+		<money>1225</money>
+		<rep faction='12' amount='14' />
+		<commander>1113</commander>
+		<desc>The Pantheon is on the brink of reaching full power!</desc>
+		<speech>
+			<line commander='1042'>How was Typhon able to obtain the power of Tartarus if he isn't Bloodthirsty?</line>
+			<line commander='1026'>The acid like ooze that was all over Tartarus. It is what powers the Bloodthirsty we have been fighting.</line>
+			<line commander='1026'>I thought he was trying to weaponize it, cause it's so lethal to Humans. He somehow found a way to become immune to it.</line>
+			<line commander='1026'>Eventually he used it to transform himself into a Bloodthirsty and activate Tartarus' core.</line>
+		</speech>
+		<deck>
+			<card>331</card>
+			<card>335</card>
+			<card>421</card>
+			<card>368</card>
+			<card>365</card>
+			<card>371</card>
+			<card>364</card>
+			<card>294</card>
+			<card>349</card>
+			<card>291</card>
+			<card>2062</card>
+			<card>2036</card>
+		</deck>
+		<rewards>
+			<card>294</card>
+		</rewards>
+		<req>153</req>
+	</mission>
+
+	<mission>
+		<id>155</id>
+		<name>Mission 119</name>
+		<picture>mission155.jpg</picture>
+		<location_id>19</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>280</x>
+		<y>270</y>
+		<xp>62</xp> <!-- 2.82 -->
+		<energy>22</energy>
+		<money>1300</money> <!-- 14.8 -->
+		<rep faction='12' amount='15' />
+		<commander>1113</commander>
+		<desc>The Pantheon is at full power! If you don't destroy it soon a Sentinel will be summoned and all will be lost!</desc>
+		<speech>
+			<line commander='1099'>You have come so far only to fall short. The Pantheon has too much power for you to stop.</line>
+			<line commander='1099'>It will protect us and summon the Sentinels to fulfill the prophecy.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1042'>Commander! Now is our only chance. Fire everything we have at the Pantheon.</line>
+			<line commander='1097'>Your attack was successful! The Sentinels will remain dormant for now.</line>
+			<line commander='1042'>Congratulations Commander! We have averted one major crisis...</line>
+		</speechComplete>
+		<deck>
+			<card>352</card>
+			<card>335</card>
+			<card>365</card>
+			<card>330</card>
+			<card>364</card>
+			<card>333</card>
+			<card>214</card>
+			<card>294</card>
+			<card>349</card>
+			<card>291</card>
+			<card>351</card>
+			<card>2061</card>
+			<card>2078</card>
+		</deck>
+		<rewards>
+			<card>214</card>
+		</rewards>
+		<req>154</req>
+	</mission>
+	
+	<!-- END Purity Missions -->
+	
 	<!-- END MISSIONS -->
 	
 	<location>
@@ -4619,6 +5747,42 @@
 		<effect x='292' y='220'>Tartarus4FX.swf</effect>
 		<nav>Nav15</nav>
 		<req>109</req> <!-- 109 -->
+	</location>
+	
+	<location>
+		<id>16</id>
+		<name>Triton Isle</name>
+		<picture>PurityRing1Map</picture>
+		<effect x='292' y='220'>purityring1FX.swf</effect>
+		<nav>Nav16</nav>
+		<req>129</req> <!-- 129 -->
+	</location>
+
+	<location>
+		<id>17</id>
+		<name>Mount Pristine</name>
+		<picture>PurityRing2Map</picture>
+		<effect x='292' y='220'>purityring2FX.swf</effect>
+		<nav>Nav17</nav>
+		<req>137</req> <!-- 137 -->
+	</location>
+
+	<location>
+		<id>18</id>
+		<name>Protectors' Cradle</name>
+		<picture>PurityRing3Map</picture>
+		<effect x='292' y='220'>purityring3FX.swf</effect>
+		<nav>Nav18</nav>
+		<req>143</req> <!-- 143 -->
+	</location>
+
+	<location>
+		<id>19</id>
+		<name>Valhalla</name>
+		<picture>PurityRing4Map</picture>
+		<effect x='292' y='220'>purityring4FX.swf</effect>
+		<nav>Nav19</nav>
+		<req>149</req> <!-- 149 -->
 	</location>
 	
 	<faction>
@@ -4862,5 +6026,88 @@
 			<card>301</card>
 		</reward>
 	</faction>
+	
+	<faction>
+		<id>10</id>
+		<location_id>15</location_id>
+		<location_id>16</location_id>
+		<name>Retribution</name>
+		<icon>RetributionIcon</icon>
+		<repbase>1000</repbase>
+		<reward id='1'>
+			<rep_level>1</rep_level>
+			<rep_req>200</rep_req>
+			<cost>250</cost>
+			<card>422</card>
+		</reward>
+		<reward id='2'>
+			<rep_level>2</rep_level>
+			<rep_req>800</rep_req>
+			<cost>2500</cost>
+			<card>328</card>
+		</reward>
+		<reward id='3'>
+			<rep_level>3</rep_level>
+			<rep_req>2000</rep_req>
+			<cost>12000</cost>
+			<card>1097</card>
+		</reward>
+	</faction>
+
+	<faction>
+		<id>11</id>
+		<location_id>16</location_id>
+		<location_id>17</location_id>
+		<location_id>18</location_id>
+		<name>Honored Credo</name>
+		<icon>HonoredCredoIcon</icon>
+		<repbase>1000</repbase>
+		<reward id='1'>
+			<rep_level>1</rep_level>
+			<rep_req>200</rep_req>
+			<cost>250</cost>
+			<card>420</card>
+		</reward>
+		<reward id='2'>
+			<rep_level>2</rep_level>
+			<rep_req>800</rep_req>
+			<cost>2500</cost>
+			<card>2065</card>
+		</reward>
+		<reward id='3'>
+			<rep_level>3</rep_level>
+			<rep_req>2000</rep_req>
+			<cost>12000</cost>
+			<card>352</card>
+		</reward>
+	</faction>
+
+	<faction>
+		<id>12</id>
+		<location_id>18</location_id>
+		<location_id>19</location_id>
+		<name>Obliterators</name>
+		<icon>ObliteratorsIcon</icon>
+		<repbase>1000</repbase>
+		<reward id='1'>
+			<rep_level>1</rep_level>
+			<rep_req>200</rep_req>
+			<cost>250</cost>
+			<card>424</card>
+		</reward>
+		<reward id='2'>
+			<rep_level>2</rep_level>
+			<rep_req>800</rep_req>
+			<cost>2500</cost>
+			<card>421</card>
+		</reward>
+		<reward id='3'>
+			<rep_level>3</rep_level>
+			<rep_req>2000</rep_req>
+			<cost>12000</cost>
+			<card>423</card>
+		</reward>
+	</faction>
+	
 	
 </root>
