@@ -435,6 +435,22 @@ extern "C"
 	{
 		return DB.InsertDeck(List);
 	}
+	IDAPI bool GetHashFromDeck(const char *Deck, char *Buffer, DWORD MaxBufferSize)
+	{
+		ActiveDeck D;
+		if (!DB.CreateDeck(Deck,D))
+			return false;
+		strcpy_s(Buffer,MaxBufferSize,D.GetHash64().c_str());
+		return true;
+	}
+	IDAPI bool GetDeckFromHash(const char *Hash, char *Buffer, DWORD MaxBufferSize)
+	{
+		ActiveDeck D(Hash,DB.GetPointer());
+		if ((!D.Commander.IsDefined()) && D.Deck.empty())
+			return false;
+		strcpy_s(Buffer,MaxBufferSize,D.GetDeck().c_str());
+		return true;
+	}
 }
 
 

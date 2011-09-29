@@ -1479,6 +1479,26 @@ public:
 		}
 		printf("]\n");
 	}
+	string GetDeck() const
+	{
+		if (Deck.empty())
+			return string();
+		string s;
+		char buffer[10];
+		if (Commander.IsDefined())
+		{
+			_itoa_s(Commander.GetId(),buffer,10);
+			s.append(buffer);
+		}
+		for (UCHAR i=0;i<Deck.size();i++)
+		{
+			if (!s.empty())
+				s.append(",");
+			_itoa_s(Deck[i].GetId(),buffer,10);
+			s.append(buffer);
+		}
+		return s;
+	}
 	string GetHash64() const
 	{
 		if (Deck.empty())

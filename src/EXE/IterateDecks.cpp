@@ -369,6 +369,7 @@ int _tmain(int argc, char* argv[])
 	X.Deck.push_back(DB.CARD("Goliath"));
 	X.Deck.push_back(DB.CARD("Demolition Bot"));
 	X.Deck.push_back(DB.CARD("Dozer Tank"));
+
 /*	ActiveDeck Y(DB.CARD("Yurich"));
 	Y.Deck.push_back(DB.CARD("Colossus"));
 	Y.Deck.push_back(DB.CARD("Colossus"));

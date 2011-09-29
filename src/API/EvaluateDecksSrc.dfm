@@ -517,18 +517,65 @@ object EvaluateDecksForm: TEvaluateDecksForm
               OnClick = bSaveTopDeckClick
             end
           end
-          object sbTop: TScrollBox
+          object pTopScClient: TPanel
             Left = 177
             Top = 1
             Width = 256
             Height = 288
-            HorzScrollBar.Tracking = True
-            VertScrollBar.Tracking = True
             Align = alClient
-            BevelInner = bvNone
             BevelOuter = bvNone
-            BorderStyle = bsNone
             TabOrder = 1
+            ExplicitLeft = 183
+            ExplicitTop = 243
+            ExplicitWidth = 185
+            ExplicitHeight = 41
+            object sbTop: TScrollBox
+              Left = 0
+              Top = 0
+              Width = 256
+              Height = 248
+              HorzScrollBar.Tracking = True
+              VertScrollBar.Tracking = True
+              Align = alClient
+              BevelInner = bvNone
+              BevelOuter = bvNone
+              BorderStyle = bsNone
+              TabOrder = 0
+              ExplicitTop = 1
+              ExplicitHeight = 255
+            end
+            object pTopHash: TPanel
+              Left = 0
+              Top = 248
+              Width = 256
+              Height = 40
+              Align = alBottom
+              TabOrder = 1
+              object eTopHash: TcxTextEdit
+                Left = 47
+                Top = 8
+                TabOrder = 0
+                Width = 163
+              end
+              object bTopStore: TcxButton
+                Left = 6
+                Top = 6
+                Width = 35
+                Height = 25
+                Caption = 'Store'
+                TabOrder = 1
+                OnClick = bTopStoreClick
+              end
+              object bTopLoad: TcxButton
+                Left = 216
+                Top = 6
+                Width = 35
+                Height = 25
+                Caption = 'Load'
+                TabOrder = 2
+                OnClick = bTopLoadClick
+              end
+            end
           end
         end
         object pMiddle: TPanel
@@ -645,18 +692,66 @@ object EvaluateDecksForm: TEvaluateDecksForm
               OnClick = bSaveBotCustomDeckClick
             end
           end
-          object sbBot: TScrollBox
+          object pBotScClient: TPanel
             Left = 178
             Top = 1
             Width = 255
             Height = 265
-            HorzScrollBar.Tracking = True
-            VertScrollBar.Tracking = True
             Align = alClient
-            BevelInner = bvNone
             BevelOuter = bvNone
-            BorderStyle = bsNone
             TabOrder = 1
+            ExplicitLeft = 256
+            ExplicitTop = 88
+            ExplicitWidth = 185
+            ExplicitHeight = 41
+            object sbBot: TScrollBox
+              Left = 0
+              Top = 0
+              Width = 255
+              Height = 224
+              HorzScrollBar.Tracking = True
+              VertScrollBar.Tracking = True
+              Align = alClient
+              BevelInner = bvNone
+              BevelOuter = bvNone
+              BorderStyle = bsNone
+              TabOrder = 0
+              ExplicitLeft = 162
+              ExplicitTop = 5
+              ExplicitHeight = 265
+            end
+            object pBotHash: TPanel
+              Left = 0
+              Top = 224
+              Width = 255
+              Height = 41
+              Align = alBottom
+              TabOrder = 1
+              object eBotHash: TcxTextEdit
+                Left = 47
+                Top = 8
+                TabOrder = 0
+                Width = 163
+              end
+              object bBotStore: TcxButton
+                Left = 6
+                Top = 6
+                Width = 35
+                Height = 25
+                Caption = 'Store'
+                TabOrder = 1
+                OnClick = bBotStoreClick
+              end
+              object bBotLoad: TcxButton
+                Left = 216
+                Top = 6
+                Width = 35
+                Height = 25
+                Caption = 'Load'
+                TabOrder = 2
+                OnClick = bBotLoadClick
+              end
+            end
           end
         end
       end
@@ -3998,15 +4093,15 @@ object EvaluateDecksForm: TEvaluateDecksForm
   object tLoad: TTimer
     Interval = 100
     OnTimer = tLoadTimer
-    Left = 336
-    Top = 176
+    Left = 464
+    Top = 64
   end
   object tCancelHover: TTimer
     Enabled = False
     Interval = 100
     OnTimer = tCancelHoverTimer
-    Left = 336
-    Top = 224
+    Left = 464
+    Top = 112
   end
   object IdHTTP: TIdHTTP
     OnWork = IdHTTPWork
@@ -4032,17 +4127,17 @@ object EvaluateDecksForm: TEvaluateDecksForm
     Height = 210
     Width = 150
     FormatVersion = 1
-    DesignInfo = 11534616
+    DesignInfo = 4194712
   end
   object ILS: TcxImageList
     Height = 105
     Width = 75
     FormatVersion = 1
-    DesignInfo = 14680344
+    DesignInfo = 7340440
   end
   object pmGrid: TPopupMenu
-    Left = 400
-    Top = 200
+    Left = 336
+    Top = 144
     object bDeleteSelected: TMenuItem
       Caption = 'Delete selected'
       OnClick = bDeleteSelectedClick

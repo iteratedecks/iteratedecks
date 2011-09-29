@@ -583,7 +583,7 @@ public:
 		}
 		return false;
 	}
-	void CreateDeck(const char *CardsList, ActiveDeck &D)
+	bool CreateDeck(const char *CardsList, ActiveDeck &D)
 	{
 		char buffer[4096];
 		strcpy_s(buffer,4096,CardsList);
@@ -607,6 +607,7 @@ public:
 				st = i+1;
 			}
 		}
+		return true;
 	}
 	char *trim(char *str, char c=' ')
 	{

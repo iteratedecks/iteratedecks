@@ -90,7 +90,6 @@ type
     pTopLeft: TPanel;
     imgTop: TcxImage;
     cbAllowMore: TcxCheckBox;
-    sbTop: TScrollBox;
     pMiddle: TPanel;
     cbCustom: TcxComboBox;
     cbRaid: TcxComboBox;
@@ -101,7 +100,6 @@ type
     pBottom: TPanel;
     pBottomLeft: TPanel;
     imgBot: TcxImage;
-    sbBot: TScrollBox;
     tsDecks: TcxTabSheet;
     tsHelp: TcxTabSheet;
     cxMemo1: TcxMemo;
@@ -225,6 +223,18 @@ type
     kongregatelogo: TcxImage;
     googlecodelogo: TcxImage;
     tyrantlogo: TcxImage;
+    pTopScClient: TPanel;
+    sbTop: TScrollBox;
+    pTopHash: TPanel;
+    pBotScClient: TPanel;
+    sbBot: TScrollBox;
+    pBotHash: TPanel;
+    eTopHash: TcxTextEdit;
+    bTopStore: TcxButton;
+    bTopLoad: TcxButton;
+    eBotHash: TcxTextEdit;
+    bBotStore: TcxButton;
+    bBotLoad: TcxButton;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -327,6 +337,10 @@ type
     procedure kongregatelogoClick(Sender: TObject);
     procedure tyrantlogoClick(Sender: TObject);
     function GetAbilityList(X: Pointer): string;
+    procedure bTopStoreClick(Sender: TObject);
+    procedure bTopLoadClick(Sender: TObject);
+    procedure bBotStoreClick(Sender: TObject);
+    procedure bBotLoadClick(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -447,6 +461,10 @@ procedure EvaluateInThreads(Seed: DWORD; var r: RESULTS; gamesperthread: DWORD;
   threadscount: DWORD = 1; bSurge: boolean = false); cdecl; external DLLFILE;
 
 function AbilityHasExtendedDesc(AbilityID: Byte): boolean; cdecl; external DLLFILE;
+
+function GetHashFromDeck(Deck: string; buffer: PChar; size: DWORD): boolean; cdecl; external DLLFILE;
+
+function GetDeckFromHash(Hash: string; buffer: PChar; size: DWORD): boolean; cdecl; external DLLFILE;
 
 procedure SpeedTest; cdecl; external DLLFILE;
 
@@ -1421,6 +1439,71 @@ begin
   end;
 end;
 
+procedure TEvaluateDecksForm.bBotLoadClick(Sender: TObject);
+var
+  i, id: integer;
+  p1: pchar;
+  sl: TStringList;
+begin
+  ClearDeck(BotDeck);
+  if (eBotHash.Text = '') then
+    exit;
+  try
+    GetMem(p1, cMaxBuffer); // initialize
+    sl := TStringList.Create;
+    try
+      if GetDeckFromHash(eBotHash.Text, p1, cMaxBuffer) then
+      begin
+        sl.CommaText := p1;
+        for i := 0 to sl.Count - 1 do
+        begin
+          id := GetIndexFromID(sl[i]);
+          if Cards[id].CardType = 1 then
+          begin
+            CopyCard(Images[id], imgBot);
+          end
+          else
+            AddCard(BotDeck, false, Images[id]);
+        end;
+      end;
+    finally
+      FreeMem(p1);
+      sl.Free;
+    end;
+  except
+    ShowMessage('Error while loading hash.');
+  end;
+end;
+
+procedure TEvaluateDecksForm.bBotStoreClick(Sender: TObject);
+var
+  sl: TStringList;
+  p1: pchar;
+  i: integer;
+begin
+  GetMem(p1, cMaxBuffer); // initialize
+  sl := TStringList.Create;
+  try
+    sl.Add(imgBot.Hint);
+      for i := 0 to MAX_DECK_SIZE - 1 do
+        if (Assigned(BotDeck[i])) then
+          if (BotDeck[i].Hint <> '') then
+            sl.Add(BotDeck[i].Hint);
+    if Trim(sl.Text) <> '' then
+    begin
+      if GetHashFromDeck(sl.CommaText, p1, cMaxBuffer) then
+        eBotHash.Text := p1
+      else
+        eBotHash.Text := '';
+    end
+    else
+      eBotHash.Text := '';
+  finally
+    sl.Free;
+    FreeMem(p1);
+  end;
+end;
+
 procedure TEvaluateDecksForm.bBotVisualClick(Sender: TObject);
 var
   i, id: integer;
@@ -2197,6 +2280,71 @@ begin
     finally
       Free;
     end;
+  end;
+end;
+
+procedure TEvaluateDecksForm.bTopLoadClick(Sender: TObject);
+var
+  i, id: integer;
+  p1: pchar;
+  sl: TStringList;
+begin
+  ClearDeck(TopDeck);
+  if (eTopHash.Text = '') then
+    exit;
+  try
+    GetMem(p1, cMaxBuffer); // initialize
+    sl := TStringList.Create;
+    try
+      if GetDeckFromHash(eTopHash.Text, p1, cMaxBuffer) then
+      begin
+        sl.CommaText := p1;
+        for i := 0 to sl.Count - 1 do
+        begin
+          id := GetIndexFromID(sl[i]);
+          if Cards[id].CardType = 1 then
+          begin
+            CopyCard(Images[id], imgTop);
+          end
+          else
+            AddCard(TopDeck, true, Images[id]);
+        end;
+      end;
+    finally
+      FreeMem(p1);
+      sl.Free;
+    end;
+  except
+    ShowMessage('Error while loading hash.');
+  end;
+end;
+
+procedure TEvaluateDecksForm.bTopStoreClick(Sender: TObject);
+var
+  sl: TStringList;
+  p1: pchar;
+  i: integer;
+begin
+  GetMem(p1, cMaxBuffer); // initialize
+  sl := TStringList.Create;
+  try
+    sl.Add(imgTop.Hint);
+      for i := 0 to MAX_DECK_SIZE - 1 do
+        if (Assigned(TopDeck[i])) then
+          if (TopDeck[i].Hint <> '') then
+            sl.Add(TopDeck[i].Hint);
+    if Trim(sl.Text) <> '' then
+    begin
+      if GetHashFromDeck(sl.CommaText, p1, cMaxBuffer) then
+        eTopHash.Text := p1
+      else
+        eTopHash.Text := '';
+    end
+    else
+      eTopHash.Text := '';
+  finally
+    sl.Free;
+    FreeMem(p1);
   end;
 end;
 
