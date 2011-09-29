@@ -8,7 +8,7 @@
 #define DEFAULT_DECK_RESERVE_SIZE	15 // up to 20?
 
 #define CARD_MAX_ID				4000 // size of storage array
-#define MISSION_MAX_ID			150  // size of storage array
+#define MISSION_MAX_ID			200  // size of storage array
 #define RAID_MAX_ID				20  // size of storage array
 
 typedef	unsigned char UCHAR;
@@ -47,14 +47,16 @@ char FACTIONS[6][CARD_NAME_MAX_LENGTH] = {0,"Imperial","Raider","Bloodthirsty","
 #define ACTIVATION_INFUSE		13	// this currently works only for Commander	
 #define ACTIVATION_JAM			14
 #define ACTIVATION_MIMIC		15
-#define ACTIVATION_RALLY		16
-#define ACTIVATION_RECHARGE		17
-#define ACTIVATION_REPAIR		18
-#define ACTIVATION_SHOCK		19
-#define ACTIVATION_SIEGE		20
-#define ACTIVATION_SPLIT		21
-#define ACTIVATION_STRIKE		22
-#define ACTIVATION_WEAKEN		23
+#define ACTIVATION_PROTECT		16
+#define ACTIVATION_RALLY		17
+#define ACTIVATION_RECHARGE		18
+#define ACTIVATION_REPAIR		19
+#define ACTIVATION_SHOCK		20
+#define ACTIVATION_SIEGE		21
+#define ACTIVATION_SPLIT		22
+#define ACTIVATION_STRIKE		23
+#define ACTIVATION_SUPPLY		24
+#define ACTIVATION_WEAKEN		25
 
 #define DEFENSIVE_ARMORED		31
 #define DEFENSIVE_COUNTER		32
@@ -62,7 +64,8 @@ char FACTIONS[6][CARD_NAME_MAX_LENGTH] = {0,"Imperial","Raider","Bloodthirsty","
 #define DEFENSIVE_FLYING		34
 #define DEFENSIVE_PAYBACK		35
 #define DEFENSIVE_REGENERATE	36
-#define DEFENSIVE_WALL			37
+#define DEFENSIVE_TRIBUTE		37
+#define DEFENSIVE_WALL			38
 
 #define COMBAT_ANTIAIR			41
 #define COMBAT_FEAR				42
@@ -71,20 +74,19 @@ char FACTIONS[6][CARD_NAME_MAX_LENGTH] = {0,"Imperial","Raider","Bloodthirsty","
 #define COMBAT_SWIPE			45
 #define COMBAT_VALOR			46
 
-#define DMGDEPENDANT_CRUSH		51
-#define DMGDEPENDANT_IMMOBILIZE	52
-#define DMGDEPENDANT_LEECH		53
-#define DMGDEPENDANT_POISON		54
-#define DMGDEPENDANT_SIPHON		55 
+#define DMGDEPENDANT_BERSERK	51
+#define DMGDEPENDANT_CRUSH		52
+#define DMGDEPENDANT_IMMOBILIZE	53
+#define DMGDEPENDANT_LEECH		54
+#define DMGDEPENDANT_POISON		55
+#define DMGDEPENDANT_SIPHON		56 
 
 #define SPECIAL_BACKFIRE		61  // Destroyed - When this is destroyed, deal damage to own Commander.
 
 // SKILLS THAT ARE NOT DEFINED AND NOT WORKING:
 #define SPECIAL_FUSION			62	// in this sim only works for ACTIVATION skills of STRUCTURES
-#define SPECIAL_BERSERK			63
-#define SPECIAL_PROTECTION		64
-#define SPECIAL_AUGMENT			65
-#define SPECIAL_MIST			66 // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
+#define SPECIAL_AUGMENT			63
+#define SPECIAL_MIST			64 // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
 
 #define UNDEFINED_NAME			"UNDEFINED"
 
@@ -304,11 +306,20 @@ public:
 		if (IsAlive() && (Effects[DMGDEPENDANT_POISON]))
 			SufferDmg(Effects[DMGDEPENDANT_POISON]);
 	}
+	const UCHAR GetShield() const
+	{
+		return Effects[ACTIVATION_PROTECT];
+	}
+	void ResetShield()
+	{
+		Effects[ACTIVATION_PROTECT] = 0;
+	}
 	void EndTurn()
 	{
-		Attack = OriginalCard->GetAttack();
 		Effects[ACTIVATION_JAM] = 0;
 		Effects[DMGDEPENDANT_IMMOBILIZE] = 0;
+		Effects[ACTIVATION_RALLY] = 0;
+		Effects[ACTIVATION_WEAKEN] = 0;
 		Played(); // for rally
 		if (Wait > 0)
 			Wait--;
@@ -318,12 +329,41 @@ public:
 		//OriginalCard.Infuse(setfaction);
 		Faction = setfaction;
 	}
-	const UCHAR SufferDmg(const UCHAR Dmg)
+	const UCHAR SufferDmg(const UCHAR Dmg, const UCHAR Pierce = 0)
 	{
 		_ASSERT(OriginalCard);
 // Regeneration happens before the additional strikes from Flurry.
-// Regenerating does not prevent Crush damage		
-		if (Dmg >= Health)
+// Regenerating does not prevent Crush damage	
+		UCHAR dmg = Dmg;
+		UCHAR shield = GetEffect(ACTIVATION_PROTECT);
+		if (shield > 0)
+		{
+			if (Pierce >= shield)
+			{
+				dmg = Dmg; // whole shield was pierced, do we need to remove it?
+				// shield = 0;
+			}
+			else
+			{
+				if (Pierce >= Dmg)
+					dmg = Dmg;
+				else
+				{
+					dmg = Pierce;
+					if ((Dmg - Pierce) >= shield)
+					{
+						dmg += (Dmg - Pierce) - shield;
+						shield = 0;
+					}
+					else
+					{
+						shield -= (Dmg - Pierce);
+					}
+					SetEffect(ACTIVATION_PROTECT,shield);
+				}
+			}
+		}
+		if (dmg >= Health)
 		{
 			UCHAR dealt = Health;
 			if ((OriginalCard->GetAbility(DEFENSIVE_REGENERATE))&&(PROC50))
@@ -334,8 +374,8 @@ public:
 			return dealt;// note that CRUSH & BACKFIRE are processed elsewhere
 		}
 		else
-			Health -= Dmg;
-		return Dmg;
+			Health -= dmg;
+		return dmg;
 	}
 	bool HitCommander(const UCHAR Dmg, PlayedCard &Src, VCARDS &Structures, bool bCanBeCountered = true)
 	{
@@ -448,7 +488,13 @@ public:
 		memset(Effects,0,CARD_ABILITIES_MAX);
 	}
 	const UINT GetId() const { return OriginalCard->GetId(); }
-	const UCHAR GetAttack() const { return Attack; }
+	const UCHAR GetAttack() const
+	{
+		if (Effects[ACTIVATION_WEAKEN] > Attack)
+			return Effects[ACTIVATION_RALLY];
+		else
+			return Attack - Effects[ACTIVATION_WEAKEN] + Effects[ACTIVATION_RALLY];
+	}
 	const UCHAR GetHealth() const { return Health; }
 	const UCHAR GetMaxHealth() const { return OriginalCard->GetHealth(); }
 	const UCHAR GetFaction() const { return Faction; }
@@ -475,8 +521,25 @@ public:
 	void ResetPlayedFlag() { bPlayed = false; }
 	void SetHealth(const UCHAR health) { Health = health; }
 	void SetEffect(const UCHAR id, const UCHAR value) { Effects[id] = value; }
-	void Rally(const UCHAR amount) { Attack += amount; }
-	void Weaken(const UCHAR amount) { if (amount > Attack) Attack = 0; else Attack -= amount; }
+	void Rally(const UCHAR amount)
+	{
+		Effects[ACTIVATION_RALLY] += amount;
+		//Attack += amount;
+	}
+	void Weaken(const UCHAR amount)
+	{
+		Effects[ACTIVATION_WEAKEN] += amount;
+		//if (amount > Attack) Attack = 0; else Attack -= amount;
+	}
+	void Berserk(const UCHAR amount)
+	{
+		Attack += amount;
+	}
+	void Protect(const UCHAR amount)
+	{
+		if (amount > Effects[ACTIVATION_PROTECT])
+			Effects[ACTIVATION_PROTECT] = amount;
+	}
 	void Heal(const UCHAR amount)
 	{
 		if (Health + amount >  OriginalCard->GetHealth())
@@ -588,13 +651,19 @@ private:
 					// now armor & pierce
 					UCHAR dmg = SRC.GetAttack() + valor + antiair + enfeeble;
 					UCHAR armor = targets[s]->GetAbility(DEFENSIVE_ARMORED);
+					UCHAR pierce = SRC.GetAbility(COMBAT_PIERCE);
 					if (armor) 
 					{
-						UCHAR pierce = SRC.GetAbility(COMBAT_PIERCE);
 						if (pierce >= armor)
+						{
 							armor = 0;
+							pierce -= armor; // this is for shield
+						}
 						else
+						{
 							armor -= pierce;
+							pierce = 0; // this is for shield
+						}
 						// substract armor from dmg
 						if (armor >= dmg)
 							dmg = 0;
@@ -604,7 +673,7 @@ private:
 					// now we actually deal dmg
 					//printf("%s %d = %d => %s %d\n",SRC.GetName(),SRC.GetHealth(),dmg,targets[s]->GetName(),targets[s]->GetHealth());
 					if (dmg)
-						dmg = targets[s]->SufferDmg(dmg);
+						dmg = targets[s]->SufferDmg(dmg, pierce);
 					// and now dmg dependant effects
 					if (!targets[s]->IsAlive()) // target just died
 					{
@@ -618,6 +687,9 @@ private:
 					// counter
 					if (targets[s]->GetAbility(DEFENSIVE_COUNTER))
 						SRC.SufferDmg(targets[s]->GetAbility(DEFENSIVE_COUNTER) + SRC.GetEffect(ACTIVATION_ENFEEBLE)); // counter dmg is enhanced by enfeeble
+					// berserk
+					if ((dmg > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
+						SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
 					// if target is dead, we dont need to process this effects
 					if (targets[s]->IsAlive() && (dmg > 0))
 					{
@@ -758,7 +830,7 @@ public:
 	{
 		Deck.push_back(c);
 	}
-	void ApplyEffects(PlayedCard &Src,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false)
+	void ApplyEffects(PlayedCard &Src,UINT Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false)
 	{
 		UCHAR destindex,aid,faction;
 		PVCARDS targets;
@@ -851,6 +923,88 @@ public:
 						printf(" for %d\n",effect);
 					}
 					(*vi)->Heal(effect);
+					if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
+						Src.Heal(effect);
+				}
+			}
+			targets.clear();
+		}
+		// supply
+		aid = ACTIVATION_SUPPLY;
+		effect = Src.GetAbility(aid) * FusionMultiplier;
+		if ((effect > 0) && (Position >= 0) && ((!IsMimiced) || (Src.GetType() == TYPE_ASSAULT))) // can only be mimiced by assault cards
+		{
+			targets.clear();
+			if (Position)
+				targets.push_back(&Units[Position-1]);
+			targets.push_back(&Src);
+			if (Position+1 < Units.size())
+				targets.push_back(&Units[Position+1]);
+			if (targets.size())
+			{
+				PVCARDS::iterator vi = targets.begin();
+				while (vi != targets.end())
+				{
+					if ((*vi)->GetHealth() == (*vi)->GetMaxHealth())
+						vi = targets.erase(vi);
+					else vi++;
+				}
+				for (vi = targets.begin();vi != targets.end();vi++)
+				{
+					if (bConsoleOutput)
+					{
+						Src.PrintDesc();
+						printf(" supply ");
+						(*vi)->PrintDesc();
+						printf(" for %d\n",effect);
+					}
+					(*vi)->Heal(effect);
+					if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
+						Src.Heal(effect);
+				}
+			}
+			targets.clear();
+		}
+		// protect
+		// do skills like PROTECT ALL exist? in case they do - does shield override another shield?
+		aid = ACTIVATION_PROTECT;
+		effect = Src.GetAbility(aid) * FusionMultiplier; // will it be fusioned? who knows
+		if (effect > 0)
+		{
+			if (IsMimiced)
+				faction = FACTION_NONE;
+			else
+				faction = Src.GetTargetFaction(aid);
+			GetTargets(Units,faction,targets);
+			if (targets.size())
+			{
+				PVCARDS::iterator vi = targets.begin();
+				if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) // if it is not PROTECT ALL then remove from targets already shielded cards
+					while (vi != targets.end())
+					{
+						if ((*vi)->GetShield() > 0) // already shielded
+							vi = targets.erase(vi);
+						else vi++;
+					}
+				if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+				{
+					destindex = rand() % targets.size();
+					tmp = targets[destindex];
+					targets.clear();
+					targets.push_back(tmp);
+				}
+				for (vi = targets.begin();vi != targets.end();vi++)
+				{
+					if (bConsoleOutput)
+					{
+						Src.PrintDesc();
+						printf(" protects ");
+						(*vi)->PrintDesc();
+						printf(" for %d\n",effect);
+					}
+					(*vi)->Protect(effect);
+					if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
+						Src.Protect(effect);
 				}
 			}
 			targets.clear();
@@ -938,7 +1092,7 @@ public:
 							(*vi)->PrintDesc();
 							printf("\n");
 						}
-						ApplyEffects(*(*vi),Dest,true);	
+						ApplyEffects(*(*vi),Position,Dest,true);	
 					}
 			}
 			targets.clear();
@@ -981,6 +1135,8 @@ public:
 						printf(" for %d\n",effect);
 					}
 					(*vi)->Rally(effect);
+					if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
+						Src.Rally(effect);
 				}
 			}
 			targets.clear();
@@ -1160,7 +1316,10 @@ public:
 	{
 		// process poison
 		for (UCHAR i=0;i<Units.size();i++)
+		{
+			Units[i].ResetShield(); // according to wiki, shield doesn't affect poison, it wears off before poison procs I believe
 			Units[i].ProcessPoison();
+		}
 		// pick a random card
 		VCARDS::iterator vi = Deck.begin();
 		UCHAR indx = 0;
@@ -1203,7 +1362,7 @@ public:
 		for (UCHAR i=0;i<Actions.size();i++)
 		{
 			// apply actions somehow ...
-			ApplyEffects(Actions[i],Def);
+			ApplyEffects(Actions[i],-1,Def);
 		}
 		Actions.clear();
 		// commander card
@@ -1241,13 +1400,13 @@ public:
 			}
 		}
 		// apply actions same way 
-		ApplyEffects(Commander,Def);
+		ApplyEffects(Commander,-1,Def);
 		// structure cards
 		for (UCHAR i=0;i<Structures.size();i++)
 		{
 			// apply actions somehow ...
 			if (Structures[i].BeginTurn())
-				ApplyEffects(Structures[i],Def,false,(iFusionCount >= 3));
+				ApplyEffects(Structures[i],-1,Def,false,(iFusionCount >= 3));
 			Structures[i].EndTurn();
 		}
 		// assault cards
@@ -1256,7 +1415,7 @@ public:
 			if (Units[i].BeginTurn())
 			{
 				//if (!Units[i].GetEffect(ACTIVATION_JAM)) // jammed - checked in beginturn
-				ApplyEffects(Units[i],Def);
+				ApplyEffects(Units[i],i,Def);
 				if ((!Units[i].GetEffect(DMGDEPENDANT_IMMOBILIZE)) /*&& (!Units[i].GetEffect(ACTIVATION_JAM))*/) 
 				{
 					if (Units[i].IsAlive() && Units[i].GetAttack()) // can't attack with dead unit ;) also if attack = 0 then dont attack at all

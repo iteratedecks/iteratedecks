@@ -11,7 +11,7 @@
 CardDB DB;
 ActiveDeck gAtk;
 ActiveDeck gDef;
-
+/*
 struct RESULTS
 {
 	DWORD Win;
@@ -39,7 +39,7 @@ struct RESULTS
 		LAutoPoints += rAdd.LAutoPoints;
 	}
 };
-
+*/
 void Simulate(ActiveDeck &tAtk, ActiveDeck &tDef, RESULTS &r, bool bSurge = false)
 {
 /*
@@ -224,6 +224,33 @@ extern "C"
 	IDAPI int ReLoadCustomDecks(const char* FileName)
 	{
 		return DB.LoadDecks(FileName,true);
+	}
+	IDAPI bool AbilityHasExtendedDesc(UCHAR AbilityID)
+	{
+		return 
+			(AbilityID == ACTIVATION_ENFEEBLE) ||
+			(AbilityID == ACTIVATION_HEAL) ||
+			(AbilityID == ACTIVATION_PROTECT) ||			
+			(AbilityID == ACTIVATION_RALLY) ||
+			(AbilityID == ACTIVATION_REPAIR) ||
+			(AbilityID == ACTIVATION_SHOCK) ||
+			(AbilityID == ACTIVATION_SIEGE) ||
+			(AbilityID == ACTIVATION_STRIKE) ||
+			(AbilityID == ACTIVATION_SUPPLY) ||
+			(AbilityID == ACTIVATION_WEAKEN) ||
+			(AbilityID == DEFENSIVE_ARMORED) ||
+			(AbilityID == DEFENSIVE_COUNTER) ||
+			(AbilityID == DEFENSIVE_REGENERATE) ||
+			(AbilityID == COMBAT_ANTIAIR) ||
+			(AbilityID == COMBAT_FLURRY) ||
+			(AbilityID == COMBAT_PIERCE) ||
+			(AbilityID == COMBAT_VALOR) ||
+			(AbilityID == DMGDEPENDANT_BERSERK) ||
+			(AbilityID == DMGDEPENDANT_CRUSH) ||
+			(AbilityID == DMGDEPENDANT_LEECH) ||
+			(AbilityID == DMGDEPENDANT_POISON) ||
+			(AbilityID == DMGDEPENDANT_SIPHON) ||
+			(AbilityID == SPECIAL_BACKFIRE);
 	}
 	IDAPI DWORD GetSets(UINT *Indexes,CardSet *Sets, DWORD Size)
 	{

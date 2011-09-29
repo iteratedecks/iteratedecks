@@ -16,7 +16,7 @@ uses
   GIFImg, ShellApi, cxCheckListBox, cxGridBandedTableView, cxGridExportLink;
 
 const
-  MAX_CARD_COUNT = 600;
+  MAX_CARD_COUNT = 700;
   MAX_DECK_SIZE = 20;
   MAX_SETS_COUNT = 20;
   CARD_NAME_MAX_LENGTH = 50;
@@ -326,6 +326,7 @@ type
     procedure googlecodelogoClick(Sender: TObject);
     procedure kongregatelogoClick(Sender: TObject);
     procedure tyrantlogoClick(Sender: TObject);
+    function GetAbilityList(X: Pointer): string;
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -445,6 +446,8 @@ function InsertCustomDeck(List: string): boolean; cdecl; external DLLFILE;
 procedure EvaluateInThreads(Seed: DWORD; var r: RESULTS; gamesperthread: DWORD;
   threadscount: DWORD = 1; bSurge: boolean = false); cdecl; external DLLFILE;
 
+function AbilityHasExtendedDesc(AbilityID: Byte): boolean; cdecl; external DLLFILE;
+
 procedure SpeedTest; cdecl; external DLLFILE;
 
 procedure AppendLine(FileName: string; Line: string);
@@ -476,12 +479,13 @@ begin
   else if Faction = 5 then
     result := clTeal
   else
-    result := clBlack;
+    result := clSilver;
 end;
 
-function GetAbilityList(X: Pointer): string;
+function TEvaluateDecksForm.GetAbilityList(X: Pointer): string;
 var
   C: ^TCard;
+  i: integer;
   function GetFactionString(Id: Byte): string;
   begin
     if Id = 0 then
@@ -519,47 +523,9 @@ var
 begin
   C := X;
   result := '';
-  result := result + AddLine('Enfeeble', 11, true);
-  result := result + AddLine('Heal', 12, true);
-  result := result + AddLine('Infuse', 13, false);
-  result := result + AddLine('Jam', 14, false);
-  result := result + AddLine('Mimic', 15, false);
-  result := result + AddLine('Rally', 16, true);
-  result := result + AddLine('Recharge', 17, false);
-  result := result + AddLine('Repair', 18, true);
-  result := result + AddLine('Shock', 19, true);
-  result := result + AddLine('Siege', 20, true);
-  result := result + AddLine('Split', 21, false);
-  result := result + AddLine('Strike', 22, true);
-  result := result + AddLine('Weaken', 23, true);
-
-  result := result + AddLine('Armored', 31, true);
-  result := result + AddLine('Counter', 32, true);
-  result := result + AddLine('Evade', 33, false);
-  result := result + AddLine('Flying', 34, false);
-  result := result + AddLine('Payback', 35, false);
-  result := result + AddLine('Regenerate', 36, true);
-  result := result + AddLine('Wall', 37, false);
-
-  result := result + AddLine('AntiAir', 41, true);
-  result := result + AddLine('Fear', 42, false);
-  result := result + AddLine('Flurry', 43, true);
-  result := result + AddLine('Pierce', 44, true);
-  result := result + AddLine('Swipe', 45, false);
-  result := result + AddLine('Valor', 46, true);
-
-  result := result + AddLine('Crush', 51, true);
-  result := result + AddLine('Immobilize', 52, false);
-  result := result + AddLine('Leech', 53, true);
-  result := result + AddLine('Poison', 54, true);
-  result := result + AddLine('Siphon', 55, true);
-
-  result := result + AddLine('Backfire', 61, true);
-  result := result + AddLine('Fusion', 62, false);
-  result := result + AddLine('Berserk', 63, false);
-  result := result + AddLine('Protection', 64, false);
-  result := result + AddLine('Augment', 65, false);
-  result := result + AddLine('Mist', 66, false);
+  for I := 0 to slSkillList.Count - 1 do
+    if (slSkillList.Strings[i] <> '') then
+      result := result + AddLine(slSkillList.Strings[i],i,AbilityHasExtendedDesc(i));
 end;
 
 function IterateDecks(Exe: string; Cwd: string; Seed: DWORD; AtkDeck: string;
@@ -2393,7 +2359,7 @@ begin
   GetMem(p1, cMaxBuffer); // initialize
   try
     GetSkillList(p1, cMaxBuffer);
-    slSkillList.CommaText := p1;
+    slSkillList.CommaText := StringReplace(p1,'Pierce_p','Pierce',[]);
   finally
     FreeMem(p1);
   end;

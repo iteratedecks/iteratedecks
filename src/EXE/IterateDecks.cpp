@@ -10,6 +10,8 @@
 
 #include "cards.h"
 
+#include "branches.h"
+
 #include "process.h"
 
 #ifdef _DEBUG
@@ -17,34 +19,6 @@
 #endif
 
 CardDB DB; // just to make all easier ...
-
-struct RESULTS
-{
-	DWORD Win;
-	DWORD Loss;
-	DWORD Points;
-	DWORD AutoPoints;
-	DWORD LPoints;
-	DWORD LAutoPoints;
-	RESULTS()
-	{
-		Win = 0;
-		Loss = 0;
-		Points = 0;
-		AutoPoints = 0;
-		LPoints = 0;
-		LAutoPoints = 0;
-	}
-	void Add(const RESULTS rAdd)
-	{
-		Win += rAdd.Win;
-		Loss += rAdd.Loss;
-		Points += rAdd.Points;
-		AutoPoints += rAdd.AutoPoints;
-		LPoints += rAdd.LPoints;
-		LAutoPoints += rAdd.LAutoPoints;
-	}
-};
 
 void Simulate(ActiveDeck &tAtk, ActiveDeck &tDef, RESULTS &r, bool bSurge = false)
 {
@@ -61,7 +35,7 @@ Automatic:
 +5 points for winning by turn 10
 IF you surge (ie, defense goes first) and you win then you get +20 points with or without auto .
 */
-	for (UCHAR i=0; (i < 50); i++)
+	for (UCHAR i=0; (i < MAX_TURN); i++)
 	{
 		if (bSurge)
 		{
@@ -166,7 +140,7 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, DWORD RaidID)
 	ActiveDeck tDef;
 	DB.GenRaidDeck(tDef,RaidID);
 					
-	for (UCHAR i=0; (i < 50); i++)
+	for (UCHAR i=0; (i < MAX_TURN); i++)
 	{
 		tAtk.AttackDeck(tDef);
 		if (!tDef.Commander.IsAlive())
@@ -284,9 +258,46 @@ struct EVAL_PARAMS
 	bool Surge;
 };
 
-
 int _tmain(int argc, char* argv[])
 {
+	/*{
+	bConsoleOutput = false;
+	CardDB DB;
+	DB.LoadCardXML("cards.xml");
+
+	ActiveDeck X(DB.CARD("Freddie"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+
+	ActiveDeck Y(DB.CARD("Vyander"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+
+	printf("X hash: %s\n",X.GetHash64().c_str());
+	printf("Y hash: %s\n",Y.GetHash64().c_str());
+
+	Branching B(X,Y);
+	while (B.Evaluate());
+
+	scanf("%s");
+	}*/
+
 #if !_DEBUG
 	// executable uses shared memory to recieve parameters from API
 	HANDLE hFileMapping = CreateFileMapping(
@@ -347,7 +358,54 @@ int _tmain(int argc, char* argv[])
 	DB.LoadMissionXML("missions.xml");
 	DB.LoadRaidXML("raids.xml");
 
-	ActiveDeck X(DB.CARD("Thadius"));
+/*	ActiveDeck X(DB.CARD("Yurich"));
+	X.Deck.push_back(DB.CARD("Colossus"));
+	X.Deck.push_back(DB.CARD("Colossus"));
+	X.Deck.push_back(DB.CARD("Colossus"));
+	X.Deck.push_back(DB.CARD("Colossus"));
+	X.Deck.push_back(DB.CARD("Colossus"));
+	X.Deck.push_back(DB.CARD("Colossus"));
+	X.Deck.push_back(DB.CARD("Colossus"));
+	X.Deck.push_back(DB.CARD("Goliath"));
+	X.Deck.push_back(DB.CARD("Demolition Bot"));
+	X.Deck.push_back(DB.CARD("Dozer Tank"));
+/*	ActiveDeck Y(DB.CARD("Yurich"));
+	Y.Deck.push_back(DB.CARD("Colossus"));
+	Y.Deck.push_back(DB.CARD("Colossus"));
+	Y.Deck.push_back(DB.CARD("Colossus"));
+	Y.Deck.push_back(DB.CARD("Colossus"));
+	Y.Deck.push_back(DB.CARD("Colossus"));
+	Y.Deck.push_back(DB.CARD("Colossus"));
+	Y.Deck.push_back(DB.CARD("Colossus"));
+	Y.Deck.push_back(DB.CARD("Goliath"));
+	Y.Deck.push_back(DB.CARD("Demolition Bot"));
+	Y.Deck.push_back(DB.CARD("Dozer Tank"));
+	
+/*	ActiveDeck X(DB.CARD("Dracorex"));
+	X.Deck.push_back(DB.CARD("Azure Reaper"));
+	X.Deck.push_back(DB.CARD("Azure Reaper"));
+	X.Deck.push_back(DB.CARD("Azure Reaper"));
+	X.Deck.push_back(DB.CARD("Azure Reaper"));
+	X.Deck.push_back(DB.CARD("Sustainer Xolan"));
+	X.Deck.push_back(DB.CARD("Sustainer Xolan"));
+	X.Deck.push_back(DB.CARD("Sustainer Xolan"));
+	X.Deck.push_back(DB.CARD("Vaporwing"));
+	X.Deck.push_back(DB.CARD("Rifter"));
+	X.Deck.push_back(DB.CARD("Apex"));
+
+	ActiveDeck Y(DB.CARD("Dracorex"));
+	Y.Deck.push_back(DB.CARD("Pummeller"));
+	Y.Deck.push_back(DB.CARD("Pummeller"));
+	Y.Deck.push_back(DB.CARD("Pummeller"));
+	Y.Deck.push_back(DB.CARD("Pummeller"));
+	Y.Deck.push_back(DB.CARD("Pummeller"));
+	Y.Deck.push_back(DB.CARD("Blood Pool"));
+	Y.Deck.push_back(DB.CARD("Blood Pool"));
+	Y.Deck.push_back(DB.CARD("Blood Pool"));
+	Y.Deck.push_back(DB.CARD("Draconian Queen"));
+	Y.Deck.push_back(DB.CARD("Valefar"));
+
+/*	ActiveDeck X(DB.CARD("Freddie"));
 	X.Deck.push_back(DB.CARD("Sharpshooter"));
 	X.Deck.push_back(DB.CARD("Sharpshooter"));
 	X.Deck.push_back(DB.CARD("Sharpshooter"));
@@ -357,24 +415,53 @@ int _tmain(int argc, char* argv[])
 	X.Deck.push_back(DB.CARD("Sharpshooter"));
 	X.Deck.push_back(DB.CARD("Sharpshooter"));
 	X.Deck.push_back(DB.CARD("Sharpshooter"));
-	X.Deck.push_back(DB.CARD("Rocket Infantry"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	//X.Deck.push_back(DB.CARD("Rocket Infantry"));
 	//ActiveDeck Y;
 	//DB.GenRaidDeck(Y,11);
+/*	ActiveDeck Y(DB.CARD("Vyander"));
+	Y.Deck.push_back(DB.CARD("Vaporwing"));
+	Y.Deck.push_back(DB.CARD("Vaporwing"));
+	Y.Deck.push_back(DB.CARD("Vaporwing"));
+	Y.Deck.push_back(DB.CARD("Vaporwing"));
+	Y.Deck.push_back(DB.CARD("Vaporwing"));
+	Y.Deck.push_back(DB.CARD("Vaporwing"));
+	Y.Deck.push_back(DB.CARD("Vaporwing"));
+	Y.Deck.push_back(DB.CARD("Vaporwing"));
+	Y.Deck.push_back(DB.CARD("Vaporwing"));
+	Y.Deck.push_back(DB.CARD("Vaporwing"));
+*/	
+/*	ActiveDeck Y(DB.CARD("Vyander"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));*/
+
+	ActiveDeck X(DB.CARD("Vyander"));
+	X.Deck.push_back(DB.CARD("Stealthy Niaq"));
+	X.Deck.push_back(DB.CARD("Stealthy Niaq"));
+	//X.Deck.push_back(DB.CARD("Heavy Infantry"));
 	ActiveDeck Y(DB.CARD("Vyander"));
-	Y.Deck.push_back(DB.CARD("Vaporwing"));
-	Y.Deck.push_back(DB.CARD("Vaporwing"));
-	Y.Deck.push_back(DB.CARD("Vaporwing"));
-	Y.Deck.push_back(DB.CARD("Vaporwing"));
-	Y.Deck.push_back(DB.CARD("Vaporwing"));
-	Y.Deck.push_back(DB.CARD("Vaporwing"));
-	Y.Deck.push_back(DB.CARD("Vaporwing"));
-	Y.Deck.push_back(DB.CARD("Vaporwing"));
-	Y.Deck.push_back(DB.CARD("Vaporwing"));
-	Y.Deck.push_back(DB.CARD("Vaporwing"));
+	//Y.Deck.push_back(DB.CARD("Chopper"));
+	Y.Deck.push_back(DB.CARD("Predator"));
+	Y.Deck.push_back(DB.CARD("Predator"));
+	//Y.Deck.push_back(DB.CARD("Enclave Warlord"));
+	//Y.Deck.push_back(DB.CARD("Enclave Warlord"));
+	//Y.Deck.push_back(DB.CARD("Enclave Warlord"));
+
 
 	printf("X hash: %s\n",X.GetHash64().c_str());
 	printf("Y hash: %s\n",Y.GetHash64().c_str());
 
+	Branching B(X,Y);
+	while (B.Evaluate());
+	//B.Evaluate();
 	// X hash: P3AGBW+p
 	// Y hash: QbDO+q
 
