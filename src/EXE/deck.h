@@ -133,6 +133,8 @@ private:
 	UCHAR Effects[CARD_ABILITIES_MAX];
 	UCHAR TargetCounts[CARD_ABILITIES_MAX];
 	UCHAR TargetFactions[CARD_ABILITIES_MAX]; // reserved negative values for faction
+#define RESERVE_ABILITIES_COUNT	3
+	vector<UCHAR> AbilitiesOrdered;
 protected:
 	void CopyName(const char *name)
 	{
@@ -164,6 +166,7 @@ public:
 		memset(Effects,0,CARD_ABILITIES_MAX);
 		memset(TargetCounts,0,CARD_ABILITIES_MAX);
 		memset(TargetFactions,0,CARD_ABILITIES_MAX);
+		AbilitiesOrdered.reserve(RESERVE_ABILITIES_COUNT);
 	}
 	Card(const UINT id, const char* name, const char* pic, const UCHAR rarity, const UCHAR type, const UCHAR faction, const UCHAR attack, const UCHAR health, const UCHAR wait, const UINT set)
 	{
@@ -183,6 +186,7 @@ public:
 		memset(Effects,0,CARD_ABILITIES_MAX);
 		memset(TargetCounts,0,CARD_ABILITIES_MAX);
 		memset(TargetFactions,0,CARD_ABILITIES_MAX);
+		AbilitiesOrdered.reserve(RESERVE_ABILITIES_COUNT);
 	}
 	Card(const Card &card)
 	{
@@ -199,28 +203,43 @@ public:
 		memcpy(Effects,card.Effects,CARD_ABILITIES_MAX);
 		memcpy(TargetCounts,card.TargetCounts,CARD_ABILITIES_MAX);
 		memcpy(TargetFactions,card.TargetFactions,CARD_ABILITIES_MAX);
+		AbilitiesOrdered.reserve(RESERVE_ABILITIES_COUNT);
+		if (!card.AbilitiesOrdered.empty())
+			for (UCHAR i=0;i<card.AbilitiesOrdered.size();i++)
+				AbilitiesOrdered.push_back(card.AbilitiesOrdered[i]);
 	}
 	void AddAbility(const UCHAR id, const UCHAR effect, const UCHAR targetcount, const UCHAR targetfaction)
 	{
 		Effects[id] = effect;
 		TargetCounts[id] = targetcount;
 		TargetFactions[id] = targetfaction;
+		AbilitiesOrdered.push_back(id);
 	}
 	void AddAbility(const UCHAR id, const UCHAR targetcount, const UCHAR targetfaction)
 	{
 		Effects[id] = ABILITY_ENABLED;
 		TargetCounts[id] = targetcount;
 		TargetFactions[id] = targetfaction;
+		AbilitiesOrdered.push_back(id);
 	}
 	void AddAbility(const UCHAR id, const UCHAR effect)
 	{
 		Effects[id] = effect;
+		AbilitiesOrdered.push_back(id);
 	}
 	void AddAbility(const UCHAR id)
 	{
 		Effects[id] = ABILITY_ENABLED;
+		AbilitiesOrdered.push_back(id);
 	}
-	void Destroy() { Id = 0; }
+	void PrintAbilities()
+	{
+		for (UCHAR i=0;i<CARD_ABILITIES_MAX;i++)
+			if (Effects[i] > 0)
+				printf("%d ",i);
+		printf("\n");
+	}
+	void Destroy() { Id = 0; AbilitiesOrdered.clear(); }
 	~Card()	{ Destroy(); }
 	const bool IsCard() const { return (Id != 0); }
 	const UINT GetId() const { return Id; }
@@ -257,6 +276,15 @@ public:
 	const UCHAR GetRarity() const { return Rarity; }
 	const UCHAR GetFaction() const { return Faction; }
 	const UCHAR GetAbility(const UCHAR id) const { return Effects[id]; }
+	const UCHAR GetAbilitiesCount() const { return AbilitiesOrdered.size(); }
+	const UCHAR GetAbilityInOrder(const UCHAR order) const
+	{
+		_ASSERT(AbilitiesOrdered.size() > order);
+		if (AbilitiesOrdered.size() <= order)
+			return 0;
+		else
+			return AbilitiesOrdered[order];
+	}
 	const UCHAR GetTargetCount(const UCHAR id) const { return TargetCounts[id]; }
 	const UCHAR GetTargetFaction(const UCHAR id) const { return TargetFactions[id]; }
 	const char *GetName() const { return Name; }
@@ -324,6 +352,8 @@ public:
 		if (Wait > 0)
 			Wait--;
 	}
+	const UCHAR GetAbilitiesCount() const { return OriginalCard->GetAbilitiesCount(); }
+	const UCHAR GetAbilityInOrder(const UCHAR order) const { return OriginalCard->GetAbilityInOrder(order); }
 	void Infuse(const UCHAR setfaction)
 	{
 		//OriginalCard.Infuse(setfaction);
@@ -845,475 +875,510 @@ public:
 		if (IsFusioned)
 			FusionMultiplier = 2;
 
-		// here is a good question - can paybacked skill be paybacked?
-		// can paybacked skill be evaded?
+		// here is a good question - can paybacked skill be paybacked? - nope
+		// can paybacked skill be evaded? - doubt
 		// in current model, it can't be, payback applies effect right away, without simulationg it's cast
 		// another question is - can paybacked skill be evaded? it is possible, but in this simulator it can't be
 		// both here and in branches
-
-		// enfeeble
-		aid = ACTIVATION_ENFEEBLE;
-		effect = Src.GetAbility(aid) * FusionMultiplier;
-		if (effect > 0)
+		UCHAR ac = Src.GetAbilitiesCount();
+		for (UCHAR aindex=0;aindex<ac;aindex++)
 		{
-			if (IsMimiced)
-				faction = FACTION_NONE;
-			else
-				faction = Src.GetTargetFaction(aid);
-			GetTargets(Dest.Units,faction,targets);
-			if (targets.size())
+			aid = Src.GetAbilityInOrder(aindex);
+			// enfeeble
+			if (aid == ACTIVATION_ENFEEBLE)
 			{
-				if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL)
+				effect = Src.GetAbility(aid) * FusionMultiplier;
+				if (effect > 0)
 				{
-					destindex = rand() % targets.size();
-					tmp = targets[destindex];
-					targets.clear();
-					targets.push_back(tmp);
-				}
-				for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
-					if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
-					{
-						// evaded
-					}
+					if (IsMimiced)
+						faction = FACTION_NONE;
 					else
+						faction = Src.GetTargetFaction(aid);
+					GetTargets(Dest.Units,faction,targets);
+					if (targets.size())
 					{
-						(*vi)->SetEffect(aid,(*vi)->GetEffect(aid) + effect);
-						if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50)  // payback
-							Src.SetEffect(aid,Src.GetEffect(aid) + effect);
-						if (bConsoleOutput)
+						if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL)
 						{
-							Src.PrintDesc();
-							printf(" enfeeble ");
-							(*vi)->PrintDesc();
-							printf(" for %d\n",effect);
+							destindex = rand() % targets.size();
+							tmp = targets[destindex];
+							targets.clear();
+							targets.push_back(tmp);
 						}
+						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
+							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
+							{
+								// evaded
+							}
+							else
+							{
+								(*vi)->SetEffect(aid,(*vi)->GetEffect(aid) + effect);
+								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50)  // payback
+									Src.SetEffect(aid,Src.GetEffect(aid) + effect);
+								if (bConsoleOutput)
+								{
+									Src.PrintDesc();
+									printf(" enfeeble ");
+									(*vi)->PrintDesc();
+									printf(" for %d\n",effect);
+								}
+							}
 					}
-			}
-			targets.clear();
-		}
-		// heal
-		aid = ACTIVATION_HEAL;
-		effect = Src.GetAbility(aid) * FusionMultiplier;
-		if (effect > 0)
-		{
-			if (IsMimiced)
-				faction = FACTION_NONE;
-			else
-				faction = Src.GetTargetFaction(aid);
-			GetTargets(Units,faction,targets);
-			if (targets.size())
-			{
-				PVCARDS::iterator vi = targets.begin();
-				while (vi != targets.end())
-				{
-					if ((*vi)->GetHealth() == (*vi)->GetMaxHealth())
-						vi = targets.erase(vi);
-					else vi++;
-				}
-				if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
-				{
-					destindex = rand() % targets.size();
-					tmp = targets[destindex];
 					targets.clear();
-					targets.push_back(tmp);
-				}
-				for (vi = targets.begin();vi != targets.end();vi++)
-				{
-					if (bConsoleOutput)
-					{
-						Src.PrintDesc();
-						printf(" heals ");
-						(*vi)->PrintDesc();
-						printf(" for %d\n",effect);
-					}
-					(*vi)->Heal(effect);
-					if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50 && (Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
-						Src.Heal(effect);
 				}
 			}
-			targets.clear();
-		}
-		// supply
-		aid = ACTIVATION_SUPPLY;
-		effect = Src.GetAbility(aid) * FusionMultiplier;
-		if ((effect > 0) && (Position >= 0) && ((!IsMimiced) || (Src.GetType() == TYPE_ASSAULT))) // can only be mimiced by assault cards
-		{
-			targets.clear();
-			if (Position)
-				targets.push_back(&Units[Position-1]);
-			targets.push_back(&Src);
-			if (Position+1 < Units.size())
-				targets.push_back(&Units[Position+1]);
-			if (targets.size())
+			// heal
+			if (aid == ACTIVATION_HEAL)
 			{
-				PVCARDS::iterator vi = targets.begin();
-				while (vi != targets.end())
+				effect = Src.GetAbility(aid) * FusionMultiplier;
+				if (effect > 0)
 				{
-					if ((*vi)->GetHealth() == (*vi)->GetMaxHealth())
-						vi = targets.erase(vi);
-					else vi++;
-				}
-				for (vi = targets.begin();vi != targets.end();vi++)
-				{
-					if (bConsoleOutput)
+					if (IsMimiced)
+						faction = FACTION_NONE;
+					else
+						faction = Src.GetTargetFaction(aid);
+					GetTargets(Units,faction,targets);
+					if (targets.size())
 					{
-						Src.PrintDesc();
-						printf(" supply ");
-						(*vi)->PrintDesc();
-						printf(" for %d\n",effect);
-					}
-					(*vi)->Heal(effect);
-					if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50 && (Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
-						Src.Heal(effect);
-				}
-			}
-			targets.clear();
-		}
-		// protect
-		// do skills like PROTECT ALL exist? in case they do - does shield override another shield?
-		aid = ACTIVATION_PROTECT;
-		effect = Src.GetAbility(aid) * FusionMultiplier; // will it be fusioned? who knows
-		if (effect > 0)
-		{
-			if (IsMimiced)
-				faction = FACTION_NONE;
-			else
-				faction = Src.GetTargetFaction(aid);
-			GetTargets(Units,faction,targets);
-			if (targets.size())
-			{
-				PVCARDS::iterator vi = targets.begin();
-				/*if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) // if it is not PROTECT ALL then remove from targets already shielded cards
-					while (vi != targets.end())
-					{
-						if ((*vi)->GetShield() > 0) // already shielded
-							vi = targets.erase(vi);
-						else vi++;
-					}*/
-				if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
-				{
-					destindex = rand() % targets.size();
-					tmp = targets[destindex];
-					targets.clear();
-					targets.push_back(tmp);
-				}
-				for (vi = targets.begin();vi != targets.end();vi++)
-				{
-					if (bConsoleOutput)
-					{
-						Src.PrintDesc();
-						printf(" protects ");
-						(*vi)->PrintDesc();
-						printf(" for %d\n",effect);
-					}
-					(*vi)->Protect(effect);
-					if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50 && (Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
-						Src.Protect(effect);
-				}
-			}
-			targets.clear();
-		}
-		// infuse is processed on the upper level
-		// ******
-		// jam
-		aid = ACTIVATION_JAM;
-		effect = Src.GetAbility(aid);
-		if (effect > 0)
-		{
-			if (IsMimiced)
-				faction = FACTION_NONE;
-			else
-				faction = Src.GetTargetFaction(aid);
-			GetTargets(Dest.Units,faction,targets);
-			if (targets.size())
-			{
-				PVCARDS::iterator vi = targets.begin();
-				while (vi != targets.end())
-				{
-					if (((*vi)->GetEffect(aid)) || ((*vi)->GetWait()))
-						vi = targets.erase(vi);
-					else vi++;
-				}
-				if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
-				{
-					destindex = rand() % targets.size();
-					tmp = targets[destindex];
-					targets.clear();
-					targets.push_back(tmp);
-				}
-				for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
-					if (PROC50)
-						if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
+						PVCARDS::iterator vi = targets.begin();
+						while (vi != targets.end())
 						{
-							// evaded
+							if ((*vi)->GetHealth() == (*vi)->GetMaxHealth())
+								vi = targets.erase(vi);
+							else vi++;
 						}
-						else
+						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
-							(*vi)->SetEffect(aid,effect);
-/*  ?  */					if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50)  // payback is it 1/2 or 1/4 chance to return jam with payback????
-								Src.SetEffect(aid,effect);
+							destindex = rand() % targets.size();
+							tmp = targets[destindex];
+							targets.clear();
+							targets.push_back(tmp);
+						}
+						for (vi = targets.begin();vi != targets.end();vi++)
+						{
 							if (bConsoleOutput)
 							{
 								Src.PrintDesc();
-								printf(" jam ");
+								printf(" heals ");
 								(*vi)->PrintDesc();
-								printf("\n");
+								printf(" for %d\n",effect);
 							}
+							(*vi)->Heal(effect);
+							if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50 && (Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
+								Src.Heal(effect);
 						}
-			}
-			targets.clear();
-		}
-		// mimic - could be tricky
-		aid = ACTIVATION_MIMIC;
-		effect = Src.GetAbility(aid);
-		if ((effect > 0) && (!IsMimiced))
-		{
-			if (IsMimiced) // mimic can't be mimiced ;) it's just sad copypaste, previous line prevents this being mimiced
-				faction = FACTION_NONE;
-			else
-				faction = Src.GetTargetFaction(aid);
-			GetTargets(Dest.Units,faction,targets);
-			if (targets.size())
-			{
-				if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL))
-				{
-					destindex = rand() % targets.size();
-					tmp = targets[destindex];
-					targets.clear();
-					targets.push_back(tmp);
-				}
-				for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
-					if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
-					{
-						// evaded
 					}
-					else
+					targets.clear();
+				}
+			}
+			// supply
+			if (aid == ACTIVATION_SUPPLY)
+			{
+				effect = Src.GetAbility(aid) * FusionMultiplier;
+				if ((effect > 0) && (Position >= 0) && ((!IsMimiced) || (Src.GetType() == TYPE_ASSAULT))) // can only be mimiced by assault cards
+				{
+					targets.clear();
+					if (Position)
+						targets.push_back(&Units[Position-1]);
+					targets.push_back(&Src);
+					if (Position+1 < Units.size())
+						targets.push_back(&Units[Position+1]);
+					if (targets.size())
 					{
-						if (bConsoleOutput)
+						PVCARDS::iterator vi = targets.begin();
+						while (vi != targets.end())
 						{
-							Src.PrintDesc();
-							printf(" mimic ");
-							(*vi)->PrintDesc();
-							printf("\n");
+							if ((*vi)->GetHealth() == (*vi)->GetMaxHealth())
+								vi = targets.erase(vi);
+							else vi++;
 						}
-						ApplyEffects(*(*vi),Position,Dest,true);	
+						for (vi = targets.begin();vi != targets.end();vi++)
+						{
+							if (bConsoleOutput)
+							{
+								Src.PrintDesc();
+								printf(" supply ");
+								(*vi)->PrintDesc();
+								printf(" for %d\n",effect);
+							}
+							(*vi)->Heal(effect);
+							if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50 && (Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
+								Src.Heal(effect);
+						}
 					}
-			}
-			targets.clear();
-		}
-		// rally
-		// does rally prefer units with 0 attack? ???? or its completely random
-		// afaik it's completely random
-		aid = ACTIVATION_RALLY;
-		effect = Src.GetAbility(aid) * FusionMultiplier;
-		if (effect > 0)
-		{
-			if (IsMimiced)
-				faction = FACTION_NONE;
-			else
-				faction = Src.GetTargetFaction(aid);
-			GetTargets(Units,faction,targets);
-			if (targets.size())
-			{
-				PVCARDS::iterator vi = targets.begin();
-				while (vi != targets.end())
-				{
-					if (((*vi)->GetWait()) || (*vi)->GetPlayed())
-						vi = targets.erase(vi);
-					else vi++;
-				}
-				if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
-				{
-					destindex = rand() % targets.size();
-					tmp = targets[destindex];
 					targets.clear();
-					targets.push_back(tmp);
 				}
-				for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
+			}
+			// protect
+			// do skills like PROTECT ALL exist? in case they do - does shield override another shield?
+			if (aid == ACTIVATION_PROTECT)
+			{
+				effect = Src.GetAbility(aid) * FusionMultiplier; // will it be fusioned? who knows
+				if (effect > 0)
 				{
-					if (bConsoleOutput)
+					if (IsMimiced)
+						faction = FACTION_NONE;
+					else
+						faction = Src.GetTargetFaction(aid);
+					GetTargets(Units,faction,targets);
+					if (targets.size())
 					{
-						Src.PrintDesc();
-						printf(" rally ");
-						(*vi)->PrintDesc();
-						printf(" for %d\n",effect);
+						PVCARDS::iterator vi = targets.begin();
+						/*if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) // if it is not PROTECT ALL then remove from targets already shielded cards
+							while (vi != targets.end())
+							{
+								if ((*vi)->GetShield() > 0) // already shielded
+									vi = targets.erase(vi);
+								else vi++;
+							}*/
+						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+						{
+							destindex = rand() % targets.size();
+							tmp = targets[destindex];
+							targets.clear();
+							targets.push_back(tmp);
+						}
+						for (vi = targets.begin();vi != targets.end();vi++)
+						{
+							if (bConsoleOutput)
+							{
+								Src.PrintDesc();
+								printf(" protects ");
+								(*vi)->PrintDesc();
+								printf(" for %d\n",effect);
+							}
+							(*vi)->Protect(effect);
+							if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50 && (Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
+								Src.Protect(effect);
+						}
 					}
-					(*vi)->Rally(effect);
-					// rally can't be tributed since that card already made it's turn
-					//if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50 && (Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
-					//	Src.Rally(effect);
+					targets.clear();
 				}
 			}
-			targets.clear();
-		}
-		// recharge -  only action cards
-		if (Src.GetAbility(ACTIVATION_RECHARGE) > 0)
-			if (PROC50)
-				Deck.push_back(Src);
-		// repair
-		aid = ACTIVATION_REPAIR;
-		effect = Src.GetAbility(aid) * FusionMultiplier;
-		if (effect > 0)
-		{
-			if (IsMimiced)
-				faction = FACTION_NONE;
-			else
-				faction = Src.GetTargetFaction(aid);
-			GetTargets(Structures,faction,targets);
-			if (targets.size())
+			// infuse is processed on the upper level
+			// ******
+			// jam
+			if (aid == ACTIVATION_JAM)
 			{
-				PVCARDS::iterator vi = targets.begin();
-				while (vi != targets.end())
+				effect = Src.GetAbility(aid);
+				if (effect > 0)
 				{
-					if ((*vi)->GetHealth() == (*vi)->GetMaxHealth())
-						vi = targets.erase(vi);
-					else vi++;
-				}
-				if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
-				{
-					destindex = rand() % targets.size();
-					tmp = targets[destindex];
+					if (IsMimiced)
+						faction = FACTION_NONE;
+					else
+						faction = Src.GetTargetFaction(aid);
+					GetTargets(Dest.Units,faction,targets);
+					if (targets.size())
+					{
+						PVCARDS::iterator vi = targets.begin();
+						while (vi != targets.end())
+						{
+							if (((*vi)->GetEffect(aid)) || ((*vi)->GetWait()))
+								vi = targets.erase(vi);
+							else vi++;
+						}
+						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+						{
+							destindex = rand() % targets.size();
+							tmp = targets[destindex];
+							targets.clear();
+							targets.push_back(tmp);
+						}
+						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
+							if (PROC50)
+								if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
+								{
+									// evaded
+								}
+								else
+								{
+									(*vi)->SetEffect(aid,effect);
+		/*  ?  */					if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50)  // payback is it 1/2 or 1/4 chance to return jam with payback????
+										Src.SetEffect(aid,effect);
+									if (bConsoleOutput)
+									{
+										Src.PrintDesc();
+										printf(" jam ");
+										(*vi)->PrintDesc();
+										printf("\n");
+									}
+								}
+					}
 					targets.clear();
-					targets.push_back(tmp);
 				}
-				for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
-					(*vi)->Heal(effect);
 			}
-			targets.clear();
-		}
-		// shock
-		effect = Src.GetAbility(ACTIVATION_SHOCK) * FusionMultiplier;
-		if (effect > 0)
-			Dest.Commander.SufferDmg(effect);
-		// siege
-		aid = ACTIVATION_SIEGE;
-		effect = Src.GetAbility(aid) * FusionMultiplier;
-		if (effect > 0)
-		{
-			if (IsMimiced)
-				faction = FACTION_NONE;
-			else
-				faction = Src.GetTargetFaction(aid);
-			GetTargets(Dest.Structures,faction,targets);
-			if (targets.size())
+			// mimic - could be tricky
+			if (aid == ACTIVATION_MIMIC)
 			{
-				if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL)
+				effect = Src.GetAbility(aid);
+				if ((effect > 0) && (!IsMimiced))
 				{
-					destindex = rand() % targets.size();
-					tmp = targets[destindex];
+					if (IsMimiced) // mimic can't be mimiced ;) it's just sad copypaste, previous line prevents this being mimiced
+						faction = FACTION_NONE;
+					else
+						faction = Src.GetTargetFaction(aid);
+					GetTargets(Dest.Units,faction,targets);
+					if (targets.size())
+					{
+						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL))
+						{
+							destindex = rand() % targets.size();
+							tmp = targets[destindex];
+							targets.clear();
+							targets.push_back(tmp);
+						}
+						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
+							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
+							{
+								// evaded
+							}
+							else
+							{
+								if (bConsoleOutput)
+								{
+									Src.PrintDesc();
+									printf(" mimic ");
+									(*vi)->PrintDesc();
+									printf("\n");
+								}
+								ApplyEffects(*(*vi),Position,Dest,true);	
+							}
+					}
 					targets.clear();
-					targets.push_back(tmp);
 				}
-				for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
+			}
+			// rally
+			// does rally prefer units with 0 attack? ???? or its completely random
+			// afaik it's completely random
+			if (aid == ACTIVATION_RALLY)
+			{
+				effect = Src.GetAbility(aid) * FusionMultiplier;
+				if (effect > 0)
+				{
+					if (IsMimiced)
+						faction = FACTION_NONE;
+					else
+						faction = Src.GetTargetFaction(aid);
+					GetTargets(Units,faction,targets);
+					if (targets.size())
+					{
+						PVCARDS::iterator vi = targets.begin();
+						while (vi != targets.end())
+						{
+							if (((*vi)->GetWait()) || (*vi)->GetPlayed())
+								vi = targets.erase(vi);
+							else vi++;
+						}
+						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+						{
+							destindex = rand() % targets.size();
+							tmp = targets[destindex];
+							targets.clear();
+							targets.push_back(tmp);
+						}
+						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
+						{
+							if (bConsoleOutput)
+							{
+								Src.PrintDesc();
+								printf(" rally ");
+								(*vi)->PrintDesc();
+								printf(" for %d\n",effect);
+							}
+							(*vi)->Rally(effect);
+							// rally can't be tributed since that card already made it's turn
+							//if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50 && (Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
+							//	Src.Rally(effect);
+						}
+					}
+					targets.clear();
+				}
+			}
+			// recharge -  only action cards
+			if (aid == ACTIVATION_RECHARGE)
+			{
+				if (Src.GetAbility(aid) > 0)
+					if (PROC50)
+						Deck.push_back(Src);
+			}
+			// repair
+			if (aid == ACTIVATION_REPAIR)
+			{
+				effect = Src.GetAbility(aid) * FusionMultiplier;
+				if (effect > 0)
+				{
+					if (IsMimiced)
+						faction = FACTION_NONE;
+					else
+						faction = Src.GetTargetFaction(aid);
+					GetTargets(Structures,faction,targets);
+					if (targets.size())
+					{
+						PVCARDS::iterator vi = targets.begin();
+						while (vi != targets.end())
+						{
+							if ((*vi)->GetHealth() == (*vi)->GetMaxHealth())
+								vi = targets.erase(vi);
+							else vi++;
+						}
+						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+						{
+							destindex = rand() % targets.size();
+							tmp = targets[destindex];
+							targets.clear();
+							targets.push_back(tmp);
+						}
+						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
+							(*vi)->Heal(effect);
+					}
+					targets.clear();
+				}
+			}
+			// shock
+			if (aid == ACTIVATION_SHOCK)
+			{
+				effect = Src.GetAbility(aid) * FusionMultiplier;
+				if (effect > 0)
+					Dest.Commander.SufferDmg(effect);
+			}
+			// siege
+			if (aid == ACTIVATION_SIEGE)
+			{
+				effect = Src.GetAbility(aid) * FusionMultiplier;
+				if (effect > 0)
+				{
+					if (IsMimiced)
+						faction = FACTION_NONE;
+					else
+						faction = Src.GetTargetFaction(aid);
+					GetTargets(Dest.Structures,faction,targets);
+					if (targets.size())
+					{
+						if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL)
+						{
+							destindex = rand() % targets.size();
+							tmp = targets[destindex];
+							targets.clear();
+							targets.push_back(tmp);
+						}
+						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
 					
-					if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
-					{
-						// evaded
+							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
+							{
+								// evaded
+							}
+							else
+								(*vi)->SufferDmg(effect);
 					}
-					else
-						(*vi)->SufferDmg(effect);
-			}
-			targets.clear();
-		}
-		// split
-		effect = Src.GetAbility(ACTIVATION_SPLIT);
-		if ((effect > 0) && (!IsMimiced))
-			Units.push_back(PlayedCard(Src.GetOriginalCard()));
-		// strike - Only targets active Assault cards on play with at least 1 Attack that are neither Jammed nor Immobilized
-		aid = ACTIVATION_STRIKE;
-		effect = Src.GetAbility(aid) * FusionMultiplier;
-		if (effect > 0)
-		{
-			if (IsMimiced)
-				faction = FACTION_NONE;
-			else
-				faction = Src.GetTargetFaction(aid);
-			GetTargets(Dest.Units,faction,targets);
-			if (targets.size())
-			{
-				if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL)
-				{
-					destindex = rand() % targets.size();
-					tmp = targets[destindex];
 					targets.clear();
-					targets.push_back(tmp);
 				}
-				for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
-					if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
-					{
-						// evaded
-					}
-					else
-					{
-						if (bConsoleOutput)
-						{
-							Src.PrintDesc();
-							printf(" strike ");
-							(*vi)->PrintDesc();
-							printf(" for %d\n",effect);
-						}
-						(*vi)->StrikeDmg(effect);
-						if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50)  // payback
-							Src.StrikeDmg(effect);
-					}			
 			}
-		}
-		// weaken
-		// i've played like 20 times mission 66 just farming and noticed that AI,
-		// when played beholder one of the first cards kept weakening my unit aligned
-		// to beholder every fucking turn, so I died of fear almost every time enemy
-		// played beholder 1-2nd card, I just couldn't kill it, Is he that smart?
-		// I played rush cards so he had plenty cards to pick from to weaken
-		// I fucking hate random ...
-		// no, that not true, AI is dumb
-		aid = ACTIVATION_WEAKEN;
-		effect = Src.GetAbility(aid) * FusionMultiplier;
-		if (effect > 0)
-		{
-			if (IsMimiced)
-				faction = FACTION_NONE;
-			else
-				faction = Src.GetTargetFaction(aid);
-			GetTargets(Dest.Units,faction,targets);
-			if (targets.size())
+			// split
+			if (aid == ACTIVATION_SPLIT)
 			{
-				PVCARDS::iterator vi = targets.begin();
-				while (vi != targets.end())
+				effect = Src.GetAbility(ACTIVATION_SPLIT);
+				if ((effect > 0) && (!IsMimiced))
+					Units.push_back(PlayedCard(Src.GetOriginalCard()));
+			}
+			// strike - Only targets active Assault cards on play with at least 1 Attack that are neither Jammed nor Immobilized
+			if (aid == ACTIVATION_STRIKE)
+			{
+				effect = Src.GetAbility(aid) * FusionMultiplier;
+				if (effect > 0)
 				{
-					if (((*vi)->GetWait() <= 1) &&
-						((*vi)->GetAttack() >= 1) && // at least 1 Attack
-						(!(*vi)->GetEffect(ACTIVATION_JAM)) && // neither Jammed
-						(!(*vi)->GetEffect(DMGDEPENDANT_IMMOBILIZE))    // nor Immobilized
-						)
-						vi++; // skip
+					if (IsMimiced)
+						faction = FACTION_NONE;
 					else
-						vi = targets.erase(vi);
-				}
-				if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
-				{
-					destindex = rand() % targets.size();
-					tmp = targets[destindex];
-					targets.clear();
-					targets.push_back(tmp);
-				}
-				for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
-					if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
+						faction = Src.GetTargetFaction(aid);
+					GetTargets(Dest.Units,faction,targets);
+					if (targets.size())
 					{
-						// evaded
-					}
-					else
-					{
-						if (bConsoleOutput)
+						if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL)
 						{
-							Src.PrintDesc();
-							printf(" weaken ");
-							(*vi)->PrintDesc();
-							printf(" for %d\n",effect);
+							destindex = rand() % targets.size();
+							tmp = targets[destindex];
+							targets.clear();
+							targets.push_back(tmp);
 						}
-						(*vi)->Weaken(effect);
-						if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50)  // payback
-							Src.Weaken(effect);
+						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
+							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
+							{
+								// evaded
+							}
+							else
+							{
+								if (bConsoleOutput)
+								{
+									Src.PrintDesc();
+									printf(" strike ");
+									(*vi)->PrintDesc();
+									printf(" for %d\n",effect);
+								}
+								(*vi)->StrikeDmg(effect);
+								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50)  // payback
+									Src.StrikeDmg(effect);
+							}			
 					}
+				}
+			}
+			// weaken
+			// i've played like 20 times mission 66 just farming and noticed that AI,
+			// when played beholder one of the first cards kept weakening my unit aligned
+			// to beholder every fucking turn, so I died of fear almost every time enemy
+			// played beholder 1-2nd card, I just couldn't kill it, Is he that smart?
+			// I played rush cards so he had plenty cards to pick from to weaken
+			// I fucking hate random ...
+			// no, that not true, AI is dumb
+			if (aid == ACTIVATION_WEAKEN)
+			{
+				effect = Src.GetAbility(aid) * FusionMultiplier;
+				if (effect > 0)
+				{
+					if (IsMimiced)
+						faction = FACTION_NONE;
+					else
+						faction = Src.GetTargetFaction(aid);
+					GetTargets(Dest.Units,faction,targets);
+					if (targets.size())
+					{
+						PVCARDS::iterator vi = targets.begin();
+						while (vi != targets.end())
+						{
+							if (((*vi)->GetWait() <= 1) &&
+								((*vi)->GetAttack() >= 1) && // at least 1 Attack
+								(!(*vi)->GetEffect(ACTIVATION_JAM)) && // neither Jammed
+								(!(*vi)->GetEffect(DMGDEPENDANT_IMMOBILIZE))    // nor Immobilized
+								)
+								vi++; // skip
+							else
+								vi = targets.erase(vi);
+						}
+						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+						{
+							destindex = rand() % targets.size();
+							tmp = targets[destindex];
+							targets.clear();
+							targets.push_back(tmp);
+						}
+						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
+							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
+							{
+								// evaded
+							}
+							else
+							{
+								if (bConsoleOutput)
+								{
+									Src.PrintDesc();
+									printf(" weaken ");
+									(*vi)->PrintDesc();
+									printf(" for %d\n",effect);
+								}
+								(*vi)->Weaken(effect);
+								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50)  // payback
+									Src.Weaken(effect);
+							}
+					}
+				}
 			}
 		}
 	}
