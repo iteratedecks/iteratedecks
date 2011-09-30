@@ -537,8 +537,8 @@ public:
 	}
 	void Protect(const UCHAR amount)
 	{
-		if (amount > Effects[ACTIVATION_PROTECT])
-			Effects[ACTIVATION_PROTECT] = amount;
+		//if (amount > Effects[ACTIVATION_PROTECT])
+		Effects[ACTIVATION_PROTECT] += amount;
 	}
 	void Heal(const UCHAR amount)
 	{
@@ -620,6 +620,7 @@ private:
 			// flurry
 			for (UCHAR iatk=0;iatk<iflurry;iatk++)
 			{
+				bool bGoBerserk = false;
 				// swipe
 				for (UCHAR s=0;s<swipe;s++)
 				{
@@ -689,7 +690,7 @@ private:
 						SRC.SufferDmg(targets[s]->GetAbility(DEFENSIVE_COUNTER) + SRC.GetEffect(ACTIVATION_ENFEEBLE)); // counter dmg is enhanced by enfeeble
 					// berserk
 					if ((dmg > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
-						SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
+						bGoBerserk = true;
 					// if target is dead, we dont need to process this effects
 					if (targets[s]->IsAlive() && (dmg > 0))
 					{
@@ -715,6 +716,9 @@ private:
 						if (siphon)
 							Commander.Heal(siphon);
 					}
+
+					if (bGoBerserk)
+						SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
 
 					if (!SRC.IsAlive()) // died from counter? during swipe
 						break;
@@ -923,7 +927,7 @@ public:
 						printf(" for %d\n",effect);
 					}
 					(*vi)->Heal(effect);
-					if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
+					if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50 && (Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
 						Src.Heal(effect);
 				}
 			}
@@ -959,7 +963,7 @@ public:
 						printf(" for %d\n",effect);
 					}
 					(*vi)->Heal(effect);
-					if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
+					if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50 && (Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
 						Src.Heal(effect);
 				}
 			}
@@ -979,13 +983,13 @@ public:
 			if (targets.size())
 			{
 				PVCARDS::iterator vi = targets.begin();
-				if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) // if it is not PROTECT ALL then remove from targets already shielded cards
+				/*if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) // if it is not PROTECT ALL then remove from targets already shielded cards
 					while (vi != targets.end())
 					{
 						if ((*vi)->GetShield() > 0) // already shielded
 							vi = targets.erase(vi);
 						else vi++;
-					}
+					}*/
 				if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
 				{
 					destindex = rand() % targets.size();
@@ -1003,7 +1007,7 @@ public:
 						printf(" for %d\n",effect);
 					}
 					(*vi)->Protect(effect);
-					if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
+					if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50 && (Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
 						Src.Protect(effect);
 				}
 			}
@@ -1135,8 +1139,9 @@ public:
 						printf(" for %d\n",effect);
 					}
 					(*vi)->Rally(effect);
-					if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
-						Src.Rally(effect);
+					// rally can't be tributed since that card already made it's turn
+					//if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50 && (Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
+					//	Src.Rally(effect);
 				}
 			}
 			targets.clear();
