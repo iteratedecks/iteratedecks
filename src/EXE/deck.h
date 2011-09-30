@@ -716,7 +716,7 @@ private:
 							Def.Commander.HitCommander(SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def.Structures,false);
 					}
 					// counter
-					if (targets[s]->GetAbility(DEFENSIVE_COUNTER))
+					if ((dmg > 0) && targets[s]->GetAbility(DEFENSIVE_COUNTER))
 						SRC.SufferDmg(targets[s]->GetAbility(DEFENSIVE_COUNTER) + SRC.GetEffect(ACTIVATION_ENFEEBLE)); // counter dmg is enhanced by enfeeble
 					// berserk
 					if ((dmg > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
