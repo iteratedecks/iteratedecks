@@ -864,7 +864,7 @@ public:
 	{
 		Deck.push_back(c);
 	}
-	void ApplyEffects(PlayedCard &Src,UINT Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false)
+	void ApplyEffects(PlayedCard &Src,UINT Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false,PlayedCard *Mimicer=0)
 	{
 		UCHAR destindex,aid,faction;
 		PVCARDS targets;
@@ -963,8 +963,19 @@ public:
 								printf(" for %d\n",effect);
 							}
 							(*vi)->Heal(effect);
-							if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50 && (Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
-								Src.Heal(effect);
+							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
+							{
+								if (IsMimiced)
+								{
+									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != (*vi)))
+										Mimicer->Heal(effect);
+								}
+								else
+								{
+									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
+										Src.Heal(effect);
+								}
+							}
 						}
 					}
 					targets.clear();
@@ -974,7 +985,7 @@ public:
 			if (aid == ACTIVATION_SUPPLY)
 			{
 				effect = Src.GetAbility(aid) * FusionMultiplier;
-				if ((effect > 0) && (Position >= 0) && ((!IsMimiced) || (Src.GetType() == TYPE_ASSAULT))) // can only be mimiced by assault cards
+				if ((effect > 0) && (Position >= 0) && ((!IsMimiced) || (Mimicer && (Mimicer->GetType() == TYPE_ASSAULT)))) // can only be mimiced by assault cards
 				{
 					targets.clear();
 					if (Position)
@@ -1001,8 +1012,19 @@ public:
 								printf(" for %d\n",effect);
 							}
 							(*vi)->Heal(effect);
-							if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50 && (Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
-								Src.Heal(effect);
+							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
+							{
+								if (IsMimiced)
+								{
+									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != (*vi)))
+										Mimicer->Heal(effect);
+								}
+								else
+								{
+									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
+										Src.Heal(effect);
+								}
+							}
 						}
 					}
 					targets.clear();
@@ -1047,8 +1069,19 @@ public:
 								printf(" for %d\n",effect);
 							}
 							(*vi)->Protect(effect);
-							if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50 && (Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
-								Src.Protect(effect);
+							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
+							{
+								if (IsMimiced)
+								{
+									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != (*vi)))
+										Mimicer->Protect(effect);
+								}
+								else
+								{
+									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
+										Src.Protect(effect);
+								}
+							}
 						}
 					}
 					targets.clear();
@@ -1140,7 +1173,7 @@ public:
 									(*vi)->PrintDesc();
 									printf("\n");
 								}
-								ApplyEffects(*(*vi),Position,Dest,true);	
+								ApplyEffects(*(*vi),Position,Dest,true,false,&Src);	
 							}
 					}
 					targets.clear();
@@ -1184,9 +1217,20 @@ public:
 								(*vi)->PrintDesc();
 								printf(" for %d\n",effect);
 							}
-							(*vi)->Rally(effect);
-							if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50 && (Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
-								Src.Rally(effect);
+							(*vi)->Rally(effect);								
+							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
+							{
+								if (IsMimiced)
+								{
+									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != (*vi)))
+										Mimicer->Rally(effect);
+								}
+								else
+								{
+									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
+										Src.Rally(effect);
+								}
+							}
 						}
 					}
 					targets.clear();
