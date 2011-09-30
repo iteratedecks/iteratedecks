@@ -7335,7 +7335,7 @@
 	</unit>
 	
 	<unit>
-		<id>439</id>
+		<id>457</id>
 		<name>Use This One</name>
 		<picture>alex.jpg</picture>
 		<attack>1</attack>
@@ -7346,7 +7346,7 @@
 	</unit>
 	
 	<unit>
-		<id>1115</id>
+		<id>1117</id>
 		<name>Use This One Commander</name>
 		<picture>alex.jpg</picture>
 		<attack>0</attack>
@@ -7366,7 +7366,7 @@
 	</unit>
 	
 	<unit>
-		<id>3041</id>
+		<id>3043</id>
 		<name>Use This One Action</name>
 		<picture>alex.jpg</picture>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
@@ -7383,7 +7383,8 @@
 		<attack>0</attack>
 		<health>50</health>
 		<cost>1</cost>
-		<skill id='split' />
+		<skill id='payback' />
+		<skill id='protect' x='1' />
 		<rarity>1</rarity> <gold_cost>10000</gold_cost>
 		<type>3</type>
 	</unit>
