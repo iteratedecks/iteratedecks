@@ -1185,9 +1185,8 @@ public:
 								printf(" for %d\n",effect);
 							}
 							(*vi)->Rally(effect);
-							// rally can't be tributed since that card already made it's turn
-							//if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50 && (Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
-							//	Src.Rally(effect);
+							if ((!IsMimiced) && (*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50 && (Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
+								Src.Rally(effect);
 						}
 					}
 					targets.clear();
