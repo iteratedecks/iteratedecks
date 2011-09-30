@@ -493,11 +493,11 @@ begin
   else if Faction = 3 then
     result := clPurple
   else if Faction = 4 then
-    result := clGray
+    result := clWebDarkSlategray
   else if Faction = 5 then
-    result := clTeal
+    result := clTeal//clSkyBlue
   else
-    result := clSilver;
+    result := clDkGray;
 end;
 
 function TEvaluateDecksForm.GetAbilityList(X: Pointer): string;
@@ -1204,9 +1204,9 @@ var
 begin
   ARecord := AViewInfo.GridRecord;
   if (AViewInfo.Item.Tag = 0) then
-    ACanvas.Brush.Color := clBtnFace
+    ACanvas.Brush.Color := clWebLightgrey
   else if ARecord.Index >= 11 then
-    ACanvas.Brush.Color := clSkyBlue;
+    ACanvas.Brush.Color := clWebPlum;//clWebLightCoral;//clSkyBlue;
 
   if Sender = vTop then
     colid := vTopId.Index
