@@ -525,10 +525,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Align = alClient
             BevelOuter = bvNone
             TabOrder = 1
-            ExplicitLeft = 183
-            ExplicitTop = 243
-            ExplicitWidth = 185
-            ExplicitHeight = 41
             object sbTop: TScrollBox
               Left = 0
               Top = 0
@@ -541,8 +537,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
               BevelOuter = bvNone
               BorderStyle = bsNone
               TabOrder = 0
-              ExplicitTop = 1
-              ExplicitHeight = 255
             end
             object pTopHash: TPanel
               Left = 0
@@ -700,10 +694,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Align = alClient
             BevelOuter = bvNone
             TabOrder = 1
-            ExplicitLeft = 256
-            ExplicitTop = 88
-            ExplicitWidth = 185
-            ExplicitHeight = 41
             object sbBot: TScrollBox
               Left = 0
               Top = 0
@@ -716,9 +706,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
               BevelOuter = bvNone
               BorderStyle = bsNone
               TabOrder = 0
-              ExplicitLeft = 162
-              ExplicitTop = 5
-              ExplicitHeight = 265
             end
             object pBotHash: TPanel
               Left = 0
