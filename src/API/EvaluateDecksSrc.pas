@@ -39,6 +39,7 @@ type
     Effects: array[0..CARD_ABILITIES_MAX - 1] of byte;
     TargetCounts: array[0..CARD_ABILITIES_MAX - 1] of byte;
     TargetFactions: array[0..CARD_ABILITIES_MAX - 1] of byte;
+    ChunkData: array[0..16] of byte;
   end;
 
 type
