@@ -390,28 +390,13 @@ public:
 		if (shield > 0)
 		{
 			if (Pierce >= shield)
-			{
-				dmg = Dmg; // whole shield was pierced, do we need to remove it?
-				// shield = 0;
-			}
+				dmg = Dmg;
 			else
 			{
-				if (Pierce >= Dmg)
-					dmg = Dmg;
+				if (Pierce+Dmg >= shield)
+					dmg = Pierce + Dmg - shield;
 				else
-				{
-					dmg = Pierce;
-					if ((Dmg - Pierce) >= shield)
-					{
-						dmg += (Dmg - Pierce) - shield;
-						shield = 0;
-					}
-					else
-					{
-						shield -= (Dmg - Pierce);
-					}
-					SetEffect(ACTIVATION_PROTECT,shield);
-				}
+					dmg = 0;
 			}
 		}
 		if (dmg >= Health)
