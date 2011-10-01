@@ -166,7 +166,7 @@ public:
 		memset(Effects,0,CARD_ABILITIES_MAX);
 		memset(TargetCounts,0,CARD_ABILITIES_MAX);
 		memset(TargetFactions,0,CARD_ABILITIES_MAX);
-		AbilitiesOrdered.reserve(RESERVE_ABILITIES_COUNT);
+		//AbilitiesOrdered.reserve(RESERVE_ABILITIES_COUNT);
 	}
 	Card(const UINT id, const char* name, const char* pic, const UCHAR rarity, const UCHAR type, const UCHAR faction, const UCHAR attack, const UCHAR health, const UCHAR wait, const UINT set)
 	{
@@ -207,6 +207,27 @@ public:
 		if (!card.AbilitiesOrdered.empty())
 			for (UCHAR i=0;i<card.AbilitiesOrdered.size();i++)
 				AbilitiesOrdered.push_back(card.AbilitiesOrdered[i]);
+	}
+	Card& operator=(const Card &card)
+	{
+		Id = card.Id;
+		memcpy(Name,card.Name,CARD_NAME_MAX_LENGTH);
+		memcpy(Picture,card.Picture,FILENAME_MAX_LENGTH);
+		Type = card.Type;
+		Faction = card.Faction;
+		Attack = card.Attack;
+		Health = card.Health;
+		Wait = card.Wait;
+		Rarity = card.Rarity;
+		Set = card.Set;
+		memcpy(Effects,card.Effects,CARD_ABILITIES_MAX);
+		memcpy(TargetCounts,card.TargetCounts,CARD_ABILITIES_MAX);
+		memcpy(TargetFactions,card.TargetFactions,CARD_ABILITIES_MAX);
+		AbilitiesOrdered.reserve(RESERVE_ABILITIES_COUNT);
+		if (!card.AbilitiesOrdered.empty())
+			for (UCHAR i=0;i<card.AbilitiesOrdered.size();i++)
+				AbilitiesOrdered.push_back(card.AbilitiesOrdered[i]);
+		return *this;
 	}
 	void AddAbility(const UCHAR id, const UCHAR effect, const UCHAR targetcount, const UCHAR targetfaction)
 	{

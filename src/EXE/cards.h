@@ -658,11 +658,28 @@ public:
 		char buffer[4*CARD_NAME_MAX_LENGTH]; // somehow it's corrupted often, overflows :(
 		size_t len = strlen(List);
 		size_t p = 0,brs = 0,cnt = 0;
+		size_t decknameend = 0;
 		try
 		{
 			for (size_t i=0;i<len+1;i++)
-				if ((List[i] == ',') || (List[i] == ':') || (!List[i]))
+				if ((List[i] == ',') || ((List[i] == ':') && (!p)) || (!List[i]))
 				{
+					if (!p)
+					{
+						if (List[i] == ':')
+						{
+							decknameend = i;
+							continue;
+						}
+						else
+						{
+							memcpy(buffer,List,decknameend);
+							buffer[decknameend] = 0; // finalize string
+							mi = Into->insert(PAIRMDECKS(trim(buffer),cardlist)).first;
+							mi->second.clear();
+							p = decknameend+1;
+						}
+					}
 					memcpy(buffer,List+p*sizeof(char),i-p);
 					buffer[i-p] = 0; // finalize string
 					if (brs > 0)
@@ -676,23 +693,17 @@ public:
 						}
 						brs = 0;
 					}
-					if (!p)
+					if (mi != Into->end())
 					{
-						mi = Into->insert(PAIRMDECKS(trim(buffer),cardlist)).first;
-						mi->second.clear();
-					}
-					else
-						if (mi != Into->end())
+						do
 						{
-							do
-							{
-								mi->second.push_back(trim(buffer));
-								if (cnt)
-									cnt--;
-							}
-							while (cnt > 0);
-							cnt = 0;
+							mi->second.push_back(trim(buffer));
+							if (cnt)
+								cnt--;
 						}
+						while (cnt > 0);
+						cnt = 0;
+					}
 					p = i + 1;
 				}
 				else
