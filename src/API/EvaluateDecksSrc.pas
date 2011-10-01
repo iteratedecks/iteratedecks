@@ -1566,6 +1566,8 @@ begin
             VarIsNull(Values[i, vTopName.Index])) then
           begin
             id := values[i, vTopID.Index];
+            if id < 0 then
+              continue;
             s := Values[i, vTopName.Index];
             if Cards[{remapminidinversed[}id{]}].CardType = TYPE_COMMANDER then
               sl1.Insert(0, s)
@@ -2011,6 +2013,8 @@ begin
             VarIsNull(Values[i, vTopName.Index])) then
           begin
             id := values[i, vTopID.Index];
+            if id < 0 then
+                continue;
             s := Values[i, vTopName.Index];
             if Cards[{remapminidinversed[}id{]}].CardType = TYPE_COMMANDER then
               sl1.Insert(0, s)
@@ -2040,6 +2044,8 @@ begin
               VarIsNull(Values[i, vBotName.Index])) then
             begin
               id := values[i, vBotID.Index];
+              if id < 0 then
+                continue;
               s := Values[i, vBotName.Index];
               if Cards[{remapminidinversed[}id{]}].CardType = TYPE_COMMANDER then
                 sl2.Insert(0, s)
