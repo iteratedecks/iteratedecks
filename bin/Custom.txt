@@ -20,9 +20,7 @@
 // Example6:Atlas,[1]
 Azure Spam:Dracorex,Azure Reaper,Azure Reaper,Azure Reaper,Azure Reaper,Sustainer Xolan,Sustainer Xolan,Sustainer Xolan,Vaporwing,Rifter,Apex
 Big Guns:Yurich,Colossus,Colossus,Colossus,Colossus,Colossus,Colossus,Colossus,Goliath,Demolition Bot,Dozer Tank
-Blood Grinder DR4 by Diadem:Malort,Blood Grunt,Blood Grunt,Blood Grunt,Blood Grunt,Blood Grunt,Blood Grunt,Blood Grunt,Blood Grunt,Blood Grunt,Blood Grunt
 Bloodthirsty Rush:Lord of Tartarus,Hatchet,Hatchet,Hatchet,Hatchet,Mawcor,Mawcor,Asylum,Asylum,Warehouse,Venomous Raptor
-CF4 rewards by Ryo_Sangnoir:Atlas,Tiamat,Omega,Predator,Shapeshifter,Hunter,Arc Trooper
 Daemon Spam:Vyander,Daemon,Daemon,Daemon,Daemon,Daemon,Sustainer Xolan,Sustainer Xolan,Sustainer Xolan,Xeno Mothership,Electromagnetic Pulse
 Hatchet Spam:Lord of Tartarus,Hatchet,Hatchet,Hatchet,Hatchet,Hatchet,Hatchet,Mawcor,Asylum,Asylum,Asylum
 Heavy Metal:Dracorex,Bolide Walker,Poseidon,Aegis,Omega,Pummeller,Azure Reaper,Metalhead,Dominated Hatchlings,Shapeshifter,Dozer Tank
@@ -41,7 +39,6 @@ Purifying Poison by Hakdo:Thadius,Tiamat,Irradiated Infantry,Irradiated Infantry
 Quakers:Dracorex,Earthquake Generator,Earthquake Generator,Earthquake Generator,Earthquake Generator,Vaporwing,Vaporwing,Sustainer Xolan,Sustainer Xolan,Phoenix,Bolster Xeno
 Raider Muscle:Yurich,Toxic Cannon,Toxic Cannon,Toxic Cannon,Colossus,Havoc,Goliath,Earthquake Generator,Command Center,Dozer Tank,Bulldozer
 Raider Striker Anti-Imperial Purger:Yurich,Bolide Walker,Bolide Walker,Omega,Poseidon,Chronos,Chronos,Chronos,Titan,Electromagnetic Pulse,Electromagnetic Pulse
-Sawblade/Striker Rush DR4 by 1337th Warlord  lunarscape:Thadius,Tiamat,Devastator,Sawblade,Sawblade,Sawblade,Sawblade,Sawblade,Sawblade,Sawblade,Full Power
 Slowroll:Dracorex,Aegis,Fortifier,Bolide Walker,Kraken,Pummeller,Rifter,Titan,Draconian Queen,Mend Wounds,Electromagnetic Pulse
 Starwars:Duncan,Cannon Walker,Cannon Walker,Cannon Walker,Cannon Walker,Command Center,Command Center,Command Center,Salvager,Salvager,Omega
 Strike Rush:Atlas,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Predator,Hunter,Mech Walker,Omega,Tiamat
