@@ -7313,6 +7313,55 @@
 		<type>4</type>
 		<set>5001</set>
 	</unit>
+	
+	<!-- END Block 9 -->
+	
+	<!-- Block 10 Righteous -->
+	
+	<unit>
+		<id>463</id>
+		<name>Orbo the Wrathful</name>
+		<picture>orbothewrathfull.jpg</picture>
+		<attack>2</attack>
+		<health>7</health>
+		<cost>4</cost>
+		<rarity>4</rarity> <gold_cost>10000</gold_cost>
+		<skill id='evade' />
+		<skill id='protect' x='1' all='1' />
+		<skill id='strike' x='3' />
+		<type>8</type>
+		<set>5001</set>
+	</unit>
+	
+	<unit>
+		<id>437</id>
+		<name>Pharos</name>
+		<picture>obfusicator.jpg</picture>
+		<attack>2</attack>
+		<health>6</health>
+		<cost>2</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='evade' />
+		<skill id='protect' x='1' />
+		<type>8</type>
+		<set>5001</set>
+	</unit>
+
+	<unit>
+		<id>438</id>
+		<name>Reclaimer</name>
+		<picture>bridgetroll.jpg</picture>
+		<attack>2</attack>
+		<health>7</health>
+		<cost>3</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='rally' x='2' y='8' />
+		<skill id='immobilize' />
+		<type>8</type>
+		<set>5001</set>
+	</unit>
+	
+	<!-- END Block 10 -->
 
 <!-- END PROMO Cards -->
 	<!-- Distraction -->
@@ -7335,7 +7384,7 @@
 	</unit>
 	
 	<unit>
-		<id>457</id>
+		<id>491</id>
 		<name>Use This One</name>
 		<picture>alex.jpg</picture>
 		<attack>1</attack>
@@ -7346,7 +7395,7 @@
 	</unit>
 	
 	<unit>
-		<id>1117</id>
+		<id>1120</id>
 		<name>Use This One Commander</name>
 		<picture>alex.jpg</picture>
 		<attack>0</attack>
@@ -7356,7 +7405,7 @@
 	</unit>
 	
 	<unit>
-		<id>2079</id>
+		<id>2081</id>
 		<name>Use This One Structure</name>
 		<picture>alex.jpg</picture>
 		<health>1</health>
@@ -7382,9 +7431,8 @@
 		<picture>alex.jpg</picture>
 		<attack>0</attack>
 		<health>50</health>
-		<cost>1</cost>
+		<cost>0</cost>
 		<skill id='payback' />
-		<skill id='protect' x='1' />
 		<rarity>1</rarity> <gold_cost>10000</gold_cost>
 		<type>3</type>
 	</unit>
@@ -7401,10 +7449,12 @@
 		<id>138</id>
 		<name>X-Dog, Lord of the Apocalypse</name>
 		<picture>xdog.jpg</picture>
-		<attack>4</attack>
+		<attack>1</attack>
 		<health>1</health>
 		<cost>0</cost>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='swipe' />
+		<skill id='fear' />
 		<type>1</type> 
 	</unit>
 

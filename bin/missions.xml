@@ -5486,13 +5486,13 @@
 		<money>1100</money>
 		<rep faction='12' amount='13' />
 		<commander>1113</commander>
-		<desc>Them Empress holds the highest command over the Righteous. She will be a difficult to defeat.</desc>
+		<desc>The Empress holds the highest command over the Righteous. She will be difficult to defeat.</desc>
 		<speech>
 			<line commander='1042'>How can the Bloodthirsty be so strong if this Pantheon is so much more powerful?</line>
 			<line commander='1097'>This area has the closest link to Tartarus and it's essence fuels them.</line>
 			<line commander='1097'>We must hasten. The Righteous have been focusing on powering up this Pantheon since we have started destroying the others.</line>
 			<line commander='1026'>Yes, I was trying to explain that I thought the Sentinels were meant to defeat Typhon, I was mistaken.</line>
-			<line commander='1026'>They were created for the soul purpose of protecting the Righteous from anyone who obtained the power of Tartarus, but their solution is to destroy everything.</line>
+			<line commander='1026'>They were created for the sole purpose of protecting the Righteous from anyone who obtained the power of Tartarus, but their solution is to destroy everything.</line>
 		</speech>
 		<deck>
 			<card>288</card>
