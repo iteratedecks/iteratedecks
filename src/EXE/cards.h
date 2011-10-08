@@ -633,11 +633,18 @@ public:
 			char buffer[MAX_BUFFER_SIZE];
 			while (!feof(f))
 			{
+				bool bReadLine = false;
 				fgets(buffer,MAX_BUFFER_SIZE,f);
 				for (UINT i=0;(i<MAX_BUFFER_SIZE)&&(buffer[i]);i++)
 					if (buffer[i] == '\n')
+					{
 						buffer[i] = 0;
-				if ((buffer[0] != '/') && (buffer[1] != '/')) 
+						break;
+					}
+					else
+						if (!isspace(buffer[i]))
+							bReadLine = true;
+				if ((buffer[0] != '/') && (buffer[1] != '/') && bReadLine) 
 					if (!InsertDeck(buffer))
 					{
 						errline = cline;
