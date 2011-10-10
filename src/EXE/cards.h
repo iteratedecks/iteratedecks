@@ -437,6 +437,7 @@ public:
 				_ASSERT(Id < RAID_MAX_ID);
 				RDB[Id] = RaidInfo(Commander,Name);
 				RIIndex.insert(PAIRMSUINT(Name,Id));
+				loaded++;
 
 				pugi::xml_node deck = it->child("deck");
 				pugi::xml_node alwaysinclude = deck.child("always_include");

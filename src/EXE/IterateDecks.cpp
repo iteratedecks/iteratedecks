@@ -259,41 +259,43 @@ struct EVAL_PARAMS
 };
 
 int _tmain(int argc, char* argv[])
-{
-	/*{
+{/*
+	{
 	bConsoleOutput = false;
 	CardDB DB;
 	DB.LoadCardXML("cards.xml");
 
-	ActiveDeck X(DB.CARD("Freddie"));
-	X.Deck.push_back(DB.CARD("Sharpshooter"));
-	X.Deck.push_back(DB.CARD("Sharpshooter"));
-	X.Deck.push_back(DB.CARD("Sharpshooter"));
-	X.Deck.push_back(DB.CARD("Sharpshooter"));
-	X.Deck.push_back(DB.CARD("Sharpshooter"));
-	X.Deck.push_back(DB.CARD("Sharpshooter"));
-	X.Deck.push_back(DB.CARD("Sharpshooter"));
-	X.Deck.push_back(DB.CARD("Sharpshooter"));
-	X.Deck.push_back(DB.CARD("Sharpshooter"));
-	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	ActiveDeck m119("RZDWEjEmFKFNFPFdFfFgFsFtgNge",DB.GetPointer());
+	ActiveDeck m115("RVAoBZBaBfB6EaFYFrGnfr",DB.GetPointer());
+	ActiveDeck m99("RVAnCvDKDcDvFRFSGmgJvX",DB.GetPointer());
+	for (UINT i=0;i<1000;i++)
+	{
+		const Card *c = &DB.GetCard(i);
+		if (c->IsCard() && (c->GetSet() > 0))
+		{
+#define GAMES_COUNT	100
+#define GAMES_EMUL	10
+			RESULTS res;
+			for (UINT t=0;t<10;t++)
+			{
+				for (UINT k=0;k<GAMES_COUNT;k++)
+				{
+					ActiveDeck tm(m99);
+					ActiveDeck a(DB.CARD("Dementia"));		
+					for (UCHAR l=0;l<GAMES_EMUL;l++)
+						a.Add(c);
 
-	ActiveDeck Y(DB.CARD("Vyander"));
-	Y.Deck.push_back(DB.CARD("Kraken"));
-	Y.Deck.push_back(DB.CARD("Kraken"));
-	Y.Deck.push_back(DB.CARD("Kraken"));
-	Y.Deck.push_back(DB.CARD("Kraken"));
-	Y.Deck.push_back(DB.CARD("Kraken"));
-	Y.Deck.push_back(DB.CARD("Kraken"));
-	Y.Deck.push_back(DB.CARD("Kraken"));
-	Y.Deck.push_back(DB.CARD("Kraken"));
-	Y.Deck.push_back(DB.CARD("Kraken"));
-	Y.Deck.push_back(DB.CARD("Kraken"));
-
-	printf("X hash: %s\n",X.GetHash64().c_str());
-	printf("Y hash: %s\n",Y.GetHash64().c_str());
-
-	Branching B(X,Y);
-	while (B.Evaluate());
+					Simulate(a,tm,res,false);
+				}
+				if (res.Win < (GAMES_COUNT / 2))
+					break; // chance is lower then half, drop this
+			}
+			if (res.Win > 9 * GAMES_COUNT)
+			{
+				printf("%.3f	%s\n",(float)res.Win / (GAMES_COUNT * GAMES_EMUL),c->GetName());
+			}
+		}
+	}
 
 	scanf("%s");
 	}*/
@@ -353,10 +355,49 @@ int _tmain(int argc, char* argv[])
    return 1;
 #else
 	bConsoleOutput = false;
-	CardDB DB;
+
 	DB.LoadCardXML("cards.xml");
 	DB.LoadMissionXML("missions.xml");
 	DB.LoadRaidXML("raids.xml");
+
+	{
+	RESULTS res;
+	for (UINT i=0;10;i++)
+	{
+	ActiveDeck a("QCAXBJDd+nD+",DB.GetPointer());
+	EvaluateRaidOnce(a,res,7);
+	}
+	}
+
+	ActiveDeck m119("RZDWEjEmFKFNFPFdFfFgFsFtgNge",DB.GetPointer());
+	for (UINT i=0;i<1000;i++)
+	{
+		const Card *c = &DB.GetCard(i);
+		if (c->IsCard() && (c->GetSet() > 0))
+		{
+#define GAMES_COUNT	100
+#define GAMES_EMUL	10
+			RESULTS res;
+			for (UINT t=0;t<10;t++)
+			{
+				for (UINT k=0;k<GAMES_COUNT;k++)
+				{
+					ActiveDeck tm(m119);
+					ActiveDeck a(DB.CARD("Dracorex"));		
+					for (UCHAR l=0;l<GAMES_EMUL;l++)
+						a.Add(c);
+
+					Simulate(a,tm,res,false);
+				}
+				if (res.Win < (GAMES_COUNT / 2))
+					break; // chance is lower then half, drop this
+			}
+			if (res.Win > GAMES_COUNT * GAMES_EMUL / 2)
+			{
+				printf("%.3f	%s\n",(float)res.Win / GAMES_COUNT,c->GetName());
+			}
+		}
+	}
 
 /*	ActiveDeck X(DB.CARD("Yurich"));
 	X.Deck.push_back(DB.CARD("Colossus"));

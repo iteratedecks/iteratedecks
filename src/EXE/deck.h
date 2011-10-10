@@ -294,6 +294,7 @@ public:
 	const UCHAR GetHealth() const	{	return Health;	}
 	const UCHAR GetWait() const		{	return Wait;	}
 	const UCHAR GetType() const		{	return Type;	}
+	const UCHAR GetSet() const		{	return Set;		}
 	const UCHAR GetRarity() const { return Rarity; }
 	const UCHAR GetFaction() const { return Faction; }
 	const UCHAR GetAbility(const UCHAR id) const { return Effects[id]; }
@@ -881,6 +882,8 @@ public:
 		if (IsFusioned)
 			FusionMultiplier = 2;
 
+		bool bSplit = false;
+
 		// here is a good question - can paybacked skill be paybacked? - nope
 		// can paybacked skill be evaded? - doubt
 		// in current model, it can't be, payback applies effect right away, without simulationg it's cast
@@ -1326,7 +1329,13 @@ public:
 			{
 				effect = Src.GetAbility(ACTIVATION_SPLIT);
 				if ((effect > 0) && (!IsMimiced))
-					Units.push_back(PlayedCard(Src.GetOriginalCard()));
+				{
+					//Units.push_back(PlayedCard(Src.GetOriginalCard()));
+					// vector can be reallocated after push back, so I have to update Src
+					// Src = Units[Position]; this doesn't work because I use reference to an object
+					// workaround:
+					bSplit = true;
+				}
 			}
 			// strike - Only targets active Assault cards on play with at least 1 Attack that are neither Jammed nor Immobilized
 			if (aid == ACTIVATION_STRIKE)
@@ -1430,6 +1439,9 @@ public:
 				}
 			}
 		}
+		// split, finally, can't do it inside of the loop because it corrupts pointer to Src since vector can be moved
+		if (bSplit)
+			Units.push_back(PlayedCard(Src.GetOriginalCard()));
 	}
 	void AttackDeck(ActiveDeck &Def)
 	{
@@ -1469,7 +1481,6 @@ public:
 			vi++;
 			indx--;
 		}
-
 		PlayedCard Empty;
 		UCHAR iFusionCount = 0;
 		for (UCHAR i=0;i<Structures.size();i++)
