@@ -5599,6 +5599,428 @@
 	
 	<!-- END Purity Missions -->
 	
+	<!-- Purity Side Missions -->
+	
+	<mission>
+		<id>156</id>
+		<name>Bloody Raiders 1</name>
+		<picture>mission156.jpg</picture>
+		<location_id>17</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>120</x>
+		<y>200</y>
+		<xp>67</xp>
+		<energy>25</energy>
+		<money>1400</money>
+		<commander>1106</commander>
+		<desc>Cassandra may be helping the Bloodthirsty, but the Bloodthirsty have their own agenda.</desc>
+		<speech>
+			<line commander='1026'>Cassandra has gone mad! She is assisting the Bloodthirsty with the hope of increasing Typhon's power.</line>
+		</speech>
+		<deck>
+			<card>339</card>
+			<card>339</card>
+			<card>416</card>
+			<card>345</card>
+			<card>372</card>
+			<card>231</card>
+			<card>242</card>
+			<card>215</card>
+			<card>245</card>
+			<card>2020</card>
+		</deck>
+		<req>155</req>
+	</mission>
+
+	<mission>
+		<id>157</id>
+		<name>Bloody Raiders 2</name>
+		<picture>mission157.jpg</picture>
+		<location_id>17</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>60</x>
+		<y>220</y>
+		<xp>69</xp>
+		<energy>25</energy>
+		<money>1450</money>
+		<commander>1106</commander>
+		<desc>The Raiders are bringing in their heavy hitters to complement the speed of the Bloodthirsty.</desc>
+		<speech>
+			<line commander='1106'>Ha! The Bloodthirsty's power is incredible! I understand what Typhon sees now.</line>
+		</speech>
+		<deck>
+			<card>111</card>
+			<card>225</card>
+			<card>308</card>
+			<card>58</card>
+			<card>247</card>
+			<card>217</card>
+			<card>290</card>
+			<card>323</card>
+			<card>62</card>
+			<card>255</card>
+			<card>2032</card>
+			<card>3024</card>
+		</deck>
+		<req>156</req>
+	</mission>
+
+	<mission>
+		<id>158</id>
+		<name>Bloody Raiders 3</name>
+		<picture>mission158.jpg</picture>
+		<location_id>17</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>20</x>
+		<y>270</y>
+		<xp>71</xp>
+		<energy>25</energy>
+		<money>1500</money>
+		<commander>1117</commander>
+		<desc>Cassandra has brought in the Juggernaut! A nearly impregnable force capable of massive destruction.</desc>
+		<speech>
+			<line commander='1106'>You cannot stop the spread of the Blight. Typhon will return and all will belong to him.</line>
+		</speech>
+		<deck>
+			<card>314</card>
+			<card>113</card>
+			<card>248</card>
+			<card>198</card>
+			<card>135</card>
+			<card>328</card>
+			<card>346</card>
+			<card>342</card>
+			<card>270</card>
+			<card>394</card>
+			<card>130</card>
+			<card>2009</card>
+			<card>3018</card>
+		</deck>
+		<req>157</req>
+	</mission>
+
+	<mission>
+		<id>159</id>
+		<name>Bloody Raiders 4</name>
+		<picture>mission159.jpg</picture>
+		<location_id>17</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>90</x>
+		<y>290</y>
+		<xp>73</xp>
+		<energy>25</energy>
+		<money>1550</money>
+		<commander>1117</commander>
+		<desc>The Bloodthirsty are still ignoring the Raiders help, but are trying to hit as hard as them.</desc>
+		<speech>
+			<line commander='1106'>Even if I meet my death, I will know that I have done my part in providing a glorious future for Typhon and my people.</line>
+		</speech>
+		<deck>
+			<card>130</card>
+			<card>23</card>
+			<card>200</card>
+			<card>221</card>
+			<card>205</card>
+			<card>262</card>
+			<card>327</card>
+			<card>296</card>
+			<card>273</card>
+			<card>321</card>
+			<card>347</card>
+			<card>406</card>
+			<card>2024</card>
+			<card>2049</card>
+			<card>3000</card>
+		</deck>
+		<rewards>
+			<card>130</card>
+		</rewards>
+		<req>158</req>
+	</mission>
+
+	<mission>
+		<id>160</id>
+		<name>Vengeful Righteous 1</name>
+		<picture>mission160.jpg</picture>
+		<location_id>18</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>350</x>
+		<y>335</y>
+		<xp>67</xp>
+		<energy>25</energy>
+		<money>1400</money>
+		<commander>1108</commander>
+		<desc>Opak's Rage is the source of his aggressive strategy.</desc>
+		<speech>
+			<line commander='1108'>You shall suffer for what you have done to my people and this planet.</line>
+		</speech>
+		<deck>
+			<card>368</card>
+			<card>369</card>
+			<card>371</card>
+			<card>330</card>
+			<card>332</card>
+			<card>288</card>
+			<card>351</card>
+			<card>349</card>
+			<card>421</card>
+			<card>2061</card>
+		</deck>
+		<req>155</req>
+	</mission>
+
+	<mission>
+		<id>161</id>
+		<name>Vengeful Righteous 2</name>
+		<picture>mission161.jpg</picture>
+		<location_id>18</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>340</x>
+		<y>295</y>
+		<xp>69</xp>
+		<energy>25</energy>
+		<money>1450</money>
+		<commander>1108</commander>
+		<desc>The first wave was mearly a distraction, The larger Righteous units are now ready to fight.</desc>
+		<speech>
+			<line commander='1042'>Can you not see that it is over? The Pantheons have been destroyed!</line>
+			<line commander='1108'>Negative, The Pantheons are being rebuilt as we speak and the Sentinels will be summoned.</line>
+			<line commander='1108'>I assure you will not be alive to witness it.</line>
+		</speech>
+		<deck>
+			<card>371</card>
+			<card>330</card>
+			<card>330</card>
+			<card>365</card>
+			<card>55</card>
+			<card>334</card>
+			<card>360</card>
+			<card>214</card>
+			<card>332</card>
+			<card>352</card>
+			<card>3002</card>
+			<card>2036</card>
+		</deck>
+		<req>160</req>
+	</mission>
+
+	<mission>
+		<id>162</id>
+		<name>Vengeful Righteous 3</name>
+		<picture>mission158.jpg</picture>
+		<location_id>18</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>400</x>
+		<y>270</y>
+		<xp>71</xp>
+		<energy>25</energy>
+		<money>1500</money>
+		<commander>1118</commander>
+		<desc>Opak is trying to disrupt you strategy by sending quick forces backed up by large units.</desc>
+		<speech>
+			<line commander='1108'>You believe the Pantheons are our only source of power?</line>
+			<line commander='1108'>We are enriched by all of our fallen brothers, you will fail.</line>
+		</speech>
+		<deck>
+			<card>365</card>
+			<card>366</card>
+			<card>330</card>
+			<card>433</card>
+			<card>364</card>
+			<card>329</card>
+			<card>333</card>
+			<card>335</card>
+			<card>214</card>
+			<card>357</card>
+			<card>291</card>
+			<card>3030</card>
+			<card>2079</card>
+		</deck>
+		<req>161</req>
+	</mission>
+
+	<mission>
+		<id>163</id>
+		<name>Vengeful Righteous 4</name>
+		<picture>mission163.jpg</picture>
+		<location_id>18</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>460</x>
+		<y>280</y>
+		<xp>73</xp>
+		<energy>25</energy>
+		<money>1550</money>
+		<commander>1118</commander>
+		<desc>Although they fight honorably, it is apparent they are more concerned about preserving what is left of the Righteous forces.</desc>
+		<speech>
+			<line commander='1108'>If I fail here it will mean nothing, the Righteous will still thrive and the Sentinels will be summoned.</line>
+			<line commander='1042'>The Oracle said the same thing.</line>
+		</speech>
+		<deck>
+			<card>330</card>
+			<card>330</card>
+			<card>214</card>
+			<card>214</card>
+			<card>331</card>
+			<card>426</card>
+			<card>250</card>
+			<card>329</card>
+			<card>325</card>
+			<card>294</card>
+			<card>351</card>
+			<card>359</card>
+			<card>3018</card>
+			<card>2036</card>
+			<card>2061</card>
+		</deck>
+		<rewards>
+			<card>2079</card>
+		</rewards>
+		<req>162</req>
+	</mission>
+
+
+	<mission>
+		<id>164</id>
+		<name>Imperial Purists 1</name>
+		<picture>mission164.jpg</picture>
+		<location_id>19</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>160</x>
+		<y>255</y>
+		<xp>67</xp>
+		<energy>25</energy>
+		<money>1400</money>
+		<commander>1109</commander>
+		<desc>Deacon will strike fast but his power may be surprising.</desc>
+		<speech>
+			<line commander='1109'>This is not over. We can restore the Pantheon and bring it back to full power in no time.</line>
+			<line commander='1097'>They must not succeed. It may be a trap, but the risk of a restored Pantheon cannot be taken.</line>
+		</speech>
+		<deck>
+			<card>331</card>
+			<card>333</card>
+			<card>329</card>
+			<card>350</card>
+			<card>335</card>
+			<card>411</card>
+			<card>86</card>
+			<card>40</card>
+			<card>186</card>
+			<card>2010</card>
+		</deck>
+		<req>155</req>
+	</mission>
+
+	<mission>
+		<id>165</id>
+		<name>Imperial Purists 2</name>
+		<picture>mission165.jpg</picture>
+		<location_id>19</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>140</x>
+		<y>310</y>
+		<xp>69</xp>
+		<energy>25</energy>
+		<money>1450</money>
+		<commander>1109</commander>
+		<desc>Deacon has lead you into a huge force and leaves you with no option but to take them head on.</desc>
+		<speech>
+			<line commander='1109'>No matter how much you interfere, the Righteous will not stop until they succeed. Your actions are insignificant.</line>
+		</speech>
+		<deck>
+			<card>412</card>
+			<card>311</card>
+			<card>63</card>
+			<card>122</card>
+			<card>55</card>
+			<card>330</card>
+			<card>352</card>
+			<card>420</card>
+			<card>325</card>
+			<card>426</card>
+			<card>3004</card>
+			<card>2057</card>
+		</deck>
+		<req>164</req>
+	</mission>
+
+	<mission>
+		<id>166</id>
+		<name>Imperial Purists 3</name>
+		<picture>mission158.jpg</picture>
+		<location_id>19</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>190</x>
+		<y>300</y>
+		<xp>71</xp>
+		<energy>25</energy>
+		<money>1500</money>
+		<commander>1119</commander>
+		<desc>The Imperial and Righteous are beginning to become more cooperative. They are sharing power.</desc>
+		<speech>
+			<line commander='1042'>None of our destinies are set. We will stop the Righteous and the Blight and bring this world to peace.</line>
+		</speech>
+		<deck>
+			<card>436</card>
+			<card>103</card>
+			<card>95</card>
+			<card>330</card>
+			<card>104</card>
+			<card>259</card>
+			<card>322</card>
+			<card>291</card>
+			<card>250</card>
+			<card>214</card>
+			<card>2064</card>
+			<card>2059</card>
+			<card>3016</card>
+		</deck>
+		<req>165</req>
+	</mission>
+
+	<mission>
+		<id>167</id>
+		<name>Imperial Purists 4</name>
+		<picture>mission163.jpg</picture>
+		<location_id>19</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>230</x>
+		<y>290</y>
+		<xp>73</xp>
+		<energy>25</energy>
+		<money>1550</money>
+		<commander>1119</commander>
+		<desc>Deacon is going to hit you with everything the Imperials and the Righteous have got.</desc>
+		<speech>
+			<line commander='1109'>Your hope for peace is foolish if you are not willing the make the sacrifices necessary to attain it.</line>
+			<line commander='1109'>But I hope for your sake you find a way.</line>
+		</speech>
+		<deck>
+			<card>436</card>
+			<card>253</card>
+			<card>312</card>
+			<card>337</card>
+			<card>363</card>
+			<card>423</card>
+			<card>344</card>
+			<card>333</card>
+			<card>349</card>
+			<card>214</card>
+			<card>84</card>
+			<card>364</card>
+			<card>2027</card>
+			<card>3022</card>
+			<card>3027</card>
+		</deck>
+		<rewards>
+			<card>436</card>
+		</rewards>
+		<req>166</req>
+	</mission>
+	
+	<!-- END Purity Side Missions -->
+	
 	<!-- END MISSIONS -->
 	
 	<location>

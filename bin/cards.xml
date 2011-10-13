@@ -5994,10 +5994,128 @@
 		<type>4</type>
 		<set>5000</set>
 	</unit>
+	
+	<unit> <!-- Achievement 191 Reward -->
+		<id>431</id>
+		<name>Gorivore</name>
+		<picture>werewolf.jpg</picture>
+		<attack>3</attack>
+		<health>6</health>
+		<cost>3</cost>
+		<unique>1</unique>
+		<reserve>1</reserve>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='evade' />
+		<skill id='berserk' x='1' />
+		<type>3</type>
+		<set>5000</set>
+	</unit>
+
+	<unit> <!-- Achievement 197 Reward -->
+		<id>435</id>
+		<name>Elemental</name>
+		<picture>hazing.jpg</picture>
+		<attack>4</attack>
+		<health>7</health>
+		<cost>4</cost>
+		<unique>1</unique>
+		<reserve>1</reserve>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='supply' x='1' />
+		<skill id='fear' />
+		<type>4</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>436</id>
+		<name>Executioner</name>
+		<picture>axeswinger.jpg</picture>
+		<attack>1</attack>
+		<health>4</health>
+		<cost>1</cost>
+		<unique>1</unique>
+		<reserve>1</reserve>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='supply' x='1' />
+		<skill id='swipe' x='1' />
+		<type>1</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>2079</id>
+		<name>Bridge of Destiny</name>
+		<picture>bridge.jpg</picture>
+		<health>5</health>
+		<cost>2</cost>
+		<unique>1</unique>
+		<reserve>1</reserve>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='wall' />
+		<skill id='regenerate' x='3' />
+		<skill id='protect' x='1' y='8' all='1' />
+		<type>8</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>130</id>
+		<name>Juggernaut</name>
+		<picture>juggernaut.jpg</picture>
+		<attack>1</attack>
+		<health>4</health>
+		<cost>3</cost>
+		<unique>1</unique>
+		<rarity>3</rarity> <gold_cost>1000</gold_cost>
+		<skill id='armored' x='3' />
+		<skill id='crush' x='3' />
+		<skill id='berserk' x='1' />
+		<type>9</type>
+		<set>5000</set>
+	</unit>
 
 <!-- END PURITY REWARDS -->
 	
 <!-- MISSION COMMANDERS -->
+
+	<unit>
+		<id>1117</id>
+		<name>Cassandra</name>
+		<picture>cassandra.jpg</picture>
+		<attack>0</attack>
+		<health>17</health>
+		<rarity>3</rarity> <gold_cost>50000</gold_cost>
+		<skill id='protect' x='1' />
+		<skill id='enfeeble' x='2' />
+		<skill id='weaken' x='1' all='1' />
+		<type>9</type>
+	</unit>
+
+	<unit>
+		<id>1118</id>
+		<name>Opak</name>
+		<picture>rightmeancommander.jpg</picture>
+		<attack>0</attack>
+		<health>18</health>
+		<rarity>3</rarity> <gold_cost>50000</gold_cost>
+		<skill id='protect' x='1' y='8' />
+		<skill id='rally' x='2' y='8' />
+		<skill id='weaken' x='2' />
+		<type>8</type>
+	</unit>
+
+	<unit>
+		<id>1119</id>
+		<name>Deacon</name>
+		<picture>imperialcommando.jpg</picture>
+		<attack>0</attack>
+		<health>16</health>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='protect' x='1' all='1' />
+		<skill id='strike' x='1' all='1' />
+		<type>1</type>
+	</unit>
 
 	<unit>
 		<id>1106</id>
@@ -6907,6 +7025,90 @@
 		<skill id='mimic' />
 		<set>5000</set>
 	</unit>
+	
+	<!-- Level 11-15 -->
+	
+	<unit>
+		<id>428</id>
+		<name>Turbo Commando</name>
+		<picture>achilles.jpg</picture>
+		<attack>1</attack>
+		<health>6</health>
+		<cost>2</cost>
+		<rarity>3</rarity> <gold_cost>15000</gold_cost>
+		<skill id='tribute' />
+		<skill id='flurry' x='2' />
+		<type>9</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>430</id>
+		<name>Wasteland Skimmer</name>
+		<picture>herecules.jpg</picture>
+		<attack>0</attack>
+		<health>5</health>
+		<cost>2</cost>
+		<rarity>3</rarity> <gold_cost>15000</gold_cost>
+		<skill id='rally' x='4' y='1' />
+		<type>1</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>432</id>
+		<name>Arachnous</name>
+		<picture>blastathon.jpg</picture>
+		<attack>3</attack>
+		<health>5</health>
+		<cost>3</cost>
+		<rarity>3</rarity> <gold_cost>15000</gold_cost>
+		<skill id='armored' x='1' />
+		<skill id='pierce' x='3' />
+		<skill id='siphon' x='4' />
+		<type>4</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>433</id>
+		<name>Equalizer</name>
+		<picture>equalizer.jpg</picture>
+		<attack>2</attack>
+		<health>5</health>
+		<cost>1</cost>
+		<rarity>3</rarity> <gold_cost>15000</gold_cost>
+		<skill id='tribute' />
+		<skill id='pierce' x='1' />
+		<type>8</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>3021</id>
+		<name>Emergency Fire</name>
+		<picture>absorbingshot.jpg</picture>
+		<rarity>3</rarity>
+		<gold_cost>15000</gold_cost>
+		<skill id='heal' x='2' all='1' />
+		<skill id='strike' x='1' all='1' />
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>434</id>
+		<name>Shrouded Defiler</name>
+		<picture>jacktheripper.jpg</picture>
+		<attack>3</attack>
+		<health>8</health>
+		<cost>4</cost>
+		<rarity>3</rarity> <gold_cost>15000</gold_cost>
+		<skill id='tribute' />
+		<skill id='supply' x='2' />
+		<skill id='weaken' x='2' />
+		<type>3</type>
+		<set>5000</set>
+	</unit>
 
 <!-- END FACTION REWARDS -->
 
@@ -7384,7 +7586,7 @@
 	</unit>
 	
 	<unit>
-		<id>491</id>
+		<id>493</id>
 		<name>Use This One</name>
 		<picture>alex.jpg</picture>
 		<attack>1</attack>
@@ -7395,7 +7597,7 @@
 	</unit>
 	
 	<unit>
-		<id>1120</id>
+		<id>1123</id>
 		<name>Use This One Commander</name>
 		<picture>alex.jpg</picture>
 		<attack>0</attack>
@@ -7405,7 +7607,7 @@
 	</unit>
 	
 	<unit>
-		<id>2081</id>
+		<id>2087</id>
 		<name>Use This One Structure</name>
 		<picture>alex.jpg</picture>
 		<health>1</health>
@@ -7430,9 +7632,8 @@
 		<name>TEST</name>
 		<picture>alex.jpg</picture>
 		<attack>0</attack>
-		<health>50</health>
+		<health>4</health>
 		<cost>0</cost>
-		<skill id='payback' />
 		<rarity>1</rarity> <gold_cost>10000</gold_cost>
 		<type>3</type>
 	</unit>
@@ -7449,12 +7650,12 @@
 		<id>138</id>
 		<name>X-Dog, Lord of the Apocalypse</name>
 		<picture>xdog.jpg</picture>
-		<attack>1</attack>
-		<health>1</health>
+		<attack>0</attack>
+		<health>10</health>
 		<cost>0</cost>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
-		<skill id='swipe' />
-		<skill id='fear' />
+		<skill id='strike' x='10' all='1' />
+		<skill id='siege' x='10' />
 		<type>1</type> 
 	</unit>
 
@@ -9623,6 +9824,85 @@
 		<anim>tribute.swf</anim>
 		<desc>Defensive - When another allied assault card uses an Activation Skill on this, 50% chance to use that ability on the original unit.</desc>
 		<cardValue passive='1' cost='2.2' />
+	</skillType>
+	<skillType>
+		<id>refresh</id>
+		<name>Refresh</name>
+		<icon>CrushSkillIcon</icon>
+		<target_anim>crush.swf</target_anim>
+		<desc>Damage-Dependant - Whatever</desc>
+		<cardValue cost='1.5' />
+	</skillType>
+	<skillType>
+		<id>absorb</id>
+		<name>Absorb</name>
+		<icon>CrushSkillIcon</icon>
+		<target_anim>crush.swf</target_anim>
+		<desc>Damage-Dependant - Whatever</desc>
+		<cardValue cost='1.5' />
+	</skillType>
+	<skillType>
+		<id>mutilate</id>
+		<name>Mutilate</name>
+		<icon>CrushSkillIcon</icon>
+		<target_anim>crush.swf</target_anim>
+		<desc>Damage-Dependant - Whatever</desc>
+		<cardValue cost='1.5' />
+	</skillType>
+	<skillType>
+		<id>replenish</id>
+		<name>Replenish</name>
+		<icon>CrushSkillIcon</icon>
+		<target_anim>crush.swf</target_anim>
+		<desc>Damage-Dependant - Whatever</desc>
+		<cardValue cost='1.5' />
+	</skillType>
+	<skillType>
+		<id>toxic</id>
+		<name>Toxic</name>
+		<icon>CrushSkillIcon</icon>
+		<target_anim>crush.swf</target_anim>
+		<desc>Damage-Dependant - Whatever</desc>
+		<cardValue cost='1.5' />
+	</skillType>
+	<skillType>
+		<id>rapid</id>
+		<name>Rapid</name>
+		<icon>CrushSkillIcon</icon>
+		<target_anim>crush.swf</target_anim>
+		<desc>Damage-Dependant - Whatever</desc>
+		<cardValue cost='1.5' />
+	</skillType><skillType>
+		<id>chaos</id>
+		<name>Chaos</name>
+		<icon>CrushSkillIcon</icon>
+		<target_anim>crush.swf</target_anim>
+		<desc>Damage-Dependant - Whatever</desc>
+		<cardValue cost='1.5' />
+	</skillType>
+	<skillType>
+		<id>magnet</id>
+		<name>Magnet</name>
+		<icon>CrushSkillIcon</icon>
+		<target_anim>crush.swf</target_anim>
+		<desc>Damage-Dependant - Whatever</desc>
+		<cardValue cost='1.5' />
+	</skillType>
+	<skillType>
+		<id>disease</id>
+		<name>Disease</name>
+		<icon>CrushSkillIcon</icon>
+		<target_anim>crush.swf</target_anim>
+		<desc>Damage-Dependant - Whatever</desc>
+		<cardValue cost='1.5' />
+	</skillType>
+	<skillType>
+		<id>nuke</id>
+		<name>Nuke</name>
+		<icon>CrushSkillIcon</icon>
+		<target_anim>crush.swf</target_anim>
+		<desc>Damage-Dependant - Whatever</desc>
+		<cardValue cost='1.5' />
 	</skillType>
 	
 	
