@@ -1192,9 +1192,9 @@ procedure TEvaluateDecksForm.vcTypeCustomDrawCell(
   Sender: TcxCustomGridTableView; ACanvas: TcxCanvas;
   AViewInfo: TcxGridTableDataCellViewInfo; var ADone: Boolean);
 begin
-  if AViewInfo.GridRecord.Values[vcType.Index] = 'Fight' then
+  if Pos('Fight',AViewInfo.GridRecord.Values[vcType.Index]) > 0  then
     ACanvas.Font.Color := clRed
-  else if AViewInfo.GridRecord.Values[vcType.Index] = 'Surge' then
+  else if Pos('Surge',AViewInfo.GridRecord.Values[vcType.Index]) > 0 then
     ACanvas.Font.Color := clBlue;
 end;
 
@@ -1657,7 +1657,7 @@ begin
       begin
         AppendRecord;
         rec := RecordCount - 1;
-        Values[rec, vcbAgainst.Index] := StringReplace(FormatDeck(sl2.CommaText), ',', ', ',
+        Values[rec, vcbAgainst.Index] := StringReplace(StringReplace(FormatDeck(sl2.CommaText), '"', '', [rfReplaceAll]), ',', ', ',
           [rfReplaceAll]);
       end;
 
@@ -2157,8 +2157,15 @@ begin
         Values[rec, vcType.Index] := 'Surge'
       else
         Values[rec, vcType.Index] := 'Fight';
-      Values[rec, vcAtk.Index] := StringReplace(FormatDeck(sl1.CommaText), ',', ', ', [rfReplaceAll]);
-      Values[rec, vcDef.Index] := StringReplace(FormatDeck(sl2.CommaText), ',', ', ', [rfReplaceAll]);
+      if cbOrderMatters.Checked then
+        Values[rec, vcType.Index] := Values[rec, vcType.Index] + ', ordered';
+
+      if cbOrderMatters.Checked then
+        s := atk
+      else
+        s := StringReplace(FormatDeck(sl1.CommaText), '"', '', [rfReplaceAll]);
+      Values[rec, vcAtk.Index] := StringReplace(s, ',', ', ', [rfReplaceAll]);
+      Values[rec, vcDef.Index] := StringReplace(StringReplace(FormatDeck(sl2.CommaText), '"', '', [rfReplaceAll]), ',', ', ', [rfReplaceAll]);
     end;
 
     if not bFastThreaded.Checked then
