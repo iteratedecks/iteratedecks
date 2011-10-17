@@ -256,11 +256,185 @@ struct EVAL_PARAMS
 	DWORD Seconds;
 	int RaidID;
 	bool Surge;
+	bool OrderMatters;
 };
 
 int _tmain(int argc, char* argv[])
-{/*
+{
+	/*{
+	bConsoleOutput = false;
+
+	DB.LoadCardXML("cards.xml");
+	DB.LoadMissionXML("missions.xml");
+	DB.LoadRaidXML("raids.xml");
+
+	ActiveDeck mm119("RfBUDWD9E4FNFRFYFdFrFsGnG0frvOvT",DB.GetPointer()); // 
+	// base deck:
+	ActiveDeck basedeck("P+D2EDFrGn+n",DB.GetPointer()); // draco + 3 lance riders
+	typedef vector <UINT>	VID;
+	typedef set <UINT>		SID;
+	VID Commanders;
+	VID Cards;
+	SID Exclude;
+	//Exclude.insert(289); // DEBUG - EXCLUDE VALEFAR
+	if (basedeck.Commander.IsDefined())
+		Commanders.push_back(basedeck.Commander.GetId());
+	for (UINT icmd=1000;icmd<2000;icmd++)
 	{
+		Card c = DB.GetCard(icmd);
+		if (c.IsCard() && c.GetSet())
+		{
+			//printf("%d %d	%d	%s\n",c.GetRarity(),c.GetFaction(),icmd,c.GetName());
+			if (c.GetRarity() >= RARITY_UNIQUE)// debug filter
+				if ((!basedeck.Commander.IsDefined()) || (icmd != basedeck.Commander.GetId()))
+					Commanders.push_back(icmd);
+		}
+	}
+	for (UINT icard=0;icard<3000;icard++)
+	{
+		if ((icard >= 1000) && (icard < 2000)) // commanders
+			continue;
+
+		Card c = DB.GetCard(icard);
+		if (c.IsCard() && c.GetSet())
+		{
+			//printf("%d %d	%d	%s\n",c.GetRarity(),c.GetFaction(),icard,c.GetName());
+			//if ((rand() % 100) < 1)// debug filter
+			if ((c.GetRarity() >= RARITY_RARE) && (c.GetFaction() == FACTION_IMPERIAL))
+				if (Exclude.find(icard) == Exclude.end())
+					Cards.push_back(icard);
+		}
+	}
+	printf("%d : %d\n",Commanders.size(),Cards.size());
+	UINT CardsSize = Cards.size();
+#define PICK_DECK_SIZE	10
+	UINT Picks[PICK_DECK_SIZE];
+
+#define GAMES_COUNT	100
+#define GAMES_EMUL	10
+	float cchance = 0.0;
+	ActiveDeck bestdeck;
+	// start
+	for (UINT ci=0;ci<Commanders.size();ci++)
+	{
+		printf("Commader: %d\n",Commanders[ci]);
+		memset(Picks,0,sizeof(UINT) * PICK_DECK_SIZE);
+		UINT cardcount = 1;
+		for (;;Picks[0]++)
+		{
+			/* this works bad:
+			0 0 0 0	invalid
+			1 0 0 0
+			2 0 0 0
+			0 1 0 0	dupe
+			1 1 0 0
+			2 1 0 0
+			0 2 0 0	dupe
+			1 2 0 0	dupe
+			2 2 0 0
+			0 1 1 0	dupe
+			1 1 1 0
+			2 1 1 0
+			*/
+			/* this works good:
+			1
+			2
+			3
+			1 1
+			1 2
+			1 3
+			2 2
+			2 3
+			3 3
+			1 1 1
+			1 1 2
+			1 1 3
+			1 2 2
+			1 2 3
+			1 3 3
+			2 2 2
+			2 2 3
+			2 3 3
+			3 3 3
+			*/
+/*			if (Picks[0] > CardsSize)
+				for (UINT i=1;i<PICK_DECK_SIZE;i++)
+					if (Picks[i] < CardsSize)
+					{
+						Picks[i]++;
+						UINT ioffset = 0;
+						// we can seed out some multiple Legendaries or Uniques here:
+						if (((Picks[i]-1) < CardsSize) && (DB.GetCard(Cards[Picks[i]-1]).GetRarity() >= RARITY_UNIQUE))
+							ioffset = 1; // skip em
+						for (UINT k=0;k<i;k++)
+							Picks[k] = Picks[i] + ioffset; // reset
+						if (i > cardcount)
+							cardcount = i;
+						break;
+					}
+			if (Picks[0] > CardsSize)
+				break; // end
+
+			// check if picks are valid deck
+			// we should have seeded out all multiple unique and multiple legendaries(clones) before
+			// so now seed out decks that have multiple legendaries(deck can't have more than one)
+			UINT iLegendaries = 0;
+			for (UINT i=0;i<PICK_DECK_SIZE;i++)
+				if ((Picks[i]) && (DB.GetCard(Cards[Picks[i]-1]).GetRarity() == RARITY_LEGENDARY))
+				{
+					iLegendaries++;
+					if (iLegendaries > 1)
+						break;					
+				}
+			if (iLegendaries > 1)
+				continue; // skip this deck completely
+
+			// current deck
+			ActiveDeck cd(&DB.GetCard(Commanders[ci]));
+			for (UINT i=0;i<PICK_DECK_SIZE;i++)
+				if (Picks[i])
+					cd.Add(&DB.GetCard(Cards[Picks[i]-1]));
+				else
+				{
+					if (i < basedeck.Deck.size())
+						cd.Add(basedeck.Deck[i].GetOriginalCard());
+y,
+			if (!basedeck.Deck.empty())
+			{
+				// need an extra check for unique and legendaries
+				if (!cd.IsValid())
+					continue;
+			}
+			//printf("%s\n",cd.GetHash64().c_str());
+			//for (UINT i=0;i<PICK_DECK_SIZE;i++)
+			//	printf("%d ",Picks[i]);
+			//printf("\n");
+
+			RESULTS res;
+			for (UINT t=0;t<GAMES_EMUL;t++)
+			{
+				for (UINT k=0;k<GAMES_COUNT;k++)
+				{
+					ActiveDeck tm(mm119);
+					ActiveDeck a(cd);
+
+					Simulate(a,tm,res,false);
+				}
+				if (res.Win < (2 * GAMES_COUNT * cchance / 3))
+					break; // chance is lower than 2/3 of current best, drop this
+			}
+			float newchance = (float)res.Win / (GAMES_COUNT * GAMES_EMUL);
+			if (newchance >= cchance)
+			{
+				cchance = newchance;
+				bestdeck = ActiveDeck(cd);
+				printf("[%d] %.3f	%s\n",cardcount,cchance,bestdeck.GetHash64().c_str());
+			}
+		}
+		//printf("%d variations overall\n",cnt);
+	}
+	}*/
+/*	{
 	bConsoleOutput = false;
 	CardDB DB;
 	DB.LoadCardXML("cards.xml");
@@ -268,6 +442,7 @@ int _tmain(int argc, char* argv[])
 	ActiveDeck m119("RZDWEjEmFKFNFPFdFfFgFsFtgNge",DB.GetPointer());
 	ActiveDeck m115("RVAoBZBaBfB6EaFYFrGnfr",DB.GetPointer());
 	ActiveDeck m99("RVAnCvDKDcDvFRFSGmgJvX",DB.GetPointer());
+	ActiveDeck VR3("ReDWEjFJFKFNFPFlFsFtFuGxgfvW",DB.GetPointer());
 	for (UINT i=0;i<1000;i++)
 	{
 		const Card *c = &DB.GetCard(i);
@@ -276,12 +451,12 @@ int _tmain(int argc, char* argv[])
 #define GAMES_COUNT	100
 #define GAMES_EMUL	10
 			RESULTS res;
-			for (UINT t=0;t<10;t++)
+			for (UINT t=0;t<GAMES_EMUL;t++)
 			{
 				for (UINT k=0;k<GAMES_COUNT;k++)
 				{
-					ActiveDeck tm(m99);
-					ActiveDeck a(DB.CARD("Dementia"));		
+					ActiveDeck tm(VR3);
+					ActiveDeck a(DB.CARD("Aiko"));		
 					for (UCHAR l=0;l<GAMES_EMUL;l++)
 						a.Add(c);
 
@@ -298,8 +473,8 @@ int _tmain(int argc, char* argv[])
 	}
 
 	scanf("%s");
-	}*/
-
+	}
+*/
 #if !_DEBUG
 	// executable uses shared memory to recieve parameters from API
 	HANDLE hFileMapping = CreateFileMapping(
@@ -337,6 +512,7 @@ int _tmain(int argc, char* argv[])
 	ActiveDeck X,Y;
 	DB.CreateDeck(pEvalParams->AtkDeck,X);
 	DB.CreateDeck(pEvalParams->DefDeck,Y);
+	X.SetOrderMatters(pEvalParams->OrderMatters);
 
 	memset(&pEvalParams->Result,0,sizeof(RESULTS));
 
@@ -355,10 +531,27 @@ int _tmain(int argc, char* argv[])
    return 1;
 #else
 	bConsoleOutput = false;
-
 	DB.LoadCardXML("cards.xml");
-	DB.LoadMissionXML("missions.xml");
 	DB.LoadRaidXML("raids.xml");
+
+	{
+	//ActiveDeck X("PsDIfcfc",DB.GetPointer()),
+	//	Y("Q4BhBvBwBxCDC1DIDJDNfvfwvI",DB.GetPointer());//
+	ActiveDeck X,Y;
+	DB.CreateDeck("Lord of Tartarus,Mawcor,Asylum,Asylum",X);
+	DB.CreateDeck("Dracorex[1080],Carcass Scrounge,Blood Spout,Abomination,Hatchet,Beholder,Acid Spewer,Mawcor,Lummox,Pummeller,Blood Pool,Blood Wall,Impede Assault",Y);
+	X.SetOrderMatters(true);
+
+	RESULTS res;
+	for (UINT k=0;k<1000;k++)
+	{
+		ActiveDeck x(X);
+		ActiveDeck y(Y);		
+
+		Simulate(x,y,res,false);
+	}
+	printf("%d\n",res.Win);
+	}
 
 	{
 	RESULTS res;

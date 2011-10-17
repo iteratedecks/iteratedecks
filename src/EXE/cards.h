@@ -893,7 +893,7 @@ public:
 				i--;
 		}
 		if (mi != Index.end())
-			for (UCHAR k=0;k<10;k++)
+			for (UCHAR k=0;k<DEFAULT_DECK_SIZE;k++)
 				Deck.push_back(&CDB[mi->second]);
 	}
 	// named decks

@@ -5,7 +5,9 @@
 #define FILENAME_MAX_LENGTH		50 //
 #define CARD_ABILITIES_MAX		70 // must sync it with CARD_ABILITIES_MAX in interface
 
+#define DEFAULT_DECK_SIZE		10
 #define DEFAULT_DECK_RESERVE_SIZE	15 // up to 20?
+#define DEFAULT_HAND_SIZE		3
 
 #define CARD_MAX_ID				4000 // size of storage array
 #define MISSION_MAX_ID			200  // size of storage array
@@ -600,6 +602,7 @@ public:
 
 typedef vector<PlayedCard> VCARDS;
 typedef vector<PlayedCard*> PVCARDS;
+typedef multiset<UINT> MSID;
 class ActiveDeck
 {
 public:
@@ -608,6 +611,9 @@ public:
 	VCARDS Units;
 	VCARDS Structures;
 	VCARDS Actions;
+	//
+	bool bOrderMatters;
+	MSID Hand;
 private:
 	void Reserve()
 	{
@@ -661,7 +667,10 @@ private:
 				// swipe
 				for (UCHAR s=0;s<swipe;s++)
 				{
-					if (((!s) || (s == 2)) && ((!targets[s]) || (!targets[s]->IsAlive()))) // empty slot to the left or right, swipe doesnt proc, if swipe == 1 then targets[0] can't be null
+					if (
+						((!s) || (s == 2)) &&
+						((!targets[s]) || ( (!targets[s]->IsAlive()) && ((s != 1) && (swipe != 1)) ))
+						) // empty slot to the left or right, swipe doesnt proc, if swipe == 1 then targets[0] can't be null
 						continue;
 					// if target dies during flurry and slot(s == 1) is aligned to SRC, we deal dmg to commander
 					if ((!targets[s]->IsAlive()) && ((swipe == 1) || (s == 1)))
@@ -767,7 +776,7 @@ private:
 #undef SRC
 	}
 public:
-	ActiveDeck() {}
+	ActiveDeck() { bOrderMatters = false; }
 	~ActiveDeck() { Deck.clear(); Units.clear(); Structures.clear(); Actions.clear(); }
 public:
 	// please note, contructors don't clean up storages, must do it manually and beforehand, even copy constructor
@@ -775,6 +784,7 @@ public:
 	{
 		_ASSERT(pCDB);
 		_ASSERT(HashBase64);
+		bOrderMatters = false; 
 		unsigned short tid = 0, lastid = 0;
 		size_t len = strlen(HashBase64);
 		_ASSERT(!(len & 1)); // bytes should go in pairs
@@ -805,7 +815,7 @@ public:
 			}
 		}
 	}
-	ActiveDeck(const Card *Cmd) { Commander = PlayedCard(Cmd); Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); };
+	ActiveDeck(const Card *Cmd) { bOrderMatters = false; Commander = PlayedCard(Cmd); Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); };
 	ActiveDeck(const ActiveDeck &D) // need copy constructor
 	{
 		Commander = D.Commander;
@@ -821,6 +831,13 @@ public:
 		Structures.reserve(D.Structures.size());
 		for (UCHAR i=0;i<D.Structures.size();i++)
 			Structures.push_back(D.Structures[i]);
+		bOrderMatters = D.bOrderMatters;
+		if (D.bOrderMatters)
+		{
+			Hand.clear();
+			for (MSID::iterator si=D.Hand.begin();si!=D.Hand.end();si++)
+				Hand.insert(*si);			
+		}
 		//for (VCARDS::iterator vi = D.Deck.begin();vi != D.Deck.end();vi++)
 		//	Deck.push_back(*vi);
 	}
@@ -866,6 +883,41 @@ public:
 			if (Actions[i] != D.Actions[i])
 				return (Actions[i] < D.Actions[i]);
 		return false;
+	}
+	const bool IsValid() const
+	{
+		if (!Commander.IsDefined())
+			return false;
+		if (Deck.empty())
+			return true;
+		set <UINT> cards;
+		bool bLegendary = false;
+		for (UCHAR i=0;i<Deck.size();i++)
+		{
+			UINT rarity = Deck[i].GetRarity();
+			if (rarity == RARITY_LEGENDARY)
+			{
+				if (bLegendary)
+					return false;
+				else
+					bLegendary = true;
+			}
+			else
+			{
+				if (Deck[i].GetRarity() == RARITY_UNIQUE)
+				{
+					if (cards.find(Deck[i].GetId()) != cards.end())
+						return false;
+					else
+						cards.insert(Deck[i].GetId());
+				}
+			}
+		}
+		return true;
+	}
+	void SetOrderMatters(const bool bMatters)
+	{
+		bOrderMatters = bMatters;
 	}
 	void Add(const Card *c)
 	{
@@ -1206,7 +1258,11 @@ public:
 						PVCARDS::iterator vi = targets.begin();
 						while (vi != targets.end())
 						{
-							if (((*vi)->GetWait()) || (*vi)->GetPlayed())
+							if (((*vi)->GetWait()) ||
+								 (*vi)->GetPlayed() ||
+								((*vi)->GetEffect(ACTIVATION_JAM)) || // Jammed
+								((*vi)->GetEffect(DMGDEPENDANT_IMMOBILIZE))   // Immobilized
+								)
 								vi = targets.erase(vi);
 							else vi++;
 						}
@@ -1456,7 +1512,46 @@ public:
 		UCHAR indx = 0;
 		if (vi != Deck.end()) // gay ass STL updates !!!
 		{
-			indx = rand() % Deck.size();
+			if (!bOrderMatters)
+			{
+				// standard random pick
+				indx = rand() % Deck.size();
+			}
+			else
+			{
+				// pick that involves 'hand' and priorities
+				// fill hand
+				UCHAR handsize = 3;
+				if (Deck.size() <= handsize)
+				{
+					Hand.clear();
+					for (UCHAR i=0;i<Deck.size();i++)
+						Hand.insert(i);
+				}
+				else
+				{
+					do
+					{
+						indx = rand() % Deck.size();
+						// we need to pick first card of a same type, instead of picking this card
+						for (UCHAR i=0;i<Deck.size();i++)
+							if ((Deck[indx].GetId() == Deck[i].GetId()) && (Hand.find(indx) == Hand.end()))
+							{
+								indx = i;
+								break;
+							}
+						if (Hand.find(indx) == Hand.end())
+							Hand.insert(indx);
+					}
+					while (Hand.size() < handsize);
+				}
+				indx = (*Hand.begin()); // pick first in set
+				/*for (MSID::iterator si = Hand.begin(); si != Hand.end(); si++)
+				{
+					printf("%d ",*si);
+				}
+				printf(" -> %d\n",indx);*/
+			}
 		}
 		while(vi != Deck.end())
 		{
@@ -1633,8 +1728,8 @@ public:
 	{
 		if (Deck.empty())
 			return string();
-		typedef multiset<UINT> SID; // I <3 sets, they keep stuff sorted ;)
-		SID ids;
+		typedef multiset<UINT> MSID; // I <3 sets, they keep stuff sorted ;)
+		MSID ids;
 		for (UCHAR i=0;i<Deck.size();i++)
 			ids.insert(Deck[i].GetId());
 		string s;
@@ -1646,7 +1741,7 @@ public:
 			s.append((char*)&tmp);
 			//printf("1: %s\n",(char*)&tmp);
 		}
-		SID::iterator si = ids.begin();
+		MSID::iterator si = ids.begin();
 		do
 		{
 			// we can actually use Id range 4000-4095 (CARD_MAX_ID - 0xFFF) for special codes,
