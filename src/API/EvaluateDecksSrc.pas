@@ -1540,6 +1540,33 @@ begin
       end;
 end;
 
+function FormatDeck(s: string):string;
+var i,k,c: integer;
+begin
+  result := s;
+  with TStringList.Create do
+  try
+    CommaText := s;
+    for i := 0 to Count - 1 do
+    begin
+      c := 1;
+      for k := Count-1 downto i+1 do
+      begin
+        if Strings[i] = Strings[k] then
+        begin
+          Delete(k);
+          inc(c);
+        end;
+      end;
+      if c > 1 then
+        Strings[i] := Strings[i] + '(' + Inttostr(c) + ')';
+    end;
+    result := CommaText;
+  finally
+    Free;
+  end;
+end;
+
 procedure TEvaluateDecksForm.bBRunClick(Sender: TObject);
 var
   i, games, rec, seed, id: integer;
@@ -1616,7 +1643,7 @@ begin
         FreeMem(p1);
       end;
 
-      def := StringReplace(sl2.CommaText, '"', '', [rfReplaceAll]);
+      def := StringReplace(FormatDeck(sl2.CommaText), '"', '', [rfReplaceAll]);
       if (def = '') then
       begin
         //ShowMessage('One of the decks is empty.');
@@ -1999,6 +2026,8 @@ begin
   end;
 end;
 
+
+
 procedure TEvaluateDecksForm.bRunClick(Sender: TObject);
 {var
   ret: LongWord;
@@ -2105,8 +2134,8 @@ begin
         PrepareDeck(sl1.CommaText);
     end;
 
-    atk := StringReplace(sl1.CommaText, '"', '', [rfReplaceAll]);
-    def := StringReplace(sl2.CommaText, '"', '', [rfReplaceAll]);
+    atk := StringReplace(FormatDeck(sl1.CommaText), '"', '', [rfReplaceAll]);
+    def := StringReplace(FormatDeck(sl2.CommaText), '"', '', [rfReplaceAll]);
     if (atk = '') or ((def = '') and (not bIsRaid)) then
     begin
       Exception.Create('One of the decks is empty, can''t continue');

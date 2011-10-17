@@ -22,7 +22,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
     Top = 0
     Width = 852
     Height = 648
-    ActivePage = tsDecks
+    ActivePage = tsMin
     Align = alClient
     Rotate = True
     ShowFrame = True
