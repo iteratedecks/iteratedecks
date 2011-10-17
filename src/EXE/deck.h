@@ -1535,17 +1535,29 @@ public:
 						indx = rand() % Deck.size();
 						// we need to pick first card of a same type, instead of picking this card
 						for (UCHAR i=0;i<Deck.size();i++)
-							if ((Deck[indx].GetId() == Deck[i].GetId()) && (Hand.find(indx) == Hand.end()))
+							if ((Deck[indx].GetId() == Deck[i].GetId()) && (Hand.find(indx) == Hand.end()) && (Hand.find(i) == Hand.end()))
 							{
 								indx = i;
 								break;
 							}
 						if (Hand.find(indx) == Hand.end())
+						{
 							Hand.insert(indx);
+							//printf("add to hand %d\n",indx);
+						}
 					}
 					while (Hand.size() < handsize);
 				}
 				indx = (*Hand.begin()); // pick first in set
+				//printf("pick %d\n",indx);
+				MSID tHand;
+				for (MSID::iterator si = Hand.begin(); si != Hand.end(); si++)
+					if (si != Hand.begin()) // this one is picked
+						tHand.insert((*si) - 1); // offset after pick
+				Hand.clear();
+				for (MSID::iterator si = tHand.begin(); si != tHand.end(); si++)
+					Hand.insert(*si);
+
 				/*for (MSID::iterator si = Hand.begin(); si != Hand.end(); si++)
 				{
 					printf("%d ",*si);
