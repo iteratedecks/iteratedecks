@@ -1895,6 +1895,8 @@ begin
   seThreads.Enabled := bFastThreaded.Checked;
   seSeed.Enabled := bFastThreaded.Checked;
   cbRandomSeed.Enabled := bFastThreaded.Checked;
+  cbOrderMatters.Enabled := bFastThreaded.Checked;
+  cbBOrderMatters.Enabled := bFastThreaded.Checked;
 end;
 
 procedure TEvaluateDecksForm.bmCustomAttackClick(Sender: TObject);
