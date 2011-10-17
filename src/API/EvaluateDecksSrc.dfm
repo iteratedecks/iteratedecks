@@ -890,6 +890,13 @@ object EvaluateDecksForm: TEvaluateDecksForm
         TabOrder = 5
         OnClick = bEvalExportClick
       end
+      object cbOrderMatters: TcxCheckBox
+        Left = 470
+        Top = 3
+        Caption = 'Cards are played in order'
+        TabOrder = 6
+        Width = 179
+      end
     end
     object tsBatch: TcxTabSheet
       Caption = 'Batch Eval'
@@ -1292,6 +1299,13 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Caption = 'Export to Excel'
         TabOrder = 5
         OnClick = bBEvalExportClick
+      end
+      object cbBOrderMatters: TcxCheckBox
+        Left = 447
+        Top = 3
+        Caption = 'Cards are played in order'
+        TabOrder = 6
+        Width = 179
       end
     end
     object tsUpdate: TcxTabSheet

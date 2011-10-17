@@ -72,6 +72,7 @@ type
     Seconds: DWORD;
     RaidID: integer;
     Surge: boolean;
+    OrderMatters: boolean;
   end;
 
 type
@@ -249,6 +250,8 @@ type
     ePwd: TcxTextEdit;
     lPort: TcxLabel;
     ePort: TcxSpinEdit;
+    cbOrderMatters: TcxCheckBox;
+    cbBOrderMatters: TcxCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -564,7 +567,7 @@ end;
 
 function IterateDecks(Exe: string; Cwd: string; Seed: DWORD; AtkDeck: string;
   DefDeck: string; RaidID: integer; GamesPerThread: DWORD; Threads: DWORD;
-  bIsSurge: boolean): RESULTS;
+  bIsSurge: boolean; bOrderMatters: boolean): RESULTS;
 var
   SI: TStartupInfo;
   PI: TProcessInformation;
@@ -585,6 +588,7 @@ begin
   ep.GamesPerThread := GamesPerThread;
   ep.Threads := Threads;
   ep.Surge := bIsSurge;
+  ep.OrderMatters := bOrderMatters;
 
   hFileMapObj := CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0,
     256, 'Local\IterateDecksSharedMemory');
@@ -1643,7 +1647,7 @@ begin
         FreeMem(p1);
       end;
 
-      def := StringReplace(FormatDeck(sl2.CommaText), '"', '', [rfReplaceAll]);
+      def := StringReplace(sl2.CommaText, '"', '', [rfReplaceAll]);
       if (def = '') then
       begin
         //ShowMessage('One of the decks is empty.');
@@ -1653,7 +1657,7 @@ begin
       begin
         AppendRecord;
         rec := RecordCount - 1;
-        Values[rec, vcbAgainst.Index] := StringReplace(def, ',', ', ',
+        Values[rec, vcbAgainst.Index] := StringReplace(FormatDeck(def), ',', ', ',
           [rfReplaceAll]);
       end;
 
@@ -1670,7 +1674,7 @@ begin
       end;
 
       r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, -1, games
-        div tc, tc, false);
+        div tc, tc, false, cbBOrderMatters.Checked);
 
       with vBatchResult.DataController do
       begin
@@ -1689,7 +1693,7 @@ begin
       Application.ProcessMessages;
 
       r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, -1, games
-        div tc, tc, true);
+        div tc, tc, true, cbBOrderMatters.Checked);
 
       with vBatchResult.DataController do
       begin
@@ -2134,8 +2138,8 @@ begin
         PrepareDeck(sl1.CommaText);
     end;
 
-    atk := StringReplace(FormatDeck(sl1.CommaText), '"', '', [rfReplaceAll]);
-    def := StringReplace(FormatDeck(sl2.CommaText), '"', '', [rfReplaceAll]);
+    atk := StringReplace(sl1.CommaText, '"', '', [rfReplaceAll]);
+    def := StringReplace(sl2.CommaText, '"', '', [rfReplaceAll]);
     if (atk = '') or ((def = '') and (not bIsRaid)) then
     begin
       Exception.Create('One of the decks is empty, can''t continue');
@@ -2151,8 +2155,8 @@ begin
         Values[rec, vcType.Index] := 'Surge'
       else
         Values[rec, vcType.Index] := 'Fight';
-      Values[rec, vcAtk.Index] := StringReplace(atk, ',', ', ', [rfReplaceAll]);
-      Values[rec, vcDef.Index] := StringReplace(def, ',', ', ', [rfReplaceAll]);
+      Values[rec, vcAtk.Index] := StringReplace(FormatDeck(atk), ',', ', ', [rfReplaceAll]);
+      Values[rec, vcDef.Index] := StringReplace(FormatDeck(def), ',', ', ', [rfReplaceAll]);
     end;
 
     if not bFastThreaded.Checked then
@@ -2198,7 +2202,7 @@ begin
         seed := 0;
       end;
       r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, raid,
-        games div tc, tc, bIsSurge);
+        games div tc, tc, bIsSurge, cbOrderMatters.Checked);
       i := games;
     end;
     //wins := Evaluate(sl1.CommaText,sl2.CommaText,games);
