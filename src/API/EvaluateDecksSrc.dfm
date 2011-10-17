@@ -22,7 +22,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
     Top = 0
     Width = 852
     Height = 648
-    ActivePage = tsMin
+    ActivePage = tsDecks
     Align = alClient
     Rotate = True
     ShowFrame = True
@@ -809,7 +809,11 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Width = 255
           end
           object vcWins: TcxGridColumn
-            Caption = 'Wins'
+            Caption = 'Won'
+            DataBinding.ValueType = 'Integer'
+          end
+          object vcStalled: TcxGridColumn
+            Caption = 'Stalled'
             DataBinding.ValueType = 'Integer'
           end
           object vcGames: TcxGridColumn
@@ -1037,101 +1041,111 @@ object EvaluateDecksForm: TEvaluateDecksForm
               Caption = 'Fight'
             end
             item
-              Caption = 'Wins'
+              Caption = 'Won'
               Position.BandIndex = 1
               Position.ColIndex = 0
             end
             item
-              Caption = 'Loss'
+              Caption = 'Stalled'
               Position.BandIndex = 1
               Position.ColIndex = 1
             end
             item
-              Caption = 'Games'
+              Caption = 'Lost'
               Position.BandIndex = 1
               Position.ColIndex = 2
+            end
+            item
+              Caption = 'Games'
+              Position.BandIndex = 1
+              Position.ColIndex = 3
               Visible = False
             end
             item
               Caption = 'Win ratio'
               Position.BandIndex = 1
-              Position.ColIndex = 3
+              Position.ColIndex = 4
             end
             item
               Caption = 'Avg. Dmg Dealt'
               Position.BandIndex = 1
-              Position.ColIndex = 4
+              Position.ColIndex = 5
               Width = 67
             end
             item
               Caption = 'Avg. Dmg Dealt (Auto)'
               Position.BandIndex = 1
-              Position.ColIndex = 5
+              Position.ColIndex = 6
               Width = 61
             end
             item
               Caption = 'Avg. Dmg Suffered'
               Position.BandIndex = 1
-              Position.ColIndex = 6
+              Position.ColIndex = 7
             end
             item
               Caption = 'Avg. Dmg Suffered (Auto)'
               Position.BandIndex = 1
-              Position.ColIndex = 7
+              Position.ColIndex = 8
             end
             item
               Caption = 'Avg. net gain'
               Position.BandIndex = 1
-              Position.ColIndex = 8
+              Position.ColIndex = 9
             end
             item
               Caption = 'Surge'
             end
             item
-              Caption = 'Wins'
-              Position.BandIndex = 11
+              Caption = 'Won'
+              Position.BandIndex = 12
               Position.ColIndex = 0
             end
             item
-              Caption = 'Loss'
-              Position.BandIndex = 11
+              Caption = 'Stalled'
+              Position.BandIndex = 12
               Position.ColIndex = 1
             end
             item
-              Caption = 'Games'
-              Position.BandIndex = 11
+              Caption = 'Lost'
+              Position.BandIndex = 12
               Position.ColIndex = 2
+            end
+            item
+              Caption = 'Games'
+              Position.BandIndex = 12
+              Position.ColIndex = 3
               Visible = False
             end
             item
               Caption = 'Win ratio'
-              Position.BandIndex = 11
-              Position.ColIndex = 3
-            end
-            item
-              Caption = 'Avg. Dmg Dealt'
-              Position.BandIndex = 11
+              Position.BandIndex = 12
               Position.ColIndex = 4
             end
             item
-              Caption = 'Avg. Dmg Dealt (Auto)'
-              Position.BandIndex = 11
+              Caption = 'Avg. Dmg Dealt'
+              Position.BandIndex = 12
               Position.ColIndex = 5
             end
             item
-              Caption = 'Avg. Dmg Suffered'
-              Position.BandIndex = 11
+              Caption = 'Avg. Dmg Dealt (Auto)'
+              Position.BandIndex = 12
               Position.ColIndex = 6
             end
             item
-              Caption = 'Avg. Dmg Suffered (Auto)'
-              Position.BandIndex = 11
+              Caption = 'Avg. Dmg Suffered'
+              Position.BandIndex = 12
               Position.ColIndex = 7
             end
             item
-              Caption = 'Avg. net gain'
-              Position.BandIndex = 11
+              Caption = 'Avg. Dmg Suffered (Auto)'
+              Position.BandIndex = 12
               Position.ColIndex = 8
+            end
+            item
+              Caption = 'Avg. net gain'
+              Position.BandIndex = 12
+              Position.ColIndex = 9
             end>
           object vcbAgainst: TcxGridBandedColumn
             Position.BandIndex = 0
@@ -1148,103 +1162,115 @@ object EvaluateDecksForm: TEvaluateDecksForm
           end
           object vcbFLoss: TcxGridBandedColumn
             DataBinding.ValueType = 'Integer'
-            Position.BandIndex = 3
+            Position.BandIndex = 4
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object vcbFGames: TcxGridBandedColumn
             DataBinding.ValueType = 'Integer'
-            Position.BandIndex = 4
+            Position.BandIndex = 5
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object vcbFRatio: TcxGridBandedColumn
             DataBinding.ValueType = 'Float'
-            Position.BandIndex = 5
+            Position.BandIndex = 6
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object vcbFAvgD: TcxGridBandedColumn
             DataBinding.ValueType = 'Float'
-            Position.BandIndex = 6
+            Position.BandIndex = 7
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object vcbFAvgDA: TcxGridBandedColumn
             DataBinding.ValueType = 'Float'
-            Position.BandIndex = 7
+            Position.BandIndex = 8
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object vcbFAvgS: TcxGridBandedColumn
             DataBinding.ValueType = 'Float'
-            Position.BandIndex = 8
+            Position.BandIndex = 9
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object vcbFAvgSA: TcxGridBandedColumn
             DataBinding.ValueType = 'Float'
-            Position.BandIndex = 9
+            Position.BandIndex = 10
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object vcbFNet: TcxGridBandedColumn
             DataBinding.ValueType = 'Float'
-            Position.BandIndex = 10
+            Position.BandIndex = 11
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object vcbSWins: TcxGridBandedColumn
             DataBinding.ValueType = 'Integer'
-            Position.BandIndex = 12
+            Position.BandIndex = 13
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object vcbSLoss: TcxGridBandedColumn
             DataBinding.ValueType = 'Integer'
-            Position.BandIndex = 13
+            Position.BandIndex = 15
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object vcbSGames: TcxGridBandedColumn
             DataBinding.ValueType = 'Integer'
-            Position.BandIndex = 14
+            Position.BandIndex = 16
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object vcbSRatio: TcxGridBandedColumn
             DataBinding.ValueType = 'Float'
-            Position.BandIndex = 15
+            Position.BandIndex = 17
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object vcbSAvgD: TcxGridBandedColumn
             DataBinding.ValueType = 'Float'
-            Position.BandIndex = 16
+            Position.BandIndex = 18
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object vcbSAvgDA: TcxGridBandedColumn
             DataBinding.ValueType = 'Float'
-            Position.BandIndex = 17
+            Position.BandIndex = 19
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object vcbSAvgS: TcxGridBandedColumn
             DataBinding.ValueType = 'Float'
-            Position.BandIndex = 18
+            Position.BandIndex = 20
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object vcbSAvgSA: TcxGridBandedColumn
             DataBinding.ValueType = 'Float'
-            Position.BandIndex = 19
+            Position.BandIndex = 21
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object vcbSNet: TcxGridBandedColumn
             DataBinding.ValueType = 'Float'
-            Position.BandIndex = 20
+            Position.BandIndex = 22
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object vcbFStalled: TcxGridBandedColumn
+            DataBinding.ValueType = 'Integer'
+            Position.BandIndex = 3
+            Position.ColIndex = 0
+            Position.RowIndex = 0
+          end
+          object vcbSStalled: TcxGridBandedColumn
+            DataBinding.ValueType = 'Integer'
+            Position.BandIndex = 14
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
@@ -1281,25 +1307,93 @@ object EvaluateDecksForm: TEvaluateDecksForm
         OnClick = bDLXMLClick
       end
       object lUpdateXML: TcxLabel
-        Left = 143
+        Left = 148
         Top = 6
         Caption = 'Last update: '
       end
       object ceLastDate: TcxDateEdit
-        Left = 217
-        Top = 3
+        Left = 222
+        Top = 5
         Properties.ShowTime = False
         TabOrder = 2
         Width = 96
       end
       object bCustom: TcxButton
         Left = 3
-        Top = 66
+        Top = 70
         Width = 134
         Height = 25
         Caption = 'Reload Custom decks'
         TabOrder = 3
         OnClick = bCustomClick
+      end
+      object cxGroupBox1: TcxGroupBox
+        Left = 324
+        Top = 3
+        Caption = 'Proxy'
+        TabOrder = 4
+        Height = 158
+        Width = 205
+        object cbUseProxy: TcxCheckBox
+          Left = 11
+          Top = 16
+          Caption = 'Use proxy'
+          Properties.OnChange = cbUseProxyPropertiesChange
+          TabOrder = 0
+          Width = 121
+        end
+        object eServer: TcxTextEdit
+          Left = 71
+          Top = 43
+          Enabled = False
+          TabOrder = 1
+          Width = 121
+        end
+        object lServer: TcxLabel
+          Left = 11
+          Top = 43
+          Caption = 'Server:'
+        end
+        object lLogin: TcxLabel
+          Left = 11
+          Top = 98
+          Caption = 'Login:'
+        end
+        object lPwd: TcxLabel
+          Left = 11
+          Top = 124
+          Caption = 'Password:'
+        end
+        object eLogin: TcxTextEdit
+          Left = 71
+          Top = 97
+          Enabled = False
+          TabOrder = 5
+          Width = 121
+        end
+        object ePwd: TcxTextEdit
+          Left = 71
+          Top = 124
+          Enabled = False
+          Properties.EchoMode = eemPassword
+          TabOrder = 6
+          Width = 121
+        end
+        object lPort: TcxLabel
+          Left = 11
+          Top = 71
+          Caption = 'Port:'
+        end
+        object ePort: TcxSpinEdit
+          Left = 71
+          Top = 70
+          Enabled = False
+          Properties.AssignedValues.MinValue = True
+          Properties.MaxValue = 65536.000000000000000000
+          Properties.SpinButtons.Visible = False
+          TabOrder = 8
+          Width = 121
+        end
       end
     end
     object tsHelp: TcxTabSheet
@@ -4080,15 +4174,15 @@ object EvaluateDecksForm: TEvaluateDecksForm
   object tLoad: TTimer
     Interval = 100
     OnTimer = tLoadTimer
-    Left = 464
-    Top = 64
+    Left = 344
+    Top = 160
   end
   object tCancelHover: TTimer
     Enabled = False
     Interval = 100
     OnTimer = tCancelHoverTimer
-    Left = 464
-    Top = 112
+    Left = 344
+    Top = 208
   end
   object IdHTTP: TIdHTTP
     OnWork = IdHTTPWork
@@ -4107,24 +4201,24 @@ object EvaluateDecksForm: TEvaluateDecksForm
     Request.Ranges.Units = 'bytes'
     Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
-    Left = 360
-    Top = 64
+    Left = 240
+    Top = 160
   end
   object IL: TcxImageList
     Height = 210
     Width = 150
     FormatVersion = 1
-    DesignInfo = 4194712
+    DesignInfo = 10486048
   end
   object ILS: TcxImageList
     Height = 105
     Width = 75
     FormatVersion = 1
-    DesignInfo = 7340440
+    DesignInfo = 13631776
   end
   object pmGrid: TPopupMenu
-    Left = 336
-    Top = 144
+    Left = 288
+    Top = 256
     object bDeleteSelected: TMenuItem
       Caption = 'Delete selected'
       OnClick = bDeleteSelectedClick

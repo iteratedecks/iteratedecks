@@ -236,6 +236,19 @@ type
     eBotHash: TcxTextEdit;
     bBotStore: TcxButton;
     bBotLoad: TcxButton;
+    vcStalled: TcxGridColumn;
+    vcbFStalled: TcxGridBandedColumn;
+    vcbSStalled: TcxGridBandedColumn;
+    cxGroupBox1: TcxGroupBox;
+    cbUseProxy: TcxCheckBox;
+    eServer: TcxTextEdit;
+    lServer: TcxLabel;
+    lLogin: TcxLabel;
+    lPwd: TcxLabel;
+    eLogin: TcxTextEdit;
+    ePwd: TcxTextEdit;
+    lPort: TcxLabel;
+    ePort: TcxSpinEdit;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -342,6 +355,8 @@ type
     procedure bTopLoadClick(Sender: TObject);
     procedure bBotStoreClick(Sender: TObject);
     procedure bBotLoadClick(Sender: TObject);
+    procedure cbUseProxyPropertiesChange(Sender: TObject);
+    procedure LoadEverything;
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -1633,6 +1648,7 @@ begin
       with vBatchResult.DataController do
       begin
         Values[rec, vcbFWins.Index] := r.Win;
+        Values[rec, vcbFStalled.Index] := games - r.Win - r.Loss;
         Values[rec, vcbFLoss.Index] := r.Loss;
         Values[rec, vcbFGames.Index] := games;
         Values[rec, vcbFRatio.Index] := r.Win / games;
@@ -1651,6 +1667,7 @@ begin
       with vBatchResult.DataController do
       begin
         Values[rec, vcbSWins.Index] := r.Win;
+        Values[rec, vcbSStalled.Index] := games - r.Win - r.Loss;
         Values[rec, vcbSLoss.Index] := r.Loss;
         Values[rec, vcbSGames.Index] := games;
         Values[rec, vcbSRatio.Index] := r.Win / games;
@@ -1756,6 +1773,21 @@ begin
   ms := TMemoryStream.Create;
   try
     try
+      if cbUseProxy.Checked then
+      begin
+        IdHttp.ProxyParams.ProxyServer := eServer.Text;
+        IdHttp.ProxyParams.ProxyUserName := eLogin.Text;
+        IdHttp.ProxyParams.ProxyPort := ePort.Value;
+        IdHttp.ProxyParams.ProxyPassword := ePwd.Text;
+      end
+      else
+      begin
+        IdHttp.ProxyParams.ProxyServer := '';
+        IdHttp.ProxyParams.ProxyUserName := '';
+        IdHttp.ProxyParams.ProxyPort := 0;
+        IdHttp.ProxyParams.ProxyPassword := '';
+      end;
+
       ms.Position := 0;
       IdHttp.Get(sAssetsFolder + sCardsFile, ms);
       ms.SaveToFile(sLocalDir + sCardsFile);
@@ -2145,6 +2177,7 @@ begin
     with cxView.DataController do
     begin
       Values[rec, vcWins.Index] := r.Win;
+      Values[rec, vcStalled.Index] := i - r.Win - r.Loss;
       Values[rec, vcGames.Index] := i;
       Values[rec, vcRatio.Index] := r.Win / i;
       Values[rec, vcAvgD.Index] := r.Points / i;
@@ -2474,6 +2507,14 @@ begin
   sl.Free;
 end;
 
+procedure TEvaluateDecksForm.cbUseProxyPropertiesChange(Sender: TObject);
+begin
+  eServer.Enabled := cbUseProxy.Checked;
+  ePort.Enabled := cbUseProxy.Checked;
+  eLogin.Enabled := cbUseProxy.Checked;
+  ePwd.Enabled := cbUseProxy.Checked;
+end;
+
 procedure TEvaluateDecksForm.cbUseRaidClick(Sender: TObject);
 begin
   bCustomDef.Enabled := not cbUseRaid.Checked;
@@ -2791,7 +2832,21 @@ begin
   end;
 end;
 
+function LoadEverythingThread(Parameter : Pointer) : Integer;
+begin
+  EvaluateDecksForm.LoadEverything;
+  EndThread(0);
+end;
+
 procedure TEvaluateDecksForm.tLoadTimer(Sender: TObject);
+var id: cardinal;
+begin
+  tLoad.Enabled := false;
+  EvaluateDecksForm.LoadEverything;
+  //BeginThread(nil, 0, Addr(LoadEverythingThread), nil,  0, Id);
+end;
+
+procedure TEvaluateDecksForm.LoadEverything;
 {procedure LoadCards(Path: string);
 var
   i: integer;
@@ -2829,7 +2884,8 @@ var
   Sets: array[0..MAX_SETS_COUNT] of TCardSet;
   sl: TStringList;
 begin
-  tLoad.Enabled := false;
+//  CoInitialize(nil);
+//  Canvas.Lock;
 
   LoadMissionXML(sLocalDir + sMissionsFile);
   LoadRaidXML(sLocalDir + sRaidsFile);
@@ -2847,7 +2903,7 @@ begin
   begin
     if
       (Application.MessageBox('Your database is empty, dou you want to download database files?'#13'You can download them later, but you won''t be able to do anything until then', 'Warning', MB_YESNO) = IDYES) then
-      bDLXMLClick(Sender);
+      bDLXMLClick(Application.MainForm);
   end;
 
   s := GetSets(@Indexes, @Sets, MAX_SETS_COUNT);
@@ -2863,7 +2919,7 @@ begin
     it := ccbSets.Properties.Items.AddCheckItem(Sets[i].Name, {Sets[i].Name}
       IntToStr(Indexes[i]));
     it.Tag := Indexes[i];
-    if Sets[i].Visible then
+    if (Sets[i].Visible) OR (Indexes[i] = 9000) then  // 9000 - exclusive, override show by default
       checked := checked + '1'
     else
       checked := checked + '0';
@@ -2951,6 +3007,7 @@ begin
     RemapMinIDInversed[i] := k;
   end;
   sl.Free;
+//  Canvas.UnLock;
 end;
 
 procedure TEvaluateDecksForm.tsDecksShow(Sender: TObject);
