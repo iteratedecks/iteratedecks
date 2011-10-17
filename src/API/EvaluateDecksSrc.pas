@@ -1657,7 +1657,7 @@ begin
       begin
         AppendRecord;
         rec := RecordCount - 1;
-        Values[rec, vcbAgainst.Index] := StringReplace(FormatDeck(def), ',', ', ',
+        Values[rec, vcbAgainst.Index] := StringReplace(FormatDeck(sl2.CommaText), ',', ', ',
           [rfReplaceAll]);
       end;
 
@@ -2157,8 +2157,8 @@ begin
         Values[rec, vcType.Index] := 'Surge'
       else
         Values[rec, vcType.Index] := 'Fight';
-      Values[rec, vcAtk.Index] := StringReplace(FormatDeck(atk), ',', ', ', [rfReplaceAll]);
-      Values[rec, vcDef.Index] := StringReplace(FormatDeck(def), ',', ', ', [rfReplaceAll]);
+      Values[rec, vcAtk.Index] := StringReplace(FormatDeck(sl1.CommaText), ',', ', ', [rfReplaceAll]);
+      Values[rec, vcDef.Index] := StringReplace(FormatDeck(sl2.CommaText), ',', ', ', [rfReplaceAll]);
     end;
 
     if not bFastThreaded.Checked then
