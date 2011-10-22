@@ -315,10 +315,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Caption = 'Visual'
       ImageIndex = 0
       OnShow = tsDecksShow
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object rPanel: TPanel
         Left = 434
         Top = 0
@@ -984,10 +980,12 @@ object EvaluateDecksForm: TEvaluateDecksForm
               Column = vcbFRatio
             end
             item
+              Format = '#.'
               Kind = skSum
               Column = vcbFGames
             end
             item
+              Format = '#.'
               Kind = skSum
               Column = vcbFWins
             end
@@ -996,6 +994,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
               Column = vcbAgainst
             end
             item
+              Format = '#.'
               Kind = skSum
               Column = vcbFLoss
             end
@@ -1024,16 +1023,29 @@ object EvaluateDecksForm: TEvaluateDecksForm
               Column = vcbSAvgSA
             end
             item
+              Format = '#.'
               Kind = skSum
               Column = vcbSWins
             end
             item
+              Format = '#.'
               Kind = skSum
               Column = vcbSLoss
             end
             item
+              Format = '#.'
               Kind = skSum
               Column = vcbSGames
+            end
+            item
+              Format = '#.'
+              Kind = skSum
+              Column = vcbFStalled
+            end
+            item
+              Format = '#.'
+              Kind = skSum
+              Column = vcbSStalled
             end>
           DataController.Summary.SummaryGroups = <>
           OptionsCustomize.BandMoving = False
@@ -1315,10 +1327,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsUpdate: TcxTabSheet
       Caption = 'Update DB'
       ImageIndex = 3
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object bDLXML: TcxButton
         Left = 3
         Top = 3
@@ -1421,10 +1429,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsHelp: TcxTabSheet
       Caption = 'Tips'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         784
         646)
@@ -4115,10 +4119,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsSettings: TcxTabSheet
       Caption = 'Settings'
       ImageIndex = 5
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object rgEval: TcxRadioGroup
         Left = 3
         Top = 3
