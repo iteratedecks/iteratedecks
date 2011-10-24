@@ -13,7 +13,7 @@ uses
   IdTCPConnection, IdTCPClient, IdHTTP, OleCtrls, SHDocVw_EWB, EwbCore,
   EmbeddedWB, WinInet, ComCtrls, cxListView, Jpeg, cxCheckComboBox,
   cxCurrencyEdit, ActiveX, cxSpinEdit, cxRadioGroup, cxGroupBox, DBClient,
-  GIFImg, ShellApi, cxCheckListBox, cxGridBandedTableView, cxGridExportLink;
+  GIFImg, ShellApi, cxCheckListBox, cxGridBandedTableView, cxGridExportLink, ClipBrd;
 
 const
   MAX_CARD_COUNT = 700;
@@ -252,6 +252,12 @@ type
     ePort: TcxSpinEdit;
     cbOrderMatters: TcxCheckBox;
     cbBOrderMatters: TcxCheckBox;
+    bTopCopy: TcxButton;
+    bTopCopy64: TcxButton;
+    bTopPaste: TcxButton;
+    bBotCopy64: TcxButton;
+    bBotCopy: TcxButton;
+    bBotPaste: TcxButton;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -360,6 +366,13 @@ type
     procedure bBotLoadClick(Sender: TObject);
     procedure cbUseProxyPropertiesChange(Sender: TObject);
     procedure LoadEverything;
+    procedure bTopCopy64Click(Sender: TObject);
+    procedure bBotCopy64Click(Sender: TObject);
+    procedure bTopCopyClick(Sender: TObject);
+    procedure bBotCopyClick(Sender: TObject);
+    procedure bTopPasteClick(Sender: TObject);
+    function FormatDeck(s: string):string;
+    procedure bBotPasteClick(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -484,6 +497,7 @@ function AbilityHasExtendedDesc(AbilityID: Byte): boolean; cdecl; external DLLFI
 function GetHashFromDeck(Deck: string; buffer: PChar; size: DWORD): boolean; cdecl; external DLLFILE;
 
 function GetDeckFromHash(Hash: string; buffer: PChar; size: DWORD): boolean; cdecl; external DLLFILE;
+function GetDeckFromString(CardList: string; OutputIDList: PChar): boolean; cdecl; external DLLFILE;
 
 procedure SpeedTest; cdecl; external DLLFILE;
 
@@ -1459,6 +1473,72 @@ begin
   end;
 end;
 
+procedure TEvaluateDecksForm.bBotCopy64Click(Sender: TObject);
+var
+  sl: TStringList;
+  p1: pchar;
+  i,id: integer;
+begin
+  GetMem(p1, cMaxBuffer); // initialize
+  sl := TStringList.Create;
+  try
+        with vBot.DataController do
+          for i := 0 to RecordCount - 1 do
+            if (not VarIsNull(Values[i, vBotID.Index])) and (not
+              VarIsNull(Values[i, vBotName.Index])) then
+            begin
+              id := values[i, vBotID.Index];
+              if id < 0 then
+                continue;
+              if Cards[id].CardType = TYPE_COMMANDER then
+                sl.Insert(0, Values[i, vBotName.Index])
+              else if Values[i, vBotName.Index] <> '' then
+                sl.Add(Values[i, vBotName.Index]);
+            end;
+    if Trim(sl.Text) <> '' then
+    begin
+      if GetHashFromDeck(sl.CommaText, p1, cMaxBuffer) then
+        Clipboard.AsText := p1
+      else
+        Clipboard.AsText := '';
+    end
+    else
+      Clipboard.AsText := '';
+  finally
+    sl.Free;
+    FreeMem(p1);
+  end;
+end;
+
+procedure TEvaluateDecksForm.bBotCopyClick(Sender: TObject);
+var
+  sl: TStringList;
+  p1: pchar;
+  i,id: integer;
+begin
+  GetMem(p1, cMaxBuffer); // initialize
+  sl := TStringList.Create;
+  try
+        with vBot.DataController do
+          for i := 0 to RecordCount - 1 do
+            if (not VarIsNull(Values[i, vBotID.Index])) and (not
+              VarIsNull(Values[i, vBotName.Index])) then
+            begin
+              id := values[i, vBotID.Index];
+              if id < 0 then
+                continue;
+              if Cards[id].CardType = TYPE_COMMANDER then
+                sl.Insert(0, Values[i, vBotName.Index])
+              else if Values[i, vBotName.Index] <> '' then
+                sl.Add(Values[i, vBotName.Index]);
+            end;
+    Clipboard.AsText := StringReplace(FormatDeck(sl.CommaText), '"', '',[rfReplaceAll]);
+  finally
+    sl.Free;
+    FreeMem(p1);
+  end;
+end;
+
 procedure TEvaluateDecksForm.bBotLoadClick(Sender: TObject);
 var
   i, id: integer;
@@ -1472,7 +1552,7 @@ begin
     GetMem(p1, cMaxBuffer); // initialize
     sl := TStringList.Create;
     try
-      if GetDeckFromHash(eBotHash.Text, p1, cMaxBuffer) then
+      if GetDeckFromString(eBotHash.Text, p1) OR GetDeckFromHash(eBotHash.Text, p1, cMaxBuffer) then
       begin
         sl.CommaText := p1;
         for i := 0 to sl.Count - 1 do
@@ -1492,6 +1572,47 @@ begin
     end;
   except
     ShowMessage('Error while loading hash.');
+  end;
+end;
+
+procedure TEvaluateDecksForm.bBotPasteClick(Sender: TObject);
+var
+  p1: pchar;
+  i, id: integer;
+begin
+  // LoadDeck
+  GetMem(p1, cMaxBuffer); // initialize
+  with TStringList.Create do
+  try
+    if (Clipboard.AsText <> '') and (GetDeckFromString(Clipboard.AsText, p1) OR GetDeckFromHash(Clipboard.AsText, p1, cMaxBuffer)) then
+      CommaText := p1;
+    if Count > 0 then
+    begin
+      for i := 0 to Count - 1 do
+      begin
+        id := GetIndexFromID(Strings[i]);
+        if id < 0 then
+          ShowMessage(Format(sCardNotFound, [Strings[i]]))
+        else
+        begin
+          LastCardIndexBot := id;
+          vBot.DataController.SetValue(i, vBotID.Index, id);
+          vBot.DataController.SetValue(i, vBotName.Index, (vBotName.Properties as
+            TcxComboBoxProperties).Items[remapMinIDInversed[id]]);
+        end;
+      end;
+      for i := Count to vBot.DataController.RecordCount - 1 do
+      begin
+        LastCardIndexBot := -1;
+        if VarIsNull(vBot.DataController.Values[i, vBotID.Index]) then
+          Continue;
+        vBot.DataController.SetValue(i, vBotID.Index, -1);
+        vBot.DataController.SetValue(i, vBotName.Index, '');
+      end;
+    end;
+  finally
+    FreeMem(p1);
+    Free;
   end;
 end;
 
@@ -1544,7 +1665,7 @@ begin
       end;
 end;
 
-function FormatDeck(s: string):string;
+function TEvaluateDecksForm.FormatDeck(s: string):string;
 var i,k,c: integer;
 begin
   result := s;
@@ -2365,6 +2486,69 @@ begin
   end;
 end;
 
+procedure TEvaluateDecksForm.bTopCopy64Click(Sender: TObject);
+var
+  sl: TStringList;
+  p1: pchar;
+  i,id: integer;
+begin
+  GetMem(p1, cMaxBuffer); // initialize
+  sl := TStringList.Create;
+  try
+    with vTop.DataController do
+        for i := 0 to RecordCount - 1 do
+          if (not VarIsNull(Values[i, vTopId.Index])) and (not
+            VarIsNull(Values[i, vTopName.Index])) then
+          begin
+            id := values[i, vTopID.Index];
+            if id < 0 then
+                continue;
+            if Cards[{remapminidinversed[}id{]}].CardType = TYPE_COMMANDER then
+              sl.Insert(0, Values[i, vTopName.Index])
+            else if Values[i, vTopName.Index] <> '' then
+              sl.Add(Values[i, vTopName.Index]);
+          end;
+    if Trim(sl.Text) <> '' then
+    begin
+      if GetHashFromDeck(sl.CommaText, p1, cMaxBuffer) then
+        Clipboard.AsText := p1
+      else
+        Clipboard.AsText := '';
+    end
+    else
+      Clipboard.AsText := '';
+  finally
+    sl.Free;
+    FreeMem(p1);
+  end;
+end;
+
+procedure TEvaluateDecksForm.bTopCopyClick(Sender: TObject);
+var
+  sl: TStringList;
+  i,id: integer;
+begin
+  sl := TStringList.Create;
+  try
+    with vTop.DataController do
+        for i := 0 to RecordCount - 1 do
+          if (not VarIsNull(Values[i, vTopId.Index])) and (not
+            VarIsNull(Values[i, vTopName.Index])) then
+          begin
+            id := values[i, vTopID.Index];
+            if id < 0 then
+                continue;
+            if Cards[{remapminidinversed[}id{]}].CardType = TYPE_COMMANDER then
+              sl.Insert(0, Values[i, vTopName.Index])
+            else if Values[i, vTopName.Index] <> '' then
+              sl.Add(Values[i, vTopName.Index]);
+          end;
+    Clipboard.AsText := StringReplace(FormatDeck(sl.CommaText), '"', '',[rfReplaceAll]);
+  finally
+    sl.Free;
+  end;
+end;
+
 procedure TEvaluateDecksForm.bTopLoadClick(Sender: TObject);
 var
   i, id: integer;
@@ -2378,7 +2562,7 @@ begin
     GetMem(p1, cMaxBuffer); // initialize
     sl := TStringList.Create;
     try
-      if GetDeckFromHash(eTopHash.Text, p1, cMaxBuffer) then
+      if GetDeckFromString(eTopHash.Text, p1) OR GetDeckFromHash(eTopHash.Text, p1, cMaxBuffer) then
       begin
         sl.CommaText := p1;
         for i := 0 to sl.Count - 1 do
@@ -2398,6 +2582,49 @@ begin
     end;
   except
     ShowMessage('Error while loading hash.');
+  end;
+end;
+
+procedure TEvaluateDecksForm.bTopPasteClick(Sender: TObject);
+var
+  p1: pchar;
+  i, id: integer;
+begin
+  // LoadDeck
+  GetMem(p1, cMaxBuffer); // initialize
+  with TStringList.Create do
+  try
+    if (Clipboard.AsText <> '') and (GetDeckFromString(Clipboard.AsText, p1) OR GetDeckFromHash(Clipboard.AsText, p1, cMaxBuffer)) then
+      CommaText := p1;
+    if Count > 0 then
+    begin
+      for i := 0 to Count - 1 do
+      begin
+        id := GetIndexFromID(Strings[i]);
+        if id < 0 then
+          ShowMessage(Format(sCardNotFound, [Strings[i]]))
+        else
+        begin
+          LastCardIndex := id;
+          vTop.DataController.SetValue(i, vTopID.Index, id);
+          vTop.DataController.SetValue(i, vTopName.Index, (vTopName.Properties as
+            TcxComboBoxProperties).Items[remapMinIDInversed[id]]);
+          //vTop.DataController.SetValue(i,2,id);
+          //vTop.DataController.SetValue(i,3,id);
+        end;
+      end;
+      for i := Count to vTop.DataController.RecordCount - 1 do
+      begin
+        LastCardIndex := -1;
+        if VarIsNull(vTop.DataController.Values[i, vTopID.Index]) then
+          Continue;
+        vTop.DataController.SetValue(i, vTopID.Index, -1);
+        vTop.DataController.SetValue(i, vTopName.Index, '');
+      end;
+    end;
+  finally
+    FreeMem(p1);
+    Free;
   end;
 end;
 
