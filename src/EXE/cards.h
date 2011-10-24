@@ -658,7 +658,7 @@ public:
 		}
 		return -2; // fnf
 	}
-	bool InsertDeck(const char *List)
+	bool InsertDeck(const char *List, char *output_id_buffer = 0)
 	{
 		MDECKS::iterator mi;
 		VSTRINGS cardlist;
@@ -667,6 +667,8 @@ public:
 		size_t len = strlen(List);
 		size_t p = 0,brs = 0,cnt = 0;
 		size_t decknameend = 0;
+		if (output_id_buffer)
+			output_id_buffer[0] = 0;
 		try
 		{
 			for (size_t i=0;i<len+1;i++)
@@ -680,13 +682,21 @@ public:
 							continue;
 						}
 						else
-						{
-							memcpy(buffer,List,decknameend);
-							buffer[decknameend] = 0; // finalize string
-							mi = Into->insert(PAIRMDECKS(trim(buffer),cardlist)).first;
-							mi->second.clear();
-							p = decknameend+1;
-						}
+							if (decknameend > 0)
+							{
+								memcpy(buffer,List,decknameend);
+								buffer[decknameend] = 0; // finalize string
+								if (output_id_buffer)
+								{
+									// we dont need deck name here
+								}
+								else
+								{
+									mi = Into->insert(PAIRMDECKS(trim(buffer),cardlist)).first;
+									mi->second.clear();
+								}
+								p = decknameend+1;
+							}
 					}
 					memcpy(buffer,List+p*sizeof(char),i-p);
 					buffer[i-p] = 0; // finalize string
@@ -701,11 +711,24 @@ public:
 						}
 						brs = 0;
 					}
-					if (mi != Into->end())
+					if ((output_id_buffer) || (mi != Into->end()))
 					{
 						do
 						{
-							mi->second.push_back(trim(buffer));
+							if (!output_id_buffer)
+								mi->second.push_back(trim(buffer));
+							else
+							{
+								const Card * c = CARD(trim(buffer));
+								if (c)
+								{
+									char itoabuffer[10];
+									itoa(c->GetId(),itoabuffer,10);
+									if (output_id_buffer[0])
+										strcat(output_id_buffer,",");
+									strcat(output_id_buffer,itoabuffer);
+								}
+							}
 							if (cnt)
 								cnt--;
 						}
@@ -724,7 +747,7 @@ public:
 							buffer[i-brs-1] = 0;
 							cnt = atoi(buffer);
 						}
-			return true;
+			return (!output_id_buffer) || (output_id_buffer[0]);
 		}
 		catch(char * /* str*/) 
 		{
@@ -760,7 +783,14 @@ public:
 			printf("\n");
 		}
 	}
-	const Card *CARD(const char *Name) { return &GetCard(Name); }
+	const Card *CARD(const char *Name)
+	{
+		MSUINT::iterator it=Index.find(Name);
+		if (it != Index.end())
+			return &CDB[it->second];
+		else
+			return 0;
+	}
 	const Card &GetCard(string Name) { return GetCard(Name.c_str()); }
 	const Card &GetCard(const char *Name)
 	{

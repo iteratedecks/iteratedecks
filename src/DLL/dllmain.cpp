@@ -451,6 +451,10 @@ extern "C"
 		strcpy_s(Buffer,MaxBufferSize,D.GetDeck().c_str());
 		return true;
 	}
+	IDAPI bool GetDeckFromString(const char *CardList, char *OutputIDList)
+	{
+		return DB.InsertDeck(CardList,OutputIDList);
+	}
 }
 
 
