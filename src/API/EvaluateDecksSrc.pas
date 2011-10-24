@@ -258,6 +258,12 @@ type
     bBotCopy64: TcxButton;
     bBotCopy: TcxButton;
     bBotPaste: TcxButton;
+    cbmAntiMission: TcxComboBox;
+    bmLoadAntiMission: TcxButton;
+    cbmAntiRaid: TcxComboBox;
+    bmLoadAntiRaid: TcxButton;
+    bTopToFansite: TcxButton;
+    bBotToFansite: TcxButton;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -373,6 +379,8 @@ type
     procedure bTopPasteClick(Sender: TObject);
     function FormatDeck(s: string):string;
     procedure bBotPasteClick(Sender: TObject);
+    procedure bTopToFansiteClick(Sender: TObject);
+    procedure bBotToFansiteClick(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -427,6 +435,7 @@ const
   sImagesFolder = 'http://cdn.tyrantonline.com/warhawk/images/';
   sCustomDecks = 'Custom.txt';
   sCardNotFound = 'Card "%s" not found in database.';
+  cFansiteBaseLink = 'http://tyrant.40in.net/deck.php?id=';
 
 const
   DLLFILE = 'IterateDecksDLL.dll';
@@ -1645,6 +1654,44 @@ begin
   end;
 end;
 
+procedure TEvaluateDecksForm.bBotToFansiteClick(Sender: TObject);
+var
+  sl: TStringList;
+  s: string;
+  i,id: integer;
+  bWarn: boolean;
+begin
+  sl := TStringList.Create;
+  try
+    bWarn := false;
+    with vBot.DataController do
+        for i := 0 to RecordCount - 1 do
+          if (not VarIsNull(Values[i, vBotId.Index])) and (not
+            VarIsNull(Values[i, vBotName.Index])) then
+          begin
+            id := values[i, vBotID.Index];
+            if id < 0 then
+                continue;
+            if Cards[id].CardSet = 0 then
+              bWarn := true;
+            if Cards[id].CardType = TYPE_COMMANDER then
+              sl.Insert(0, IntToStr(Cards[id].Id))
+            else
+              sl.Add(IntToStr(Cards[id].Id));
+          end;
+    if bWarn then
+      ShowMessage('Please note, that Tyrant Fansite won''t load cards'#13'from <Hidden> set. They are not available for players.');
+    if sl.Count > 10 then
+      ShowMessage('Tyrant Fansite won''t load more than 10 cards.');
+    s := cFansiteBaseLink + StringReplace(StringReplace(sl.CommaText,'"','',[rfReplaceAll]),',',';',[rfReplaceAll]);
+    if Trim(sl.Text) <> '' then
+      ShellExecute(Handle, 'open', PChar(s),
+         nil, nil, SW_SHOWNORMAL);
+  finally
+    sl.Free;
+  end;
+end;
+
 procedure TEvaluateDecksForm.bBotVisualClick(Sender: TObject);
 var
   i, id: integer;
@@ -1736,7 +1783,7 @@ begin
             if id < 0 then
               continue;
             s := Values[i, vTopName.Index];
-            if Cards[{remapminidinversed[}id{]}].CardType = TYPE_COMMANDER then
+            if Cards[id].CardType = TYPE_COMMANDER then
               sl1.Insert(0, s)
             else if s <> '' then
               sl1.Add(s);
@@ -2204,7 +2251,7 @@ begin
             if id < 0 then
                 continue;
             s := Values[i, vTopName.Index];
-            if Cards[{remapminidinversed[}id{]}].CardType = TYPE_COMMANDER then
+            if Cards[id].CardType = TYPE_COMMANDER then
               sl1.Insert(0, s)
             else if s <> '' then
               sl1.Add(s);
@@ -2235,7 +2282,7 @@ begin
               if id < 0 then
                 continue;
               s := Values[i, vBotName.Index];
-              if Cards[{remapminidinversed[}id{]}].CardType = TYPE_COMMANDER then
+              if Cards[id].CardType = TYPE_COMMANDER then
                 sl2.Insert(0, s)
               else if s <> '' then
                 sl2.Add(s);
@@ -2503,7 +2550,7 @@ begin
             id := values[i, vTopID.Index];
             if id < 0 then
                 continue;
-            if Cards[{remapminidinversed[}id{]}].CardType = TYPE_COMMANDER then
+            if Cards[id].CardType = TYPE_COMMANDER then
               sl.Insert(0, Values[i, vTopName.Index])
             else if Values[i, vTopName.Index] <> '' then
               sl.Add(Values[i, vTopName.Index]);
@@ -2538,7 +2585,7 @@ begin
             id := values[i, vTopID.Index];
             if id < 0 then
                 continue;
-            if Cards[{remapminidinversed[}id{]}].CardType = TYPE_COMMANDER then
+            if Cards[id].CardType = TYPE_COMMANDER then
               sl.Insert(0, Values[i, vTopName.Index])
             else if Values[i, vTopName.Index] <> '' then
               sl.Add(Values[i, vTopName.Index]);
@@ -2594,8 +2641,13 @@ begin
   GetMem(p1, cMaxBuffer); // initialize
   with TStringList.Create do
   try
-    if (Clipboard.AsText <> '') and (GetDeckFromString(Clipboard.AsText, p1) OR GetDeckFromHash(Clipboard.AsText, p1, cMaxBuffer)) then
-      CommaText := p1;
+  // http://tyrant.40in.net/deck.php?id=7;8;9;9;11;25;26;27;42
+    i := Pos('id=',Clipboard.AsText);
+    if i > 0 then
+      CommaText := StringReplace(Copy(Clipboard.AsText,i+3,MaxInt),';',',',[rfReplaceAll])
+    else
+      if (Clipboard.AsText <> '') and (GetDeckFromString(Clipboard.AsText, p1) OR GetDeckFromHash(Clipboard.AsText, p1, cMaxBuffer)) then
+        CommaText := p1;
     if Count > 0 then
     begin
       for i := 0 to Count - 1 do
@@ -2654,6 +2706,36 @@ begin
   finally
     sl.Free;
     FreeMem(p1);
+  end;
+end;
+
+procedure TEvaluateDecksForm.bTopToFansiteClick(Sender: TObject);
+var
+  sl: TStringList;
+  s: string;
+  i,id: integer;
+begin
+  sl := TStringList.Create;
+  try
+    with vTop.DataController do
+        for i := 0 to RecordCount - 1 do
+          if (not VarIsNull(Values[i, vTopId.Index])) and (not
+            VarIsNull(Values[i, vTopName.Index])) then
+          begin
+            id := values[i, vTopID.Index];
+            if id < 0 then
+                continue;
+            if Cards[id].CardType = TYPE_COMMANDER then
+              sl.Insert(0, IntToStr(Cards[id].Id))
+            else
+              sl.Add(IntToStr(Cards[id].Id));
+          end;
+    s := cFansiteBaseLink + StringReplace(StringReplace(sl.CommaText,'"','',[rfReplaceAll]),',',';',[rfReplaceAll]);
+    if Trim(sl.Text) <> '' then
+      ShellExecute(Handle, 'open', PChar(s),
+         nil, nil, SW_SHOWNORMAL);
+  finally
+    sl.Free;
   end;
 end;
 
