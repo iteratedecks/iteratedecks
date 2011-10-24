@@ -1745,13 +1745,13 @@ public:
 		for (UCHAR i=0;i<Deck.size();i++)
 			ids.insert(Deck[i].GetId());
 		string s;
-		UINT tmp = 0, t = 0;
+		UINT tmp = 0, t;
 		unsigned short lastid = 0, cnt = 1;
 		if (Commander.IsDefined())
 		{
 			tmp = ID2BASE64(Commander.GetId());
 			s.append((char*)&tmp);
-			//printf("1: %s\n",(char*)&tmp);
+			//printf("1: %s -commander\n",(char*)&tmp);
 		}
 		MSID::iterator si = ids.begin();
 		do
@@ -1760,34 +1760,44 @@ public:
 			// adding RLE here
 			tmp = ID2BASE64(*si);
 			si++;
-			if (lastid == tmp)
-			{
-				// RLE, count IDs
-				cnt++;
-			}
 			if ((lastid != tmp) || (si == ids.end()))
 			{
-				if (cnt == 2)
+				if (lastid)
 				{
 					t = lastid;
-					s.append((char*)&t);
-					//printf("4: %s\n",(char*)&t);
-				}
-				else
-					if (cnt > 2)
+					if (cnt == 2)
 					{
-						t = ID2BASE64(CARD_MAX_ID + cnt); // special code, RLE count
-						s.append((char*)&t); 
-						//printf("3: %s\n",(char*)&t);
-						cnt = 1;
+						s.append((char*)&t);
+						s.append((char*)&t);
+						//printf("4: %s -dupe\n",(char*)&t);
+						//printf("4: %s -dupe\n",(char*)&t);
+						
 					}
-			}
-			if (lastid != tmp)
-			{
+					else
+						if (cnt > 2)
+						{
+							s.append((char*)&t);
+							//printf("3: %s -value\n",(char*)&t);
+							t = ID2BASE64(CARD_MAX_ID + cnt); // special code, RLE count
+							s.append((char*)&t); 
+							//printf("3: %s -rle\n",(char*)&t);
+						}
+						else
+						{
+							s.append((char*)&t);
+							//printf("5: %s\n",(char*)&t);
+						}
+					cnt = 1;
+				}
+				if (si == ids.end())
+				{
+					s.append((char*)&tmp);
+					//printf("2: %s\n",(char*)&tmp);
+				}
 				lastid = tmp;
-				s.append((char*)&tmp);
-				//printf("2: %s\n",(char*)&tmp);
 			}
+			else
+				cnt++;  // RLE, count IDs
 		}
 		while (si != ids.end());
 		return s;
