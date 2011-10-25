@@ -1976,6 +1976,7 @@ begin
   sl := TStringList.Create;
   try
     sl.CommaText := p1;
+    clbTestAgainst.Clear;
     for i := 0 to sl.Count - 1 do
     begin
       clbTestAgainst.AddItem(sl[i]);
