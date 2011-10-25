@@ -2924,6 +2924,12 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Position.ColIndex = 0
             Position.RowIndex = 0
           end
+          object vcbAgainstName: TcxGridBandedColumn
+            Visible = False
+            Position.BandIndex = 0
+            Position.ColIndex = 1
+            Position.RowIndex = 0
+          end
         end
         object cxGridLevel3: TcxGridLevel
           GridView = vBatchResult
@@ -2949,6 +2955,14 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Caption = 'Cards are played in order'
         TabOrder = 6
         Width = 179
+      end
+      object cbDisplayName: TcxCheckBox
+        Left = 239
+        Top = 53
+        Caption = 'Display  deck name'
+        TabOrder = 7
+        OnClick = cbDisplayNameClick
+        Width = 121
       end
     end
     object tsUpdate: TcxTabSheet

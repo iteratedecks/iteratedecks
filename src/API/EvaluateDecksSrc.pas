@@ -267,6 +267,8 @@ type
     pmBatchEval: TPopupMenu;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
+    vcbAgainstName: TcxGridBandedColumn;
+    cbDisplayName: TcxCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -393,6 +395,7 @@ type
     procedure LoadTopDeck(Name: string; Tag: integer = 0);
     procedure MenuItem1Click(Sender: TObject);
     procedure MenuItem2Click(Sender: TObject);
+    procedure cbDisplayNameClick(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -701,6 +704,12 @@ begin
   ToCard.Picture := FromCard.Picture;
   ToCard.ShowHint := true;
   ToCard.Hint := FromCard.Hint;
+end;
+
+procedure TEvaluateDecksForm.cbDisplayNameClick(Sender: TObject);
+begin
+  vcbAgainstName.Visible := cbDisplayName.Checked;
+  vcbAgainst.Visible := not cbDisplayName.Checked;
 end;
 
 procedure TEvaluateDecksForm.bEvalExportClick(Sender: TObject);
@@ -1845,6 +1854,7 @@ begin
       begin
         AppendRecord;
         rec := RecordCount - 1;
+        Values[rec, vcbAgainstName.Index] := clbTestAgainst.Items[i].Text;
         Values[rec, vcbAgainst.Index] := StringReplace(StringReplace(FormatDeck(sl2.CommaText), '"', '', [rfReplaceAll]), ',', ', ',
           [rfReplaceAll]);
       end;
