@@ -152,6 +152,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Left = 49
         Top = 314
         Properties.DropDownListStyle = lsFixedList
+        Properties.OnChange = cbmMissionPropertiesChange
         TabOrder = 6
         Width = 192
       end
@@ -168,6 +169,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Left = 59
         Top = 341
         Properties.DropDownListStyle = lsFixedList
+        Properties.OnChange = cbmRaidPropertiesChange
         TabOrder = 8
         Width = 182
       end
@@ -1568,7 +1570,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
         ParentShowHint = False
         ShowHint = True
         TabOrder = 24
-        OnClick = bmCustomAttackClick
+        OnClick = bmLoadAntiMissionClick
         Glyph.Data = {
           F6060000424DF606000000000000360000002800000018000000180000000100
           180000000000C0060000C40E0000C40E00000000000000000000FFFFFFFFFFFF
@@ -1643,7 +1645,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
         ParentShowHint = False
         ShowHint = True
         TabOrder = 26
-        OnClick = bmCustomAttackClick
+        OnClick = bmLoadAntiRaidClick
         Glyph.Data = {
           F6060000424DF606000000000000360000002800000018000000180000000100
           180000000000C0060000C40E0000C40E00000000000000000000FFFFFFFFFFFF
@@ -2534,6 +2536,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Width = 230
         Height = 118
         Items = <>
+        PopupMenu = pmBatchEval
         TabOrder = 0
       end
       object cbBIterations: TcxComboBox
@@ -5887,6 +5890,18 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object bDeleteAll: TMenuItem
       Caption = 'Delete all'
       OnClick = bDeleteAllClick
+    end
+  end
+  object pmBatchEval: TPopupMenu
+    Left = 280
+    Top = 48
+    object MenuItem1: TMenuItem
+      Caption = 'Select All'
+      OnClick = MenuItem1Click
+    end
+    object MenuItem2: TMenuItem
+      Caption = 'Clear selection'
+      OnClick = MenuItem2Click
     end
   end
 end

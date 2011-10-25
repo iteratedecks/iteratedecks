@@ -264,6 +264,9 @@ type
     bmLoadAntiRaid: TcxButton;
     bTopToFansite: TcxButton;
     bBotToFansite: TcxButton;
+    pmBatchEval: TPopupMenu;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -381,6 +384,15 @@ type
     procedure bBotPasteClick(Sender: TObject);
     procedure bTopToFansiteClick(Sender: TObject);
     procedure bBotToFansiteClick(Sender: TObject);
+    procedure ListFileDir(Path: string; FileList: TStrings);
+    procedure ListCustomFiles(FileList: TStrings);
+    procedure cbmRaidPropertiesChange(Sender: TObject);
+    procedure cbmMissionPropertiesChange(Sender: TObject);
+    procedure bmLoadAntiMissionClick(Sender: TObject);
+    procedure bmLoadAntiRaidClick(Sender: TObject);
+    procedure LoadTopDeck(Name: string; Tag: integer = 0);
+    procedure MenuItem1Click(Sender: TObject);
+    procedure MenuItem2Click(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -444,13 +456,13 @@ function GetCard(CardName: string): Pointer; cdecl; external DLLFILE;
 
 function GetCardByID(Id: UINT): Pointer; cdecl; external DLLFILE;
 
-function GetCustomDecksList(buffer: PChar; size: DWORD): PChar; cdecl; external
+function GetCustomDecksList(Tag: integer; buffer: PChar; size: DWORD): PChar; cdecl; external
   DLLFILE;
 
 function GetMissionDecksList(buffer: PChar; size: DWORD; bSortByID: boolean =
   true): PChar; cdecl; external DLLFILE;
 
-function GetCustomDeck(DeckName: string; buffer: PChar; size: DWORD): PChar;
+function GetCustomDeck(DeckName: string; Tag: integer; buffer: PChar; size: DWORD): PChar;
   cdecl; external DLLFILE;
 
 function GetMissionDeck(DeckName: string; buffer: PChar; size: DWORD): PChar;
@@ -491,7 +503,8 @@ function GetDBSize(): DWORD; cdecl; external DLLFILE;
 function GetSets(Indexes: Pointer; Sets: Pointer; Size: DWORD): DWORD; cdecl;
   external DLLFILE;
 
-function ReLoadCustomDecks(FileName: string): integer; cdecl; external DLLFILE;
+function LoadCustomDecks(FileName: string): integer; cdecl; external DLLFILE;
+function ClearCustomDecks: boolean; cdecl; external DLLFILE;
 
 function LoadPointers(Ptr: Pointer; MaxCount: DWORD): DWORD; cdecl; external
   DLLFILE;
@@ -743,9 +756,18 @@ begin
   end
   else
   begin
-    s := CardName;
+    s := Trim(CardName);
     if slLibIndex.IndexOfName(s) < 0 then
-      result := -1
+    begin
+      result := -1;
+      //if Cards[i].Id = 345 then
+      //begin
+      //  ShowMessage('"'+slLibIndex[308] + '" <> "' + s + '" <> "'+slLibIndex.Names[308]+'"');
+      //  ShowMessage(Inttostr(k) + ' <> ' + Inttostr(slLibIndex.IndexOfName(slLibIndex.Names[308])));
+      //end;
+      //if s <> slLibIndex.Names[308] then
+      //  ShowMessage(s+'<>'+slLibIndex.Names[308]);
+    end
     else
     try
       result := StrToInt(slLibIndex.Values[CardName]);
@@ -1428,7 +1450,7 @@ begin
     if bIsMission then
       CommaText := GetMissionDeck(DeckName, p1, cMaxBuffer)
     else
-      CommaText := GetCustomDeck(DeckName, p1, cMaxBuffer);
+      CommaText := GetCustomDeck(DeckName, 0, p1, cMaxBuffer);
     if Count > 0 then
     begin
       ClearDeck(Deck);
@@ -1744,11 +1766,9 @@ var
   i, games, rec, seed, id: integer;
   sl1, sl2: TStringList;
   r: RESULTS;
-  rand, tc: DWORD;
-  dt: TDateTime;
+  tc: DWORD;
 
   atk, def: string;
-  ret: LongWord;
 
   LibHandle: THandle;
   bImages: boolean;
@@ -1809,7 +1829,7 @@ begin
       GetMem(p1, cMaxBuffer); // initialize
       with TStringList.Create do
       try
-        sl2.CommaText := GetCustomDeck(clbTestAgainst.Items[i].Text, p1,
+        sl2.CommaText := GetCustomDeck(clbTestAgainst.Items[i].Text, 0, p1,
           cMaxBuffer);
       finally
         FreeMem(p1);
@@ -1898,25 +1918,71 @@ begin
   LoadCustomDeck(cbCustom.Text, TopDeck, true);
 end;
 
+procedure TEvaluateDecksForm.ListFileDir(Path: string; FileList: TStrings);
+var
+  SR: TSearchRec;
+begin
+  if FindFirst(Path + '*.*', faAnyFile, SR) = 0 then
+  begin
+    repeat
+      if (SR.Attr <> faDirectory) and (CompareText(SR.Name,'.svn') <> 0) then
+      begin
+        FileList.Add(Path + SR.Name);
+      end;
+    until FindNext(SR) <> 0;
+    FindClose(SR);
+  end;
+end;
+
+procedure TEvaluateDecksForm.ListCustomFiles(FileList: TStrings);
+begin
+  ListFileDir(sLocalDir + '\decks\custom\',FileList);
+  ListFileDir(sLocalDir + '\decks\mission\',FileList);
+  ListFileDir(sLocalDir + '\decks\raid\',FileList);
+  ListFileDir(sLocalDir + '\decks\batcheval\',FileList);
+end;
+
 procedure TEvaluateDecksForm.bCustomClick(Sender: TObject);
 var
-  i: integer;
+  i,k: integer;
   p1: PChar;
+  sl: TStringList;
 begin
-  i := ReLoadCustomDecks(sLocalDir + sCustomDecks);
-  if i = -2 then
-    ShowMessage('File ' + sCustomDecks + ' not found.');
-  if i >= 0 then
-    ShowMessage('Error while loading file ' + sCustomDecks + ' on line ' +
-      IntToStr(i));
+  sl := TStringList.Create;
+  try
+    ListCustomFiles(sl);
+    if FileExists(sLocalDir + sCustomDecks) then
+      sl.Add(sLocalDir + sCustomDecks);
+    for k := 0 to sl.Count - 1 do
+    begin
+      if (k = 0) then
+        ClearCustomDecks;
+      i := LoadCustomDecks(sl[k]);
+      if i = -2 then
+        ShowMessage('File ' + sl[k] + ' not found.');
+      if i >= 0 then
+        ShowMessage('Error while loading file '#13 + sl[k] + #13'on line ' +
+          IntToStr(i));
+    end;
+  finally
+    sl.Free;
+  end;
+
   GetMem(p1, cMaxBuffer); // initialize
-  GetCustomDecksList(p1, cMaxBuffer);
+  GetCustomDecksList(0, p1, cMaxBuffer);
   cbCustom.Properties.Items.CommaText := p1;
   cbmCustom.Properties.Items.CommaText := p1;
-  for i := 0 to cbmCustom.Properties.Items.Count - 1 do
-  begin
-    clbTestAgainst.AddItem(cbmCustom.Properties.Items[i]);
-    clbTestAgainst.Items[i].Checked := true;
+  GetCustomDecksList(100500, p1, cMaxBuffer);
+  sl := TStringList.Create;
+  try
+    sl.CommaText := p1;
+    for i := 0 to sl.Count - 1 do
+    begin
+      clbTestAgainst.AddItem(sl[i]);
+      clbTestAgainst.Items[i].Checked := true;
+    end;
+  finally
+    sl.Free;
   end;
   if cbCustom.Properties.Items.Count > 0 then
   begin
@@ -2067,7 +2133,7 @@ begin
   cbBOrderMatters.Enabled := bFastThreaded.Checked;
 end;
 
-procedure TEvaluateDecksForm.bmCustomAttackClick(Sender: TObject);
+procedure TEvaluateDecksForm.LoadTopDeck(Name: string; Tag: integer = 0);
 var
   p1: pchar;
   i, id: integer;
@@ -2076,7 +2142,7 @@ begin
   GetMem(p1, cMaxBuffer); // initialize
   with TStringList.Create do
   try
-    CommaText := GetCustomDeck(cbmCustom.Text, p1, cMaxBuffer);
+    CommaText := GetCustomDeck(Name, Tag, p1, cMaxBuffer);
     if Count > 0 then
     begin
       for i := 0 to Count - 1 do
@@ -2109,6 +2175,25 @@ begin
   end;
 end;
 
+procedure TEvaluateDecksForm.MenuItem1Click(Sender: TObject);
+var i: integer;
+begin
+  for i := 0 to clbTestAgainst.Items.Count - 1 do
+    clbTestAgainst.Items[i].Checked := true;
+end;
+
+procedure TEvaluateDecksForm.MenuItem2Click(Sender: TObject);
+var i: integer;
+begin
+  for i := 0 to clbTestAgainst.Items.Count - 1 do
+    clbTestAgainst.Items[i].Checked := false;
+end;
+
+procedure TEvaluateDecksForm.bmCustomAttackClick(Sender: TObject);
+begin
+  LoadTopDeck(cbmCustom.Text, 0);
+end;
+
 procedure TEvaluateDecksForm.bmCustomDefenceClick(Sender: TObject);
 var
   p1: pchar;
@@ -2118,7 +2203,7 @@ begin
   GetMem(p1, cMaxBuffer); // initialize
   with TStringList.Create do
   try
-    CommaText := GetCustomDeck(cbmCustom.Text, p1, cMaxBuffer);
+    CommaText := GetCustomDeck(cbmCustom.Text, 0, p1, cMaxBuffer);
     if Count > 0 then
     begin
       for i := 0 to Count - 1 do
@@ -2154,6 +2239,18 @@ end;
 procedure TEvaluateDecksForm.bMissionClick(Sender: TObject);
 begin
   LoadCustomDeck(cbMission.Text, BotDeck, false, true, true);
+end;
+
+procedure TEvaluateDecksForm.bmLoadAntiMissionClick(Sender: TObject);
+begin
+  if cbmAntiMission.Text <> '' then
+    LoadTopDeck(cbmAntiMission.Text, (cbmMission.ItemIndex + 1));
+end;
+
+procedure TEvaluateDecksForm.bmLoadAntiRaidClick(Sender: TObject);
+begin
+  if cbmAntiRaid.Text <> '' then
+    LoadTopDeck(cbmAntiRaid.Text, -(cbmRaid.ItemIndex + 1));
 end;
 
 procedure TEvaluateDecksForm.bmMissionClick(Sender: TObject);
@@ -2213,11 +2310,9 @@ var
   sl1, sl2: TStringList;
   bIsRaid, bIsSurge: boolean;
   r: RESULTS;
-  rand, tc: DWORD;
-  dt: TDateTime;
+  tc: DWORD;
 
   atk, def: string;
-  ret: LongWord;
 
   //SpeedTest: procedure;
   LibHandle: THandle;
@@ -2434,7 +2529,7 @@ begin
     begin
       cbCustom.Properties.Items.Add(name);
       cbmCustom.Properties.Items.Add(name);
-      clbTestAgainst.AddItem(name);
+      //clbTestAgainst.AddItem(name);
       AppendLine(sLocalDir + sCustomDecks, line);
     end;
     slr.Free;
@@ -2461,7 +2556,7 @@ begin
       begin
         cbCustom.Properties.Items.Add(name);
         cbmCustom.Properties.Items.Add(name);
-        clbTestAgainst.AddItem(name);
+        //clbTestAgainst.AddItem(name);
         AppendLine(sLocalDir + sCustomDecks, line);
       end;
     finally
@@ -2497,7 +2592,7 @@ begin
     begin
       cbCustom.Properties.Items.Add(name);
       cbmCustom.Properties.Items.Add(name);
-      clbTestAgainst.AddItem(name);
+      //clbTestAgainst.AddItem(name);
       AppendLine(sLocalDir + sCustomDecks, line);
     end;
     slr.Free;
@@ -2524,7 +2619,7 @@ begin
       begin
         cbCustom.Properties.Items.Add(name);
         cbmCustom.Properties.Items.Add(name);
-        clbTestAgainst.AddItem(name);
+        //clbTestAgainst.AddItem(name);
         AppendLine(sLocalDir + sCustomDecks, line);
       end;
     finally
@@ -2780,6 +2875,32 @@ begin
       else
         break;
   end;
+end;
+
+procedure TEvaluateDecksForm.cbmMissionPropertiesChange(Sender: TObject);
+var
+  p1: pchar;
+begin
+  GetMem(p1, cMaxBuffer); // initialize
+  GetCustomDecksList(cbmMission.ItemIndex + 1, p1, cMaxBuffer);
+  cbmAntiMission.Properties.Items.CommaText := p1;
+  cbmAntiMission.Enabled := cbmAntiMission.Properties.Items.Count > 0;
+  if cbmAntiMission.Enabled then
+    cbmAntiMission.ItemIndex := 0;
+  FreeMem(p1);
+end;
+
+procedure TEvaluateDecksForm.cbmRaidPropertiesChange(Sender: TObject);
+var
+  p1: pchar;
+begin
+  GetMem(p1, cMaxBuffer); // initialize
+  GetCustomDecksList(-(cbmRaid.ItemIndex + 1), p1, cMaxBuffer);
+  cbmAntiRaid.Properties.Items.CommaText := p1;
+  cbmAntiRaid.Enabled := cbmAntiRaid.Properties.Items.Count > 0;
+  if cbmAntiRaid.Enabled then
+    cbmAntiRaid.ItemIndex := 0;
+  FreeMem(p1);
 end;
 
 procedure TEvaluateDecksForm.cbmUseRaidClick(Sender: TObject);
@@ -3241,12 +3362,25 @@ begin
   LoadMissionXML(sLocalDir + sMissionsFile);
   LoadRaidXML(sLocalDir + sRaidsFile);
 
-  i := ReLoadCustomDecks(sLocalDir + sCustomDecks);
-  if i = -2 then
-    ShowMessage('File ' + sCustomDecks + ' not found.');
-  if i >= 0 then
-    ShowMessage('Error while loading file ' + sCustomDecks + ' on line ' +
-      IntToStr(i));
+  sl := TStringList.Create;
+  try
+    ListCustomFiles(sl);
+    if FileExists(sLocalDir + sCustomDecks) then
+      sl.Add(sLocalDir + sCustomDecks);
+    for k := 0 to sl.Count - 1 do
+    begin
+      if (k = 0) then      
+        ClearCustomDecks;
+      i := LoadCustomDecks(sl[k]);
+      if i = -2 then
+        ShowMessage('File ' + sl[k] + ' not found.');
+      if i >= 0 then
+        ShowMessage('Error while loading file '#13 + sl[k] + #13'on line ' +
+          IntToStr(i));
+    end;
+  finally
+    sl.Free;
+  end;
 
   if FileExists(sLocalDir + sCardsFile) then
     LoadCardXML(sLocalDir + sCardsFile, nil, 0)
@@ -3279,13 +3413,20 @@ begin
   ccbSets.Properties.Items.EndUpdate;
 
   GetMem(p1, cMaxBuffer); // initialize
-  GetCustomDecksList(p1, cMaxBuffer);
+  GetCustomDecksList(0, p1, cMaxBuffer);
   cbCustom.Properties.Items.CommaText := p1;
   cbmCustom.Properties.Items.CommaText := p1;
-  for i := 0 to cbmCustom.Properties.Items.Count - 1 do
-  begin
-    clbTestAgainst.AddItem(cbmCustom.Properties.Items[i]);
-    clbTestAgainst.Items[i].Checked := true;
+  GetCustomDecksList(100500, p1, cMaxBuffer);
+  sl := TStringList.Create;
+  try
+    sl.CommaText := p1;
+    for i := 0 to sl.Count - 1 do
+    begin
+      clbTestAgainst.AddItem(sl[i]);
+      clbTestAgainst.Items[i].Checked := true;
+    end;
+  finally
+    sl.Free;
   end;
   if cbCustom.Properties.Items.Count > 0 then
   begin
@@ -3315,6 +3456,11 @@ begin
   begin
     if Cards[i].CardSet <> 0 then
       slLibIndex.Values[Cards[i].Name] := inttostr(i);
+    {if Cards[i].Id = 345 then
+    begin
+      ShowMessage(slLibIndex[slLibIndex.Count-1]);
+      ShowMessage(Inttostr(slLibIndex.IndexOfName((Cards[i].Name))));
+    end; }
     slIDIndex.Values[IntToStr(Cards[i].Id)] := inttostr(i);
   end;
 
