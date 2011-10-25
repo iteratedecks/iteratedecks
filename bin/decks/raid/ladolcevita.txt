@@ -1,0 +1,40 @@
+XW I:Dracorex,Azure Reaper(5),Toxic Cannon(3),Stealthy Niaq,Apollo
+XW II:Freddie,Exodrone,Fortifier,Lance Rider(6),Comsat Terminal(2)
+XW III:Freddie,Trident(4),Exodrone,Fortifier,Lance Rider(2),Comsat Terminal(2)
+XW IV:Freddie, Exodrone, Trident(3), Fighter Jet, Irradiated Infantry, Arc Trooper, Fortifier, Mortar Bunker, ComSat Terminal
+SoK I:Invasion Coordinator,Beetle Bomber(10)
+SoK II:Korvald, Support Carrier, Support Carrier, Support Carrier, Support Carrier, Titan, Apollo, Poseidon, Beetle Bomber, Support Carrier, Support Carrier
+SoK III:Stavros, Pummeller, Pummeller, Support Carrier, Support Carrier, Poseidon, Titan, Cannon Walker, Omega, Bolide Walker, Bolide Walker
+SoK IV:Invasion Coordinator,Enclave Champion,Pathrazer(6)
+IP I:Dracorex, Bolide Walker(2),Titan,Support Carrier(4),Apollo,Lance Rider,Beetle Bomber
+IP II:Dracorex, Bolide Walker(4),Support Carrier(5),Nimbus
+IP III:Dracorex, Pummeller, Bolide Walker, Aegis, Poseidon, Nimbus, Titan, Mech Aid, Support Carrier, Support Carrier, Bolide Walker
+IP IV:Dalia,Bolide Walker(2),Lance Rider(3),Titan,Mech Aid,Support Carrier(3)
+EF I:Dracorex, Apollo, Daemon, Daemon, Daemon, Daemon, Daemon, Daemon, Daemon, Daemon, Daemon
+EF II:Atlas, Daemon(6),Bulldozer,Valkyrie,Support Carrier(2)
+EF III:Atlas,Daemon(4),Pummeller,Bulldozer,Valkyrie(2),Support Carrier(2)
+EF IV:Atlas,Daemon(2),Pummeller(2),Poseidon,Bulldozer,Valkyrie(3),Fighter Jet
+Oluth I:Yurich,Toxic Cannon(9),Goliath
+Oluth II:Dracorex,Toxic Cannon(5),Apollo,Support Carrier,Juggernaut,Metalhead,Vigil
+Oluth III:Dracorex, Pummeller, Pummeller, Pummeller, Draconian Queen, Rifter, Aegis, Aegis, Aegis, Nimbus, Azure Reaper
+Oluth IV:Xaedan, Aegis, Daemon, Bulldozer, Fighter Jet, Zerbur, Stealthy Niaq, Poseidon, Rifter, Howitzer
+TS I:Atlas, Tiamat, Predator, Hunter, Rox Chainblade, Black Ops(5)
+TS II:Atlas, Tiamat, Predator, Hunter, Rox Chainblade, Stealthy Niaq, Sentry(2)
+TS III:Atlas, Sharpshooter(3),Irradiated Infantry(3),Sabre, Tiamat, Predator, Hunter
+TS IV:Atlas, Tiamat, Predator, Hunter, Stealthy Niaq, Sentry(2), Irradiated Infantry(2)
+Behemoth I:Xaedan, Revoker(7),Sharpshooter(2),Stealthy Niaq
+Behemoth II:Xaedan, Sharpshooter, Sharpshooter, Azure Reaper, Hierophant, Revoker, Razogoth’s Heir, Revoker, Dominated Hatchlings, Dominated Hatchlings, Stealthy Niaq
+Behemoth III:Dementia, Pummeller, Pummeller, Blood Spout, Blood Spout, Pummeller, Malgoth, Feral Scorpion, Razogoth’s Heir, Pummeller, stealthy Niaq
+Behemoth IV:Lord of Tartarus, Stealthy Niaq, Blight Crusher, Blight Crusher, Blood Spout, Venomous Raptor, Malgoth, Feral Scorpion, Razogoth’s Heir, Hatchet, Pummeller
+Miasma I: Dracorex, Azure Reaper (4), Stealthy Niaq, Nimbus, Earthquake Generator (3), Support Carrier
+Miasma II:Dracorex,Azure Reaper,Azure Reaper,Azure Reaper,Azure Reaper,Azure Reaper,Nimbus,Stealthy Niaq,Support Carrier(3)
+Miasma III:Dracorex,Pummeller(5),Gorivore,Stealthy Niaq,Blood Pool(2),Blood Wall
+Miasma IV:Dementia,Pummeller(6),Stealthy Niaq,Blood Pool(2),Blood Wall
+BB I:Dracorex, Support Carrier(5),Bolide Walker(3),Titan, Apollo
+BB II:Dracorex, Nimbus, Poseidon, Bolide Walker, Bolide Walker, Pummeller, Vigil, Aegis, Titan, Support Carrier, Pummeller
+BB III:Dracorex, Cannon Walker, Poseidon, Bolide Walker, Bolide Walker, Pummeller, Aegis, Aegis, Cannon Walker, Pummeller, Pummeller
+BB IV:Dalia, Cannon Walker, Poseidon, Bolide Walker, Bolide Walker, Pummeller, Aegis, Aegis, Omega, Pummeller, Pummeller
+GT I:Lord of Tartarus,Trident,Trident,Brawler,Brawler,Venomous Raptor,Stealthy Niaq,Lance Rider,Lance Rider,Odin,T-46 Leonidas
+GT II:Lord of Tartarus, Trident, Trident, Brawler, Brawler, Venomous Raptor, Stealthy Niaq, Lance Rider, Lance Rider, Lance Rider, Lance Rider
+GT III:Lord of Tartarus, Predator, Trident, Brawler, Trident, Trident, Trident, Brawler, Brawler, Venomous Raptor, Stealthy Niaq
+GT IV:Lord of Tartarus, Predator, Irradiated Infantry, Irradiated Infantry, Trident, Trident, Trident, Trident, Trident, Tiamat, Stealthy Niaq
