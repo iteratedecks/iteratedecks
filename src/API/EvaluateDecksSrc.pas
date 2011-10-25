@@ -269,6 +269,8 @@ type
     MenuItem2: TMenuItem;
     vcbAgainstName: TcxGridBandedColumn;
     cbDisplayName: TcxCheckBox;
+    cxStyleRepository1: TcxStyleRepository;
+    cxStyle1: TcxStyle;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
