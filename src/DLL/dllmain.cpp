@@ -197,17 +197,17 @@ extern "C"
 	{		
 		return &DB.GetCard(Id);
 	};
-	IDAPI const char * GetCustomDecksList(char *buffer, DWORD size)
+	IDAPI const char * GetCustomDecksList(int Tag, char *buffer, DWORD size)
 	{
-		return DB.GetCustomDecksList(buffer, size);
+		return DB.GetCustomDecksList(buffer, size, Tag);
 	};
 	IDAPI const char * GetMissionDecksList(char *buffer, DWORD size, bool bSortById = true)
 	{
 		return DB.GetMissionDecksList(buffer, size, bSortById);
 	};
-	IDAPI const char* GetCustomDeck(const char* DeckName, char *buffer, DWORD size)
+	IDAPI const char* GetCustomDeck(const char* DeckName, int Tag, char *buffer, DWORD size)
 	{
-		return DB.GetCustomDeck(DeckName, buffer, size);
+		return DB.GetCustomDeck(DeckName, Tag, buffer, size);
 	};
 	IDAPI const char* GetMissionDeck(const char* DeckName, char *buffer, DWORD size)
 	{
@@ -221,9 +221,13 @@ extern "C"
 	{
 		return DB.GetRaidCommanderID(RaidIndex);
 	};
-	IDAPI int ReLoadCustomDecks(const char* FileName)
+	IDAPI int LoadCustomDecks(const char* FileName)
 	{
-		return DB.LoadDecks(FileName,true);
+		return DB.LoadDecks(FileName,false);
+	}
+	IDAPI bool ClearCustomDecks()
+	{
+		return DB.ClearDeckIndex();
 	}
 	IDAPI bool AbilityHasExtendedDesc(UCHAR AbilityID)
 	{
@@ -433,7 +437,7 @@ extern "C"
 	}
 	IDAPI bool InsertCustomDeck(const char *List)
 	{
-		return DB.InsertDeck(List);
+		return DB.InsertDeck(0,List);
 	}
 	IDAPI bool GetHashFromDeck(const char *Deck, char *Buffer, DWORD MaxBufferSize)
 	{
@@ -453,7 +457,7 @@ extern "C"
 	}
 	IDAPI bool GetDeckFromString(const char *CardList, char *OutputIDList)
 	{
-		return DB.InsertDeck(CardList,OutputIDList);
+		return DB.InsertDeck(0,CardList,OutputIDList);
 	}
 }
 

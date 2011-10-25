@@ -7,10 +7,46 @@
 typedef map<string, UINT> MSUINT;
 typedef pair<string, UINT> PAIRMSUINT;
 typedef vector<string> VSTRINGS;
-typedef map<string, VSTRINGS> MDECKS;
-typedef pair<string, VSTRINGS> PAIRMDECKS;
 typedef map<string, UCHAR> MSKILLS;
 typedef pair<string, UCHAR> PAIRMSKILLS;
+#define TAG_ANY			-100500
+#define TAG_BATCHEVAL	100500
+#define TAG_CUSTOM		0
+#define TAG_SOMERAID	-1000
+#define TAG_SOMEMISSION	1000
+struct DeckIndex
+{
+	string Name;
+	int Tag;
+	DeckIndex(string name)
+	{
+		Name = name;
+		Tag = 0;
+	}
+	DeckIndex() {};
+	DeckIndex(string name, int tag)
+	{
+		Name = name;
+		Tag = tag;
+	}
+	~DeckIndex() {};
+	const char *c_str() const
+	{
+		return Name.c_str();
+	}
+	bool operator<(const DeckIndex &DI) const
+	{
+		if (Name < DI.Name)
+			return true;
+		else
+			if (Name > DI.Name)
+				return false;
+			else
+				return Tag < DI.Tag;
+	}
+};
+typedef map<DeckIndex, VSTRINGS> MDECKS;
+typedef pair<DeckIndex, VSTRINGS> PAIRMDECKS;
 struct CardSet
 {
 	char Name[CARD_NAME_MAX_LENGTH];
@@ -620,12 +656,49 @@ public:
 		return str;
 	}
 	bool SaveCustomDecks(const char *FileName) { return SaveIndex(FileName,DIndex); }
+	bool ClearDeckIndex()
+	{
+		DIndex.clear();
+		return DIndex.empty();
+	}
 	int LoadDecks(const char *FileName, bool bRewrite = false)
 	{
 		FILE *f;
 		int errline = -1, cline = 0; // no errors
+		int Tag = 0;
 		if (!fopen_s(&f,FileName,"r"))
 		{
+			// detect Tag
+			UINT z=0,x=0;
+			for (UINT i=0;FileName[i];i++)
+				if (FileName[i] == '\\')
+				{
+					x = z;
+					z = i;
+				}
+			if (x || z)
+			{
+				char buffer[50];
+				memcpy(buffer,FileName+x+1,z-x-1);
+				buffer[z-x-1] = 0;
+				/*
+#define TAG_ANY			-100500
+#define TAG_CUSTOM		0
+#define TAG_SOMERAID	-1000
+#define TAG_SOMEMISSION	1000*/
+				if (!stricmp(buffer,"CUSTOM"))
+					Tag = TAG_CUSTOM;
+				else
+					if (!stricmp(buffer,"MISSION"))
+						Tag = TAG_SOMEMISSION;
+					else
+						if (!stricmp(buffer,"RAID"))
+							Tag = TAG_SOMERAID;
+						else
+							if (!stricmp(buffer,"BATCHEVAL"))
+								Tag = TAG_BATCHEVAL;
+			}
+			//
 			if (bRewrite)
 			{
 				DIndex.clear();
@@ -646,7 +719,7 @@ public:
 						if (!isspace(buffer[i]))
 							bReadLine = true;
 				if ((buffer[0] != '/') && (buffer[1] != '/') && bReadLine) 
-					if (!InsertDeck(buffer))
+					if (!InsertDeck(Tag,buffer))
 					{
 						errline = cline;
 						break;					
@@ -658,7 +731,7 @@ public:
 		}
 		return -2; // fnf
 	}
-	bool InsertDeck(const char *List, char *output_id_buffer = 0)
+	bool InsertDeck(int Tag, const char *List, char *output_id_buffer = 0)
 	{
 		MDECKS::iterator mi;
 		VSTRINGS cardlist;
@@ -692,7 +765,105 @@ public:
 								}
 								else
 								{
-									mi = Into->insert(PAIRMDECKS(trim(buffer),cardlist)).first;
+									// detect IDs in square brackets [ ]
+									int z=-1,x=-1;
+									for (UINT v=0;buffer[v];v++)
+										if (buffer[v] == '[')
+											z = v;
+										else
+											if (buffer[v] == ']')
+												x = v;
+									int NewTag = 0;
+									if ((z >= 0) && (x >= 0))
+									{
+										buffer[z]=0;
+										buffer[x]=0;
+										NewTag = atoi(trim(buffer + z + 1));
+										strcat(buffer,trim(buffer+x+1)); // remove [id] from deck name
+									}
+									if (Tag == TAG_SOMERAID)
+									{
+										if (NewTag)
+										{
+											Tag = -NewTag; // negative tags for raids
+										}
+										else 
+											if (!RIIndex.empty())
+											{
+												// try to detect by name
+												for (MSUINT::iterator ri = RIIndex.begin(); ri != RIIndex.end(); ri++)
+												{
+													// full raid name
+													const char *ptr = ri->first.c_str();
+													if (strstr(buffer,ptr))
+													{
+														NewTag = ri->second; // found
+														Tag = -NewTag;
+														break;
+													}
+													// abbrevation
+													char abv[10];
+													UCHAR x=0;
+													bool bStore = true;
+													for (UINT z=0;ptr[z];z++)
+														if (isspace(ptr[z]))
+															bStore = true;
+														else
+															if (bStore)
+															{
+																abv[x] = ptr[z];
+																x++;
+																bStore = false;
+															}
+													if (!stricmp(ptr,"Blightbloom"))
+													{
+														abv[0] = 'B';
+														abv[1] = 'B';
+														x = 2;
+													}
+													if (x < 2) // it is pointless to search 1 char abbrevation
+														continue;
+													abv[x] = 0;
+													const char *f = strstr(buffer,abv);
+													while (f)
+													{
+														const char c = f[x];
+														if (((f == buffer) || (isspace(*((unsigned char*)f-1)))) && ((!c) || (isspace(c))))
+														{
+															NewTag = ri->second; // found 
+															break;
+														}
+														f = strstr(abv,ptr);
+													}
+													if (NewTag)
+													{
+														Tag = -NewTag;
+														break;
+													}
+												}
+											/*
+	XW II:Freddie,Exodrone,Fortifier,Lance Rider(6),Comsat Terminal(2)
+	SoK I:Invasion Coordinator,Beetle Bomber(10)
+	IP I:Dracorex, Bolide Walker(2),Titan,Support Carrier(4),Apollo,Lance Rider,Beetle Bomber
+	EF I:Dracorex, Apollo, Daemon, Daemon, Daemon, Daemon, Daemon, Daemon, Daemon, Daemon, Daemon
+	Oluth IV:Xaedan, Aegis, Daemon, Bulldozer, Fighter Jet, Zerbur, Stealthy Niaq, Poseidon, Rifter, Howitzer
+	TS IV:Atlas, Tiamat, Predator, Hunter, Stealthy Niaq, Sentry(2), Irradiated Infantry(2)
+	Behemoth I:Xaedan, Revoker(7),Sharpshooter(2),Stealthy Niaq
+	Miasma I: Dracorex, Azure Reaper (4), Stealthy Niaq, Nimbus, Earthquake Generator (3), Support Carrier
+	BB I:Dracorex, Support Carrier(5),Bolide Walker(3),Titan, Apollo
+	GT IV:Lord of Tartarus, Predator, Irradiated Infantry, Irradiated Infantry, Trident, Trident, Trident, Trident, Trident, Tiamat, Stealthy Niaq
+	*/
+											}
+									}
+									else
+										if (Tag == TAG_SOMEMISSION)
+										{
+											if (NewTag)
+											{
+												Tag = NewTag; // positive tags for missions
+											}
+										}
+									mi = Into->insert(PAIRMDECKS(DeckIndex(trim(buffer),Tag),cardlist)).first;
 									mi->second.clear();
 								}
 								p = decknameend+1;
@@ -713,6 +884,10 @@ public:
 					}
 					if ((output_id_buffer) || (mi != Into->end()))
 					{
+						// fix buffer
+						for (UCHAR z=0;buffer[z];z++)
+							if (buffer[z] == '’') // this char is so decieving ;(
+								buffer[z] = '\'';
 						do
 						{
 							if (!output_id_buffer)
@@ -827,12 +1002,14 @@ public:
 		}
 		return GetCard(Name);			
 	}
-	const char* GetCustomDecksList(char *buffer, size_t size)
+	const char* GetCustomDecksList(char *buffer, size_t size, int byTag = TAG_ANY)
 	{
 		buffer[0] = 0;
 		for (MDECKS::iterator mi = DIndex.begin(); mi != DIndex.end(); mi++)
 		{
-			if (mi != DIndex.begin())
+			if ((byTag != TAG_ANY) && (byTag != mi->first.Tag) && (byTag || (mi->first.Tag != TAG_BATCHEVAL))) // skip
+				continue;
+			if (buffer[0])
 				strcat_s(buffer,size,","); // commatext :)
 			strcat_s(buffer,size,"\"");
 			strcat_s(buffer,size,mi->first.c_str());
@@ -866,10 +1043,12 @@ public:
 			}
 		return buffer;
 	}
-	const char* GetCustomDeck(const char* DeckName, char *buffer, size_t size)
+	const char* GetCustomDeck(const char* DeckName, const int Tag, char *buffer, size_t size)
 	{
 		buffer[0] = 0;
-		MDECKS::iterator mi = DIndex.find(DeckName);
+		MDECKS::iterator mi = DIndex.find(DeckIndex(DeckName,Tag));
+		if ((!Tag) && (mi == DIndex.end()))
+			 mi = DIndex.find(DeckIndex(DeckName,TAG_BATCHEVAL));			
 		if (mi == DIndex.end())	
 			return buffer; // not found
 		if (mi->second.empty())
@@ -927,9 +1106,9 @@ public:
 				Deck.push_back(&CDB[mi->second]);
 	}
 	// named decks
-	ActiveDeck GetNamedDeck(const char* DeckName)
+	ActiveDeck GetNamedDeck(const char* DeckName, const int Tag)
 	{
-		MDECKS::iterator mi = DIndex.find(DeckName);
+		MDECKS::iterator mi = DIndex.find(DeckIndex(DeckName,Tag));
 		if (mi == DIndex.end())	
 			printf("Can't find deck %s in database\n",DeckName);
 		_ASSERT(mi != DIndex.end());
