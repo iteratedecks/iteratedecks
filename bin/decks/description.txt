@@ -1,0 +1,39 @@
+This folder structure is used by all EvaluateDecks modules. All files are loaded from subfolders of *this* folder:
+batcheval\*.*	- text files with decks, loaded to batch evaluation page AND to custom decks list
+custom\*.*	- text files with decks, loaded to custom decks list
+raid\*.*	- text files with decks, loaded to anti-raid decks list
+mission\*.*	- text files with decks, loaded to anti-mission decks list
+
+About anti-raid and anti-mission decks - both deck names support using square brackets with raid/mission ID.
+Examples:
+Anti-Mission 1 deck[1]:Whisper,Orbo,Orbo
+[8] Anti-Behemoth:Dementia, Pummeller, Pummeller, Blood Spout, Blood Spout, Pummeller, Malgoth, Feral Scorpion, Razogoth’s Heir, Pummeller, Stealthy Niaq
+Brackets with id can be placed anywhere in deck name part(before ':') and will be removed from deck name upon file loading.
+Anti-raid deck have additional feature - raid can be detected by presence of full raid name(separated by spaces) or it's abbrevation.
+Examples:
+EF IV:Atlas,Daemon(2),Pummeller(2),Poseidon,Bulldozer,Valkyrie(3),Fighter Jet
+Oluth I:Yurich,Toxic Cannon(9),Goliath
+
+
+Deck text files format notes:
+
+// This is a comment line
+// Special symbols are ':', ',', '[',']','(' and ')', don't use them in deck names or card names
+// Also avoid using symbol '"', because it interferes with string adapter CommaText,
+// which is used to extract card names in API, DLL uses another string adapter and it doesn't recognize '"'
+// Every deck definition starts with deck name
+// deck name is followed by ':' and then by card names
+// card names start with commander name and then followed by rest of cards
+// separated by comma ','
+// You can use square brackets [ and ] to use card ID instead of card name or after card name,
+// ID has higher priority and in second case card name will be ignored
+// You can also use brackets ( and ) after card name to determine count of same copies of card in deck 
+// Decks are indexed by name, if decks have same names, latest will overwrite all previous decks
+// Cards from <Hidden> set can only be accessed by ID
+// Examples:
+// Example1:Atlas,Devastator(10)
+// Example2:Atlas,Devastator(10)
+// Example3:Atlas,Devastator(1)
+// Example4:Atlas,[1](1)
+// Example5:Atlas,[1](10)
+// Example6:Atlas,[1]
