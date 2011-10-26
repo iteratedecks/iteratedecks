@@ -3003,41 +3003,22 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsUpdate: TcxTabSheet
       Caption = 'Update DB'
       ImageIndex = 3
-      object bDLXML: TcxButton
-        Left = 3
-        Top = 3
-        Width = 134
-        Height = 25
-        Caption = 'Download XML sheets'
-        TabOrder = 0
-        OnClick = bDLXMLClick
-      end
-      object lUpdateXML: TcxLabel
-        Left = 148
-        Top = 6
-        Caption = 'Last update: '
-      end
-      object ceLastDate: TcxDateEdit
-        Left = 222
-        Top = 5
-        Properties.ShowTime = False
-        TabOrder = 2
-        Width = 96
-      end
+      ExplicitLeft = 68
+      ExplicitTop = 2
       object bCustom: TcxButton
         Left = 3
-        Top = 70
+        Top = 205
         Width = 134
         Height = 25
         Caption = 'Reload Custom decks'
-        TabOrder = 3
+        TabOrder = 0
         OnClick = bCustomClick
       end
       object cxGroupBox1: TcxGroupBox
-        Left = 324
+        Left = 143
         Top = 3
         Caption = 'Proxy'
-        TabOrder = 4
+        TabOrder = 1
         Height = 158
         Width = 205
         object cbUseProxy: TcxCheckBox
@@ -3100,6 +3081,75 @@ object EvaluateDecksForm: TEvaluateDecksForm
           TabOrder = 8
           Width = 121
         end
+      end
+      object cxGroupBox2: TcxGroupBox
+        Left = 3
+        Top = 3
+        Caption = 'Assets'
+        TabOrder = 2
+        Height = 188
+        Width = 134
+        object cxLabel1: TcxLabel
+          Left = 11
+          Top = 20
+          Caption = 'Source:'
+        end
+        object cbAssetsSource: TcxComboBox
+          Left = 58
+          Top = 20
+          Properties.DropDownListStyle = lsFixedList
+          Properties.Items.Strings = (
+            'kg'
+            'fb'
+            'dev')
+          TabOrder = 1
+          Text = 'kg'
+          Width = 63
+        end
+        object bDLXML: TcxButton
+          Left = 11
+          Top = 47
+          Width = 110
+          Height = 25
+          Caption = 'Download XML'
+          TabOrder = 2
+          OnClick = bDLXMLClick
+        end
+        object ceLastDate: TcxDateEdit
+          Left = 11
+          Top = 93
+          Properties.ShowTime = False
+          TabOrder = 3
+          Width = 110
+        end
+        object lUpdateXML: TcxLabel
+          Left = 11
+          Top = 78
+          Caption = 'Last update: '
+        end
+        object lUpdateNote: TcxLabel
+          Left = 10
+          Top = 120
+          AutoSize = False
+          Caption = 
+            'You may have to restart application in order to load new sheets ' +
+            'properly'
+          Properties.WordWrap = True
+          Height = 57
+          Width = 111
+        end
+      end
+      object cxLabel3: TcxLabel
+        Left = 143
+        Top = 167
+        AutoSize = False
+        Caption = 
+          'If you have any issues with Visual page(access violation), delet' +
+          'e file '#39'cards.xml'#39' and restart application, then let it download' +
+          ' all nessesary files.'
+        Properties.WordWrap = True
+        Height = 57
+        Width = 205
       end
     end
     object tsHelp: TcxTabSheet
@@ -5954,8 +6004,8 @@ object EvaluateDecksForm: TEvaluateDecksForm
     end
   end
   object cxStyleRepository1: TcxStyleRepository
-    Left = 272
-    Top = 328
+    Left = 448
+    Top = 224
     PixelsPerInch = 96
     object cxStyle1: TcxStyle
       AssignedValues = [svColor]

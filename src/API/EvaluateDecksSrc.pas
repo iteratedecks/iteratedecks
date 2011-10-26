@@ -124,9 +124,6 @@ type
     vcAvgSA: TcxGridColumn;
     vcNet: TcxGridColumn;
     tsUpdate: TcxTabSheet;
-    bDLXML: TcxButton;
-    lUpdateXML: TcxLabel;
-    ceLastDate: TcxDateEdit;
     IdHTTP: TIdHTTP;
     IL: TcxImageList;
     ILS: TcxImageList;
@@ -273,6 +270,14 @@ type
     ccbSkill: TcxCheckComboBox;
     bToggle: TcxButton;
     cbSkillTargetAll: TcxCheckBox;
+    cxGroupBox2: TcxGroupBox;
+    cxLabel1: TcxLabel;
+    cbAssetsSource: TcxComboBox;
+    bDLXML: TcxButton;
+    ceLastDate: TcxDateEdit;
+    lUpdateXML: TcxLabel;
+    lUpdateNote: TcxLabel;
+    cxLabel3: TcxLabel;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -452,7 +457,7 @@ const
   sMissionsFile = 'missions.xml';
   sCardsFile = 'cards.xml';
   sCardsDir = 'cards\';
-  sAssetsFolder = 'http://kg.tyrantonline.com/assets/';
+  sAssetsFolder = 'http://%s.tyrantonline.com/assets/';
   sImagesFolder = 'http://cdn.tyrantonline.com/warhawk/images/';
   sCustomDecks = 'Custom.txt';
   sCardNotFound = 'Card "%s" not found in database.';
@@ -2121,13 +2126,13 @@ begin
       end;
 
       ms.Position := 0;
-      IdHttp.Get(sAssetsFolder + sCardsFile, ms);
+      IdHttp.Get(Format(sAssetsFolder,[cbAssetsSource.Text]) + sCardsFile, ms);
       ms.SaveToFile(sLocalDir + sCardsFile);
       ms.Position := 0;
-      IdHttp.Get(sAssetsFolder + sRaidsFile, ms);
+      IdHttp.Get(Format(sAssetsFolder,[cbAssetsSource.Text]) + sRaidsFile, ms);
       ms.SaveToFile(sLocalDir + sRaidsFile);
       ms.Position := 0;
-      IdHttp.Get(sAssetsFolder + sMissionsFile, ms);
+      IdHttp.Get(Format(sAssetsFolder,[cbAssetsSource.Text]) + sMissionsFile, ms);
       ms.SaveToFile(sLocalDir + sMissionsFile);
       fileDate := FileAge(sLocalDir + sCardsFile);
       if fileDate > -1 then
