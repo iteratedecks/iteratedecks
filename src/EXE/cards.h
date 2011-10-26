@@ -841,18 +841,6 @@ public:
 														break;
 													}
 												}
-											/*
-	XW II:Freddie,Exodrone,Fortifier,Lance Rider(6),Comsat Terminal(2)
-	SoK I:Invasion Coordinator,Beetle Bomber(10)
-	IP I:Dracorex, Bolide Walker(2),Titan,Support Carrier(4),Apollo,Lance Rider,Beetle Bomber
-	EF I:Dracorex, Apollo, Daemon, Daemon, Daemon, Daemon, Daemon, Daemon, Daemon, Daemon, Daemon
-	Oluth IV:Xaedan, Aegis, Daemon, Bulldozer, Fighter Jet, Zerbur, Stealthy Niaq, Poseidon, Rifter, Howitzer
-	TS IV:Atlas, Tiamat, Predator, Hunter, Stealthy Niaq, Sentry(2), Irradiated Infantry(2)
-	Behemoth I:Xaedan, Revoker(7),Sharpshooter(2),Stealthy Niaq
-	Miasma I: Dracorex, Azure Reaper (4), Stealthy Niaq, Nimbus, Earthquake Generator (3), Support Carrier
-	BB I:Dracorex, Support Carrier(5),Bolide Walker(3),Titan, Apollo
-	GT IV:Lord of Tartarus, Predator, Irradiated Infantry, Irradiated Infantry, Trident, Trident, Trident, Trident, Trident, Tiamat, Stealthy Niaq
-	*/
 											}
 									}
 									else
