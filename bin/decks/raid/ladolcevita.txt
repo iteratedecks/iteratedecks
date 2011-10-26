@@ -1,3 +1,4 @@
+// Source: http://www.kongregate.com/forums/65-tyrant/topics/211879-a-collection-of-decks-for-auto-raiding
 XW I:Dracorex,Azure Reaper(5),Toxic Cannon(3),Stealthy Niaq,Apollo
 XW II:Freddie,Exodrone,Fortifier,Lance Rider(6),Comsat Terminal(2)
 XW III:Freddie,Trident(4),Exodrone,Fortifier,Lance Rider(2),Comsat Terminal(2)

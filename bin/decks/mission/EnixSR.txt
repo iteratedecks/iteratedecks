@@ -1,0 +1,33 @@
+// Source: http://www.kongregate.com/forums/65-tyrant/topics/212331-best-deck-for-1-9-10-side-mission
+[156] Pummeller Pool:Dracorex,Pummeller(5),Blood Pool(3),Draconian Queen,Valefar
+[156] BR I:Dracorex,Poseidon,Rifter,Bolide Walker(2),Aegis,Titan,Pummeller(3),Nimbus
+[157] Pummeller Pool:Dracorex,Pummeller(5),Blood Pool(3),Draconian Queen,Valefar
+[157] BR I:Dracorex,Poseidon,Rifter,Bolide Walker(2),Aegis,Titan,Pummeller(3),Nimbus
+[158] Pummeller Pool:Dracorex,Pummeller(5),Blood Pool(3),Draconian Queen,Valefar
+[158] BR I:Dracorex,Poseidon,Rifter,Bolide Walker(2),Aegis,Titan,Pummeller(3),Nimbus
+[159] Pummeller Pool:Dracorex,Pummeller(5),Blood Pool(3),Draconian Queen,Valefar
+[159] BR I:Dracorex,Poseidon,Rifter,Bolide Walker(2),Aegis,Titan,Pummeller(3),Nimbus
+[159] BR II:Dracorex,Support Carrier(2),T-46 Leonidas,Draconian Queen,Bolide Walker(2),Xanadu,Vigil,Viper,Nimbus
+[159] BR III:Dracorex,Bolide Walker,Nimbus,Pummeller,Stealthy Niaq,Titan,Support Carrier(3),Rifter,Bolide Walker
+[159] BR IV:Dracorex,Bolide Walker,Nimbus,T-46 Leonidas,Stealthy Niaq,Titan,Support Carrier(3),Rifter,Viper
+[160] VR I:Thadius,Bazooka Marine(10)
+[160] VR II:Dracorex,VIgil(6),Xeno Interceptor(2),Nimbus,Lance Rider
+[161] VR II:Thadius,Bazooka Marine(10)
+[161] VR II:Dracorex,VIgil(6),Xeno Interceptor(2),Nimbus,Lance Rider
+[161] VR III:Duncan,Micromech(7),Command Center(2),Havoc
+[162] VR II:Dracorex,VIgil(6),Xeno Interceptor(2),Nimbus,Lance Rider
+[163] VR II:Dracorex,VIgil(6),Xeno Interceptor(2),Nimbus,Lance Rider
+[163] VR IV:Malort,Blood Grunt(10)
+[163] VR V:Duncan,Micromech(9),Command Center
+[164] IP I:Freddie,Trident(4),Lance Rider(4),Poseidon,Fortifier
+[164] IP IV:Dracorex,Apollo,Lance Rider(3),Support Carrier(3),Zero,Havoc,Hierophant
+[165] IP I:Freddie,Trident(4),Lance Rider(4),Poseidon,Fortifier
+[165] IP II:Empress,Benediction,Hierophant,Indebted Veteran(5)
+[165] IP IV:Dracorex,Apollo,Lance Rider(3),Support Carrier(3),Zero,Havoc,Hierophant
+[166] IP I:Freddie,Trident(4),Lance Rider(4),Poseidon,Fortifier
+[166] IP II:Empress,Benediction,Hierophant,Indebted Veteran(5)
+[166] IP IV:Dracorex,Apollo,Lance Rider(3),Support Carrier(3),Zero,Havoc,Hierophant
+[167] IP I:Freddie,Trident(4),Lance Rider(4),Poseidon,Fortifier
+[167] IP III:Freddie,Lance Rider(7),Mech Aid,Nimbus,Fortifier
+[167] IP IV:Dracorex,Apollo,Lance Rider(3),Support Carrier(3),Zero,Havoc,Hierophant
+[167] IP V:Dracorex,Azure Reaper(5),Support Carrier,Mech Aid,Elemental,Hierophant,Lance Rider
