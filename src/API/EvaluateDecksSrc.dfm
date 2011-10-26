@@ -1964,94 +1964,20 @@ object EvaluateDecksForm: TEvaluateDecksForm
           Align = alTop
           BevelOuter = bvSpace
           TabOrder = 1
-          object cbFaction: TcxComboBox
-            Left = 119
-            Top = 8
-            Properties.DropDownListStyle = lsFixedList
-            Properties.Items.Strings = (
-              'Any faction'
-              'Imperial'
-              'Raider'
-              'Bloodthirsty'
-              'Xeno'
-              'Righteous')
-            Properties.OnChange = cbRarityPropertiesChange
-            TabOrder = 0
-            Text = 'Any faction'
-            Width = 106
-          end
-          object cbRarity: TcxComboBox
-            Left = 8
-            Top = 8
-            Properties.DropDownListStyle = lsFixedList
-            Properties.Items.Strings = (
-              'Any rarity'
-              'Common'
-              'Uncommon'
-              'Rare'
-              'Unique'
-              'Legendary')
-            Properties.OnChange = cbRarityPropertiesChange
-            TabOrder = 1
-            Text = 'Any rarity'
-            Width = 105
-          end
-          object cbType: TcxComboBox
-            Left = 231
-            Top = 8
-            Properties.DropDownListStyle = lsFixedList
-            Properties.Items.Strings = (
-              'Any type'
-              'Commander'
-              'Assault'
-              'Structure'
-              'Action')
-            Properties.OnChange = cbRarityPropertiesChange
-            TabOrder = 2
-            Text = 'Any type'
-            Width = 106
-          end
-          object cbWait: TcxComboBox
-            Left = 8
-            Top = 35
-            Properties.DropDownListStyle = lsFixedList
-            Properties.Items.Strings = (
-              'Any wait'
-              '0 turns'
-              '1 turn'
-              '2 turns'
-              '3 turns'
-              '4 turns'
-              '6 turns')
-            Properties.OnChange = cbRarityPropertiesChange
-            TabOrder = 3
-            Text = 'Any wait'
-            Width = 65
-          end
-          object cbSkill: TcxComboBox
-            Left = 8
-            Top = 62
-            Properties.DropDownListStyle = lsFixedList
-            Properties.Items.Strings = (
-              'Any skills')
-            Properties.OnChange = cbSkillPropertiesChange
-            TabOrder = 4
-            Text = 'Any skills'
-            Width = 106
-          end
           object ceFilter: TcxTextEdit
             Left = 191
             Top = 35
-            Properties.OnChange = cbRarityPropertiesChange
-            TabOrder = 5
+            Properties.OnChange = UpdateFilterEvent
+            TabOrder = 0
             Width = 146
           end
           object ccbSets: TcxCheckComboBox
             Left = 43
             Top = 89
             Properties.Items = <>
-            Properties.OnChange = cbRarityPropertiesChange
-            TabOrder = 6
+            Properties.OnChange = GenericFilterChange
+            Properties.OnCloseUp = UpdateFilterEvent
+            TabOrder = 1
             Width = 299
           end
           object lSet: TcxLabel
@@ -2060,7 +1986,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Caption = 'Sets:'
           end
           object cbSkillTargetFaction: TcxComboBox
-            Left = 120
+            Left = 186
             Top = 62
             Enabled = False
             Properties.DropDownListStyle = lsFixedList
@@ -2071,10 +1997,176 @@ object EvaluateDecksForm: TEvaluateDecksForm
               'Bloodthirsty'
               'Xeno'
               'Righteous')
-            Properties.OnChange = cbRarityPropertiesChange
-            TabOrder = 8
+            Properties.OnChange = UpdateFilterEvent
+            TabOrder = 3
             Text = 'Any skill target'
             Width = 106
+          end
+          object ccbWait: TcxCheckComboBox
+            Left = 7
+            Top = 35
+            Properties.EmptySelectionText = 'Any wait'
+            Properties.Items = <
+              item
+                Description = '0 turns'
+                ShortDescription = '0'
+              end
+              item
+                Description = '1 turn'
+                ShortDescription = '1'
+                Tag = 1
+              end
+              item
+                Description = '2 turns'
+                ShortDescription = '2'
+                Tag = 2
+              end
+              item
+                Description = '3 turns'
+                ShortDescription = '3'
+                Tag = 3
+              end
+              item
+                Description = '4 turns'
+                ShortDescription = '4'
+                Tag = 4
+              end
+              item
+                Description = '6 turns'
+                ShortDescription = '6'
+                Tag = 6
+              end>
+            Properties.OnChange = GenericFilterChange
+            Properties.OnCloseUp = UpdateFilterEvent
+            TabOrder = 4
+            Width = 106
+          end
+          object ccbRarity: TcxCheckComboBox
+            Left = 8
+            Top = 8
+            Properties.EmptySelectionText = 'Any rarity'
+            Properties.Items = <
+              item
+                Description = 'Common'
+                ShortDescription = 'c'
+              end
+              item
+                Description = 'Uncommon'
+                ShortDescription = 'u'
+                Tag = 1
+              end
+              item
+                Description = 'Rare'
+                ShortDescription = 'R'
+                Tag = 2
+              end
+              item
+                Description = 'Unique'
+                ShortDescription = 'U'
+                Tag = 3
+              end
+              item
+                Description = 'Legendary'
+                ShortDescription = 'L'
+                Tag = 4
+              end>
+            Properties.OnChange = GenericFilterChange
+            Properties.OnCloseUp = UpdateFilterEvent
+            TabOrder = 5
+            Width = 105
+          end
+          object ccbFaction: TcxCheckComboBox
+            Left = 119
+            Top = 8
+            Properties.EmptySelectionText = 'Any faction'
+            Properties.Items = <
+              item
+                Description = 'Imperial'
+                ShortDescription = 'Im'
+                Tag = 1
+              end
+              item
+                Description = 'Raider'
+                ShortDescription = 'Ra'
+                Tag = 2
+              end
+              item
+                Description = 'Bloodthirsty'
+                ShortDescription = 'Bl'
+                Tag = 3
+              end
+              item
+                Description = 'Xeno'
+                ShortDescription = 'Xe'
+                Tag = 4
+              end
+              item
+                Description = 'Righteous'
+                ShortDescription = 'Ri'
+                Tag = 5
+              end>
+            Properties.OnChange = GenericFilterChange
+            Properties.OnCloseUp = UpdateFilterEvent
+            TabOrder = 6
+            Width = 105
+          end
+          object ccbType: TcxCheckComboBox
+            Left = 230
+            Top = 8
+            Properties.EmptySelectionText = 'Any type'
+            Properties.Items = <
+              item
+                Description = 'Commander'
+                ShortDescription = 'Cmd'
+                Tag = 1
+              end
+              item
+                Description = 'Assault'
+                ShortDescription = 'Ass'
+                Tag = 2
+              end
+              item
+                Description = 'Structure'
+                ShortDescription = 'Str'
+                Tag = 3
+              end
+              item
+                Description = 'Action'
+                ShortDescription = 'Act'
+                Tag = 4
+              end>
+            Properties.OnChange = GenericFilterChange
+            Properties.OnCloseUp = UpdateFilterEvent
+            TabOrder = 7
+            Width = 107
+          end
+          object ccbSkill: TcxCheckComboBox
+            Left = 59
+            Top = 62
+            Properties.EmptySelectionText = 'Skills'
+            Properties.Items = <>
+            Properties.OnChange = GenericFilterChange
+            Properties.OnCloseUp = UpdateFilterEvent
+            TabOrder = 8
+            Width = 121
+          end
+          object bToggle: TcxButton
+            Left = 8
+            Top = 62
+            Width = 45
+            Height = 21
+            Caption = 'Any of:'
+            TabOrder = 9
+            OnClick = bToggleClick
+          end
+          object cbSkillTargetAll: TcxCheckBox
+            Left = 298
+            Top = 62
+            Caption = 'All'
+            Enabled = False
+            Properties.OnChange = UpdateFilterEvent
+            TabOrder = 10
+            Width = 39
           end
         end
       end

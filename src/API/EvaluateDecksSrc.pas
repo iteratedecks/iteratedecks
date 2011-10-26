@@ -83,10 +83,6 @@ type
     rPanel: TPanel;
     sbRight: TScrollBox;
     pLibTop: TPanel;
-    cbFaction: TcxComboBox;
-    cbRarity: TcxComboBox;
-    cbType: TcxComboBox;
-    cbWait: TcxComboBox;
     pClient: TPanel;
     pTopDeck: TPanel;
     pTopLeft: TPanel;
@@ -123,7 +119,6 @@ type
     vcAvgDA: TcxGridColumn;
     cbSurge: TcxCheckBox;
     vcType: TcxGridColumn;
-    cbSkill: TcxComboBox;
     ceFilter: TcxTextEdit;
     vcAvgS: TcxGridColumn;
     vcAvgSA: TcxGridColumn;
@@ -271,6 +266,13 @@ type
     cbDisplayName: TcxCheckBox;
     cxStyleRepository1: TcxStyleRepository;
     cxStyle1: TcxStyle;
+    ccbWait: TcxCheckComboBox;
+    ccbRarity: TcxCheckComboBox;
+    ccbFaction: TcxCheckComboBox;
+    ccbType: TcxCheckComboBox;
+    ccbSkill: TcxCheckComboBox;
+    bToggle: TcxButton;
+    cbSkillTargetAll: TcxCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -280,7 +282,7 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure tLoadTimer(Sender: TObject);
     procedure UpdateFilter;
-    procedure cbRarityPropertiesChange(Sender: TObject);
+    procedure UpdateFilterEvent(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure CopyCard(FromCard: TcxImage; ToCard: TcxImage);
     procedure ClearCard(CardImg: TcxImage);
@@ -337,7 +339,6 @@ type
     procedure bDeleteAllClick(Sender: TObject);
     procedure bDeleteSelectedClick(Sender: TObject);
     procedure cbRandomSeedClick(Sender: TObject);
-    procedure cbSkillPropertiesChange(Sender: TObject);
     function GetIndexFromID(Id: string): integer;
     procedure tsDecksShow(Sender: TObject);
     procedure vTopDataControllerRecordChanged(
@@ -398,6 +399,8 @@ type
     procedure MenuItem1Click(Sender: TObject);
     procedure MenuItem2Click(Sender: TObject);
     procedure cbDisplayNameClick(Sender: TObject);
+    procedure GenericFilterChange(Sender: TObject);
+    procedure bToggleClick(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -423,6 +426,7 @@ type
     CardsLoaded: integer;
     LastCardIndex: integer;
     LastCardIndexBot: integer;
+    bFilterChanged: boolean;
     //LastRecordIndex: integer;
   public
     { Public declarations }
@@ -1066,53 +1070,103 @@ begin
 end;
 
 procedure TEvaluateDecksForm.UpdateFilter;
+  function CheckCCB(ccb: TcxCheckComboBox; Value: integer): boolean;
+  var z: integer;
+  begin
+    result := true;
+    if ccb.Value <> 0 then
+    begin
+      for z := 0 to ccb.Properties.Items.Count - 1 do
+        if (ccb.Properties.Items[z].Tag = Value) and (ccb.States[z] <> cbsChecked) then
+        begin
+          result := false;
+          break;
+        end;
+    end;
+  end;
+  function SkillHasTarget(ID: integer): boolean;
+  begin
+    result := (ID < 18) OR (ID = 23) OR (ID = 25)
+      OR (ID = 21); // !!!
+  end;
+  function SkillIsSiege(ID: integer): boolean;
+  begin
+    result := (ID = 21);
+  end;
 var
-  i, k, turns: integer;
+  i, k, z, turns: integer;
   skillid: integer;
+  bHasSkill: boolean;
 begin
   k := 0;
   for I := 0 to ImageCount - 1 do
   begin
-    if (cbRarity.ItemIndex > 0) and (Cards[i].Rarity <> cbRarity.ItemIndex - 1)
-      then
+    if not CheckCCB(ccbRarity,Cards[i].Rarity) then
     begin
       Images[i].Hide;
       continue;
     end;
-    if (cbFaction.ItemIndex > 0) and (Cards[i].Faction <> cbFaction.ItemIndex)
-      then
+    if not CheckCCB(ccbFaction,Cards[i].Faction) then
     begin
       Images[i].Hide;
       continue;
     end;
-    if (cbType.ItemIndex > 0) and (Cards[i].CardType <> cbType.ItemIndex) then
+    if not CheckCCB(ccbType,Cards[i].CardType) then
     begin
       Images[i].Hide;
       continue;
     end;
-    turns := cbWait.ItemIndex - 1;
-    if turns = 5 then
-      turns := 6;
-    if (cbWait.ItemIndex > 0) and (Cards[i].Wait <> turns) then
+    if not CheckCCB(ccbWait,Cards[i].Wait) then
     begin
       Images[i].Hide;
       continue;
     end;
-    if (cbSkill.ItemIndex > 0) then
+    if ccbSkill.Value <> 0 then
     begin
-      skillid := slSkillList.IndexOf(cbSkill.Text);
-      if (Cards[i].Effects[skillid] = 0) then
+      bHasSkill := (bToggle.Tag <> 0);
+      for z := 0 to ccbSkill.Properties.Items.Count - 1 do
+        if (ccbSkill.States[z] = cbsChecked) then
+          if bToggle.Tag = 0 then // any of
+          begin
+            if (Cards[i].Effects[ccbSkill.Properties.Items[z].Tag] <> 0) and
+            ((not SkillHasTarget(ccbSkill.Properties.Items[z].Tag)) OR // activation skills limit
+            ((not cbSkillTargetAll.Checked) OR (Cards[i].TargetCounts[ccbSkill.Properties.Items[z].Tag] = 10)) and
+            (SkillIsSiege(ccbSkill.Properties.Items[z].Tag) OR
+            ((cbSkillTargetFaction.ItemIndex = 0) OR
+             (Cards[i].TargetFactions[ccbSkill.Properties.Items[z].Tag] = 0) OR
+             (Cards[i].TargetFactions[ccbSkill.Properties.Items[z].Tag] = cbSkillTargetFaction.ItemIndex)))) then
+            begin
+              bHasSkill := true;
+              break;
+            end;
+          end
+          else    // all of
+          begin
+            if (Cards[i].Effects[ccbSkill.Properties.Items[z].Tag] = 0) OR
+            ((SkillHasTarget(ccbSkill.Properties.Items[z].Tag)) AND // activation skills limit
+            ((cbSkillTargetAll.Checked) and (Cards[i].TargetCounts[ccbSkill.Properties.Items[z].Tag] <> 10)) OR
+            ((not SkillIsSiege(ccbSkill.Properties.Items[z].Tag)) AND
+            ((cbSkillTargetFaction.ItemIndex <> 0) AND
+             (Cards[i].TargetFactions[ccbSkill.Properties.Items[z].Tag] <> 0) AND
+             (Cards[i].TargetFactions[ccbSkill.Properties.Items[z].Tag] <> cbSkillTargetFaction.ItemIndex))))
+             then
+            begin
+              bHasSkill := false;
+              break;
+            end;
+          end;
+      if not bHasSkill then
       begin
         Images[i].Hide;
         continue;
       end;
-      if (cbSkillTargetFaction.ItemIndex > 0) and
+    end;
+      {if (cbSkillTargetFaction.ItemIndex > 0) and
         (Cards[i].TargetFactions[skillid] <> cbSkillTargetFaction.ItemIndex) then
       begin
         Images[i].Hide;
         continue;
-      end;
-    end;
+      end;   }
     if (ceFilter.Text <> '') and (Pos(LowerCase(ceFilter.Text),
       LowerCase(Cards[i].Name)) = 0) then
     begin
@@ -2641,6 +2695,22 @@ begin
   end;
 end;
 
+procedure TEvaluateDecksForm.bToggleClick(Sender: TObject);
+begin
+  if bToggle.Tag = 0 then
+  begin
+    bToggle.Caption := 'All of:';
+    bToggle.Tag := 1;
+  end
+  else
+  begin
+    bToggle.Caption := 'Any of:';
+    bToggle.Tag := 0;
+  end;
+  if ccbSkill.Value <> 0 then
+    UpdateFilter;
+end;
+
 procedure TEvaluateDecksForm.bTopCopy64Click(Sender: TObject);
 var
   sl: TStringList;
@@ -2941,15 +3011,14 @@ begin
     seSeed.Style.Color := clWindow;
 end;
 
-procedure TEvaluateDecksForm.cbRarityPropertiesChange(Sender: TObject);
+procedure TEvaluateDecksForm.UpdateFilterEvent(Sender: TObject);
 begin
-  UpdateFilter;
-end;
-
-procedure TEvaluateDecksForm.cbSkillPropertiesChange(Sender: TObject);
-begin
-  UpdateFilter;
-  cbSkillTargetFaction.Enabled := cbSkill.ItemIndex > 0;
+  if bFilterChanged or (Sender is TcxTextEdit) or (Sender = cbSkillTargetFaction) or
+    (Sender = cbSkillTargetAll) then
+  begin
+    UpdateFilter;
+    bFilterChanged := false;
+  end;
 end;
 
 procedure TEvaluateDecksForm.cbUseHiddenClick(Sender: TObject);
@@ -3014,6 +3083,17 @@ begin
   end;
 end;
 
+
+procedure TEvaluateDecksForm.GenericFilterChange(Sender: TObject);
+begin
+  bFilterChanged := true;
+  if (Sender = ccbSkill) then
+  begin
+    cbSkillTargetFaction.Enabled := (ccbSkill.Value <> 0);
+    cbSkillTargetAll.Enabled := (ccbSkill.Value <> 0);
+  end;
+end;
+
 procedure TEvaluateDecksForm.FormCreate(Sender: TObject);
 var
   p1: pchar;
@@ -3046,7 +3126,10 @@ begin
   end;
   for I := 0 to slSkillList.Count - 1 do
     if (slSkillList.Strings[i] <> '') then
-      cbSkill.Properties.Items.Append(slSkillList.Strings[i]);
+    begin
+      ccbSkill.Properties.Items.AddCheckItem(slSkillList.Strings[i]).Tag := i;
+      //cbSkill.Properties.Items.Append(slSkillList.Strings[i]);
+    end;
 
   fileDate := FileAge(sLocalDir + sCardsFile);
 
@@ -3551,6 +3634,9 @@ begin
     ProgressFinish;
     bTopVisual.Enabled := ImageCount > 0;
     bBotVisual.Enabled := ImageCount > 0;
+    
+    UpdateFilter;
+    bFilterChanged := false;
   end;
 end;
 
