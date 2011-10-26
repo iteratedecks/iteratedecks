@@ -2464,6 +2464,9 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsEval: TcxTabSheet
       Caption = 'Evaluate'
       ImageIndex = 2
+      OnShow = tsEvalShow
+      ExplicitLeft = 68
+      ExplicitTop = 0
       DesignSize = (
         784
         646)
@@ -2504,9 +2507,9 @@ object EvaluateDecksForm: TEvaluateDecksForm
       object cxGrid: TcxGrid
         AlignWithMargins = True
         Left = 3
-        Top = 30
+        Top = 73
         Width = 772
-        Height = 607
+        Height = 564
         Anchors = [akLeft, akTop, akRight, akBottom]
         PopupMenu = pmGrid
         TabOrder = 2
@@ -2594,8 +2597,8 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Width = 121
       end
       object bClear: TcxButton
-        Left = 375
-        Top = 3
+        Left = 116
+        Top = 30
         Width = 89
         Height = 21
         Caption = 'Clear history'
@@ -2603,20 +2606,136 @@ object EvaluateDecksForm: TEvaluateDecksForm
         OnClick = bClearClick
       end
       object bEvalExport: TcxButton
-        Left = 270
-        Top = 3
-        Width = 99
+        Left = 3
+        Top = 30
+        Width = 107
         Height = 21
         Caption = 'Export to Excel'
         TabOrder = 5
         OnClick = bEvalExportClick
       end
       object cbOrderMatters: TcxCheckBox
-        Left = 470
+        Left = 278
         Top = 3
         Caption = 'Cards are played in order'
         TabOrder = 6
-        Width = 179
+        OnClick = cbOrderMattersClick
+        Width = 147
+      end
+      object cbWildCard: TcxCheckBox
+        Left = 278
+        Top = 21
+        Caption = 'Wildcard'
+        TabOrder = 7
+        OnClick = cbWildCardClick
+        Width = 67
+      end
+      object gbWildcard: TcxGroupBox
+        Left = 431
+        Top = -1
+        Caption = 'Wildcard filters'
+        Enabled = False
+        TabOrder = 8
+        Height = 70
+        Width = 232
+        object cbWildCardName: TcxComboBox
+          Left = 5
+          Top = 14
+          Properties.DropDownListStyle = lsFixedList
+          TabOrder = 0
+          Width = 121
+        end
+        object ccbWildCardRarity: TcxCheckComboBox
+          Left = 5
+          Top = 41
+          Properties.EmptySelectionText = 'Any rarity'
+          Properties.Items = <
+            item
+              Description = 'Common'
+              ShortDescription = 'c'
+            end
+            item
+              Description = 'Uncommon'
+              ShortDescription = 'u'
+              Tag = 1
+            end
+            item
+              Description = 'Rare'
+              ShortDescription = 'R'
+              Tag = 2
+            end
+            item
+              Description = 'Unique'
+              ShortDescription = 'U'
+              Tag = 3
+            end
+            item
+              Description = 'Legendary'
+              ShortDescription = 'L'
+              Tag = 4
+            end>
+          Properties.OnChange = ccbWildCardTypePropertiesChange
+          TabOrder = 1
+          Width = 105
+        end
+        object ccbWildCardFaction: TcxCheckComboBox
+          Left = 116
+          Top = 41
+          Properties.EmptySelectionText = 'Any faction'
+          Properties.Items = <
+            item
+              Description = 'Imperial'
+              ShortDescription = 'Im'
+              Tag = 1
+            end
+            item
+              Description = 'Raider'
+              ShortDescription = 'Ra'
+              Tag = 2
+            end
+            item
+              Description = 'Bloodthirsty'
+              ShortDescription = 'Bl'
+              Tag = 3
+            end
+            item
+              Description = 'Xeno'
+              ShortDescription = 'Xe'
+              Tag = 4
+            end
+            item
+              Description = 'Righteous'
+              ShortDescription = 'Ri'
+              Tag = 5
+            end>
+          Properties.OnChange = ccbWildCardTypePropertiesChange
+          TabOrder = 2
+          Width = 109
+        end
+        object ccbWildCardType: TcxCheckComboBox
+          Left = 132
+          Top = 14
+          Properties.EmptySelectionText = 'Any type'
+          Properties.Items = <
+            item
+              Description = 'Assault'
+              ShortDescription = 'Ass'
+              Tag = 2
+            end
+            item
+              Description = 'Structure'
+              ShortDescription = 'Str'
+              Tag = 3
+            end
+            item
+              Description = 'Action'
+              ShortDescription = 'Act'
+              Tag = 4
+            end>
+          Properties.OnChange = ccbWildCardTypePropertiesChange
+          TabOrder = 3
+          Width = 93
+        end
       end
     end
     object tsBatch: TcxTabSheet
@@ -3003,8 +3122,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsUpdate: TcxTabSheet
       Caption = 'Update DB'
       ImageIndex = 3
-      ExplicitLeft = 68
-      ExplicitTop = 2
       object bCustom: TcxButton
         Left = 3
         Top = 205

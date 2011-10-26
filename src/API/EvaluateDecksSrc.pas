@@ -73,6 +73,10 @@ type
     RaidID: integer;
     Surge: boolean;
     OrderMatters: boolean;
+    WildCardId: integer;
+    WildFilterType: integer;
+    WildFilterRarity: integer;
+    WildFilterFaction: integer;
   end;
 
 type
@@ -278,6 +282,12 @@ type
     lUpdateXML: TcxLabel;
     lUpdateNote: TcxLabel;
     cxLabel3: TcxLabel;
+    cbWildCard: TcxCheckBox;
+    gbWildcard: TcxGroupBox;
+    cbWildCardName: TcxComboBox;
+    ccbWildCardRarity: TcxCheckComboBox;
+    ccbWildCardFaction: TcxCheckComboBox;
+    ccbWildCardType: TcxCheckComboBox;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -406,6 +416,11 @@ type
     procedure cbDisplayNameClick(Sender: TObject);
     procedure GenericFilterChange(Sender: TObject);
     procedure bToggleClick(Sender: TObject);
+    procedure cbWildCardClick(Sender: TObject);
+    procedure cbOrderMattersClick(Sender: TObject);
+    function ParseWildCCB(ccb: TcxCheckComboBox): integer;
+    procedure ccbWildCardTypePropertiesChange(Sender: TObject);
+    procedure tsEvalShow(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -617,7 +632,9 @@ end;
 
 function IterateDecks(Exe: string; Cwd: string; Seed: DWORD; AtkDeck: string;
   DefDeck: string; RaidID: integer; GamesPerThread: DWORD; Threads: DWORD;
-  bIsSurge: boolean; bOrderMatters: boolean): RESULTS;
+  bIsSurge: boolean; bOrderMatters: boolean; var iWildCard: integer;
+  iWildFilterType: integer = 0; iWildFilterRarity: integer = 0;
+  iWildFilterFaction: integer = 0): RESULTS;
 var
   SI: TStartupInfo;
   PI: TProcessInformation;
@@ -639,6 +656,16 @@ begin
   ep.Threads := Threads;
   ep.Surge := bIsSurge;
   ep.OrderMatters := bOrderMatters;
+
+  if iWildCard <> 0 then
+  begin
+    ep.WildCardId := iWildCard;
+    ep.WildFilterType := iWildFilterType;
+    ep.WildFilterRarity := iWildFilterRarity;
+    ep.WildFilterFaction := iWildFilterFaction;
+  end
+  else
+    ep.WildCardId := 0;
 
   hFileMapObj := CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0,
     256, 'Local\IterateDecksSharedMemory');
@@ -687,8 +714,11 @@ begin
       CloseHandle(PI.hThread);
       CloseHandle(PI.hProcess);
     end;
+
   finally
     CopyMemory(Addr(ep), lpBaseAddress, SizeOf(ep));
+
+    iWildCard := ep.WildCardId;
 
     result := ep.Result;
 
@@ -1833,7 +1863,7 @@ end;
 
 procedure TEvaluateDecksForm.bBRunClick(Sender: TObject);
 var
-  i, games, rec, seed, id: integer;
+  i, games, rec, seed, id, wildcard: integer;
   sl1, sl2: TStringList;
   r: RESULTS;
   tc: DWORD;
@@ -1932,8 +1962,9 @@ begin
         seed := 0;
       end;
 
+      wildcard := 0;
       r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, -1, games
-        div tc, tc, false, cbBOrderMatters.Checked);
+        div tc, tc, false, cbBOrderMatters.Checked, wildcard);
 
       with vBatchResult.DataController do
       begin
@@ -1951,8 +1982,9 @@ begin
 
       Application.ProcessMessages;
 
+      wildcard := 0;
       r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, -1, games
-        div tc, tc, true, cbBOrderMatters.Checked);
+        div tc, tc, true, cbBOrderMatters.Checked, wildcard);
 
       with vBatchResult.DataController do
       begin
@@ -2378,7 +2410,7 @@ begin
   CloseHandle(BeginThread(nil, 0, Addr(EvaluateThread),
     Addr(Self), 0, ret));}
 var
-  i, games, rec, raid, seed, id: integer;
+  i, games, rec, raid, seed, id, wildcard: integer;
   sl1, sl2: TStringList;
   bIsRaid, bIsSurge: boolean;
   r: RESULTS;
@@ -2545,8 +2577,20 @@ begin
       except
         seed := 0;
       end;
+      if cbWildCardName.Text = '' then
+        wildcard := 0
+      else
+        wildcard := Cards[GetCardID(cbWildCardName.Text)].Id;
       r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, raid,
-        games div tc, tc, bIsSurge, cbOrderMatters.Checked);
+        games div tc, tc, bIsSurge, cbOrderMatters.Checked,
+        wildcard, ParseWildCCB(ccbWildCardType), ParseWildCCB(ccbWildCardRarity),
+        ParseWildCCB(ccbWildCardFaction));
+      if wildcard <> 0 then
+      begin
+        sl1.CommaText := StringReplace(sl1.CommaText,cbWildCardName.Text,Cards[StrToInt(slIDIndex.Values[IntToStr(wildcard)])].Name,[]);
+        s := StringReplace(FormatDeck(sl1.CommaText), '"', '', [rfReplaceAll]);
+        cxView.DataController.Values[rec, vcAtk.Index] := StringReplace(s, ',', ', ', [rfReplaceAll]);
+      end;
       i := games;
     end;
     //wins := Evaluate(sl1.CommaText,sl2.CommaText,games);
@@ -3001,6 +3045,15 @@ begin
   gBot.Enabled := not cbmUseRaid.Checked;
 end;
 
+procedure TEvaluateDecksForm.cbOrderMattersClick(Sender: TObject);
+begin
+  if cbOrderMatters.Checked then
+  begin
+    cbWildCard.Checked := false;
+    gbWildcard.Enabled := false;
+  end;
+end;
+
 procedure TEvaluateDecksForm.cbRaidPropertiesChange(Sender: TObject);
 begin
   if cbUseRaid.Checked then
@@ -3088,6 +3141,36 @@ begin
   end;
 end;
 
+
+procedure TEvaluateDecksForm.cbWildCardClick(Sender: TObject);
+begin
+  if cbWildCard.Checked then
+    cbOrderMatters.Checked := false;
+  gbWildcard.Enabled := cbWildCard.Checked;
+end;
+
+procedure TEvaluateDecksForm.ccbWildCardTypePropertiesChange(Sender: TObject);
+begin
+  ParseWildCCB(Sender as TcxCheckComboBox);
+end;
+
+function TEvaluateDecksForm.ParseWildCCB(ccb: TcxCheckComboBox): integer;
+var
+  s,l: string;
+  i: integer;
+begin
+  s := ccbWildCardFaction.Value;
+  l := '';
+  for i := 0 to ccb.Properties.Items.Count-1 do
+  begin
+    if (ccb.States[i] = cbsChecked) OR VarIsNull(ccb.Value) then
+      l := l + inttostr(ccb.Properties.Items[i].Tag);
+  end;
+  if l = '' then
+    for i := 0 to ccb.Properties.Items.Count-1 do
+      l := l + inttostr(ccb.Properties.Items[i].Tag);
+  result := StrToInt(l);
+end;
 
 procedure TEvaluateDecksForm.GenericFilterChange(Sender: TObject);
 begin
@@ -3642,6 +3725,44 @@ begin
     
     UpdateFilter;
     bFilterChanged := false;
+  end;
+end;
+
+procedure TEvaluateDecksForm.tsEvalShow(Sender: TObject);
+var
+  i, id: integer;
+  s: string;
+begin
+  cbWildCardName.Properties.Items.Clear;
+  try
+    if (imgTop.Hint <> '') and (imgBot.Hint <> '') then
+    begin
+      cbWildCardName.Properties.Items.Add(imgTop.Hint);
+      for i := 0 to MAX_DECK_SIZE - 1 do
+        if (Assigned(TopDeck[i])) then
+          if (TopDeck[i].Hint <> '') then
+            if cbWildCardName.Properties.Items.IndexOf(TopDeck[i].Hint) < 0 then
+              cbWildCardName.Properties.Items.Add(TopDeck[i].Hint);
+    end
+    else
+    begin
+      with vTop.DataController do
+        for i := 0 to RecordCount - 1 do
+          if (not VarIsNull(Values[i, vTopId.Index])) and (not
+            VarIsNull(Values[i, vTopName.Index])) then
+          begin
+            id := values[i, vTopID.Index];
+            if id < 0 then
+                continue;
+            s := Values[i, vTopName.Index];
+            if Cards[id].CardType = TYPE_COMMANDER then
+              cbWildCardName.Properties.Items.Insert(0, s)
+            else if s <> '' then
+              if cbWildCardName.Properties.Items.IndexOf(s) < 0 then
+                cbWildCardName.Properties.Items.Add(s);
+          end;
+    end;
+  finally
   end;
 end;
 

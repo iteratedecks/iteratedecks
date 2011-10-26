@@ -257,10 +257,39 @@ struct EVAL_PARAMS
 	int RaidID;
 	bool Surge;
 	bool OrderMatters;
+	// wildcard
+	int WildcardId;
+	int WildFilterType;
+	int WildFilterRarity;
+	int WildFilterFaction;
 };
 
 int _tmain(int argc, char* argv[])
 {
+	/*DB.LoadCardXML("cards.xml");
+	ActiveDeck D("QVB0DN+lEhfvfvfv",DB.GetPointer());
+	printf("%d\n",D.IsValid());
+	scanf("%c");*/
+	/*DB.LoadRaidXML("raids.xml");
+	DB.LoadDecks("C:\\Users\\NT\\Documents\\Visual Studio 2008\\Projects\\EvaluateDecks\\bin\\decks\\raid\\ladolcevita.txt");
+	DB.LoadDecks("C:\\Users\\NT\\Documents\\Visual Studio 2008\\Projects\\EvaluateDecks\\bin\\decks\\custom\\custom.txt");
+	char buffer[5000];
+	DB.GetCustomDecksList(buffer,5000);
+	scanf("%c");*/
+	/*{
+	DB.LoadCardXML("cards.xml");
+	DB.LoadMissionXML("missions.xml");
+	DB.LoadRaidXML("raids.xml");
+
+	ActiveDeck X("QVDODw+kD5E2+jH8",DB.GetPointer()),Y("RkBvBxB0DNDhDnE0FAFZGrH8IBfZfvvQ",DB.GetPointer());
+
+	printf("X hash: %s\n",X.GetHash64().c_str());
+	printf("Y hash: %s\n",Y.GetHash64().c_str());
+
+	Branching B(X,Y);
+	while (B.Evaluate());
+	scanf("%c");
+	}*/
 	/*{
 	bConsoleOutput = false;
 
@@ -268,14 +297,20 @@ int _tmain(int argc, char* argv[])
 	DB.LoadMissionXML("missions.xml");
 	DB.LoadRaidXML("raids.xml");
 
-	ActiveDeck mm119("RfBUDWD9E4FNFRFYFdFrFsGnG0frvOvT",DB.GetPointer()); // 
+	ActiveDeck br4("RkBvBxB0DNDhDnE0FAFZGrH8IBfZfvvQ"
+		//"RdAXCCDIDNDdEGEREoFBFHFbGWfogBu4"
+		,DB.GetPointer());//mm119("RfBUDWD9E4FNFRFYFdFrFsGnG0frvOvT",DB.GetPointer()); // 
 	// base deck:
-	ActiveDeck basedeck("P+D2EDFrGn+n",DB.GetPointer()); // draco + 3 lance riders
+	ActiveDeck basedeck("QVCtDODw+kD5E2E2E2"
+		//"QVA2CcCtE+E+Fg+jGpGr"
+		,DB.GetPointer());
 	typedef vector <UINT>	VID;
 	typedef set <UINT>		SID;
 	VID Commanders;
 	VID Cards;
 	SID Exclude;
+	//Commanders.push_back(DB.CARD("Dracorex")->GetId());
+	//Cards.push_back(289);
 	//Exclude.insert(289); // DEBUG - EXCLUDE VALEFAR
 	if (basedeck.Commander.IsDefined())
 		Commanders.push_back(basedeck.Commander.GetId());
@@ -285,7 +320,7 @@ int _tmain(int argc, char* argv[])
 		if (c.IsCard() && c.GetSet())
 		{
 			//printf("%d %d	%d	%s\n",c.GetRarity(),c.GetFaction(),icmd,c.GetName());
-			if (c.GetRarity() >= RARITY_UNIQUE)// debug filter
+			if (c.GetRarity() > RARITY_RARE)// debug filter
 				if ((!basedeck.Commander.IsDefined()) || (icmd != basedeck.Commander.GetId()))
 					Commanders.push_back(icmd);
 		}
@@ -300,7 +335,9 @@ int _tmain(int argc, char* argv[])
 		{
 			//printf("%d %d	%d	%s\n",c.GetRarity(),c.GetFaction(),icard,c.GetName());
 			//if ((rand() % 100) < 1)// debug filter
-			if ((c.GetRarity() >= RARITY_RARE) && (c.GetFaction() == FACTION_IMPERIAL))
+			if ((c.GetRarity() >= RARITY_RARE) 
+			//&& (c.GetFaction() == FACTION_IMPERIAL)
+			)
 				if (Exclude.find(icard) == Exclude.end())
 					Cards.push_back(icard);
 		}
@@ -311,8 +348,8 @@ int _tmain(int argc, char* argv[])
 	UINT Picks[PICK_DECK_SIZE];
 
 #define GAMES_COUNT	100
-#define GAMES_EMUL	10
-	float cchance = 0.0;
+#define GAMES_EMUL	100
+	float cchance = 0.75; // dont need that crappy decks
 	ActiveDeck bestdeck;
 	// start
 	for (UINT ci=0;ci<Commanders.size();ci++)
@@ -357,7 +394,7 @@ int _tmain(int argc, char* argv[])
 			2 3 3
 			3 3 3
 			*/
-/*			if (Picks[0] > CardsSize)
+	/*		if (Picks[0] > CardsSize)
 				for (UINT i=1;i<PICK_DECK_SIZE;i++)
 					if (Picks[i] < CardsSize)
 					{
@@ -398,7 +435,8 @@ int _tmain(int argc, char* argv[])
 				{
 					if (i < basedeck.Deck.size())
 						cd.Add(basedeck.Deck[i].GetOriginalCard());
-y,
+				}
+
 			if (!basedeck.Deck.empty())
 			{
 				// need an extra check for unique and legendaries
@@ -415,7 +453,7 @@ y,
 			{
 				for (UINT k=0;k<GAMES_COUNT;k++)
 				{
-					ActiveDeck tm(mm119);
+					ActiveDeck tm(br4);
 					ActiveDeck a(cd);
 
 					Simulate(a,tm,res,false);
@@ -424,15 +462,17 @@ y,
 					break; // chance is lower than 2/3 of current best, drop this
 			}
 			float newchance = (float)res.Win / (GAMES_COUNT * GAMES_EMUL);
-			if (newchance >= cchance)
+			if (newchance >= cchance * 0.999) // they are close
 			{
-				cchance = newchance;
+				if (newchance > cchance)
+					cchance = newchance;
 				bestdeck = ActiveDeck(cd);
 				printf("[%d] %.3f	%s\n",cardcount,cchance,bestdeck.GetHash64().c_str());
 			}
 		}
 		//printf("%d variations overall\n",cnt);
 	}
+	printf("Finished");
 	}*/
 /*	{
 	bConsoleOutput = false;
@@ -519,7 +559,101 @@ y,
 	time_t t;
 
 	time(&t);
-	EvaluateInThreads(pEvalParams->Seed,X,Y,pEvalParams->RaidID,pEvalParams->Result,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge);
+	if (pEvalParams->WildcardId)
+	{
+		typedef set <UINT>		SID;
+		SID CardPool;
+
+		if (pEvalParams->WildcardId < 0)
+		{
+			// commander
+			for (UINT icmd=1000;icmd<2000;icmd++)
+			{
+				Card c = DB.GetCard(icmd);
+				if (c.IsCard() && c.GetSet())
+				{
+					UCHAR ifilter = 0;
+					for (UINT k=pEvalParams->WildFilterRarity;k;k/=10)
+						if (c.GetRarity()+1 == k%10) // need an offset here since Common = 0
+						{
+							ifilter++;
+							break;
+						}
+					for (UINT k=pEvalParams->WildFilterFaction;k;k/=10)
+						if (c.GetFaction() == k%10)
+						{
+							ifilter++;
+							break;
+						}
+					if (ifilter >= 2)
+						CardPool.insert(icmd);
+				}
+			}
+		}
+		else
+		{
+			// card in deck
+			for (VCARDS::iterator vi=X.Deck.begin();vi!=X.Deck.end();vi++)
+				if (vi->GetId() == pEvalParams->WildcardId)
+				{
+					vi = X.Deck.erase(vi); // remove that card
+					break; // just replace one
+				}
+			for (UINT icard=0;icard<3000;icard++)
+			{
+				if ((icard >= 1000) && (icard < 2000)) // commanders
+					continue;
+
+				Card c = DB.GetCard(icard);
+				if (c.IsCard() && c.GetSet())
+				{
+					UCHAR ifilter = 0;
+					for (UINT k=pEvalParams->WildFilterType;k;k/=10)
+						if (c.GetType() == k%10)
+						{
+							ifilter++;
+							break;
+						}
+					for (UINT k=pEvalParams->WildFilterRarity;k;k/=10)
+						if (c.GetRarity() + 1 == k%10) // need an offset here since Common = 0
+						{
+							ifilter++;
+							break;
+						}
+					for (UINT k=pEvalParams->WildFilterFaction;k;k/=10)
+						if (c.GetFaction() == k%10)
+						{
+							ifilter++;
+							break;
+						}
+					if (ifilter >= 3)
+						CardPool.insert(icard);
+				}
+			}
+		}
+		UINT BestCard = 0;
+		for (SID::iterator si=CardPool.begin();si!=CardPool.end();si++)
+		{
+			ActiveDeck x(X);
+			if (pEvalParams->WildcardId < 0)
+				x.Commander = PlayedCard(&DB.GetCard(*si));
+			else
+				x.Deck.push_back(&DB.GetCard(*si));
+			if (!x.IsValid())
+				continue;
+			RESULTS lresult;
+			EvaluateInThreads(pEvalParams->Seed,x,Y,pEvalParams->RaidID,lresult,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge);
+			if (lresult.Win > pEvalParams->Result.Win)
+			{
+				pEvalParams->Result = lresult;
+				BestCard = *si;
+			}
+		}
+		if (BestCard)
+			pEvalParams->WildcardId = BestCard;
+	}
+	else // simple eval
+		EvaluateInThreads(pEvalParams->Seed,X,Y,pEvalParams->RaidID,pEvalParams->Result,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge);
 	time_t t1;
 	time(&t1);
 	pEvalParams->Seconds = (DWORD)t1-t;
@@ -535,22 +669,66 @@ y,
 	DB.LoadRaidXML("raids.xml");
 
 	{
-	//ActiveDeck X("PsDIfcfc",DB.GetPointer()),
-	//	Y("Q4BhBvBwBxCDC1DIDJDNfvfwvI",DB.GetPointer());//
-	ActiveDeck X,Y;
-	DB.CreateDeck("Lord of Tartarus,Mawcor,Asylum,Asylum",X);
-	DB.CreateDeck("Dracorex[1080],Carcass Scrounge,Blood Spout,Abomination,Hatchet,Beholder,Acid Spewer,Mawcor,Lummox,Pummeller,Blood Pool,Blood Wall,Impede Assault",Y);
-	X.SetOrderMatters(true);
+		//ActiveDeck X("PsDIfcfc",DB.GetPointer()),
+		//	Y("Q4BhBvBwBxCDC1DIDJDNfvfwvI",DB.GetPointer());//
+		
+		
+		//ActiveDeck X("QVDw+kD5EFE2+jH8",DB.GetPointer()),Y("RkBvBxB0DNDhDnE0FAFZGrH8IBfZfvvQ",DB.GetPointer());
+		ActiveDeck X("QVA2A2CcE+E+Fg+jGpGr"
+			//"QVA2CcCtE+E+Fg+jGpGr" // best BR4 deck
+			//"QVB0DN+lEhfvfvfv" // pumpool
+			,DB.GetPointer()),Y("RdAXCCDIDNDdEGEREoFBFHFbGWfogBu4",DB.GetPointer());
+		
+		
+		//ActiveDeck X,Y;
+		//DB.CreateDeck("Lord of Tartarus,Mawcor,Asylum,Asylum,Chaos Wave",X);
+		//DB.CreateDeck("Dracorex[1080],Carcass Scrounge,Blood Spout,Abomination,Hatchet,Beholder,Acid Spewer,Mawcor,Lummox,Pummeller,Blood Pool,Blood Wall,Impede Assault",Y);
+		//X.SetOrderMatters(true);
 
-	RESULTS res;
-	for (UINT k=0;k<1000;k++)
-	{
-		ActiveDeck x(X);
-		ActiveDeck y(Y);		
+		RESULTS res;
+		UINT cc[4000 * FANCY_STATS_COUNT];
+		memset(cc,0,sizeof(UINT) * 4000 * FANCY_STATS_COUNT);
+		UINT games = 1000;
+		for (UINT k=0;k<games;k++)
+		{
+			ActiveDeck x(X);
+			ActiveDeck y(Y);
 
-		Simulate(x,y,res,false);
-	}
-	printf("%d\n",res.Win);
+			x.SetFancyStatsBuffer(cc);
+
+			//Simulate(x,y,res,false);
+
+			for (UCHAR i=0; (i < MAX_TURN); i++)
+			{
+				x.AttackDeck(y);
+				if (!y.Commander.IsAlive())
+				{
+					res.Win++;
+					// sweep fs
+					x.SweepFancyStatsRemaining();
+					break;
+				}
+				y.AttackDeck(x);
+				if (!x.Commander.IsAlive())
+				{
+					res.Loss++;
+					break;
+				}
+			}
+		}
+		printf("%d\n",res.Win);
+		for (UINT i=0;i<4000;i++)
+		{
+			if ((cc[FANCY_STATS_COUNT * i + 0] + cc[FANCY_STATS_COUNT * i + 1] + cc[FANCY_STATS_COUNT * i + 2] + cc[FANCY_STATS_COUNT * i + 3] + cc[FANCY_STATS_COUNT * i + 4]) == 0)
+				continue;
+			UCHAR cnt = X.GetCountInDeck(i);
+			printf("%s (x%d)\n",DB.GetCard(i).GetName(),cnt);
+			printf("	Avoided:	%5d	| %6.1f per card |	%5.2f per card per game\n",cc[FANCY_STATS_COUNT * i + 0],(float)cc[FANCY_STATS_COUNT * i + 0] / cnt,(float)cc[FANCY_STATS_COUNT * i + 0] / cnt / games);
+			printf("	Dealt:		%5d	| %6.1f per card |	%5.2f per card per game\n",cc[FANCY_STATS_COUNT * i + 1],(float)cc[FANCY_STATS_COUNT * i + 1] / cnt,(float)cc[FANCY_STATS_COUNT * i + 1] / cnt / games);
+			printf("	Mitigated:	%5d	| %6.1f per card |	%5.2f per card per game\n",cc[FANCY_STATS_COUNT * i + 2],(float)cc[FANCY_STATS_COUNT * i + 2] / cnt,(float)cc[FANCY_STATS_COUNT * i + 2] / cnt / games);
+			printf("	Healed:		%5d	| %6.1f per card |	%5.2f per card per game\n",cc[FANCY_STATS_COUNT * i + 3],(float)cc[FANCY_STATS_COUNT * i + 3] / cnt,(float)cc[FANCY_STATS_COUNT * i + 3] / cnt / games);
+			printf("	Special:	%5d	| %6.1f per card |	%5.2f per card per game\n",cc[FANCY_STATS_COUNT * i + 4],(float)cc[FANCY_STATS_COUNT * i + 4] / cnt,(float)cc[FANCY_STATS_COUNT * i + 4] / cnt / games);
+		}
 	}
 
 	{
