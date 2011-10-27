@@ -2632,7 +2632,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
       end
       object gbWildcard: TcxGroupBox
         Left = 431
-        Top = -1
+        Top = -3
         Caption = 'Wildcard filters'
         Enabled = False
         TabOrder = 8
@@ -2674,7 +2674,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
               ShortDescription = 'L'
               Tag = 4
             end>
-          Properties.OnChange = ccbWildCardTypePropertiesChange
           TabOrder = 1
           Width = 105
         end
@@ -2708,7 +2707,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
               ShortDescription = 'Ri'
               Tag = 5
             end>
-          Properties.OnChange = ccbWildCardTypePropertiesChange
           TabOrder = 2
           Width = 109
         end
@@ -2732,10 +2730,27 @@ object EvaluateDecksForm: TEvaluateDecksForm
               ShortDescription = 'Act'
               Tag = 4
             end>
-          Properties.OnChange = ccbWildCardTypePropertiesChange
           TabOrder = 3
           Width = 93
         end
+      end
+      object cxLabel4: TcxLabel
+        Left = 669
+        Top = 6
+        AutoSize = False
+        Caption = 
+          'Wildcard searches a replacement for selected card in a card pool' +
+          ', represented by filters with most wins'
+        ParentFont = False
+        Properties.WordWrap = True
+        Style.Font.Charset = DEFAULT_CHARSET
+        Style.Font.Color = clWindowText
+        Style.Font.Height = -9
+        Style.Font.Name = 'Tahoma'
+        Style.Font.Style = []
+        Style.IsFontAssigned = True
+        Height = 61
+        Width = 112
       end
     end
     object tsBatch: TcxTabSheet

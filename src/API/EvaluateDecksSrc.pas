@@ -288,6 +288,7 @@ type
     ccbWildCardRarity: TcxCheckComboBox;
     ccbWildCardFaction: TcxCheckComboBox;
     ccbWildCardType: TcxCheckComboBox;
+    cxLabel4: TcxLabel;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -419,7 +420,6 @@ type
     procedure cbWildCardClick(Sender: TObject);
     procedure cbOrderMattersClick(Sender: TObject);
     function ParseWildCCB(ccb: TcxCheckComboBox): integer;
-    procedure ccbWildCardTypePropertiesChange(Sender: TObject);
     procedure tsEvalShow(Sender: TObject);
   private
     { Private declarations }
@@ -671,7 +671,7 @@ begin
     256, 'Local\IterateDecksSharedMemory');
   if (hFileMapObj = 0) then
     //ошибочка вышла
-    ShowMessage('Не могу создать FileMapping!')
+    ShowMessage('Can'' create FileMapping!')
   else
   begin
     //подключим FileMapping к адресному пространству
@@ -680,7 +680,7 @@ begin
   end;
   if lpBaseAddress = nil then
     //ошибочка вышла
-    ShowMessage('Не могу подключить FileMapping!');
+    ShowMessage('Can''t link FileMapping!');
 
   try
     with SI do
@@ -2577,19 +2577,30 @@ begin
       except
         seed := 0;
       end;
-      if cbWildCardName.Text = '' then
+      if (cbWildCardName.Text = '') or (not cbWildCard.Checked) then
         wildcard := 0
       else
-        wildcard := Cards[GetCardID(cbWildCardName.Text)].Id;
+        if Cards[GetCardID(cbWildCardName.Text)].CardType = TYPE_COMMANDER then
+          wildcard := -1
+        else
+          wildcard := Cards[GetCardID(cbWildCardName.Text)].Id;
+      
       r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, raid,
         games div tc, tc, bIsSurge, cbOrderMatters.Checked,
         wildcard, ParseWildCCB(ccbWildCardType), ParseWildCCB(ccbWildCardRarity),
         ParseWildCCB(ccbWildCardFaction));
       if wildcard <> 0 then
       begin
-        sl1.CommaText := StringReplace(sl1.CommaText,cbWildCardName.Text,Cards[StrToInt(slIDIndex.Values[IntToStr(wildcard)])].Name,[]);
-        s := StringReplace(FormatDeck(sl1.CommaText), '"', '', [rfReplaceAll]);
-        cxView.DataController.Values[rec, vcAtk.Index] := StringReplace(s, ',', ', ', [rfReplaceAll]);
+        s := Cards[StrToInt(slIDIndex.Values[IntToStr(wildcard)])].Name;
+        if s <> cbWildCardName.Text then
+        begin
+          ShowMessage('Replace '+cbWildCardName.Text+' with '+s+'.');
+          sl1.CommaText := StringReplace(sl1.CommaText,cbWildCardName.Text,s,[]);
+          s := StringReplace(FormatDeck(sl1.CommaText), '"', '', [rfReplaceAll]);
+          cxView.DataController.Values[rec, vcAtk.Index] := StringReplace(s, ',', ', ', [rfReplaceAll]);
+        end
+        else
+          ShowMessage('Unable to improve :(');
       end;
       i := games;
     end;
@@ -3147,11 +3158,6 @@ begin
   if cbWildCard.Checked then
     cbOrderMatters.Checked := false;
   gbWildcard.Enabled := cbWildCard.Checked;
-end;
-
-procedure TEvaluateDecksForm.ccbWildCardTypePropertiesChange(Sender: TObject);
-begin
-  ParseWildCCB(Sender as TcxCheckComboBox);
 end;
 
 function TEvaluateDecksForm.ParseWildCCB(ccb: TcxCheckComboBox): integer;
