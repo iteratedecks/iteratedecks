@@ -6038,7 +6038,7 @@
 		<reserve>1</reserve>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
 		<skill id='supply' x='1' />
-		<skill id='swipe' x='1' />
+		<skill id='swipe' />
 		<type>1</type>
 		<set>5000</set>
 	</unit>
@@ -6067,6 +6067,7 @@
 		<health>4</health>
 		<cost>3</cost>
 		<unique>1</unique>
+		<reserve>1</reserve>
 		<rarity>3</rarity> <gold_cost>1000</gold_cost>
 		<skill id='armored' x='3' />
 		<skill id='crush' x='3' />
@@ -7586,7 +7587,23 @@
 	</unit>
 	
 	<unit>
-		<id>493</id>
+		<id>518</id>
+		<name>Smokestack</name>
+		<picture>BTsmokestack.jpg</picture>
+		<attack>1</attack>
+		<health>5</health>
+		<cost>2</cost>
+		<unique>1</unique>
+		<reserve>1</reserve>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='counter' x='2' />
+		<skill id='poison' x='2' />
+		<type>3</type>
+		<set>9000</set>
+	</unit>
+	
+	<unit>
+		<id>519</id>
 		<name>Use This One</name>
 		<picture>alex.jpg</picture>
 		<attack>1</attack>
@@ -7597,7 +7614,7 @@
 	</unit>
 	
 	<unit>
-		<id>1123</id>
+		<id>1135</id>
 		<name>Use This One Commander</name>
 		<picture>alex.jpg</picture>
 		<attack>0</attack>
@@ -7607,7 +7624,7 @@
 	</unit>
 	
 	<unit>
-		<id>2087</id>
+		<id>2090</id>
 		<name>Use This One Structure</name>
 		<picture>alex.jpg</picture>
 		<health>1</health>
@@ -7631,11 +7648,31 @@
 		<id>182</id>
 		<name>TEST</name>
 		<picture>alex.jpg</picture>
-		<attack>0</attack>
-		<health>4</health>
-		<cost>0</cost>
+		<attack>1</attack>
+		<health>10</health>
+		<cost>1</cost>
 		<rarity>1</rarity> <gold_cost>10000</gold_cost>
 		<type>3</type>
+	</unit>
+	
+	<unit>
+		<id>1009</id>
+		<name>TEST COMMANDER</name>
+		<picture>general1.jpg</picture>
+		<attack>0</attack>
+		<health>5</health>
+		<rarity>1</rarity> <gold_cost>1000</gold_cost>
+	</unit>
+	
+	<unit>
+		<id>2089</id>
+		<name>Test Structure</name>
+		<picture>lambo.jpg</picture>
+		<health>3</health>
+		<cost>1</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='wall' />
+		<type>9</type>
 	</unit>
 	
 	<unit>
@@ -9184,6 +9221,177 @@
 	<!-- END Tournament Achievement Rewards -->
 	
 <!-- END Tournament Rewards -->
+
+<!-- Other -->
+
+<unit>
+		<id>494</id>
+		<name>Guerilla Leader</name>
+		<picture>phalanxbreaker.jpg</picture>
+		<attack>2</attack>
+		<health>6</health>
+		<cost>3</cost>
+		<unique>1</unique>
+		<reserve>1</reserve>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='evade' />
+		<skill id='rally' x='1' all='1' y='8' />
+		<type>8</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>499</id>
+		<name>Lich</name>
+		<picture>lich2.jpg</picture>
+		<attack>4</attack>
+		<health>4</health>
+		<cost>3</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='regenerate' x='4' />
+		<skill id='enfeeble' x='1' />
+		<skill id='immobilize' />
+		<type>3</type>
+		<set>5001</set>
+	</unit>
+
+	<unit>
+		<id>508</id>
+		<name>Demon</name>
+		<picture>demon.jpg</picture>
+		<attack>3</attack>
+		<health>3</health>
+		<cost>2</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='flying' />
+		<skill id='jam' />
+		<skill id='mimic' />
+		<type>3</type>
+		<set>5001</set>
+	</unit>	
+
+	<unit>
+		<id>506</id>
+		<name>Headless Stalker</name>
+		<picture>horseman.jpg</picture>
+		<attack>2</attack>
+		<health>5</health>
+		<cost>2</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='evade' />
+		<skill id='leech' x='2' />
+		<type>3</type>
+		<set>5001</set>
+	</unit>
+
+	<unit>
+		<id>509</id>
+		<name>Deranged Hunter</name>
+		<picture>madhatter.jpg</picture>
+		<attack>1</attack>
+		<health>4</health>
+		<cost>1</cost>
+		<unique>1</unique>
+		<reserve>1</reserve>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='counter' x='1' />
+		<skill id='berserk' x='1' />
+		<type>9</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>510</id>
+		<name>Phantom</name>
+		<picture>boogieman.jpg</picture>
+		<attack>1</attack>
+		<health>7</health>
+		<cost>3</cost>
+		<unique>1</unique>
+		<reserve>1</reserve>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='poison' x='3' />
+		<type>4</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>511</id>
+		<name>Psycho</name>
+		<picture>twister.jpg</picture>
+		<attack>2</attack>
+		<health>5</health>
+		<cost>2</cost>
+		<unique>1</unique>
+		<reserve>1</reserve>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='heal' x='2' />
+		<skill id='weaken' x='2' />
+		<type>1</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>512</id>
+		<name>Infected Trooper</name>
+		<picture>zombiesharpshooter.jpg</picture>
+		<attack>4</attack>
+		<health>6</health>
+		<cost>3</cost>
+		<unique>1</unique>
+		<reserve>1</reserve>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='immobilize' />
+		<skill id='crush' x='4' />
+		<type>3</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>513</id>
+		<name>Hades</name>
+		<picture>hadesrage.jpg</picture>
+		<attack>2</attack>
+		<health>6</health>
+		<cost>4</cost>
+		<unique>1</unique>
+		<reserve>1</reserve>
+		<rarity>4</rarity> <gold_cost>10000</gold_cost>
+		<skill id='regenerate' x='3' />
+		<skill id='strike' x='2' all='1' />
+		<skill id='fear' />
+		<type>3</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>1123</id>
+		<name>Lucina the Wicked</name>
+		<picture>zombielucina.jpg</picture>
+		<attack>0</attack>
+		<health>7</health>
+		<reserve>1</reserve>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='enfeeble' x='1' />
+		<skill id='weaken' x='1' />
+		<type>3</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>1124</id>
+		<name>Lucina the Wicked</name>
+		<picture>zombielucina.jpg</picture>
+		<attack>0</attack>
+		<health>20</health>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='heal' x='2' y='3' />
+		<skill id='enfeeble' x='2' />
+		<skill id='weaken' x='2' />
+		<type>3</type>
+	</unit>
+
+<!-- END Other -->
 	
 	<unit>
 		<id>177</id>
@@ -9375,16 +9583,6 @@
 <!-- COMMANDERS -->
 	
 	<!-- SET NULL -->
-
-	<unit>
-		<id>1009</id>
-		<name>TEST COMMANDER</name>
-		<picture>general1.jpg</picture>
-		<attack>0</attack>
-		<health>10</health>
-		<rarity>1</rarity> <gold_cost>1000</gold_cost>
-		<skill id='mist' />
-	</unit>
 
 	<unit> <!-- STORY COMMANDER -->
 		<id>1042</id>
@@ -9846,6 +10044,7 @@
 		<name>Mutilate</name>
 		<icon>CrushSkillIcon</icon>
 		<target_anim>crush.swf</target_anim>
+		<loop_anim>fogloop.swf</loop_anim>
 		<desc>Damage-Dependant - Whatever</desc>
 		<cardValue cost='1.5' />
 	</skillType>
@@ -9870,6 +10069,7 @@
 		<name>Rapid</name>
 		<icon>CrushSkillIcon</icon>
 		<target_anim>crush.swf</target_anim>
+		<loop_anim>fogloop.swf</loop_anim>
 		<desc>Damage-Dependant - Whatever</desc>
 		<cardValue cost='1.5' />
 	</skillType><skillType>
@@ -9893,6 +10093,7 @@
 		<name>Disease</name>
 		<icon>CrushSkillIcon</icon>
 		<target_anim>crush.swf</target_anim>
+		<loop_anim>fogloop.swf</loop_anim>
 		<desc>Damage-Dependant - Whatever</desc>
 		<cardValue cost='1.5' />
 	</skillType>

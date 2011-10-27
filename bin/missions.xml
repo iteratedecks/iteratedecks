@@ -5807,7 +5807,7 @@
 	<mission>
 		<id>162</id>
 		<name>Vengeful Righteous 3</name>
-		<picture>mission158.jpg</picture>
+		<picture>mission162.jpg</picture>
 		<location_id>18</location_id>
 		<num_to_complete>9</num_to_complete>
 		<x>400</x>
@@ -5948,7 +5948,7 @@
 	<mission>
 		<id>166</id>
 		<name>Imperial Purists 3</name>
-		<picture>mission158.jpg</picture>
+		<picture>mission166.jpg</picture>
 		<location_id>19</location_id>
 		<num_to_complete>9</num_to_complete>
 		<x>190</x>
@@ -5982,7 +5982,7 @@
 	<mission>
 		<id>167</id>
 		<name>Imperial Purists 4</name>
-		<picture>mission163.jpg</picture>
+		<picture>mission167.jpg</picture>
 		<location_id>19</location_id>
 		<num_to_complete>10</num_to_complete>
 		<x>230</x>
@@ -6020,6 +6020,173 @@
 	</mission>
 	
 	<!-- END Purity Side Missions -->
+	
+	<!-- Halloween Promotion 2011 Missions -->
+	
+	<mission>
+		<id>168</id>
+		<name>Night of Terror 1</name>
+		<picture>mission168.jpg</picture>
+		<location_id>13</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>60</x>
+		<y>30</y>
+		<xp>60</xp>
+		<energy>15</energy>
+		<money>1300</money>
+		<commander>1124</commander>
+		<desc>You are starting to become consumed with darkness as the Bloodthirsty attack you.</desc>
+		<speech>
+			<line commander='1042'>You awake in a dark corner in the one place that still haunts your memories.</line>
+			<line commander='1042'>Tartarus, you were relieved to have left thinking you would never go back, but now your worst fears have come true.</line>
+			<line commander='1042'>While you are still trying to collect yourself, a face from your past stalks you.</line>
+		</speech>
+		<deck>
+			<card>116</card>
+			<card>190</card>
+			<card>345</card>
+			<card>225</card>
+			<card>113</card>
+			<card>131</card>
+			<card>390</card>
+			<card>506</card>
+			<card>262</card>
+			<card>326</card>
+			<card>427</card>
+			<card>419</card>
+			<card>2076</card>
+			<card>2055</card>
+			<card>3026</card>
+		</deck>
+		<req>96</req>
+	</mission>
+
+	<mission>
+		<id>169</id>
+		<name>Night of Terror 2</name>
+		<picture>mission169.jpg</picture>
+		<location_id>13</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>110</x>
+		<y>40</y>
+		<xp>60</xp>
+		<energy>15</energy>
+		<money>1300</money>
+		<commander>1124</commander>
+		<desc>Lucina's power grows as your mind seems to descend deeper into the shadows.</desc>
+		<speech>
+			<line commander='1042'>It is Lucina, but not as you remember her.</line>
+			<line commander='1042'>She has been consumed by the Bloodthirsty, her twisted face now stares at you that sends chills down your spine.</line>
+			<line commander='1042'>Looking back in her eyes reveals nothing but emptiness, and you realize you must overcome this challenge by yourself.</line>
+		</speech>
+		<deck>
+			<card>303</card>
+			<card>346</card>
+			<card>231</card>
+			<card>242</card>
+			<card>296</card>
+			<card>135</card>
+			<card>172</card>
+			<card>347</card>
+			<card>431</card>
+			<card>512</card>
+			<card>217</card>
+			<card>409</card>
+			<card>2012</card>
+			<card>2051</card>
+			<card>3018</card>
+		</deck>
+		<rewards>
+			<card>494</card>
+		</rewards>
+		<req>168</req>
+	</mission>
+
+	<mission>
+		<id>170</id>
+		<name>Night of Terror 3</name>
+		<picture>mission170.jpg</picture>
+		<location_id>13</location_id>
+		<num_to_complete>10</num_to_complete>
+		<inactive>0</inactive>
+		<x>160</x>
+		<y>30</y>
+		<xp>60</xp>
+		<energy>15</energy>
+		<money>1300</money>
+		<commander>1124</commander>
+		<desc>You began to fear that this may be the end, as the Bloodthirsty are neverending.</desc>
+		<speech>
+			<line commander='1042'>Lucina continues her relentless assault on you. You realize the shadows have been creeping towards you, soon you will be enveloped by them.</line>
+		</speech>
+		<deck>
+			<card>308</card>
+			<card>248</card>
+			<card>200</card>
+			<card>111</card>
+			<card>499</card>
+			<card>346</card>
+			<card>255</card>
+			<card>115</card>
+			<card>187</card>
+			<card>169</card>
+			<card>419</card>
+			<card>431</card>
+			<card>2049</card>
+			<card>2052</card>
+			<card>3006</card>
+		</deck>
+		<req>169</req>
+	</mission>
+
+	<mission>
+		<id>171</id>
+		<name>Night of Terror 4</name>
+		<picture>mission171.jpg</picture>
+		<location_id>13</location_id>
+		<num_to_complete>10</num_to_complete>
+		<inactive>0</inactive>
+		<x>210</x>
+		<y>20</y>
+		<xp>60</xp>
+		<energy>15</energy>
+		<money>1300</money>
+		<commander>1124</commander>
+		<desc>You have to break free if you want to survive.</desc>
+		<speech>
+			<line commander='1042'>The more you fight the longer you are able to hold off the shadows.</line>
+			<line commander='1042'>As long as your will remains strong, you will never be overcome by your past or fears.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1042'>Finally you slay the former Commander and as she lay dead the shadows and Bloodthirsty surrounding you vanish.</line>
+			<line commander='1042'>Soon you realize you are no longer in Tartarus and even Lucina's body is gone.</line>
+			<line commander='1042'>It felt like a dream, except you feel stonger now than ever before.</line>
+		</speechComplete>
+		<deck>
+			<card>308</card>
+			<card>320</card>
+			<card>205</card>
+			<card>513</card>
+			<card>225</card>
+			<card>116</card>
+			<card>113</card>
+			<card>231</card>
+			<card>345</card>
+			<card>427</card>
+			<card>508</card>
+			<card>111</card>
+			<card>2009</card>
+			<card>2031</card>
+			<card>3024</card>
+		</deck>
+		<rewards>
+			<card>1123</card>
+		</rewards>
+		<req>170</req>
+	</mission>
+	
+	
+	<!-- END Halloween Promotion 2011 Missions -->
 	
 	<!-- END MISSIONS -->
 	
