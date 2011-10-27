@@ -817,7 +817,6 @@ private:
 						if (siphon)
 							SRC.fsHealed += Commander.Heal(siphon);
 					}
-
 					if (bGoBerserk)
 						SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
 
@@ -1139,7 +1138,7 @@ public:
 					targets.clear();
 					if (Position)
 						targets.push_back(&Units[Position-1]);
-					targets.push_back(&Src);
+					targets.push_back(&Units[Position]);
 					if (Position+1 < Units.size())
 						targets.push_back(&Units[Position+1]);
 					if (targets.size())
