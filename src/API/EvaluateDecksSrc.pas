@@ -661,7 +661,7 @@ begin
   begin
     ep.WildCardId := iWildCard;
     ep.WildFilterType := iWildFilterType;
-    ep.WildFilterRarity := iWildFilterRarity;
+    ep.WildFilterRarity := iWildFilterRarity+1;
     ep.WildFilterFaction := iWildFilterFaction;
   end
   else
