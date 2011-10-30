@@ -2465,8 +2465,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Caption = 'Evaluate'
       ImageIndex = 2
       OnShow = tsEvalShow
-      ExplicitLeft = 68
-      ExplicitTop = 0
       DesignSize = (
         784
         646)
@@ -3282,6 +3280,15 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Properties.WordWrap = True
         Height = 57
         Width = 205
+      end
+      object bCheckImages: TcxButton
+        Left = 3
+        Top = 236
+        Width = 134
+        Height = 25
+        Caption = 'Check card images'
+        TabOrder = 4
+        OnClick = bCheckImagesClick
       end
     end
     object tsHelp: TcxTabSheet

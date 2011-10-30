@@ -289,6 +289,7 @@ type
     ccbWildCardFaction: TcxCheckComboBox;
     ccbWildCardType: TcxCheckComboBox;
     cxLabel4: TcxLabel;
+    bCheckImages: TcxButton;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -421,6 +422,8 @@ type
     procedure cbOrderMattersClick(Sender: TObject);
     function ParseWildCCB(ccb: TcxCheckComboBox): integer;
     procedure tsEvalShow(Sender: TObject);
+    procedure bCheckImagesClick(Sender: TObject);
+    function CheckCardImages: boolean;
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -454,6 +457,7 @@ type
 
 var
   EvaluateDecksForm: TEvaluateDecksForm;
+  sDownloadingCaption: string = '';
 
 implementation
 
@@ -1063,7 +1067,10 @@ procedure TEvaluateDecksForm.IdHTTPWorkBegin(ASender: TObject;
   AWorkMode: TWorkMode; AWorkCountMax: Int64);
 begin
   if slUpdate.Count = 0 then
-    ProgressStart(AWorkCountMax, 'Download XML sheet ...');
+    if sDownloadingCaption = '' then
+      ProgressStart(AWorkCountMax, 'Download XML sheet ...')
+    else
+      ProgressStart(AWorkCountMax, sDownloadingCaption);
 end;
 
 procedure TEvaluateDecksForm.IdHTTPWorkEnd(ASender: TObject;
@@ -2011,6 +2018,61 @@ begin
   //EndThread(0);
 end;
 
+function TEvaluateDecksForm.CheckCardImages: boolean;
+var
+  i, ictoupdate, icdownloaded: integer;
+  ms: TMemoryStream;
+  fname: string;
+begin
+  result := false;
+  icdownloaded := 0;
+  ictoupdate := 0;
+  ms := TMemoryStream.Create;
+  try
+    CardsLoaded := LoadPointers(@Cards, MAX_CARD_COUNT);
+    ProgressStart(CardsLoaded, 'Checking images ...');
+    sDownloadingCaption := 'Downloading image ...';
+    for i := 0 to CardsLoaded - 1 do
+    begin
+      ms.Position := 0;
+      fname := sLocalDir + sCardsDir + Cards[i].Picture;
+      if not FileExists(fname) then
+      begin
+        ictoupdate := ictoupdate + 1;
+        if ictoupdate = 1 then
+          if Application.MessageBox(
+            'Card images are required to use Visual page.'#13+
+            'Do you want to download them now?'#13#13+
+            'You can do this later by clicking ''Check card images'''#13+
+            'on page ''Update DB''.','Download images',MB_OKCANCEL) <> ID_OK then
+            break;
+        try
+          IdHttp.Get(sImagesFolder + Cards[i].Picture, ms);
+          if (ms.Size > 0) {and IsValidFileName(fname)} then
+            ms.SaveToFile(fname);
+          icdownloaded := icdownloaded + 1;
+        except
+          on E: Exception do
+          begin
+            ShowMessage('Error while downloading file'#13 + sImagesFolder +
+              Cards[i].Picture + #13 + E.Message);
+          end;
+        end;
+      end;
+      ProgressUpdate(i);
+    end;
+  finally
+    sDownloadingCaption := '';
+    ProgressFinish;
+  end;
+  result := (icdownloaded = ictoupdate);
+end;
+
+procedure TEvaluateDecksForm.bCheckImagesClick(Sender: TObject);
+begin
+  tsDecks.Enabled := CheckCardImages;
+end;
+
 procedure TEvaluateDecksForm.bClearClick(Sender: TObject);
 begin
   cxView.DataController.RecordCount := 0;
@@ -2028,7 +2090,8 @@ begin
   if FindFirst(Path + '*.*', faAnyFile, SR) = 0 then
   begin
     repeat
-      if (SR.Attr <> faDirectory) and (CompareText(SR.Name,'.svn') <> 0) then
+      if (SR.Attr <> faDirectory) and (CompareText(SR.Name,'.svn') <> 0)
+       and (CompareText(SR.Name,'.') <> 0) and (CompareText(SR.Name,'..') <> 0) then
       begin
         FileList.Add(Path + SR.Name);
       end;
@@ -3577,7 +3640,7 @@ begin
   else
   begin
     if
-      (Application.MessageBox('Your database is empty, dou you want to download database files?'#13'You can download them later, but you won''t be able to do anything until then', 'Warning', MB_YESNO) = IDYES) then
+      (Application.MessageBox('Your database is empty, dou you want to download database files?'#13#13'You can download them later, but you won''t be able to do anything until then', 'Warning', MB_YESNO) = IDYES) then
       bDLXMLClick(Application.MainForm);
   end;
 
@@ -3646,6 +3709,7 @@ begin
   begin
     if Cards[i].CardSet <> 0 then
       slLibIndex.Values[Cards[i].Name] := inttostr(i);
+
     {if Cards[i].Id = 345 then
     begin
       ShowMessage(slLibIndex[slLibIndex.Count-1]);
@@ -3653,6 +3717,9 @@ begin
     end; }
     slIDIndex.Values[IntToStr(Cards[i].Id)] := inttostr(i);
   end;
+
+  tsDecks.Enabled := CheckCardImages;
+  Application.ProcessMessages;
 
   //
   vTop.DataController.RecordCount := 11;
