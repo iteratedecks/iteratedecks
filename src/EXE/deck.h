@@ -555,10 +555,11 @@ public:
 	const UINT GetId() const { return OriginalCard->GetId(); }
 	const UCHAR GetAttack() const
 	{
-		if (Effects[ACTIVATION_WEAKEN] > Attack)
-			return Effects[ACTIVATION_RALLY];
+		char atk = Attack - Effects[ACTIVATION_WEAKEN] + Effects[ACTIVATION_RALLY];
+		if (atk > 0)
+			return (UCHAR)atk;
 		else
-			return Attack - Effects[ACTIVATION_WEAKEN] + Effects[ACTIVATION_RALLY];
+			return 0;
 	}
 	const UCHAR GetHealth() const { return Health; }
 	const UCHAR GetMaxHealth() const { return OriginalCard->GetHealth(); }
