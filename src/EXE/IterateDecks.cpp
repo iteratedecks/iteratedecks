@@ -20,7 +20,7 @@
 
 CardDB DB; // just to make all easier ...
 
-void Simulate(ActiveDeck &tAtk, ActiveDeck &tDef, RESULTS &r, bool bSurge = false)
+void Simulate(ActiveDeck &tAtk, ActiveDeck &tDef, RESULTS &r, const UCHAR *CSIndex = 0, RESULT_BY_CARD *rbc = 0, bool bSurge = false)
 {
 /*
 Maximum of 25 points per player. 
@@ -35,6 +35,8 @@ Automatic:
 +5 points for winning by turn 10
 IF you surge (ie, defense goes first) and you win then you get +20 points with or without auto .
 */
+	if (CSIndex && rbc)
+		tAtk.SetFancyStatsBuffer(CSIndex,rbc);
 	for (UCHAR i=0; (i < MAX_TURN); i++)
 	{
 		if (bSurge)
@@ -52,6 +54,34 @@ IF you surge (ie, defense goes first) and you win then you get +20 points with o
 					r.LAutoPoints+=5; // +5 points for losing by turn 10 
 				}
 				break;
+			}
+		}
+		if (CSIndex && rbc)
+		{
+			if (tAtk.Deck.size() == 1)
+			{
+				// last card is about to be played
+				UINT id = tAtk.Deck[0].GetId(); // it's ID
+				// play variation without this card
+				rbc[CSIndex[id]].WLGames++;
+				ActiveDeck xwl(tAtk),ywl(tDef);
+				xwl.SetFancyStatsBuffer(0,0); // don't inherit buffers here
+				ywl.SetFancyStatsBuffer(0,0); // don't inherit buffers here
+				for (UCHAR iwl=i; (iwl < MAX_TURN); iwl++)
+				{
+					xwl.AttackDeck(ywl);
+					if (!ywl.Commander.IsAlive())
+					{
+						rbc[CSIndex[id]].WLWin++;
+						break;
+					}
+					ywl.AttackDeck(xwl);
+					if (!xwl.Commander.IsAlive())
+					{
+						rbc[CSIndex[id]].WLLoss++;
+						break;
+					}
+				}
 			}
 		}
 		tAtk.AttackDeck(tDef);
@@ -121,6 +151,7 @@ IF you surge (ie, defense goes first) and you win then you get +20 points with o
 		r.Points+=5;
 	if (tAtk.Deck.empty()) // +5 points for losing all your Assault and Structure cards
 		r.LPoints+=5;
+	tAtk.SweepFancyStatsRemaining();
 }
 
 struct EVAL_THREAD_PARAMS
@@ -131,17 +162,47 @@ struct EVAL_THREAD_PARAMS
 	DWORD gamesperthread;
 	DWORD Seed;
 	RESULTS r;
+	const UCHAR *CSIndex;
+	RESULT_BY_CARD rbc[DEFAULT_DECK_SIZE+1];
 	bool bSurge;
 };
 
-void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, DWORD RaidID)
+void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* = 0*/, RESULT_BY_CARD *rbc/* = 0*/, DWORD RaidID)
 {
 	ActiveDeck tAtk(gAtk);
 	ActiveDeck tDef;
 	DB.GenRaidDeck(tDef,RaidID);
-					
+
+	if (CSIndex && rbc)
+		tAtk.SetFancyStatsBuffer(CSIndex,rbc);					
 	for (UCHAR i=0; (i < MAX_TURN); i++)
 	{
+		if (CSIndex && rbc)
+		{
+			if (tAtk.Deck.size() == 1)
+			{
+				// last card is about to be played
+				UINT id = tAtk.Deck[0].GetId(); // it's ID
+				// play variation without this card
+				rbc[CSIndex[id]].WLGames++;
+				ActiveDeck xwl(tAtk),ywl(tDef);
+				for (UCHAR iwl=i; (iwl < MAX_TURN); iwl++)
+				{
+					xwl.AttackDeck(ywl);
+					if (!ywl.Commander.IsAlive())
+					{
+						rbc[CSIndex[id]].WLWin++;
+						break;
+					}
+					ywl.AttackDeck(xwl);
+					if (!xwl.Commander.IsAlive())
+					{
+						rbc[CSIndex[id]].WLLoss++;
+						break;
+					}
+				}
+			}
+		}
 		tAtk.AttackDeck(tDef);
 		if (!tDef.Commander.IsAlive())
 		{
@@ -165,6 +226,7 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, DWORD RaidID)
 			break;
 		}
 	}
+	tAtk.SweepFancyStatsRemaining();
 }
 
 static unsigned int __stdcall ThreadFunc(void *pvParam)
@@ -172,24 +234,48 @@ static unsigned int __stdcall ThreadFunc(void *pvParam)
 	EVAL_THREAD_PARAMS *p = (EVAL_THREAD_PARAMS *)pvParam;
 	srand((unsigned)p->Seed); // it seems like each thread shares seed with others before it starts, so we should reset seed or we will gate the same random sequences in all threads
 	RESULTS lr;
+	RESULT_BY_CARD rbc[DEFAULT_DECK_SIZE+1];
 	for (DWORD i=0;i<p->gamesperthread;i++)
 	{
 		if (p->RaidID < 0)
 		{
 			ActiveDeck Atk(*p->Atk);
 			ActiveDeck Def(*p->Def);
-			Simulate(Atk,Def,lr,p->bSurge);
+			Simulate(Atk,Def,lr,p->CSIndex,rbc,p->bSurge);
 		}
 		else
-			EvaluateRaidOnce(*(p->Atk),lr,(DWORD)p->RaidID);
+			EvaluateRaidOnce(*(p->Atk),lr,p->CSIndex,rbc,(DWORD)p->RaidID);
 	}
 	//_endthread();
 	p->r.Add(lr);
+	for (UCHAR m=0;m<DEFAULT_DECK_SIZE+1;m++)
+		p->rbc[m].Add(rbc[m]);
 	return (UINT)p;
 }
 
-void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDef, int RaidID, RESULTS &ret, DWORD gamesperthread, DWORD threadscount = 1, bool bSurge = false)
+void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDef, int RaidID, RESULTS &ret, RESULT_BY_CARD *rbc, DWORD gamesperthread, DWORD threadscount = 1, bool bSurge = false)
 {
+	// create Index
+	UCHAR CSIndex[CARD_MAX_ID];
+	CSIndex[gAtk.Commander.GetId()] = 0;
+	rbc[0].Id = gAtk.Commander.GetId();
+	for (UCHAR i=0;i<gAtk.Deck.size();i++)
+	{
+		UCHAR idx = 0;
+		for (idx=0;idx<DEFAULT_DECK_SIZE+1;idx++)
+			if (rbc[idx].Id == gAtk.Deck[i].GetId())
+				break;
+			else
+				if (!rbc[idx].IsValid())
+				{
+					rbc[idx].Id = i;
+					break;
+				}
+		_ASSERT(idx);
+		CSIndex[gAtk.Deck[i].GetId()] = idx;
+		rbc[idx].Id = gAtk.Deck[i].GetId();
+	}
+	//
 	if (threadscount <= 1)
 	{
 		srand((unsigned)Seed);
@@ -199,10 +285,10 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 			{
 				ActiveDeck tAtk(gAtk);
 				ActiveDeck tDef(gDef);
-				Simulate(tAtk,tDef,ret,bSurge);
+				Simulate(tAtk,tDef,ret,CSIndex,rbc,bSurge);
 			}
 			else
-				EvaluateRaidOnce(gAtk,ret,(DWORD)RaidID);
+				EvaluateRaidOnce(gAtk,ret,CSIndex,rbc,(DWORD)RaidID);
 		}
 	}
 	else
@@ -217,6 +303,7 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 		{
 			parms[i].Atk = &gAtk;
 			parms[i].Def = &gDef;
+			parms[i].CSIndex = CSIndex;
 			parms[i].RaidID = RaidID;
 			parms[i].gamesperthread = gamesperthread;
 			parms[i].Seed = Seed + i; // offset seed or we will have same results for all threads
@@ -236,6 +323,8 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 			cwait(NULL,m_ulThreadHandle[i],NULL); // now wait them all, order doesn't matter since we will have to wait all of them
 			// collect results
 			ret.Add(parms[i].r);
+			for (UCHAR m=0;m<DEFAULT_DECK_SIZE+1;m++)
+				rbc[m].Add(parms[i].rbc[m]);
 		}
 	}
 }
@@ -253,6 +342,7 @@ struct EVAL_PARAMS
 	DWORD GamesPerThread;
 	DWORD Threads;
 	RESULTS Result;
+	RESULT_BY_CARD ResultByCard[DEFAULT_DECK_SIZE+1];
 	DWORD Seconds;
 	int RaidID;
 	bool Surge;
@@ -301,7 +391,8 @@ int _tmain(int argc, char* argv[])
 		//"RdAXCCDIDNDdEGEREoFBFHFbGWfogBu4"
 		,DB.GetPointer());//mm119("RfBUDWD9E4FNFRFYFdFrFsGnG0frvOvT",DB.GetPointer()); // 
 	// base deck:
-	ActiveDeck basedeck("QVCtDODw+kD5E2E2E2"
+	ActiveDeck basedeck("QBBj+pBj"
+		//"QVCtDODw+kD5E2E2E2"
 		//"QVA2CcCtE+E+Fg+jGpGr"
 		,DB.GetPointer());
 	typedef vector <UINT>	VID;
@@ -335,20 +426,29 @@ int _tmain(int argc, char* argv[])
 		{
 			//printf("%d %d	%d	%s\n",c.GetRarity(),c.GetFaction(),icard,c.GetName());
 			//if ((rand() % 100) < 1)// debug filter
-			if ((c.GetRarity() >= RARITY_RARE) 
+			if ((c.GetRarity() > RARITY_LEGENDARY) 
 			//&& (c.GetFaction() == FACTION_IMPERIAL)
 			)
 				if (Exclude.find(icard) == Exclude.end())
 					Cards.push_back(icard);
 		}
 	}
+	//Commanders.push_back(DB.CARD("Dracorex")->GetId());
+	//Commanders.push_back(DB.CARD("Ajax")->GetId());
+	Cards.push_back(DB.CARD("Valkyrie")->GetId());
+	Cards.push_back(DB.CARD("Support Carrier")->GetId());
+	//Cards.push_back(DB.CARD("Daemon")->GetId());
+	Cards.push_back(DB.CARD("Pummeller")->GetId());
+	Cards.push_back(DB.CARD("Aegis")->GetId());
+	Cards.push_back(DB.CARD("Apollo")->GetId());
+	Cards.push_back(DB.CARD("Fighter Jet")->GetId());
 	printf("%d : %d\n",Commanders.size(),Cards.size());
 	UINT CardsSize = Cards.size();
 #define PICK_DECK_SIZE	10
 	UINT Picks[PICK_DECK_SIZE];
 
 #define GAMES_COUNT	100
-#define GAMES_EMUL	100
+#define GAMES_EMUL	1000
 	float cchance = 0.75; // dont need that crappy decks
 	ActiveDeck bestdeck;
 	// start
@@ -394,7 +494,7 @@ int _tmain(int argc, char* argv[])
 			2 3 3
 			3 3 3
 			*/
-	/*		if (Picks[0] > CardsSize)
+/*			if (Picks[0] > CardsSize)
 				for (UINT i=1;i<PICK_DECK_SIZE;i++)
 					if (Picks[i] < CardsSize)
 					{
@@ -453,7 +553,9 @@ int _tmain(int argc, char* argv[])
 			{
 				for (UINT k=0;k<GAMES_COUNT;k++)
 				{
-					ActiveDeck tm(br4);
+					//ActiveDeck tm(br4);
+					ActiveDeck tm;
+					DB.GenRaidDeck(tm,5);
 					ActiveDeck a(cd);
 
 					Simulate(a,tm,res,false);
@@ -473,6 +575,7 @@ int _tmain(int argc, char* argv[])
 		//printf("%d variations overall\n",cnt);
 	}
 	printf("Finished");
+	scanf("%c");
 	}*/
 /*	{
 	bConsoleOutput = false;
@@ -555,6 +658,7 @@ int _tmain(int argc, char* argv[])
 	X.SetOrderMatters(pEvalParams->OrderMatters);
 
 	memset(&pEvalParams->Result,0,sizeof(RESULTS));
+	memset(&pEvalParams->ResultByCard,0,sizeof(RESULT_BY_CARD) * (DEFAULT_DECK_SIZE + 1));	
 
 	time_t t;
 
@@ -642,10 +746,12 @@ int _tmain(int argc, char* argv[])
 			if (!x.IsValid())
 				continue;
 			RESULTS lresult;
-			EvaluateInThreads(pEvalParams->Seed,x,Y,pEvalParams->RaidID,lresult,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge);
+			RESULT_BY_CARD lrbc[DEFAULT_DECK_SIZE+1];
+			EvaluateInThreads(pEvalParams->Seed,x,Y,pEvalParams->RaidID,lresult,lrbc,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge);
 			if (lresult.Win > pEvalParams->Result.Win)
 			{
 				pEvalParams->Result = lresult;
+				memcpy(pEvalParams->ResultByCard,lrbc,sizeof(lrbc));
 				BestCard = *si;
 			}
 		}
@@ -653,7 +759,7 @@ int _tmain(int argc, char* argv[])
 			pEvalParams->WildcardId = BestCard;
 	}
 	else // simple eval
-		EvaluateInThreads(pEvalParams->Seed,X,Y,pEvalParams->RaidID,pEvalParams->Result,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge);
+		EvaluateInThreads(pEvalParams->Seed,X,Y,pEvalParams->RaidID,pEvalParams->Result,pEvalParams->ResultByCard,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge);
 	time_t t1;
 	time(&t1);
 	pEvalParams->Seconds = (DWORD)t1-t;
@@ -667,17 +773,29 @@ int _tmain(int argc, char* argv[])
 	bConsoleOutput = false;
 	DB.LoadCardXML("cards.xml");
 	DB.LoadRaidXML("raids.xml");
+	{
+		ActiveDeck X("QVDw+kD5EFE2+jH8",DB.GetPointer()),Y("RkBvBxB0DNDhDnE0FAFZGrH8IBfZfvvQ",DB.GetPointer());
+		RESULTS res;
+		RESULT_BY_CARD rescs[DEFAULT_DECK_SIZE+1];
 
+		EvaluateInThreads(0,X,Y,-1,res,rescs,2000,1);
+
+		printf("%d\n",res.Win);
+		for (UINT i=0;i<DEFAULT_DECK_SIZE+1;i++)
+			rescs[i].Print();
+		scanf("%c");
+	}
 	{
 		//ActiveDeck X("PsDIfcfc",DB.GetPointer()),
 		//	Y("Q4BhBvBwBxCDC1DIDJDNfvfwvI",DB.GetPointer());//
 		
-		
-		//ActiveDeck X("QVDw+kD5EFE2+jH8",DB.GetPointer()),Y("RkBvBxB0DNDhDnE0FAFZGrH8IBfZfvvQ",DB.GetPointer());
-		ActiveDeck X("QVA2A2CcE+E+Fg+jGpGr"
+		//ActiveDeck X("P9Dw",DB.GetPointer());
+		//ActiveDeck Y(/*"ReFF"*/"ReAo",DB.GetPointer());
+		ActiveDeck X("QVDw+kD5EFE2+jH8",DB.GetPointer()),Y("RkBvBxB0DNDhDnE0FAFZGrH8IBfZfvvQ",DB.GetPointer());
+		//ActiveDeck X("QVA2A2CcE+E+Fg+jGpGr"
 			//"QVA2CcCtE+E+Fg+jGpGr" // best BR4 deck
 			//"QVB0DN+lEhfvfvfv" // pumpool
-			,DB.GetPointer()),Y("RdAXCCDIDNDdEGEREoFBFHFbGWfogBu4",DB.GetPointer());
+		//	,DB.GetPointer()),Y("RdAXCCDIDNDdEGEREoFBFHFbGWfogBu4",DB.GetPointer());
 		
 		
 		//ActiveDeck X,Y;
@@ -686,26 +804,69 @@ int _tmain(int argc, char* argv[])
 		//X.SetOrderMatters(true);
 
 		RESULTS res;
-		UINT cc[4000 * FANCY_STATS_COUNT];
-		memset(cc,0,sizeof(UINT) * 4000 * FANCY_STATS_COUNT);
+		RESULT_BY_CARD rescs[DEFAULT_DECK_SIZE+1];
+		// Index
+		UCHAR CSIndex[CARD_MAX_ID];
+		CSIndex[X.Commander.GetId()] = 0;
+		rescs[0].Id = X.Commander.GetId();
+		for (UCHAR i=0;i<X.Deck.size();i++)
+		{
+			UCHAR idx = 0;
+			for (idx=0;idx<DEFAULT_DECK_SIZE+1;idx++)
+				if (rescs[idx].Id == X.Deck[i].GetId())
+					break;
+				else
+					if (!rescs[idx].IsValid())
+					{
+						rescs[idx].Id = i;
+						break;
+					}
+			_ASSERT(idx);
+			CSIndex[X.Deck[i].GetId()] = idx;
+			rescs[idx].Id = X.Deck[i].GetId();
+		}
+		//
 		UINT games = 1000;
 		for (UINT k=0;k<games;k++)
 		{
 			ActiveDeck x(X);
 			ActiveDeck y(Y);
 
-			x.SetFancyStatsBuffer(cc);
+			x.SetFancyStatsBuffer(CSIndex,rescs);
 
 			//Simulate(x,y,res,false);
 
 			for (UCHAR i=0; (i < MAX_TURN); i++)
 			{
+				if (x.Deck.size() == 1)
+				{
+					// last card is about to be played
+					UINT id = x.Deck[0].GetId(); // it's ID
+					// play variation without this card
+					rescs[CSIndex[id]].WLGames++;
+					ActiveDeck xwl(x),ywl(y);
+					for (UCHAR iwl=i; (iwl < MAX_TURN); iwl++)
+					{
+						xwl.AttackDeck(ywl);
+						if (!ywl.Commander.IsAlive())
+						{
+							rescs[CSIndex[id]].WLWin++;
+							break;
+						}
+						ywl.AttackDeck(xwl);
+						if (!xwl.Commander.IsAlive())
+						{
+							rescs[CSIndex[id]].WLLoss++;
+							break;
+						}
+					}
+				}
 				x.AttackDeck(y);
 				if (!y.Commander.IsAlive())
 				{
 					res.Win++;
 					// sweep fs
-					x.SweepFancyStatsRemaining();
+					x.SweepFancyStatsRemaining(); // this is wrong - i should sweep remaining even on losses in case of fear based enemy deck or any cards still present
 					break;
 				}
 				y.AttackDeck(x);
@@ -717,18 +878,8 @@ int _tmain(int argc, char* argv[])
 			}
 		}
 		printf("%d\n",res.Win);
-		for (UINT i=0;i<4000;i++)
-		{
-			if ((cc[FANCY_STATS_COUNT * i + 0] + cc[FANCY_STATS_COUNT * i + 1] + cc[FANCY_STATS_COUNT * i + 2] + cc[FANCY_STATS_COUNT * i + 3] + cc[FANCY_STATS_COUNT * i + 4]) == 0)
-				continue;
-			UCHAR cnt = X.GetCountInDeck(i);
-			printf("%s (x%d)\n",DB.GetCard(i).GetName(),cnt);
-			printf("	Avoided:	%5d	| %6.1f per card |	%5.2f per card per game\n",cc[FANCY_STATS_COUNT * i + 0],(float)cc[FANCY_STATS_COUNT * i + 0] / cnt,(float)cc[FANCY_STATS_COUNT * i + 0] / cnt / games);
-			printf("	Dealt:		%5d	| %6.1f per card |	%5.2f per card per game\n",cc[FANCY_STATS_COUNT * i + 1],(float)cc[FANCY_STATS_COUNT * i + 1] / cnt,(float)cc[FANCY_STATS_COUNT * i + 1] / cnt / games);
-			printf("	Mitigated:	%5d	| %6.1f per card |	%5.2f per card per game\n",cc[FANCY_STATS_COUNT * i + 2],(float)cc[FANCY_STATS_COUNT * i + 2] / cnt,(float)cc[FANCY_STATS_COUNT * i + 2] / cnt / games);
-			printf("	Healed:		%5d	| %6.1f per card |	%5.2f per card per game\n",cc[FANCY_STATS_COUNT * i + 3],(float)cc[FANCY_STATS_COUNT * i + 3] / cnt,(float)cc[FANCY_STATS_COUNT * i + 3] / cnt / games);
-			printf("	Special:	%5d	| %6.1f per card |	%5.2f per card per game\n",cc[FANCY_STATS_COUNT * i + 4],(float)cc[FANCY_STATS_COUNT * i + 4] / cnt,(float)cc[FANCY_STATS_COUNT * i + 4] / cnt / games);
-		}
+		for (UINT i=0;i<DEFAULT_DECK_SIZE+1;i++)
+			rescs[i].Print();
 	}
 
 	{
@@ -736,7 +887,7 @@ int _tmain(int argc, char* argv[])
 	for (UINT i=0;10;i++)
 	{
 	ActiveDeck a("QCAXBJDd+nD+",DB.GetPointer());
-	EvaluateRaidOnce(a,res,7);
+	EvaluateRaidOnce(a,res,0,0,7);
 	}
 	}
 
@@ -758,7 +909,7 @@ int _tmain(int argc, char* argv[])
 					for (UCHAR l=0;l<GAMES_EMUL;l++)
 						a.Add(c);
 
-					Simulate(a,tm,res,false);
+					Simulate(a,tm,res);
 				}
 				if (res.Win < (GAMES_COUNT / 2))
 					break; // chance is lower then half, drop this
@@ -887,7 +1038,7 @@ int _tmain(int argc, char* argv[])
 	time_t t;
 
 	time(&t);
-	EvaluateInThreads(100500,X,Y,-1,res,2500,4);
+	EvaluateInThreads(100500,X,Y,-1,res,0,0,2500,4);
 	time_t t1;
 	time(&t1);
 	printf("Finished in %d sec\n",t1-t);

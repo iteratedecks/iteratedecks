@@ -1,6 +1,8 @@
 #include <vector>
 #include <set>
 
+#include "results.h"
+
 #define CARD_NAME_MAX_LENGTH	50 // must sync it with CARD_NAME_MAX_LENGTH in interface
 #define FILENAME_MAX_LENGTH		50 //
 #define CARD_ABILITIES_MAX		70 // must sync it with CARD_ABILITIES_MAX in interface
@@ -652,7 +654,8 @@ public:
 	bool bOrderMatters;
 	MSID Hand;
 	//
-	UINT *FancyStats;
+	const UCHAR *CSIndex;
+	RESULT_BY_CARD *CSResult;
 private:
 	void Reserve()
 	{
@@ -831,12 +834,13 @@ private:
 #undef SRC
 	}
 public:
-	ActiveDeck() { bOrderMatters = false; FancyStats = 0; }
+	ActiveDeck() { bOrderMatters = false; CSIndex = 0; CSResult = 0; }
 	~ActiveDeck() { Deck.clear(); Units.clear(); Structures.clear(); Actions.clear(); }
 public:
-	void SetFancyStatsBuffer(UINT *fs)
+	void SetFancyStatsBuffer(const UCHAR *resindex, RESULT_BY_CARD *res)
 	{
-		FancyStats = fs;
+		CSIndex = resindex;
+		CSResult = res;
 	}
 	UCHAR GetCountInDeck(UINT Id)
 	{
@@ -853,7 +857,8 @@ public:
 	{
 		_ASSERT(pCDB);
 		_ASSERT(HashBase64);
-		FancyStats = 0;
+		CSIndex = 0;
+		CSResult = 0;
 		bOrderMatters = false; 
 		unsigned short tid = 0, lastid = 0;
 		size_t len = strlen(HashBase64);
@@ -885,7 +890,7 @@ public:
 			}
 		}
 	}
-	ActiveDeck(const Card *Cmd) { bOrderMatters = false; FancyStats = 0; Commander = PlayedCard(Cmd); Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); };
+	ActiveDeck(const Card *Cmd) { bOrderMatters = false; CSIndex = 0; CSResult = 0; Commander = PlayedCard(Cmd); Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); };
 	ActiveDeck(const ActiveDeck &D) // need copy constructor
 	{
 		Commander = D.Commander;
@@ -902,7 +907,8 @@ public:
 		for (UCHAR i=0;i<D.Structures.size();i++)
 			Structures.push_back(D.Structures[i]);
 		bOrderMatters = D.bOrderMatters;
-		FancyStats = D.FancyStats;
+		CSIndex = D.CSIndex;
+		CSResult = D.CSResult;
 		if (D.bOrderMatters)
 		{
 			Hand.clear();
@@ -1649,16 +1655,19 @@ public:
 	}
 	void SweepFancyStats(PlayedCard &pc)
 	{
-		if (!FancyStats) return;
-		FancyStats[FANCY_STATS_COUNT * pc.GetId() + 0] += pc.fsAvoided;
-		FancyStats[FANCY_STATS_COUNT * pc.GetId() + 1] += pc.fsDmgDealt;
-		FancyStats[FANCY_STATS_COUNT * pc.GetId() + 2] += pc.fsDmgMitigated;
-		FancyStats[FANCY_STATS_COUNT * pc.GetId() + 3] += pc.fsHealed;
-		FancyStats[FANCY_STATS_COUNT * pc.GetId() + 4] += pc.fsSpecial;
+		if (!CSIndex) return;
+		if (!CSResult) return;
+		CSResult[CSIndex[pc.GetId()]].FSRecordCount++;
+		CSResult[CSIndex[pc.GetId()]].FSAvoided += pc.fsAvoided;
+		CSResult[CSIndex[pc.GetId()]].FSDamage += pc.fsDmgDealt;
+		CSResult[CSIndex[pc.GetId()]].FSMitigated += pc.fsDmgMitigated;
+		CSResult[CSIndex[pc.GetId()]].FSHealing += pc.fsHealed;
+		CSResult[CSIndex[pc.GetId()]].FSSpecial += pc.fsSpecial;
 	}
 	void SweepFancyStatsRemaining()
 	{
-		if (!FancyStats) return;
+		if (!CSIndex) return;
+		if (!CSResult) return;
 		SweepFancyStats(Commander);
 		for (VCARDS::iterator vi = Units.begin();vi != Units.end();vi++)
 			SweepFancyStats(*vi);
@@ -1996,35 +2005,5 @@ protected:
 		for (VCARDS::iterator vi = From.begin();vi != From.end();vi++)
 			if ((vi->IsAlive()) && (((vi->GetFaction() == TargetFaction) && (!bForInfuse)) || (TargetFaction == FACTION_NONE) || ((vi->GetFaction() != TargetFaction) && (bForInfuse))))
 				GetTo.push_back(&(*vi));
-	}
-};
-
-// this structure is used to store and return simulation result
-typedef unsigned long       DWORD;
-struct RESULTS
-{
-	DWORD Win;
-	DWORD Loss;
-	DWORD Points;
-	DWORD AutoPoints;
-	DWORD LPoints;
-	DWORD LAutoPoints;
-	RESULTS()
-	{
-		Win = 0;
-		Loss = 0;
-		Points = 0;
-		AutoPoints = 0;
-		LPoints = 0;
-		LAutoPoints = 0;
-	}
-	void Add(const RESULTS rAdd)
-	{
-		Win += rAdd.Win;
-		Loss += rAdd.Loss;
-		Points += rAdd.Points;
-		AutoPoints += rAdd.AutoPoints;
-		LPoints += rAdd.LPoints;
-		LAutoPoints += rAdd.LAutoPoints;
 	}
 };

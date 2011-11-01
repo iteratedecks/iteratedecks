@@ -19,6 +19,7 @@ const
   MAX_CARD_COUNT = 700;
   MAX_DECK_SIZE = 20;
   MAX_SETS_COUNT = 20;
+  DEFAULT_DECK_SIZE = 10;
   CARD_NAME_MAX_LENGTH = 50;
   FILENAME_MAX_LENGTH = 50;
   CARD_ABILITIES_MAX = 70;
@@ -59,6 +60,26 @@ type
     LAutoPoints: DWORD;
   end;
 
+type
+  RESULT_BY_CARD = record
+    Id: DWORD;
+    WLGames: DWORD;
+	WLWin: DWORD;
+	WLLoss: DWORD;
+	FSRecordCount: DWORD;
+	FSMitigated: DWORD;
+	FSAvoided: DWORD;
+	FSDamage: DWORD;
+	FSHealing: DWORD;
+	FSSpecial: DWORD;
+  end;
+
+type
+  FULLRESULT = record
+    Result: RESULTS;
+    ResultByCard: array[0..DEFAULT_DECK_SIZE] of RESULT_BY_CARD;
+  end;
+
 const
   MAX_DECKSTRING_SIZE = 1024;
 type
@@ -69,6 +90,7 @@ type
     GamesPerThread: DWORD;
     Threads: DWORD;
     Result: RESULTS;
+    ResultByCard: array[0..DEFAULT_DECK_SIZE] of RESULT_BY_CARD;
     Seconds: DWORD;
     RaidID: integer;
     Surge: boolean;
@@ -290,6 +312,17 @@ type
     ccbWildCardType: TcxCheckComboBox;
     cxLabel4: TcxLabel;
     bCheckImages: TcxButton;
+    gStats: TcxGrid;
+    vCardStats: TcxGridTableView;
+    cxGridLevel4: TcxGridLevel;
+    vcsCard: TcxGridColumn;
+    vcsImportance: TcxGridColumn;
+    vcsWinrate: TcxGridColumn;
+    vcsAvgAvoided: TcxGridColumn;
+    vcsAvgDealt: TcxGridColumn;
+    vcsAvgMitigated: TcxGridColumn;
+    vcsAvgHealing: TcxGridColumn;
+    vcsAvgSpecial: TcxGridColumn;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -638,7 +671,7 @@ function IterateDecks(Exe: string; Cwd: string; Seed: DWORD; AtkDeck: string;
   DefDeck: string; RaidID: integer; GamesPerThread: DWORD; Threads: DWORD;
   bIsSurge: boolean; bOrderMatters: boolean; var iWildCard: integer;
   iWildFilterType: integer = 0; iWildFilterRarity: integer = 0;
-  iWildFilterFaction: integer = 0): RESULTS;
+  iWildFilterFaction: integer = 0): FULLRESULT;
 var
   SI: TStartupInfo;
   PI: TProcessInformation;
@@ -724,7 +757,8 @@ begin
 
     iWildCard := ep.WildCardId;
 
-    result := ep.Result;
+    result.Result := ep.Result;
+    CopyMemory(Addr(result.ResultByCard), Addr(ep.ResultByCard), SizeOf(result.ResultByCard));
 
     UnMapViewOfFile(lpBaseAddress);
     //освободим объект FileMapping
@@ -1872,7 +1906,7 @@ procedure TEvaluateDecksForm.bBRunClick(Sender: TObject);
 var
   i, games, rec, seed, id, wildcard: integer;
   sl1, sl2: TStringList;
-  r: RESULTS;
+  r: FULLRESULT;
   tc: DWORD;
 
   atk, def: string;
@@ -1975,16 +2009,16 @@ begin
 
       with vBatchResult.DataController do
       begin
-        Values[rec, vcbFWins.Index] := r.Win;
-        Values[rec, vcbFStalled.Index] := games - r.Win - r.Loss;
-        Values[rec, vcbFLoss.Index] := r.Loss;
+        Values[rec, vcbFWins.Index] := r.Result.Win;
+        Values[rec, vcbFStalled.Index] := games - r.Result.Win - r.Result.Loss;
+        Values[rec, vcbFLoss.Index] := r.Result.Loss;
         Values[rec, vcbFGames.Index] := games;
-        Values[rec, vcbFRatio.Index] := r.Win / games;
-        Values[rec, vcbFAvgD.Index] := r.Points / games;
-        Values[rec, vcbFAvgDA.Index] := r.AutoPoints / games;
-        Values[rec, vcbFAvgS.Index] := r.LPoints / games;
-        Values[rec, vcbFAvgSA.Index] := r.LAutoPoints / games;
-        Values[rec, vcbFNet.Index] := Integer(r.Points - r.LPoints) / games;
+        Values[rec, vcbFRatio.Index] := r.Result.Win / games;
+        Values[rec, vcbFAvgD.Index] := r.Result.Points / games;
+        Values[rec, vcbFAvgDA.Index] := r.Result.AutoPoints / games;
+        Values[rec, vcbFAvgS.Index] := r.Result.LPoints / games;
+        Values[rec, vcbFAvgSA.Index] := r.Result.LAutoPoints / games;
+        Values[rec, vcbFNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / games;
       end;
 
       Application.ProcessMessages;
@@ -1995,16 +2029,16 @@ begin
 
       with vBatchResult.DataController do
       begin
-        Values[rec, vcbSWins.Index] := r.Win;
-        Values[rec, vcbSStalled.Index] := games - r.Win - r.Loss;
-        Values[rec, vcbSLoss.Index] := r.Loss;
+        Values[rec, vcbSWins.Index] := r.Result.Win;
+        Values[rec, vcbSStalled.Index] := games - r.Result.Win - r.Result.Loss;
+        Values[rec, vcbSLoss.Index] := r.Result.Loss;
         Values[rec, vcbSGames.Index] := games;
-        Values[rec, vcbSRatio.Index] := r.Win / games;
-        Values[rec, vcbSAvgD.Index] := r.Points / games;
-        Values[rec, vcbSAvgDA.Index] := r.AutoPoints / games;
-        Values[rec, vcbSAvgS.Index] := r.LPoints / games;
-        Values[rec, vcbSAvgSA.Index] := r.LAutoPoints / games;
-        Values[rec, vcbSNet.Index] := Integer(r.Points - r.LPoints) / games;
+        Values[rec, vcbSRatio.Index] := r.Result.Win / games;
+        Values[rec, vcbSAvgD.Index] := r.Result.Points / games;
+        Values[rec, vcbSAvgDA.Index] := r.Result.AutoPoints / games;
+        Values[rec, vcbSAvgS.Index] := r.Result.LPoints / games;
+        Values[rec, vcbSAvgSA.Index] := r.Result.LAutoPoints / games;
+        Values[rec, vcbSNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / games;
       end;
 
       Application.ProcessMessages;
@@ -2473,10 +2507,10 @@ begin
   CloseHandle(BeginThread(nil, 0, Addr(EvaluateThread),
     Addr(Self), 0, ret));}
 var
-  i, games, rec, raid, seed, id, wildcard: integer;
+  i, games, rec, raid, seed, id, wildcard, lrec: integer;
   sl1, sl2: TStringList;
   bIsRaid, bIsSurge: boolean;
-  r: RESULTS;
+  r: FULLRESULT;
   tc: DWORD;
 
   atk, def: string;
@@ -2560,10 +2594,10 @@ begin
     games := StrToInt(cbIterations.Text);
     if not bFastThreaded.Checked then
     begin
-      r.Win := 0;
-      r.Loss := 0;
-      r.Points := 0;
-      r.AutoPoints := 0;
+      r.Result.Win := 0;
+      r.Result.Loss := 0;
+      r.Result.Points := 0;
+      r.Result.AutoPoints := 0;
       if not bIsRaid then
         PrepareDecks(sl1.CommaText, sl2.CommaText)
       else
@@ -2607,14 +2641,14 @@ begin
       begin
         if not bIsRaid then
         begin
-          EvaluateOnce(r, bIsSurge);
+          EvaluateOnce(r.Result, bIsSurge);
         end
         else
-          EvaluateRaidOnce(r, cbRaid.ItemIndex + 1);
+          EvaluateRaidOnce(r.Result, cbRaid.ItemIndex + 1);
 
         inc(i);
-        if ProgressUpdate(i + 1, 'Evaluation is in progress, ' + IntToStr(r.Win)
-          + ' wins, ' + IntToStr(r.Loss) + ' loss so far') then
+        if ProgressUpdate(i + 1, 'Evaluation is in progress, ' + IntToStr(r.Result.Win)
+          + ' wins, ' + IntToStr(r.Result.Loss) + ' loss so far') then
           break;
       end;
       ProgressFinish;
@@ -2652,7 +2686,7 @@ begin
         games div tc, tc, bIsSurge, cbOrderMatters.Checked,
         wildcard, ParseWildCCB(ccbWildCardType), ParseWildCCB(ccbWildCardRarity),
         ParseWildCCB(ccbWildCardFaction));
-      if wildcard <> 0 then
+      if wildcard > 0 then
       begin
         s := Cards[StrToInt(slIDIndex.Values[IntToStr(wildcard)])].Name;
         if s <> cbWildCardName.Text then
@@ -2664,22 +2698,58 @@ begin
         end
         else
           ShowMessage('Unable to improve :(');
+      end
+      else
+        if wildcard < 0 then
+          ShowMessage('No cards in current filter!');
+
+      // load individual results
+      vCardStats.BeginUpdate;
+      vCardStats.DataController.RecordCount := 0;
+      for i := 0 to DEFAULT_DECK_SIZE+1 do
+      begin
+        if r.ResultByCard[i].Id = 0 then // invalid card ID
+          break;
+
+        with vCardStats.DataController do
+        begin
+          lrec := AppendRecord;
+          s := Cards[StrToInt(slIDIndex.Values[IntToStr(r.ResultByCard[i].Id)])].Name;
+            Values[lrec, vcsCard.Index] := s;
+          if r.ResultByCard[i].WLGames > 0 then
+          begin
+            Values[lrec, vcsImportance.Index] :=
+              (r.ResultByCard[i].WLGames - r.ResultByCard[i].WLWin) / r.ResultByCard[i].WLGames;
+            Values[lrec, vcsWinrate.Index] :=
+              r.ResultByCard[i].WLWin / r.ResultByCard[i].WLGames;
+          end;
+          if r.ResultByCard[i].FSRecordCount > 0 then
+          begin
+            Values[lrec, vcsAvgMitigated.Index] := r.ResultByCard[i].FSMitigated / r.ResultByCard[i].FSRecordCount;
+            Values[lrec, vcsAvgAvoided.Index] := r.ResultByCard[i].FSAvoided / r.ResultByCard[i].FSRecordCount;
+            Values[lrec, vcsAvgDealt.Index] := r.ResultByCard[i].FSDamage / r.ResultByCard[i].FSRecordCount;
+            Values[lrec, vcsAvgHealing.Index] := r.ResultByCard[i].FSHealing / r.ResultByCard[i].FSRecordCount;
+            Values[lrec, vcsAvgSpecial.Index] := r.ResultByCard[i].FSSpecial / r.ResultByCard[i].FSRecordCount;
+          end;
+        end;
       end;
+      vCardStats.EndUpdate;
+
       i := games;
     end;
     //wins := Evaluate(sl1.CommaText,sl2.CommaText,games);
 
     with cxView.DataController do
     begin
-      Values[rec, vcWins.Index] := r.Win;
-      Values[rec, vcStalled.Index] := i - r.Win - r.Loss;
+      Values[rec, vcWins.Index] := r.Result.Win;
+      Values[rec, vcStalled.Index] := i - r.Result.Win - r.Result.Loss;
       Values[rec, vcGames.Index] := i;
-      Values[rec, vcRatio.Index] := r.Win / i;
-      Values[rec, vcAvgD.Index] := r.Points / i;
-      Values[rec, vcAvgDA.Index] := r.AutoPoints / i;
-      Values[rec, vcAvgS.Index] := r.LPoints / i;
-      Values[rec, vcAvgSA.Index] := r.LAutoPoints / i;
-      Values[rec, vcNet.Index] := Integer(r.Points - r.LPoints) / i;
+      Values[rec, vcRatio.Index] := r.Result.Win / i;
+      Values[rec, vcAvgD.Index] := r.Result.Points / i;
+      Values[rec, vcAvgDA.Index] := r.Result.AutoPoints / i;
+      Values[rec, vcAvgS.Index] := r.Result.LPoints / i;
+      Values[rec, vcAvgSA.Index] := r.Result.LAutoPoints / i;
+      Values[rec, vcNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / i;
     end;
 
     //ShowMessage('Attacker wins '+inttostr(wins)+' of '+inttostr(games)+' games.');
@@ -3804,8 +3874,9 @@ end;
 procedure TEvaluateDecksForm.tsEvalShow(Sender: TObject);
 var
   i, id: integer;
-  s: string;
+  s, wc: string;
 begin
+  wc := cbWildCardName.Text;
   cbWildCardName.Properties.Items.Clear;
   try
     if (imgTop.Hint <> '') and (imgBot.Hint <> '') then
@@ -3837,6 +3908,9 @@ begin
     end;
   finally
   end;
+  i := cbWildCardName.Properties.Items.IndexOf(wc);
+  if i >= 0 then
+    cbWildCardName.ItemIndex := i;
 end;
 
 procedure TEvaluateDecksForm.tyrantlogoClick(Sender: TObject);

@@ -2505,9 +2505,9 @@ object EvaluateDecksForm: TEvaluateDecksForm
       object cxGrid: TcxGrid
         AlignWithMargins = True
         Left = 3
-        Top = 73
+        Top = 248
         Width = 772
-        Height = 564
+        Height = 389
         Anchors = [akLeft, akTop, akRight, akBottom]
         PopupMenu = pmGrid
         TabOrder = 2
@@ -2750,6 +2750,75 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Height = 61
         Width = 112
       end
+      object gStats: TcxGrid
+        AlignWithMargins = True
+        Left = 3
+        Top = 73
+        Width = 772
+        Height = 169
+        Anchors = [akLeft, akTop, akRight]
+        PopupMenu = pmGrid
+        TabOrder = 10
+        object vCardStats: TcxGridTableView
+          NavigatorButtons.ConfirmDelete = False
+          DataController.Summary.DefaultGroupSummaryItems = <>
+          DataController.Summary.FooterSummaryItems = <>
+          DataController.Summary.SummaryGroups = <>
+          OptionsView.CellAutoHeight = True
+          OptionsView.ColumnAutoWidth = True
+          OptionsView.GroupByBox = False
+          OptionsView.HeaderAutoHeight = True
+          object vcsCard: TcxGridColumn
+            Caption = 'Card'
+            Width = 100
+          end
+          object vcsImportance: TcxGridColumn
+            Caption = 'Importance'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.DisplayFormat = ',0.###;-,0.###'
+            Width = 40
+          end
+          object vcsWinrate: TcxGridColumn
+            Caption = 'Win rate without this card'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.DisplayFormat = ',0.###;-,0.###'
+            Width = 40
+          end
+          object vcsAvgMitigated: TcxGridColumn
+            Caption = 'Average Damage mitigated'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.DisplayFormat = ',0.###;-,0.###'
+            Width = 40
+          end
+          object vcsAvgAvoided: TcxGridColumn
+            Caption = 'Average Damage avoided'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.DisplayFormat = ',0.###;-,0.###'
+            Width = 40
+          end
+          object vcsAvgDealt: TcxGridColumn
+            Caption = 'Average Damage done'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.DisplayFormat = ',0.###;-,0.###'
+            Width = 40
+          end
+          object vcsAvgHealing: TcxGridColumn
+            Caption = 'Average Healing done'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.DisplayFormat = ',0.###;-,0.###'
+            Width = 40
+          end
+          object vcsAvgSpecial: TcxGridColumn
+            Caption = 'Average Special effects'
+            PropertiesClassName = 'TcxCurrencyEditProperties'
+            Properties.DisplayFormat = ',0.###;-,0.###'
+            Width = 40
+          end
+        end
+        object cxGridLevel4: TcxGridLevel
+          GridView = vCardStats
+        end
+      end
     end
     object tsBatch: TcxTabSheet
       Caption = 'Batch Eval'
@@ -2932,7 +3001,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             DataBinding.ValueType = 'Integer'
             HeaderAlignmentHorz = taCenter
             Position.BandIndex = 1
-            Position.ColIndex = 1
+            Position.ColIndex = 0
             Position.RowIndex = 0
           end
           object vcbFStalled: TcxGridBandedColumn
@@ -2940,7 +3009,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             DataBinding.ValueType = 'Integer'
             HeaderAlignmentHorz = taCenter
             Position.BandIndex = 1
-            Position.ColIndex = 10
+            Position.ColIndex = 1
             Position.RowIndex = 0
           end
           object vcbFLoss: TcxGridBandedColumn
@@ -3093,8 +3162,8 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Caption = 'Against'
             Visible = False
             HeaderAlignmentHorz = taCenter
-            Position.BandIndex = 1
-            Position.ColIndex = 0
+            Position.BandIndex = 0
+            Position.ColIndex = 1
             Position.RowIndex = 0
           end
         end
