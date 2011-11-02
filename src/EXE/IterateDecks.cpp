@@ -18,6 +18,8 @@
 #include <direct.h>
 #endif
 
+#define MAX_FILTER_ID_COUNT		50
+
 CardDB DB; // just to make all easier ...
 
 void Simulate(ActiveDeck &tAtk, ActiveDeck &tDef, RESULTS &r, const UCHAR *CSIndex = 0, RESULT_BY_CARD *rbc = 0, bool bSurge = false)
@@ -352,10 +354,13 @@ struct EVAL_PARAMS
 	int WildFilterType;
 	int WildFilterRarity;
 	int WildFilterFaction;
+	int WildFilterInclude[MAX_FILTER_ID_COUNT];
+	int WildFilterExclude[MAX_FILTER_ID_COUNT];
 };
 
 int _tmain(int argc, char* argv[])
 {
+	//printf("%d\n",sizeof(EVAL_PARAMS));
 	/*DB.LoadCardXML("cards.xml");
 	ActiveDeck D("QVB0DN+lEhfvfvfv",DB.GetPointer());
 	printf("%d\n",D.IsValid());
@@ -667,9 +672,19 @@ int _tmain(int argc, char* argv[])
 	{
 		typedef set <UINT>		SID;
 		SID CardPool;
-
+		for (UINT k=0;k<MAX_FILTER_ID_COUNT;k++)
+		{
+			if (pEvalParams->WildFilterInclude[k])
+				CardPool.insert(pEvalParams->WildFilterInclude[k]);
+			else
+				break;
+		}
 		if (pEvalParams->WildcardId < 0)
 		{
+			// remove all non-commander cards from pool
+			for (SID::iterator si = CardPool.begin(); si != CardPool.end(); si++)
+				while ((si != CardPool.end()) && (DB.GetCard(*si).GetType() != TYPE_COMMANDER))
+					si = CardPool.erase(si);
 			// commander
 			for (UINT icmd=1000;icmd<2000;icmd++)
 			{
@@ -696,6 +711,10 @@ int _tmain(int argc, char* argv[])
 		}
 		else
 		{
+			// remove all commander cards from pool
+			for (SID::iterator si = CardPool.begin(); si != CardPool.end(); si++)
+				while ((si != CardPool.end()) && (DB.GetCard(*si).GetType() == TYPE_COMMANDER))
+					si = CardPool.erase(si);
 			// card in deck
 			for (VCARDS::iterator vi=X.Deck.begin();vi!=X.Deck.end();vi++)
 				if (vi->GetId() == pEvalParams->WildcardId)
@@ -735,6 +754,21 @@ int _tmain(int argc, char* argv[])
 				}
 			}
 		}
+		// apply exclude filter
+		for (UINT k=0;k<MAX_FILTER_ID_COUNT;k++)
+		{
+			if (pEvalParams->WildFilterExclude[k])
+			{
+				SID::iterator si = CardPool.find(pEvalParams->WildFilterExclude[k]);
+				if (si != CardPool.end())
+					CardPool.erase(si);
+			}
+			else
+				break;
+		}
+		if (CardPool.empty())
+			pEvalParams->WildcardId = -1; // tell API that there were no cards in filter
+
 		UINT BestCard = 0;
 		for (SID::iterator si=CardPool.begin();si!=CardPool.end();si++)
 		{

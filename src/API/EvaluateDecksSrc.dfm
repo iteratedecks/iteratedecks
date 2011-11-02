@@ -2465,358 +2465,465 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Caption = 'Evaluate'
       ImageIndex = 2
       OnShow = tsEvalShow
-      DesignSize = (
-        784
-        646)
-      object cbIterations: TcxComboBox
-        Left = 3
-        Top = 3
-        Properties.DropDownListStyle = lsFixedList
-        Properties.Items.Strings = (
-          '100'
-          '200'
-          '500'
-          '1000'
-          '2000'
-          '5000'
-          '10000'
-          '20000'
-          '50000'
-          '100000'
-          '200000'
-          '500000'
-          '1000000'
-          '2000000'
-          '5000000'
-          '10000000')
+      object cxPageControl1: TcxPageControl
+        Left = 0
+        Top = 0
+        Width = 784
+        Height = 646
+        ActivePage = tsEEvaluate
+        Align = alClient
         TabOrder = 0
-        Text = '100000'
-        Width = 121
-      end
-      object bRun: TcxButton
-        Left = 130
-        Top = 3
-        Width = 75
-        Height = 21
-        Caption = 'Run'
-        TabOrder = 1
-        OnClick = bRunClick
-      end
-      object cxGrid: TcxGrid
-        AlignWithMargins = True
-        Left = 3
-        Top = 248
-        Width = 772
-        Height = 389
-        Anchors = [akLeft, akTop, akRight, akBottom]
-        PopupMenu = pmGrid
-        TabOrder = 2
-        object cxView: TcxGridTableView
-          NavigatorButtons.ConfirmDelete = False
-          DataController.Summary.DefaultGroupSummaryItems = <>
-          DataController.Summary.FooterSummaryItems = <>
-          DataController.Summary.SummaryGroups = <>
-          OptionsView.CellAutoHeight = True
-          OptionsView.ColumnAutoWidth = True
-          object vcType: TcxGridColumn
-            Caption = 'Type'
-            OnCustomDrawCell = vcTypeCustomDrawCell
+        ExplicitLeft = 16
+        ExplicitTop = 72
+        ExplicitWidth = 601
+        ExplicitHeight = 417
+        ClientRectBottom = 646
+        ClientRectRight = 784
+        ClientRectTop = 24
+        object tsEEvaluate: TcxTabSheet
+          Caption = 'Results'
+          ImageIndex = 0
+          ExplicitWidth = 289
+          ExplicitHeight = 169
+          DesignSize = (
+            784
+            622)
+          object cbIterations: TcxComboBox
+            Left = 3
+            Top = 3
+            Properties.DropDownListStyle = lsFixedList
+            Properties.Items.Strings = (
+              '100'
+              '200'
+              '500'
+              '1000'
+              '2000'
+              '5000'
+              '10000'
+              '20000'
+              '50000'
+              '100000'
+              '200000'
+              '500000'
+              '1000000'
+              '2000000'
+              '5000000'
+              '10000000')
+            TabOrder = 0
+            Text = '100000'
+            Width = 121
           end
-          object vcAtk: TcxGridColumn
-            Caption = 'Your deck'
-            Width = 273
+          object bEvalExport: TcxButton
+            Left = 3
+            Top = 30
+            Width = 107
+            Height = 21
+            Caption = 'Export to Excel'
+            TabOrder = 1
+            OnClick = bEvalExportClick
           end
-          object vcDef: TcxGridColumn
-            Caption = 'Enemy deck'
-            Width = 255
+          object bClear: TcxButton
+            Left = 116
+            Top = 30
+            Width = 89
+            Height = 21
+            Caption = 'Clear history'
+            TabOrder = 2
+            OnClick = bClearClick
           end
-          object vcWins: TcxGridColumn
-            Caption = 'Won'
-            DataBinding.ValueType = 'Integer'
+          object bRun: TcxButton
+            Left = 130
+            Top = 3
+            Width = 75
+            Height = 21
+            Caption = 'Run'
+            TabOrder = 3
+            OnClick = bRunClick
           end
-          object vcStalled: TcxGridColumn
-            Caption = 'Stalled'
-            DataBinding.ValueType = 'Integer'
+          object cbSurge: TcxCheckBox
+            Left = 211
+            Top = 3
+            Caption = 'Surge'
+            TabOrder = 4
+            Width = 121
           end
-          object vcGames: TcxGridColumn
-            Caption = 'Games'
-            DataBinding.ValueType = 'Integer'
+          object cbOrderMatters: TcxCheckBox
+            Left = 278
+            Top = 3
+            Caption = 'Cards are played in order'
+            TabOrder = 5
+            OnClick = cbOrderMattersClick
+            Width = 147
           end
-          object vcRatio: TcxGridColumn
-            Caption = 'Ratio'
-            DataBinding.ValueType = 'Float'
-            PropertiesClassName = 'TcxCurrencyEditProperties'
-            Properties.DisplayFormat = ',0.###;-,0.###'
+          object cbWildCard: TcxCheckBox
+            Left = 278
+            Top = 21
+            Caption = 'Wildcard'
+            TabOrder = 6
+            OnClick = cbWildCardClick
+            Width = 67
           end
-          object vcAvgD: TcxGridColumn
-            Caption = 'Avg. Dmg Dealt'
-            DataBinding.ValueType = 'Float'
-            PropertiesClassName = 'TcxCurrencyEditProperties'
-            Properties.DisplayFormat = ',#.##;-,#.##'
-            Width = 64
+          object cxLabel4: TcxLabel
+            Left = 425
+            Top = 5
+            AutoSize = False
+            Caption = 
+              'Wildcard searches a replacement for selected card in a card pool' +
+              ', represented by filters with most wins'
+            ParentFont = False
+            Properties.WordWrap = True
+            Style.Font.Charset = DEFAULT_CHARSET
+            Style.Font.Color = clWindowText
+            Style.Font.Height = -9
+            Style.Font.Name = 'Tahoma'
+            Style.Font.Style = []
+            Style.IsFontAssigned = True
+            Height = 61
+            Width = 112
           end
-          object vcAvgDA: TcxGridColumn
-            Caption = 'Avg. Dmg Dealt (Auto)'
-            DataBinding.ValueType = 'Float'
-            PropertiesClassName = 'TcxCurrencyEditProperties'
-            Properties.DisplayFormat = ',#.##;-,#.##'
-            Width = 64
+          object cbWildCardName: TcxComboBox
+            Left = 282
+            Top = 44
+            Enabled = False
+            Properties.DropDownListStyle = lsFixedList
+            TabOrder = 8
+            Width = 137
           end
-          object vcAvgS: TcxGridColumn
-            Caption = 'Avg. Dmg Suffered'
-            DataBinding.ValueType = 'Float'
-            PropertiesClassName = 'TcxCurrencyEditProperties'
-            Properties.DisplayFormat = ',#.##;-,#.##'
-            Width = 90
+          object gStats: TcxGrid
+            AlignWithMargins = True
+            Left = 3
+            Top = 72
+            Width = 772
+            Height = 169
+            Anchors = [akLeft, akTop, akRight]
+            PopupMenu = pmGrid
+            TabOrder = 9
+            object vCardStats: TcxGridTableView
+              NavigatorButtons.ConfirmDelete = False
+              DataController.Summary.DefaultGroupSummaryItems = <>
+              DataController.Summary.FooterSummaryItems = <>
+              DataController.Summary.SummaryGroups = <>
+              OptionsView.CellAutoHeight = True
+              OptionsView.ColumnAutoWidth = True
+              OptionsView.GroupByBox = False
+              OptionsView.HeaderAutoHeight = True
+              object vcsCard: TcxGridColumn
+                Caption = 'Card'
+                Width = 100
+              end
+              object vcsImportance: TcxGridColumn
+                Caption = 'Importance'
+                DataBinding.ValueType = 'Float'
+                PropertiesClassName = 'TcxCurrencyEditProperties'
+                Properties.DisplayFormat = ',0.###;-,0.###'
+                Width = 40
+              end
+              object vcsWinrate: TcxGridColumn
+                Caption = 'Win rate without this card'
+                DataBinding.ValueType = 'Float'
+                PropertiesClassName = 'TcxCurrencyEditProperties'
+                Properties.DisplayFormat = ',0.###;-,0.###'
+                Width = 40
+              end
+              object vcsWon: TcxGridColumn
+                Caption = 'Won w/o this card'
+                DataBinding.ValueType = 'Integer'
+                Width = 40
+              end
+              object vcsStalled: TcxGridColumn
+                Caption = 'Stalled w/o this card'
+                DataBinding.ValueType = 'Integer'
+                Width = 40
+              end
+              object vcsGames: TcxGridColumn
+                Caption = 'Games w/o this card'
+                DataBinding.ValueType = 'Integer'
+                Width = 40
+              end
+              object vcsAvgDealt: TcxGridColumn
+                Caption = 'Average Damage dealt'
+                DataBinding.ValueType = 'Float'
+                PropertiesClassName = 'TcxCurrencyEditProperties'
+                Properties.DisplayFormat = ',0.###;-,0.###'
+                Width = 40
+              end
+              object vcsAvgMitigated: TcxGridColumn
+                Caption = 'Average Damage mitigated'
+                DataBinding.ValueType = 'Float'
+                PropertiesClassName = 'TcxCurrencyEditProperties'
+                Properties.DisplayFormat = ',0.###;-,0.###'
+                Width = 40
+              end
+              object vcsAvgAvoided: TcxGridColumn
+                Caption = 'Average Damage avoided'
+                DataBinding.ValueType = 'Float'
+                PropertiesClassName = 'TcxCurrencyEditProperties'
+                Properties.DisplayFormat = ',0.###;-,0.###'
+                Width = 40
+              end
+              object vcsAvgHealing: TcxGridColumn
+                Caption = 'Average Healing done'
+                DataBinding.ValueType = 'Float'
+                PropertiesClassName = 'TcxCurrencyEditProperties'
+                Properties.DisplayFormat = ',0.###;-,0.###'
+                Width = 40
+              end
+              object vcsAvgSpecial: TcxGridColumn
+                Caption = 'Average Special effects'
+                DataBinding.ValueType = 'Float'
+                PropertiesClassName = 'TcxCurrencyEditProperties'
+                Properties.DisplayFormat = ',0.###;-,0.###'
+                Width = 40
+              end
+            end
+            object cxGridLevel4: TcxGridLevel
+              GridView = vCardStats
+            end
           end
-          object vcAvgSA: TcxGridColumn
-            Caption = 'Avg. Dmg Suffered (Auto)'
-            DataBinding.ValueType = 'Float'
-            PropertiesClassName = 'TcxCurrencyEditProperties'
-            Properties.DisplayFormat = ',#.##;-,#.##'
-            Width = 90
-          end
-          object vcNet: TcxGridColumn
-            Caption = 'Avg. net gain'
-            DataBinding.ValueType = 'Float'
-            PropertiesClassName = 'TcxCurrencyEditProperties'
-            Properties.DisplayFormat = ',#.##;-,#.##'
+          object cxGrid: TcxGrid
+            AlignWithMargins = True
+            Left = 3
+            Top = 247
+            Width = 772
+            Height = 362
+            Anchors = [akLeft, akTop, akRight, akBottom]
+            PopupMenu = pmGrid
+            TabOrder = 10
+            object cxView: TcxGridTableView
+              NavigatorButtons.ConfirmDelete = False
+              DataController.Summary.DefaultGroupSummaryItems = <>
+              DataController.Summary.FooterSummaryItems = <>
+              DataController.Summary.SummaryGroups = <>
+              OptionsView.CellAutoHeight = True
+              OptionsView.ColumnAutoWidth = True
+              object vcType: TcxGridColumn
+                Caption = 'Type'
+                OnCustomDrawCell = vcTypeCustomDrawCell
+              end
+              object vcAtk: TcxGridColumn
+                Caption = 'Your deck'
+                Width = 273
+              end
+              object vcDef: TcxGridColumn
+                Caption = 'Enemy deck'
+                Width = 255
+              end
+              object vcWins: TcxGridColumn
+                Caption = 'Won'
+                DataBinding.ValueType = 'Integer'
+              end
+              object vcStalled: TcxGridColumn
+                Caption = 'Stalled'
+                DataBinding.ValueType = 'Integer'
+              end
+              object vcGames: TcxGridColumn
+                Caption = 'Games'
+                DataBinding.ValueType = 'Integer'
+              end
+              object vcRatio: TcxGridColumn
+                Caption = 'Ratio'
+                DataBinding.ValueType = 'Float'
+                PropertiesClassName = 'TcxCurrencyEditProperties'
+                Properties.DisplayFormat = ',0.###;-,0.###'
+              end
+              object vcAvgD: TcxGridColumn
+                Caption = 'Avg. Dmg Dealt'
+                DataBinding.ValueType = 'Float'
+                PropertiesClassName = 'TcxCurrencyEditProperties'
+                Properties.DisplayFormat = ',#.##;-,#.##'
+                Width = 64
+              end
+              object vcAvgDA: TcxGridColumn
+                Caption = 'Avg. Dmg Dealt (Auto)'
+                DataBinding.ValueType = 'Float'
+                PropertiesClassName = 'TcxCurrencyEditProperties'
+                Properties.DisplayFormat = ',#.##;-,#.##'
+                Width = 64
+              end
+              object vcAvgS: TcxGridColumn
+                Caption = 'Avg. Dmg Suffered'
+                DataBinding.ValueType = 'Float'
+                PropertiesClassName = 'TcxCurrencyEditProperties'
+                Properties.DisplayFormat = ',#.##;-,#.##'
+                Width = 90
+              end
+              object vcAvgSA: TcxGridColumn
+                Caption = 'Avg. Dmg Suffered (Auto)'
+                DataBinding.ValueType = 'Float'
+                PropertiesClassName = 'TcxCurrencyEditProperties'
+                Properties.DisplayFormat = ',#.##;-,#.##'
+                Width = 90
+              end
+              object vcNet: TcxGridColumn
+                Caption = 'Avg. net gain'
+                DataBinding.ValueType = 'Float'
+                PropertiesClassName = 'TcxCurrencyEditProperties'
+                Properties.DisplayFormat = ',#.##;-,#.##'
+              end
+            end
+            object cxGridLevel1: TcxGridLevel
+              GridView = cxView
+            end
           end
         end
-        object cxGridLevel1: TcxGridLevel
-          GridView = cxView
-        end
-      end
-      object cbSurge: TcxCheckBox
-        Left = 211
-        Top = 3
-        Caption = 'Surge'
-        TabOrder = 3
-        Width = 121
-      end
-      object bClear: TcxButton
-        Left = 116
-        Top = 30
-        Width = 89
-        Height = 21
-        Caption = 'Clear history'
-        TabOrder = 4
-        OnClick = bClearClick
-      end
-      object bEvalExport: TcxButton
-        Left = 3
-        Top = 30
-        Width = 107
-        Height = 21
-        Caption = 'Export to Excel'
-        TabOrder = 5
-        OnClick = bEvalExportClick
-      end
-      object cbOrderMatters: TcxCheckBox
-        Left = 278
-        Top = 3
-        Caption = 'Cards are played in order'
-        TabOrder = 6
-        OnClick = cbOrderMattersClick
-        Width = 147
-      end
-      object cbWildCard: TcxCheckBox
-        Left = 278
-        Top = 21
-        Caption = 'Wildcard'
-        TabOrder = 7
-        OnClick = cbWildCardClick
-        Width = 67
-      end
-      object gbWildcard: TcxGroupBox
-        Left = 431
-        Top = -3
-        Caption = 'Wildcard filters'
-        Enabled = False
-        TabOrder = 8
-        Height = 70
-        Width = 232
-        object cbWildCardName: TcxComboBox
-          Left = 5
-          Top = 14
-          Properties.DropDownListStyle = lsFixedList
-          TabOrder = 0
-          Width = 121
-        end
-        object ccbWildCardRarity: TcxCheckComboBox
-          Left = 5
-          Top = 41
-          Properties.EmptySelectionText = 'Any rarity'
-          Properties.Items = <
-            item
-              Description = 'Common'
-              ShortDescription = 'c'
+        object tsEWildcard: TcxTabSheet
+          Caption = 'Wildcard filters'
+          ImageIndex = 1
+          ExplicitWidth = 289
+          ExplicitHeight = 169
+          object gbGenericFilter: TcxGroupBox
+            Left = 3
+            Top = 30
+            Caption = 'Generic filter'
+            Enabled = False
+            TabOrder = 0
+            Height = 110
+            Width = 134
+            object ccbWildCardType: TcxCheckComboBox
+              Left = 11
+              Top = 19
+              Properties.EmptySelectionText = 'Any type'
+              Properties.Items = <
+                item
+                  Description = 'Assault'
+                  ShortDescription = 'Ass'
+                  Tag = 2
+                end
+                item
+                  Description = 'Structure'
+                  ShortDescription = 'Str'
+                  Tag = 3
+                end
+                item
+                  Description = 'Action'
+                  ShortDescription = 'Act'
+                  Tag = 4
+                end>
+              TabOrder = 0
+              Width = 110
             end
-            item
-              Description = 'Uncommon'
-              ShortDescription = 'u'
-              Tag = 1
+            object ccbWildCardRarity: TcxCheckComboBox
+              Left = 11
+              Top = 46
+              Properties.EmptySelectionText = 'Any rarity'
+              Properties.Items = <
+                item
+                  Description = 'Common'
+                  ShortDescription = 'c'
+                  Tag = 1
+                end
+                item
+                  Description = 'Uncommon'
+                  ShortDescription = 'u'
+                  Tag = 2
+                end
+                item
+                  Description = 'Rare'
+                  ShortDescription = 'R'
+                  Tag = 3
+                end
+                item
+                  Description = 'Unique'
+                  ShortDescription = 'U'
+                  Tag = 4
+                end
+                item
+                  Description = 'Legendary'
+                  ShortDescription = 'L'
+                  Tag = 5
+                end>
+              TabOrder = 1
+              Width = 110
             end
-            item
-              Description = 'Rare'
-              ShortDescription = 'R'
-              Tag = 2
+            object ccbWildCardFaction: TcxCheckComboBox
+              Left = 11
+              Top = 73
+              Properties.EmptySelectionText = 'Any faction'
+              Properties.Items = <
+                item
+                  Description = 'Imperial'
+                  ShortDescription = 'Im'
+                  Tag = 1
+                end
+                item
+                  Description = 'Raider'
+                  ShortDescription = 'Ra'
+                  Tag = 2
+                end
+                item
+                  Description = 'Bloodthirsty'
+                  ShortDescription = 'Bl'
+                  Tag = 3
+                end
+                item
+                  Description = 'Xeno'
+                  ShortDescription = 'Xe'
+                  Tag = 4
+                end
+                item
+                  Description = 'Righteous'
+                  ShortDescription = 'Ri'
+                  Tag = 5
+                end>
+              TabOrder = 2
+              Width = 110
             end
-            item
-              Description = 'Unique'
-              ShortDescription = 'U'
-              Tag = 3
-            end
-            item
-              Description = 'Legendary'
-              ShortDescription = 'L'
-              Tag = 4
-            end>
-          TabOrder = 1
-          Width = 105
-        end
-        object ccbWildCardFaction: TcxCheckComboBox
-          Left = 116
-          Top = 41
-          Properties.EmptySelectionText = 'Any faction'
-          Properties.Items = <
-            item
-              Description = 'Imperial'
-              ShortDescription = 'Im'
-              Tag = 1
-            end
-            item
-              Description = 'Raider'
-              ShortDescription = 'Ra'
-              Tag = 2
-            end
-            item
-              Description = 'Bloodthirsty'
-              ShortDescription = 'Bl'
-              Tag = 3
-            end
-            item
-              Description = 'Xeno'
-              ShortDescription = 'Xe'
-              Tag = 4
-            end
-            item
-              Description = 'Righteous'
-              ShortDescription = 'Ri'
-              Tag = 5
-            end>
-          TabOrder = 2
-          Width = 109
-        end
-        object ccbWildCardType: TcxCheckComboBox
-          Left = 132
-          Top = 14
-          Properties.EmptySelectionText = 'Any type'
-          Properties.Items = <
-            item
-              Description = 'Assault'
-              ShortDescription = 'Ass'
-              Tag = 2
-            end
-            item
-              Description = 'Structure'
-              ShortDescription = 'Str'
-              Tag = 3
-            end
-            item
-              Description = 'Action'
-              ShortDescription = 'Act'
-              Tag = 4
-            end>
-          TabOrder = 3
-          Width = 93
-        end
-      end
-      object cxLabel4: TcxLabel
-        Left = 669
-        Top = 6
-        AutoSize = False
-        Caption = 
-          'Wildcard searches a replacement for selected card in a card pool' +
-          ', represented by filters with most wins'
-        ParentFont = False
-        Properties.WordWrap = True
-        Style.Font.Charset = DEFAULT_CHARSET
-        Style.Font.Color = clWindowText
-        Style.Font.Height = -9
-        Style.Font.Name = 'Tahoma'
-        Style.Font.Style = []
-        Style.IsFontAssigned = True
-        Height = 61
-        Width = 112
-      end
-      object gStats: TcxGrid
-        AlignWithMargins = True
-        Left = 3
-        Top = 73
-        Width = 772
-        Height = 169
-        Anchors = [akLeft, akTop, akRight]
-        PopupMenu = pmGrid
-        TabOrder = 10
-        object vCardStats: TcxGridTableView
-          NavigatorButtons.ConfirmDelete = False
-          DataController.Summary.DefaultGroupSummaryItems = <>
-          DataController.Summary.FooterSummaryItems = <>
-          DataController.Summary.SummaryGroups = <>
-          OptionsView.CellAutoHeight = True
-          OptionsView.ColumnAutoWidth = True
-          OptionsView.GroupByBox = False
-          OptionsView.HeaderAutoHeight = True
-          object vcsCard: TcxGridColumn
-            Caption = 'Card'
-            Width = 100
           end
-          object vcsImportance: TcxGridColumn
-            Caption = 'Importance'
-            PropertiesClassName = 'TcxCurrencyEditProperties'
-            Properties.DisplayFormat = ',0.###;-,0.###'
-            Width = 40
+          object cbUseGenericFilter: TcxCheckBox
+            Left = 3
+            Top = 3
+            Caption = 'Use generic filter'
+            TabOrder = 1
+            OnClick = cbUseGenericFilterClick
+            Width = 121
           end
-          object vcsWinrate: TcxGridColumn
-            Caption = 'Win rate without this card'
-            PropertiesClassName = 'TcxCurrencyEditProperties'
-            Properties.DisplayFormat = ',0.###;-,0.###'
-            Width = 40
+          object cbUseSpecificFilter: TcxCheckBox
+            Left = 155
+            Top = 3
+            Caption = 'Use specific filter'
+            TabOrder = 2
+            OnClick = cbUseSpecificFilterClick
+            Width = 121
           end
-          object vcsAvgMitigated: TcxGridColumn
-            Caption = 'Average Damage mitigated'
-            PropertiesClassName = 'TcxCurrencyEditProperties'
-            Properties.DisplayFormat = ',0.###;-,0.###'
-            Width = 40
+          object gbSpecificFilter: TcxGroupBox
+            Left = 155
+            Top = 30
+            Caption = 'Specific filter (card names, separated by commas)'
+            Enabled = False
+            TabOrder = 3
+            Height = 110
+            Width = 366
+            object eIncludeCards: TcxTextEdit
+              Left = 11
+              Top = 30
+              TabOrder = 0
+              Width = 345
+            end
+            object eExcludeCards: TcxTextEdit
+              Left = 11
+              Top = 73
+              TabOrder = 1
+              Width = 345
+            end
+            object lInclude: TcxLabel
+              Left = 11
+              Top = 15
+              Caption = 'Include cards:'
+            end
+            object lExclude: TcxLabel
+              Left = 11
+              Top = 57
+              Caption = 'Exclude cards:'
+            end
           end
-          object vcsAvgAvoided: TcxGridColumn
-            Caption = 'Average Damage avoided'
-            PropertiesClassName = 'TcxCurrencyEditProperties'
-            Properties.DisplayFormat = ',0.###;-,0.###'
-            Width = 40
+          object cbIncludeOriginalCard: TcxCheckBox
+            Left = 3
+            Top = 152
+            Caption = 'Include original card in filter'
+            State = cbsChecked
+            TabOrder = 4
+            Width = 174
           end
-          object vcsAvgDealt: TcxGridColumn
-            Caption = 'Average Damage done'
-            PropertiesClassName = 'TcxCurrencyEditProperties'
-            Properties.DisplayFormat = ',0.###;-,0.###'
-            Width = 40
-          end
-          object vcsAvgHealing: TcxGridColumn
-            Caption = 'Average Healing done'
-            PropertiesClassName = 'TcxCurrencyEditProperties'
-            Properties.DisplayFormat = ',0.###;-,0.###'
-            Width = 40
-          end
-          object vcsAvgSpecial: TcxGridColumn
-            Caption = 'Average Special effects'
-            PropertiesClassName = 'TcxCurrencyEditProperties'
-            Properties.DisplayFormat = ',0.###;-,0.###'
-            Width = 40
-          end
-        end
-        object cxGridLevel4: TcxGridLevel
-          GridView = vCardStats
         end
       end
     end
@@ -6145,15 +6252,15 @@ object EvaluateDecksForm: TEvaluateDecksForm
   object tLoad: TTimer
     Interval = 100
     OnTimer = tLoadTimer
-    Left = 344
-    Top = 160
+    Left = 224
+    Top = 304
   end
   object tCancelHover: TTimer
     Enabled = False
     Interval = 100
     OnTimer = tCancelHoverTimer
-    Left = 344
-    Top = 208
+    Left = 224
+    Top = 352
   end
   object IdHTTP: TIdHTTP
     OnWork = IdHTTPWork
@@ -6172,24 +6279,24 @@ object EvaluateDecksForm: TEvaluateDecksForm
     Request.Ranges.Units = 'bytes'
     Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
-    Left = 240
-    Top = 160
+    Left = 120
+    Top = 304
   end
   object IL: TcxImageList
     Height = 210
     Width = 150
     FormatVersion = 1
-    DesignInfo = 10486048
+    DesignInfo = 19923112
   end
   object ILS: TcxImageList
     Height = 105
     Width = 75
     FormatVersion = 1
-    DesignInfo = 13631776
+    DesignInfo = 23068840
   end
   object pmGrid: TPopupMenu
-    Left = 280
-    Top = 104
+    Left = 160
+    Top = 248
     object bDeleteSelected: TMenuItem
       Caption = 'Delete selected'
       OnClick = bDeleteSelectedClick
@@ -6200,8 +6307,8 @@ object EvaluateDecksForm: TEvaluateDecksForm
     end
   end
   object pmBatchEval: TPopupMenu
-    Left = 280
-    Top = 48
+    Left = 160
+    Top = 192
     object MenuItem1: TMenuItem
       Caption = 'Select All'
       OnClick = MenuItem1Click
@@ -6212,8 +6319,8 @@ object EvaluateDecksForm: TEvaluateDecksForm
     end
   end
   object cxStyleRepository1: TcxStyleRepository
-    Left = 448
-    Top = 224
+    Left = 328
+    Top = 368
     PixelsPerInch = 96
     object cxStyle1: TcxStyle
       AssignedValues = [svColor]

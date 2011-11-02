@@ -22,6 +22,7 @@ const
   DEFAULT_DECK_SIZE = 10;
   CARD_NAME_MAX_LENGTH = 50;
   FILENAME_MAX_LENGTH = 50;
+  MAX_FILTER_ID_COUNT = 50;
   CARD_ABILITIES_MAX = 70;
   cMaxBuffer = 65535;
   NAME_VALUE_SEPARATOR = '%';  // just a character that goes before '[' for StringList.Sort
@@ -99,6 +100,8 @@ type
     WildFilterType: integer;
     WildFilterRarity: integer;
     WildFilterFaction: integer;
+    WildFilterInclude: array[0..MAX_FILTER_ID_COUNT - 1] of integer;
+    WildFilterExclude: array[0..MAX_FILTER_ID_COUNT - 1] of integer;
   end;
 
 type
@@ -128,27 +131,10 @@ type
     tsHelp: TcxTabSheet;
     cxMemo1: TcxMemo;
     tsEval: TcxTabSheet;
-    cbIterations: TcxComboBox;
-    bRun: TcxButton;
-    cxView: TcxGridTableView;
-    cxGridLevel1: TcxGridLevel;
-    cxGrid: TcxGrid;
-    vcAtk: TcxGridColumn;
-    vcDef: TcxGridColumn;
-    vcWins: TcxGridColumn;
-    vcGames: TcxGridColumn;
-    vcRatio: TcxGridColumn;
     cbMission: TcxComboBox;
     lMission: TcxLabel;
     bMission: TcxButton;
-    vcAvgD: TcxGridColumn;
-    vcAvgDA: TcxGridColumn;
-    cbSurge: TcxCheckBox;
-    vcType: TcxGridColumn;
     ceFilter: TcxTextEdit;
-    vcAvgS: TcxGridColumn;
-    vcAvgSA: TcxGridColumn;
-    vcNet: TcxGridColumn;
     tsUpdate: TcxTabSheet;
     IdHTTP: TIdHTTP;
     IL: TcxImageList;
@@ -164,7 +150,6 @@ type
     bFastThreaded: TcxRadioButton;
     seThreads: TcxSpinEdit;
     lThreads: TcxLabel;
-    bClear: TcxButton;
     pmGrid: TPopupMenu;
     bDeleteSelected: TMenuItem;
     bDeleteAll: TMenuItem;
@@ -238,7 +223,6 @@ type
     vcbSAvgS: TcxGridBandedColumn;
     vcbSAvgSA: TcxGridBandedColumn;
     vcbSNet: TcxGridBandedColumn;
-    bEvalExport: TcxButton;
     bBEvalExport: TcxButton;
     kongregatelogo: TcxImage;
     googlecodelogo: TcxImage;
@@ -255,7 +239,6 @@ type
     eBotHash: TcxTextEdit;
     bBotStore: TcxButton;
     bBotLoad: TcxButton;
-    vcStalled: TcxGridColumn;
     vcbFStalled: TcxGridBandedColumn;
     vcbSStalled: TcxGridBandedColumn;
     cxGroupBox1: TcxGroupBox;
@@ -268,7 +251,6 @@ type
     ePwd: TcxTextEdit;
     lPort: TcxLabel;
     ePort: TcxSpinEdit;
-    cbOrderMatters: TcxCheckBox;
     cbBOrderMatters: TcxCheckBox;
     bTopCopy: TcxButton;
     bTopCopy64: TcxButton;
@@ -304,25 +286,60 @@ type
     lUpdateXML: TcxLabel;
     lUpdateNote: TcxLabel;
     cxLabel3: TcxLabel;
-    cbWildCard: TcxCheckBox;
-    gbWildcard: TcxGroupBox;
-    cbWildCardName: TcxComboBox;
-    ccbWildCardRarity: TcxCheckComboBox;
-    ccbWildCardFaction: TcxCheckComboBox;
-    ccbWildCardType: TcxCheckComboBox;
-    cxLabel4: TcxLabel;
     bCheckImages: TcxButton;
+    cxPageControl1: TcxPageControl;
+    tsEEvaluate: TcxTabSheet;
+    tsEWildcard: TcxTabSheet;
+    cbIterations: TcxComboBox;
+    bEvalExport: TcxButton;
+    bClear: TcxButton;
+    bRun: TcxButton;
+    cbSurge: TcxCheckBox;
+    cbOrderMatters: TcxCheckBox;
+    cbWildCard: TcxCheckBox;
+    cxLabel4: TcxLabel;
+    cbWildCardName: TcxComboBox;
     gStats: TcxGrid;
     vCardStats: TcxGridTableView;
-    cxGridLevel4: TcxGridLevel;
     vcsCard: TcxGridColumn;
     vcsImportance: TcxGridColumn;
     vcsWinrate: TcxGridColumn;
+    vcsAvgMitigated: TcxGridColumn;
     vcsAvgAvoided: TcxGridColumn;
     vcsAvgDealt: TcxGridColumn;
-    vcsAvgMitigated: TcxGridColumn;
     vcsAvgHealing: TcxGridColumn;
     vcsAvgSpecial: TcxGridColumn;
+    cxGridLevel4: TcxGridLevel;
+    cxGrid: TcxGrid;
+    cxView: TcxGridTableView;
+    vcType: TcxGridColumn;
+    vcAtk: TcxGridColumn;
+    vcDef: TcxGridColumn;
+    vcWins: TcxGridColumn;
+    vcStalled: TcxGridColumn;
+    vcGames: TcxGridColumn;
+    vcRatio: TcxGridColumn;
+    vcAvgD: TcxGridColumn;
+    vcAvgDA: TcxGridColumn;
+    vcAvgS: TcxGridColumn;
+    vcAvgSA: TcxGridColumn;
+    vcNet: TcxGridColumn;
+    cxGridLevel1: TcxGridLevel;
+    gbGenericFilter: TcxGroupBox;
+    ccbWildCardType: TcxCheckComboBox;
+    ccbWildCardRarity: TcxCheckComboBox;
+    ccbWildCardFaction: TcxCheckComboBox;
+    cbUseGenericFilter: TcxCheckBox;
+    cbUseSpecificFilter: TcxCheckBox;
+    gbSpecificFilter: TcxGroupBox;
+    eIncludeCards: TcxTextEdit;
+    eExcludeCards: TcxTextEdit;
+    lInclude: TcxLabel;
+    lExclude: TcxLabel;
+    cbIncludeOriginalCard: TcxCheckBox;
+    vcsWon: TcxGridColumn;
+    vcsStalled: TcxGridColumn;
+    vcsGames: TcxGridColumn;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -457,6 +474,8 @@ type
     procedure tsEvalShow(Sender: TObject);
     procedure bCheckImagesClick(Sender: TObject);
     function CheckCardImages: boolean;
+    procedure cbUseGenericFilterClick(Sender: TObject);
+    procedure cbUseSpecificFilterClick(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -671,7 +690,8 @@ function IterateDecks(Exe: string; Cwd: string; Seed: DWORD; AtkDeck: string;
   DefDeck: string; RaidID: integer; GamesPerThread: DWORD; Threads: DWORD;
   bIsSurge: boolean; bOrderMatters: boolean; var iWildCard: integer;
   iWildFilterType: integer = 0; iWildFilterRarity: integer = 0;
-  iWildFilterFaction: integer = 0): FULLRESULT;
+  iWildFilterFaction: integer = 0; pWildFilterInclude: Pointer = nil;
+  pWildFilterExclude: Pointer = nil): FULLRESULT;
 var
   SI: TStartupInfo;
   PI: TProcessInformation;
@@ -698,8 +718,16 @@ begin
   begin
     ep.WildCardId := iWildCard;
     ep.WildFilterType := iWildFilterType;
-    ep.WildFilterRarity := iWildFilterRarity+1;
+    ep.WildFilterRarity := iWildFilterRarity;
     ep.WildFilterFaction := iWildFilterFaction;
+    if pWildFilterInclude <> nil then
+      CopyMemory(Addr(ep.WildFilterInclude), pWildFilterInclude, SizeOf(ep.WildFilterInclude))
+    else
+      FillChar(ep.WildFilterInclude,sizeof(ep.WildFilterInclude),0);
+    if pWildFilterExclude <> nil then
+      CopyMemory(Addr(ep.WildFilterExclude), pWildFilterExclude, SizeOf(ep.WildFilterExclude))
+    else
+      FillChar(ep.WildFilterExclude,sizeof(ep.WildFilterExclude),0);
   end
   else
     ep.WildCardId := 0;
@@ -783,6 +811,11 @@ begin
   ToCard.Picture := FromCard.Picture;
   ToCard.ShowHint := true;
   ToCard.Hint := FromCard.Hint;
+end;
+
+procedure TEvaluateDecksForm.cbUseSpecificFilterClick(Sender: TObject);
+begin
+  gbSpecificFilter.Enabled := cbUseSpecificFilter.Checked;
 end;
 
 procedure TEvaluateDecksForm.cbDisplayNameClick(Sender: TObject);
@@ -2507,7 +2540,7 @@ begin
   CloseHandle(BeginThread(nil, 0, Addr(EvaluateThread),
     Addr(Self), 0, ret));}
 var
-  i, games, rec, raid, seed, id, wildcard, lrec: integer;
+  i, z, zzz, games, rec, raid, seed, id, wildcard, wcid, lrec, ft, fr, ff: integer;
   sl1, sl2: TStringList;
   bIsRaid, bIsSurge: boolean;
   r: FULLRESULT;
@@ -2519,6 +2552,9 @@ var
   LibHandle: THandle;
   bImages: boolean;
   s: string;
+  p1: pchar;
+   WildFilterInclude: array[0..MAX_FILTER_ID_COUNT - 1] of integer;
+   WildFilterExclude: array[0..MAX_FILTER_ID_COUNT - 1] of integer;
 begin
   //CoInitialize(nil);
   sl1 := TStringList.Create;
@@ -2677,22 +2713,79 @@ begin
       if (cbWildCardName.Text = '') or (not cbWildCard.Checked) then
         wildcard := 0
       else
+      begin
+        wcid := Cards[GetCardID(cbWildCardName.Text)].Id;
         if Cards[GetCardID(cbWildCardName.Text)].CardType = TYPE_COMMANDER then
           wildcard := -1
         else
-          wildcard := Cards[GetCardID(cbWildCardName.Text)].Id;
-      
+          wildcard := wcid;
+      end;
+
+      if cbUseGenericFilter.Checked then
+      begin
+        ft := ParseWildCCB(ccbWildCardType);
+        fr := ParseWildCCB(ccbWildCardRarity);
+        ff := ParseWildCCB(ccbWildCardFaction);
+      end
+      else
+      begin
+        ft := 0;
+        fr := 0;
+        ff := 0;
+      end;
+
+      FillChar(WildFilterInclude,sizeof(WildFilterInclude),0);
+      FillChar(WildFilterExclude,sizeof(WildFilterExclude),0);
+      if cbUseSpecificFilter.Checked then
+      begin
+        GetMem(p1, cMaxBuffer); // initialize
+        with TStringList.Create do
+        try
+          if Trim(eIncludeCards.Text) <> '' then
+          if (GetDeckFromString(Trim(eIncludeCards.Text), p1)) then
+          begin
+            CommaText := p1;
+            for i := 0 to Count - 1 do
+              WildFilterInclude[i] := StrToInt(Strings[i]);
+          end
+          else
+            ShowMessage('Error converting include cards filter to ID list.'#13'Assumed empty line.');
+          if Trim(eExcludeCards.Text) <> '' then
+          if (GetDeckFromString(Trim(eExcludeCards.Text), p1)) then
+          begin
+            CommaText := p1;
+            for i := 0 to Count - 1 do
+              WildFilterExclude[i] := StrToInt(Strings[i]);
+          end
+          else
+            ShowMessage('Error converting exclude cards filter to ID list.'#13'Assumed empty line.');
+        finally
+          FreeMem(p1);
+        end;
+        //fif := eIncludeCards.Text;
+        //fex := eExcludeCards.Text;
+      end;
+      // append original card to filter
+      if cbIncludeOriginalCard.Checked then
+        for i := 0 to MAX_FILTER_ID_COUNT - 1 do
+          if WildFilterInclude[i] = 0 then
+            WildFilterInclude[i] := wcid;
+
       r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, raid,
         games div tc, tc, bIsSurge, cbOrderMatters.Checked,
-        wildcard, ParseWildCCB(ccbWildCardType), ParseWildCCB(ccbWildCardRarity),
-        ParseWildCCB(ccbWildCardFaction));
+        wildcard, ft, fr, ff, Addr(WildFilterInclude), Addr(WildFilterExclude));
       if wildcard > 0 then
       begin
         s := Cards[StrToInt(slIDIndex.Values[IntToStr(wildcard)])].Name;
         if s <> cbWildCardName.Text then
         begin
           ShowMessage('Replace '+cbWildCardName.Text+' with '+s+'.');
-          sl1.CommaText := StringReplace(sl1.CommaText,cbWildCardName.Text,s,[]);
+          z := sl1.IndexOf(cbWildCardName.Text);
+          if z < 0 then
+            ShowMessage('Unexpected error - can''t update deck description.')
+          else
+            sl1[z] := s;
+          //sl1.CommaText := StringReplace(sl1.CommaText,cbWildCardName.Text,s,[]);
           s := StringReplace(FormatDeck(sl1.CommaText), '"', '', [rfReplaceAll]);
           cxView.DataController.Values[rec, vcAtk.Index] := StringReplace(s, ',', ', ', [rfReplaceAll]);
         end
@@ -2701,39 +2794,52 @@ begin
       end
       else
         if wildcard < 0 then
+        begin
           ShowMessage('No cards in current filter!');
+          abort;
+        end;
 
       // load individual results
       vCardStats.BeginUpdate;
-      vCardStats.DataController.RecordCount := 0;
-      for i := 0 to DEFAULT_DECK_SIZE+1 do
-      begin
-        if r.ResultByCard[i].Id = 0 then // invalid card ID
-          break;
-
-        with vCardStats.DataController do
+      try
+        vCardStats.DataController.RecordCount := 0;
+        zzz := (DEFAULT_DECK_SIZE + 1);
+        for z := 0 to zzz do
         begin
-          lrec := AppendRecord;
-          s := Cards[StrToInt(slIDIndex.Values[IntToStr(r.ResultByCard[i].Id)])].Name;
+          if r.ResultByCard[z].Id = 0 then // invalid card ID
+            break;
+
+          with vCardStats.DataController do
+          begin
+            i := GetIndexFromID(IntToStr(r.ResultByCard[z].Id));
+            if i < 0 then
+              continue;
+            lrec := AppendRecord;
+            s := Cards[i].Name;
             Values[lrec, vcsCard.Index] := s;
-          if r.ResultByCard[i].WLGames > 0 then
-          begin
-            Values[lrec, vcsImportance.Index] :=
-              (r.ResultByCard[i].WLGames - r.ResultByCard[i].WLWin) / r.ResultByCard[i].WLGames;
-            Values[lrec, vcsWinrate.Index] :=
-              r.ResultByCard[i].WLWin / r.ResultByCard[i].WLGames;
-          end;
-          if r.ResultByCard[i].FSRecordCount > 0 then
-          begin
-            Values[lrec, vcsAvgMitigated.Index] := r.ResultByCard[i].FSMitigated / r.ResultByCard[i].FSRecordCount;
-            Values[lrec, vcsAvgAvoided.Index] := r.ResultByCard[i].FSAvoided / r.ResultByCard[i].FSRecordCount;
-            Values[lrec, vcsAvgDealt.Index] := r.ResultByCard[i].FSDamage / r.ResultByCard[i].FSRecordCount;
-            Values[lrec, vcsAvgHealing.Index] := r.ResultByCard[i].FSHealing / r.ResultByCard[i].FSRecordCount;
-            Values[lrec, vcsAvgSpecial.Index] := r.ResultByCard[i].FSSpecial / r.ResultByCard[i].FSRecordCount;
+            if r.ResultByCard[z].WLGames > 0 then
+            begin
+              Values[lrec, vcsImportance.Index] :=
+                (r.Result.Win / games) - (r.ResultByCard[z].WLWin / r.ResultByCard[z].WLGames);
+              Values[lrec, vcsWinrate.Index] :=
+                r.ResultByCard[z].WLWin / r.ResultByCard[z].WLGames;
+              Values[lrec, vcsWon.Index] := r.ResultByCard[z].WLWin;
+              Values[lrec, vcsStalled.Index] := r.ResultByCard[z].WLGames - r.ResultByCard[z].WLWin - r.ResultByCard[z].WLLoss;
+              Values[lrec, vcsGames.Index] := r.ResultByCard[z].WLGames;
+            end;
+            if r.ResultByCard[z].FSRecordCount > 0 then
+            begin
+              Values[lrec, vcsAvgMitigated.Index] := r.ResultByCard[z].FSMitigated / r.ResultByCard[z].FSRecordCount;
+              Values[lrec, vcsAvgAvoided.Index] := r.ResultByCard[z].FSAvoided / r.ResultByCard[z].FSRecordCount;
+              Values[lrec, vcsAvgDealt.Index] := r.ResultByCard[z].FSDamage / r.ResultByCard[z].FSRecordCount;
+              Values[lrec, vcsAvgHealing.Index] := r.ResultByCard[z].FSHealing / r.ResultByCard[z].FSRecordCount;
+              Values[lrec, vcsAvgSpecial.Index] := r.ResultByCard[z].FSSpecial / r.ResultByCard[z].FSRecordCount;
+            end;
           end;
         end;
+      finally
+        vCardStats.EndUpdate;
       end;
-      vCardStats.EndUpdate;
 
       i := games;
     end;
@@ -3194,7 +3300,7 @@ begin
   if cbOrderMatters.Checked then
   begin
     cbWildCard.Checked := false;
-    gbWildcard.Enabled := false;
+    cbWildCardName.Enabled := false;
   end;
 end;
 
@@ -3221,6 +3327,11 @@ begin
     UpdateFilter;
     bFilterChanged := false;
   end;
+end;
+
+procedure TEvaluateDecksForm.cbUseGenericFilterClick(Sender: TObject);
+begin
+  gbGenericFilter.Enabled := cbUseGenericFilter.Checked;
 end;
 
 procedure TEvaluateDecksForm.cbUseHiddenClick(Sender: TObject);
@@ -3290,7 +3401,7 @@ procedure TEvaluateDecksForm.cbWildCardClick(Sender: TObject);
 begin
   if cbWildCard.Checked then
     cbOrderMatters.Checked := false;
-  gbWildcard.Enabled := cbWildCard.Checked;
+  cbWildCardName.Enabled := cbWildCard.Checked;
 end;
 
 function TEvaluateDecksForm.ParseWildCCB(ccb: TcxCheckComboBox): integer;
@@ -3857,6 +3968,7 @@ begin
         ProgressUpdate(i);
       end;
     finally
+      Application.ProcessMessages;
     end;
     ImageCount := i;
 
