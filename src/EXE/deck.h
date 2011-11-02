@@ -1707,8 +1707,6 @@ public:
 			SweepFancyStats(*vi);
 		for (VCARDS::iterator vi = Structures.begin();vi != Structures.end();vi++)
 			SweepFancyStats(*vi);
-		for (VCARDS::iterator vi = Actions.begin();vi != Actions.end();vi++)
-			SweepFancyStats(*vi);
 	}
 	void AttackDeck(ActiveDeck &Def)
 	{
@@ -1812,6 +1810,8 @@ public:
 			// apply actions somehow ...
 			ApplyEffects(Actions[i],-1,Def);
 		}
+		for (VCARDS::iterator vi = Actions.begin();vi != Actions.end();vi++)
+			SweepFancyStats(*vi);
 		Actions.clear();
 		// commander card
 		// ok lets work out Infuse:
@@ -1894,15 +1894,6 @@ public:
 			}
 			else
 				vi++;
-		vi = Actions.begin();
-		while (vi != Actions.end())
-			if (!vi->IsAlive())
-			{
-				SweepFancyStats(*vi);
-				vi = Actions.erase(vi);
-			}
-			else
-				vi++;
 		//
 		vi = Def.Units.begin();
 		while (vi != Def.Units.end())
@@ -1919,15 +1910,6 @@ public:
 			{
 				Def.SweepFancyStats(*vi);
 				vi = Def.Structures.erase(vi);
-			}
-			else
-				vi++;
-		vi = Def.Actions.begin();
-		while (vi != Def.Actions.end())
-			if (!vi->IsAlive())
-			{
-				Def.SweepFancyStats(*vi);
-				vi = Def.Actions.erase(vi);
 			}
 			else
 				vi++;
