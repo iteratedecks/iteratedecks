@@ -1,10 +1,24 @@
+// *****************************************
+// EvaluateDecks
+// Tyrant card game simulator
+//
+// My kongregate account:
+// http://www.kongregate.com/accounts/NETRAT
+// 
+// Project pages:
+// http://code.google.com/p/evaluatedecks
+// http://www.kongregate.com/forums/65-tyrant/topics/195043-yet-another-battlesim-evaluate-decks
+// *****************************************
+//
+// this module contains classes enabling branching of evaluations - to get all possible outcomes out of pair of decks
+// however, it is outdated - need to implement Berserk, Protect and Supply, also fix Pierce for shield
+// also it is pretty slow for strike all decks vs full evade decks, so I have halted development
+
 #define RESERVE_LEAVES_COUNT	20000
 #define RESERVE_SMALL_COUNT		100
 #define MAX_TURN				50
 
 #define PROC_CHANCE				0.5
-
-// Module is outdated - need to implement Berserk, Protect and Supply, also fix Pierce for shield
 
 class Node
 {

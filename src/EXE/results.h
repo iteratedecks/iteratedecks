@@ -1,4 +1,18 @@
+// *****************************************
+// EvaluateDecks
+// Tyrant card game simulator
+//
+// My kongregate account:
+// http://www.kongregate.com/accounts/NETRAT
+// 
+// Project pages:
+// http://code.google.com/p/evaluatedecks
+// http://www.kongregate.com/forums/65-tyrant/topics/195043-yet-another-battlesim-evaluate-decks
+// *****************************************
+//
+// this module contains interfaces used by API, DLL and EXE to exchange evaluation results 
 // this structure is used to store and return simulation result
+
 typedef unsigned long       DWORD;
 struct RESULTS
 {

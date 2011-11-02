@@ -1,5 +1,17 @@
-// IterateDecks.cpp : Defines the entry point for the console application.
+// *****************************************
+// EvaluateDecks
+// Tyrant card game simulator
 //
+// My kongregate account:
+// http://www.kongregate.com/accounts/NETRAT
+// 
+// Project pages:
+// http://code.google.com/p/evaluatedecks
+// http://www.kongregate.com/forums/65-tyrant/topics/195043-yet-another-battlesim-evaluate-decks
+// *****************************************
+//
+// main module for EXE part, contains a lot of commented snippets that can be used as samples of classes usage
+// also contains some threading evaluation routines
 
 #include <tchar.h>
 
@@ -25,38 +37,63 @@ CardDB DB; // just to make all easier ...
 void Simulate(ActiveDeck &tAtk, ActiveDeck &tDef, RESULTS &r, const UCHAR *CSIndex = 0, RESULT_BY_CARD *rbc = 0, bool bSurge = false)
 {
 /*
-Maximum of 25 points per player. 
-+10 points for winning. 
-+5 points for killing the enemy commander. 
-+5 points for winning by turn 10 
-+X points for dealing X damage to the commander until the exact moment he dies (max 10)? <— tweak 
-+5 points for destroying all enemy Assault and Structure cards
-Automatic:
-+10 points for winning. 
-+1 point for each damage dealt to the enemy commander, up to 10. (Siphon does not reduce this.) 
-+5 points for winning by turn 10
-IF you surge (ie, defense goes first) and you win then you get +20 points with or without auto .
+Should have given more credit to people that help improving...
+Original source is by Hotshot2k4
+http://www.kongregate.com/forums/65-tyrant/topics/201617-tyrant-war-scores-formula
+but Fonzoland explained it so that I could understand:
+All modes.
+1. Winning gives a base score of 10 on fight/defense, 30 on surge. Surrender/stall count as a win for the defender.
+2. There is a “damage bonus” (all damage dealt to enemy commander, including overkill, in a certain range of turns), which is always capped at 10.
+3. There is a “speed bonus” for killing the enemy commander before a certain turn, which is always 5.
+Auto mode.
+All turns:
+Winner damage bonus accumulates from the start.
+Loser damage bonus accumulates from the start.
+Speed bonus applies before turn 10.
+Manual.
+Let T be the time of the last manual decision, ie the turn when the manual player has exactly two cards in hand (usually 17/18 on fight/surge, for 10 card decks).
+Turns 1 to T:
+Winner damage bonus accumulates from card picking.
+Loser damage bonus accumulates from card picking.
+Speed bonus applies.
+Turns T+1 to end:
+Winner damage bonus accumulates from T.
+Loser damage bonus accumulates from T.
+Speed bonus applies before turn T+10.
+In other words, it is the same as on auto, only the counters reset every time you choose a card. Defender never gets loser bonus during early stages, but attacker might if he damages the commander the turn before losing to the AI.
 */
 	if (CSIndex && rbc)
 		tAtk.SetFancyStatsBuffer(CSIndex,rbc);
-	for (UCHAR i=0; (i < MAX_TURN); i++)
+	UCHAR iAtkLastManualTurn = 0, iDefLastManualTurn = 0; // or are both counters equal?
+	for (UCHAR i=0; (i < MAX_TURN);)
 	{
 		if (bSurge)
 		{
+			if (tDef.Deck.size() >= 2)
+				tDef.DamageToCommander = 0; // reset
+			if (tDef.Deck.size() == 2)
+				iDefLastManualTurn = i;
 			tDef.AttackDeck(tAtk);
 			if (!tAtk.Commander.IsAlive())
 			{
 				r.LPoints+=10; // for winning 
 				r.LAutoPoints+=10;
-				r.LPoints+=5; // dying
+				if (tAtk.DamageToCommander >= 10)   // + points for dealing damage to enemy commander
+					r.Points+=10;
+				else
+					r.Points+=tAtk.DamageToCommander;
+				if (tDef.DamageToCommander >= 10)  // dying
+					r.LPoints+=10;
+				else
+					r.LPoints+=tDef.DamageToCommander;
 				r.Loss++;
 				if (i < 10)
-				{
-					r.LPoints+=5; // +5 points for losing by turn 10 
-					r.LAutoPoints+=5; // +5 points for losing by turn 10 
-				}
+					r.LAutoPoints+=5; // +5 points for losing by turn 10 on auto
+				if (i < iDefLastManualTurn + 10)
+					r.LPoints+=5; // +5 points for losing by turn T+10 
 				break;
 			}
+			i++;
 		}
 		if (CSIndex && rbc)
 		{
@@ -69,90 +106,112 @@ IF you surge (ie, defense goes first) and you win then you get +20 points with o
 				ActiveDeck xwl(tAtk),ywl(tDef);
 				xwl.SetFancyStatsBuffer(0,0); // don't inherit buffers here
 				ywl.SetFancyStatsBuffer(0,0); // don't inherit buffers here
-				for (UCHAR iwl=i; (iwl < MAX_TURN); iwl++)
+				for (UCHAR iwl=i; (iwl < MAX_TURN); )
 				{
+					if (bSurge)
+					{	
+						ywl.AttackDeck(xwl);
+						iwl++;
+						if (!xwl.Commander.IsAlive())
+						{
+							rbc[CSIndex[id]].WLLoss++;
+							break;
+						}
+					}
 					xwl.AttackDeck(ywl);
+					iwl++;
 					if (!ywl.Commander.IsAlive())
 					{
 						rbc[CSIndex[id]].WLWin++;
 						break;
 					}
-					ywl.AttackDeck(xwl);
-					if (!xwl.Commander.IsAlive())
+					if (!bSurge)
 					{
-						rbc[CSIndex[id]].WLLoss++;
-						break;
-					}
+						ywl.AttackDeck(xwl);
+						iwl++;
+						if (!xwl.Commander.IsAlive())
+						{
+							rbc[CSIndex[id]].WLLoss++;
+							break;
+						}
+					}					
 				}
 			}
 		}
+		if (tAtk.Deck.size() >= 2)
+			tAtk.DamageToCommander = 0; // reset
+		if (tAtk.Deck.size() == 2)
+			iAtkLastManualTurn = i;
 		tAtk.AttackDeck(tDef);
 		if (!tDef.Commander.IsAlive())
 		{
 			r.Win++;
 			r.Points+=10; // +10 points for winning 
 			r.AutoPoints+=10;
-			r.Points+=5; // +5 points for killing the enemy commander
+			if (tAtk.DamageToCommander >= 10)   // + points for dealing damage to enemy commander
+				r.Points+=10;
+			else
+				r.Points+=tAtk.DamageToCommander;
+			if (tDef.DamageToCommander >= 10)  // suffering damage
+				r.LPoints+=10;
+			else
+				r.LPoints+=tDef.DamageToCommander;
 			if (bSurge)
 			{
 				r.Points+=20; // +20 points for winning on surge
 				r.AutoPoints+=20;
 			}
 			if (i < 10)
-			{
-				r.Points+=5; // +5 points for winning by turn 10 
-				r.AutoPoints+=5; // +5 points for winning by turn 10 
-			}
+				r.AutoPoints+=5; // +5 points for winning by turn 10 on auto
+			if (i < iAtkLastManualTurn + 10)
+				r.Points+=5; // +5 points for winning by turn T+10
 			break;
 		}
+		i++;
 		if (!bSurge)
 		{
+			if (tDef.Deck.size() >= 2)
+				tDef.DamageToCommander = 0; // reset
+			if (tDef.Deck.size() == 2)
+				iDefLastManualTurn = i;
 			tDef.AttackDeck(tAtk);
 			if (!tAtk.Commander.IsAlive())
 			{
 				r.LPoints+=10; // for winning 
 				r.LAutoPoints+=10;
-				r.LPoints+=5; // dying
+				if (tAtk.DamageToCommander >= 10)   // + points for dealing damage to enemy commander
+					r.Points+=10;
+				else
+					r.Points+=tAtk.DamageToCommander;
+				if (tDef.DamageToCommander >= 10)  // dying
+					r.LPoints+=10;
+				else
+					r.LPoints+=tDef.DamageToCommander;
 				r.Loss++;
 				if (i < 10)
-				{
-					r.LPoints+=5; // +5 points for losing by turn 10 
-					r.LAutoPoints+=5; // +5 points for losing by turn 10 
-				}
+					r.LAutoPoints+=5; // +5 points for losing by turn 10 on auto
+				if (i < iDefLastManualTurn + 10)
+					r.LPoints+=5; // +5 points for losing by turn T+10
 				break;
 			}
+			i++;
 		}
 	}
-	if (tDef.Commander.IsDefined())
+	// stalled
+	if (tAtk.Commander.IsDefined() && tDef.Commander.IsDefined() && tAtk.Commander.IsAlive() && tDef.Commander.IsAlive())
 	{
-		if (tDef.Commander.GetOriginalCard()->GetHealth() > 10)
-		{
-			r.Points+=10; // +X points for dealing X damage to the commander
-			r.AutoPoints+=10; // +X points for dealing X damage to the commander
-		}
+		// stall = loss
+		r.LPoints+=10;
+		r.LAutoPoints+=10;
+		if (tAtk.DamageToCommander >= 10)   // + points for dealing damage to enemy commander
+			r.Points+=10;
 		else
-		{
-			r.Points+=tDef.Commander.GetOriginalCard()->GetHealth();
-			r.AutoPoints+=tDef.Commander.GetOriginalCard()->GetHealth();
-		}
-	}
-	if (tAtk.Commander.IsDefined())
-	{
-		if (tAtk.Commander.GetOriginalCard()->GetHealth() > 10)
-		{
-			r.LPoints+=10; // +X points for dealing X damage to the commander
-			r.LAutoPoints+=10; // +X points for dealing X damage to the commander
-		}
+			r.Points+=tAtk.DamageToCommander;
+		if (tDef.DamageToCommander >= 10)  // suffered damage
+			r.LPoints+=10;
 		else
-		{
-			r.LPoints+=tAtk.Commander.GetOriginalCard()->GetHealth();
-			r.LAutoPoints+=tAtk.Commander.GetOriginalCard()->GetHealth();
-		}
+			r.LPoints+=tDef.DamageToCommander;
 	}
-	if (tDef.Deck.empty()) // +5 points for destroying all enemy Assault and Structure cards
-		r.Points+=5;
-	if (tAtk.Deck.empty()) // +5 points for losing all your Assault and Structure cards
-		r.LPoints+=5;
 	tAtk.SweepFancyStatsRemaining();
 }
 
@@ -176,8 +235,9 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 	DB.GenRaidDeck(tDef,RaidID);
 
 	if (CSIndex && rbc)
-		tAtk.SetFancyStatsBuffer(CSIndex,rbc);					
-	for (UCHAR i=0; (i < MAX_TURN); i++)
+		tAtk.SetFancyStatsBuffer(CSIndex,rbc);
+	UCHAR iAtkLastManualTurn = 0;
+	for (UCHAR i=0; (i < MAX_TURN); )
 	{
 		if (CSIndex && rbc)
 		{
@@ -188,15 +248,17 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 				// play variation without this card
 				rbc[CSIndex[id]].WLGames++;
 				ActiveDeck xwl(tAtk),ywl(tDef);
-				for (UCHAR iwl=i; (iwl < MAX_TURN); iwl++)
+				for (UCHAR iwl=i; (iwl < MAX_TURN); )
 				{
 					xwl.AttackDeck(ywl);
+					iwl++;
 					if (!ywl.Commander.IsAlive())
 					{
 						rbc[CSIndex[id]].WLWin++;
 						break;
 					}
 					ywl.AttackDeck(xwl);
+					iwl++;
 					if (!xwl.Commander.IsAlive())
 					{
 						rbc[CSIndex[id]].WLLoss++;
@@ -205,28 +267,34 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 				}
 			}
 		}
+		if (tAtk.Deck.size() >= 2)
+			tAtk.DamageToCommander = 0; // reset
+		if (tAtk.Deck.size() == 2)
+			iAtkLastManualTurn = i;
 		tAtk.AttackDeck(tDef);
 		if (!tDef.Commander.IsAlive())
 		{
 			r.Win++;
 			r.Points+=10; // +10 points for winning 
 			r.AutoPoints+=10;
-			r.Points+=5; // +5 points for killing the enemy commander
+			if (tAtk.DamageToCommander >= 10)   // + points for dealing damage to enemy commander
+				r.Points+=10;
+			else
+				r.Points+=tAtk.DamageToCommander;
 			if (i < 10)
-			{
-				r.Points+=5; // +5 points for winning by turn 10 
-				r.AutoPoints+=5; // +5 points for winning by turn 10 
-			}
-			if (tDef.Deck.empty()) // +5 points for destroying all enemy Assault and Structure cards
-				r.Points+=5;
+				r.AutoPoints+=5; // +5 points for winning by turn 10 on auto
+			if (i < iAtkLastManualTurn + 10)
+				r.Points+=5; // +5 points for winning by turn T+10
 			break;
 		}
+		i++;
 		tDef.AttackDeck(tAtk);
 		if (!tAtk.Commander.IsAlive())
 		{
 			r.Loss++;
 			break;
 		}
+		i++;
 	}
 	tAtk.SweepFancyStatsRemaining();
 }

@@ -1,3 +1,17 @@
+// *****************************************
+// EvaluateDecks
+// Tyrant card game simulator
+//
+// My kongregate account:
+// http://www.kongregate.com/accounts/NETRAT
+// 
+// Project pages:
+// http://code.google.com/p/evaluatedecks
+// http://www.kongregate.com/forums/65-tyrant/topics/195043-yet-another-battlesim-evaluate-decks
+// *****************************************
+//
+// this module contains all evaluation related stuff - card and deck classes and their interactions
+
 #include <vector>
 #include <set>
 
@@ -656,6 +670,8 @@ public:
 	//
 	const UCHAR *CSIndex;
 	RESULT_BY_CARD *CSResult;
+	//
+	UINT DamageToCommander; // for points calculation - damage dealt to ENEMY commander
 private:
 	void Reserve()
 	{
@@ -678,7 +694,10 @@ private:
 			// Deal DMG To Commander BUT STILL PROC50 FLURRY and PROBABLY VALOR
 			UCHAR valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (Units.size() < Def.Units.size())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
 			for (UCHAR i=0;i<iflurry;i++)
+			{
 				Def.Commander.HitCommander(SRC.GetAttack()+valor,SRC,Def.Structures);
+				DamageToCommander += SRC.GetAttack()+valor;
+			}
 			return; // and thats it!!!
 		}
 		else
@@ -719,6 +738,10 @@ private:
 					{
 						UCHAR valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (Units.size() < Def.Units.size())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
 						Def.Commander.HitCommander(SRC.GetAttack()+valor,SRC,Def.Structures);
+						// can go berserk after hitting commander too
+						if ((SRC.GetAttack()+valor > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
+							SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
+						DamageToCommander += SRC.GetAttack()+valor;
 						// might want to add here check:
 						// if (!Def.Commander.IsAlive()) return;
 						continue;
@@ -777,10 +800,16 @@ private:
 					{
 						// afaik it ignores walls
 						if (targets[s]->GetAbility(SPECIAL_BACKFIRE))
+						{
 							Def.Commander.SufferDmg(targets[s]->GetAbility(SPECIAL_BACKFIRE));
+							DamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
+						}
 						// crush
 						if (SRC.GetAbility(DMGDEPENDANT_CRUSH))
+						{
 							Def.Commander.HitCommander(SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def.Structures,false);
+							DamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
+						}
 					}
 					// counter
 					if ((dmg > 0) && targets[s]->GetAbility(DEFENSIVE_COUNTER))
@@ -834,7 +863,7 @@ private:
 #undef SRC
 	}
 public:
-	ActiveDeck() { bOrderMatters = false; CSIndex = 0; CSResult = 0; }
+	ActiveDeck() { bOrderMatters = false; CSIndex = 0; CSResult = 0; DamageToCommander = 0; }
 	~ActiveDeck() { Deck.clear(); Units.clear(); Structures.clear(); Actions.clear(); }
 public:
 	void SetFancyStatsBuffer(const UCHAR *resindex, RESULT_BY_CARD *res)
@@ -859,6 +888,7 @@ public:
 		_ASSERT(HashBase64);
 		CSIndex = 0;
 		CSResult = 0;
+		DamageToCommander = 0;
 		bOrderMatters = false; 
 		unsigned short tid = 0, lastid = 0;
 		size_t len = strlen(HashBase64);
@@ -890,7 +920,7 @@ public:
 			}
 		}
 	}
-	ActiveDeck(const Card *Cmd) { bOrderMatters = false; CSIndex = 0; CSResult = 0; Commander = PlayedCard(Cmd); Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); };
+	ActiveDeck(const Card *Cmd) { bOrderMatters = false; CSIndex = 0; CSResult = 0; DamageToCommander = 0; Commander = PlayedCard(Cmd); Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); };
 	ActiveDeck(const ActiveDeck &D) // need copy constructor
 	{
 		Commander = D.Commander;
@@ -909,6 +939,7 @@ public:
 		bOrderMatters = D.bOrderMatters;
 		CSIndex = D.CSIndex;
 		CSResult = D.CSResult;
+		DamageToCommander = D.DamageToCommander;
 		if (D.bOrderMatters)
 		{
 			Hand.clear();
@@ -1484,7 +1515,10 @@ public:
 			{
 				effect = Src.GetAbility(aid) * FusionMultiplier;
 				if (effect > 0)
+				{
 					Src.fsDmgDealt += Dest.Commander.SufferDmg(effect);
+					DamageToCommander += effect;
+				}
 			}
 			// siege
 			if (aid == ACTIVATION_SIEGE)
