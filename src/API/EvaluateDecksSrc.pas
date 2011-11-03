@@ -13,7 +13,8 @@ uses
   IdTCPConnection, IdTCPClient, IdHTTP, OleCtrls, SHDocVw_EWB, EwbCore,
   EmbeddedWB, WinInet, ComCtrls, cxListView, Jpeg, cxCheckComboBox,
   cxCurrencyEdit, ActiveX, cxSpinEdit, cxRadioGroup, cxGroupBox, DBClient,
-  GIFImg, ShellApi, cxCheckListBox, cxGridBandedTableView, cxGridExportLink, ClipBrd;
+  GIFImg, ShellApi, cxCheckListBox, cxGridBandedTableView, cxGridExportLink, ClipBrd,
+  cxSplitter;
 
 const
   MAX_CARD_COUNT = 700;
@@ -290,6 +291,20 @@ type
     cxPageControl1: TcxPageControl;
     tsEEvaluate: TcxTabSheet;
     tsEWildcard: TcxTabSheet;
+    gbGenericFilter: TcxGroupBox;
+    ccbWildCardType: TcxCheckComboBox;
+    ccbWildCardRarity: TcxCheckComboBox;
+    ccbWildCardFaction: TcxCheckComboBox;
+    cbUseGenericFilter: TcxCheckBox;
+    cbUseSpecificFilter: TcxCheckBox;
+    gbSpecificFilter: TcxGroupBox;
+    eIncludeCards: TcxTextEdit;
+    eExcludeCards: TcxTextEdit;
+    lInclude: TcxLabel;
+    lExclude: TcxLabel;
+    cbIncludeOriginalCard: TcxCheckBox;
+    pEvalMid: TPanel;
+    pEvalTop: TPanel;
     cbIterations: TcxComboBox;
     bEvalExport: TcxButton;
     bClear: TcxButton;
@@ -297,19 +312,23 @@ type
     cbSurge: TcxCheckBox;
     cbOrderMatters: TcxCheckBox;
     cbWildCard: TcxCheckBox;
-    cxLabel4: TcxLabel;
     cbWildCardName: TcxComboBox;
+    cxLabel4: TcxLabel;
     gStats: TcxGrid;
     vCardStats: TcxGridTableView;
     vcsCard: TcxGridColumn;
     vcsImportance: TcxGridColumn;
     vcsWinrate: TcxGridColumn;
+    vcsWon: TcxGridColumn;
+    vcsStalled: TcxGridColumn;
+    vcsGames: TcxGridColumn;
+    vcsAvgDealt: TcxGridColumn;
     vcsAvgMitigated: TcxGridColumn;
     vcsAvgAvoided: TcxGridColumn;
-    vcsAvgDealt: TcxGridColumn;
     vcsAvgHealing: TcxGridColumn;
     vcsAvgSpecial: TcxGridColumn;
     cxGridLevel4: TcxGridLevel;
+    pEvalBot: TPanel;
     cxGrid: TcxGrid;
     cxView: TcxGridTableView;
     vcType: TcxGridColumn;
@@ -325,21 +344,7 @@ type
     vcAvgSA: TcxGridColumn;
     vcNet: TcxGridColumn;
     cxGridLevel1: TcxGridLevel;
-    gbGenericFilter: TcxGroupBox;
-    ccbWildCardType: TcxCheckComboBox;
-    ccbWildCardRarity: TcxCheckComboBox;
-    ccbWildCardFaction: TcxCheckComboBox;
-    cbUseGenericFilter: TcxCheckBox;
-    cbUseSpecificFilter: TcxCheckBox;
-    gbSpecificFilter: TcxGroupBox;
-    eIncludeCards: TcxTextEdit;
-    eExcludeCards: TcxTextEdit;
-    lInclude: TcxLabel;
-    lExclude: TcxLabel;
-    cbIncludeOriginalCard: TcxCheckBox;
-    vcsWon: TcxGridColumn;
-    vcsStalled: TcxGridColumn;
-    vcsGames: TcxGridColumn;
+    splEval: TcxSplitter;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
