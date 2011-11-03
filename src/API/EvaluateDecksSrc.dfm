@@ -2473,18 +2473,12 @@ object EvaluateDecksForm: TEvaluateDecksForm
         ActivePage = tsEEvaluate
         Align = alClient
         TabOrder = 0
-        ExplicitLeft = 16
-        ExplicitTop = 72
-        ExplicitWidth = 601
-        ExplicitHeight = 417
         ClientRectBottom = 646
         ClientRectRight = 784
         ClientRectTop = 24
         object tsEEvaluate: TcxTabSheet
           Caption = 'Results'
           ImageIndex = 0
-          ExplicitWidth = 289
-          ExplicitHeight = 169
           object pEvalMid: TPanel
             Left = 0
             Top = 70
@@ -2502,9 +2496,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
               Align = alClient
               PopupMenu = pmGrid
               TabOrder = 0
-              ExplicitTop = -38
-              ExplicitWidth = 772
-              ExplicitHeight = 185
               object vCardStats: TcxGridTableView
                 NavigatorButtons.ConfirmDelete = False
                 DataController.Summary.DefaultGroupSummaryItems = <>
@@ -2706,10 +2697,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Align = alClient
             BevelOuter = bvNone
             TabOrder = 2
-            ExplicitLeft = 328
-            ExplicitTop = 248
-            ExplicitWidth = 185
-            ExplicitHeight = 41
             object cxGrid: TcxGrid
               AlignWithMargins = True
               Left = 3
@@ -2719,9 +2706,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
               Align = alClient
               PopupMenu = pmGrid
               TabOrder = 0
-              ExplicitTop = 76
-              ExplicitWidth = 772
-              ExplicitHeight = 329
               object cxView: TcxGridTableView
                 NavigatorButtons.ConfirmDelete = False
                 DataController.Summary.DefaultGroupSummaryItems = <>
@@ -2813,8 +2797,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
         object tsEWildcard: TcxTabSheet
           Caption = 'Wildcard filters'
           ImageIndex = 1
-          ExplicitWidth = 289
-          ExplicitHeight = 169
           object gbGenericFilter: TcxGroupBox
             Left = 3
             Top = 30
@@ -3346,7 +3328,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
       object cbDisplayName: TcxCheckBox
         Left = 239
         Top = 53
-        Caption = 'Display  deck name'
+        Caption = 'Display deck name'
         TabOrder = 7
         OnClick = cbDisplayNameClick
         Width = 121
