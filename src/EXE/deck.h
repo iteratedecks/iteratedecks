@@ -360,13 +360,13 @@ public:
 	{
 		if (IsDefined())
 		{
-			if (Attack && Wait)
-				printf("%s [%d/%d|%d]",OriginalCard->GetName(),Attack,Health,Wait);
+			if (OriginalCard->GetAttack() && OriginalCard->GetWait())
+				printf("%s - %X [%d/%d|%d]",OriginalCard->GetName(),this,GetAttack(),Health,Wait);
 			else
-				if (Wait)
-					printf("%s |%d",OriginalCard->GetName(),Attack,Health,Wait);
+				if (OriginalCard->GetWait())
+					printf("%s - %X [%d|%d]",OriginalCard->GetName(),this,Health,Wait);
 				else
-					printf("%s [%d]",OriginalCard->GetName(),Attack,Health,Wait);
+					printf("%s - %X [%d]",OriginalCard->GetName(),this,Health);
 			if (Effects[ACTIVATION_JAM])
 				printf(" Jammed");
 			if (Effects[DMGDEPENDANT_IMMOBILIZE])
@@ -434,14 +434,33 @@ public:
 			{
 				Health = OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
 				fsHealed += OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
+				if (bConsoleOutput)
+				{
+					PrintDesc();
+					printf(" regenerated % health\n",Health);
+				}
 			}
 			else
+			{
 				Health = 0;
+				if (bConsoleOutput)
+				{
+					PrintDesc();
+					printf(" died!\n");
+				}
+			}
 			// crush damage will be dealt even if the defending unit Regenerates
 			return dealt;// note that CRUSH & BACKFIRE are processed elsewhere
 		}
 		else
+		{
 			Health -= dmg;
+			if (bConsoleOutput)
+			{
+				PrintDesc();
+				printf(" suffered %d damage\n",dmg);
+			}
+		}
 		fsDmgMitigated += dmg;
 		return dmg;
 	}
@@ -572,6 +591,7 @@ public:
 	const UCHAR GetAttack() const
 	{
 		char atk = Attack - Effects[ACTIVATION_WEAKEN] + Effects[ACTIVATION_RALLY];
+		//printf("[%X] %d = %d - %d + %d\n",this,atk,Attack,Effects[ACTIVATION_WEAKEN],Effects[ACTIVATION_RALLY]);
 		if (atk > 0)
 			return (UCHAR)atk;
 		else
@@ -688,6 +708,11 @@ private:
 #define VALOR_HITS_COMMANDER	true
 		//printf("%s %d\n",SRC.GetName(),SRC.GetHealth());
 		_ASSERT(SRC.IsDefined() && SRC.IsAlive()); // baby, don't hurt me, no more
+		if (bConsoleOutput)
+		{
+			SRC.PrintDesc();
+			printf(" attacks\n");
+		}
 		UCHAR iflurry = (SRC.GetAbility(COMBAT_FLURRY) && PROC50) ? (SRC.GetAbility(COMBAT_FLURRY)+1) : 1; // coding like a boss :) don't like this style
 		if ((index >= (UCHAR)Def.Units.size()) || (!Def.Units[index].IsAlive()) || (SRC.GetAbility(COMBAT_FEAR)))
 		{
@@ -695,8 +720,13 @@ private:
 			UCHAR valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (Units.size() < Def.Units.size())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
 			for (UCHAR i=0;i<iflurry;i++)
 			{
+				if (Def.Commander.IsAlive())
+					DamageToCommander += SRC.GetAttack()+valor;
 				Def.Commander.HitCommander(SRC.GetAttack()+valor,SRC,Def.Structures);
-				DamageToCommander += SRC.GetAttack()+valor;
+				SRC.fsDmgDealt += SRC.GetAttack()+valor;
+				// can go berserk after hitting commander too
+				if ((SRC.GetAttack()+valor > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
+					SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
 			}
 			return; // and thats it!!!
 		}
@@ -737,11 +767,13 @@ private:
 					if ((!targets[s]->IsAlive()) && ((swipe == 1) || (s == 1)))
 					{
 						UCHAR valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (Units.size() < Def.Units.size())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
+						if (Def.Commander.IsAlive())
+							DamageToCommander += SRC.GetAttack()+valor;
 						Def.Commander.HitCommander(SRC.GetAttack()+valor,SRC,Def.Structures);
+						SRC.fsDmgDealt += SRC.GetAttack()+valor;
 						// can go berserk after hitting commander too
 						if ((SRC.GetAttack()+valor > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
 							SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
-						DamageToCommander += SRC.GetAttack()+valor;
 						// might want to add here check:
 						// if (!Def.Commander.IsAlive()) return;
 						continue;
@@ -807,8 +839,9 @@ private:
 						// crush
 						if (SRC.GetAbility(DMGDEPENDANT_CRUSH))
 						{
+							if (Def.Commander.IsAlive())
+								DamageToCommander += SRC.GetAttack()+valor;
 							Def.Commander.HitCommander(SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def.Structures,false);
-							DamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
 						}
 					}
 					// counter
@@ -1641,8 +1674,8 @@ public:
 						PVCARDS::iterator vi = targets.begin();
 						while (vi != targets.end())
 						{
-							if (((*vi)->GetWait() <= 1) &&
-								((*vi)->GetAttack() >= 1) && // at least 1 Attack
+							if (((*vi)->GetWait() == 0) && 
+								(((*vi)->GetAttack() >= 1) || (Src.GetTargetCount(aid) == TARGETSCOUNT_ALL)) && // at least 1 Attack OR it is WEAKEN ALL, that can lower ur attack down to -100500
 								(!(*vi)->GetEffect(ACTIVATION_JAM)) && // neither Jammed
 								(!(*vi)->GetEffect(DMGDEPENDANT_IMMOBILIZE))    // nor Immobilized
 								)
