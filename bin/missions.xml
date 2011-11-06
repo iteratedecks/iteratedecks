@@ -6032,7 +6032,7 @@
 		<x>60</x>
 		<y>30</y>
 		<xp>60</xp>
-		<energy>15</energy>
+		<energy>25</energy>
 		<money>1300</money>
 		<commander>1124</commander>
 		<desc>You are starting to become consumed with darkness as the Bloodthirsty attack you.</desc>
@@ -6070,7 +6070,7 @@
 		<x>110</x>
 		<y>40</y>
 		<xp>60</xp>
-		<energy>15</energy>
+		<energy>25</energy>
 		<money>1300</money>
 		<commander>1124</commander>
 		<desc>Lucina's power grows as your mind seems to descend deeper into the shadows.</desc>
@@ -6108,11 +6108,10 @@
 		<picture>mission170.jpg</picture>
 		<location_id>13</location_id>
 		<num_to_complete>10</num_to_complete>
-		<inactive>0</inactive>
 		<x>160</x>
 		<y>30</y>
 		<xp>60</xp>
-		<energy>15</energy>
+		<energy>25</energy>
 		<money>1300</money>
 		<commander>1124</commander>
 		<desc>You began to fear that this may be the end, as the Bloodthirsty are neverending.</desc>
@@ -6145,11 +6144,10 @@
 		<picture>mission171.jpg</picture>
 		<location_id>13</location_id>
 		<num_to_complete>10</num_to_complete>
-		<inactive>0</inactive>
 		<x>210</x>
 		<y>20</y>
 		<xp>60</xp>
-		<energy>15</energy>
+		<energy>25</energy>
 		<money>1300</money>
 		<commander>1124</commander>
 		<desc>You have to break free if you want to survive.</desc>
