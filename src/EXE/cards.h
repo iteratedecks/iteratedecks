@@ -249,6 +249,16 @@ public:
 		Pools.clear();
 	}
 };
+struct SKILL
+{
+	char SkillName[CARD_NAME_MAX_LENGTH];
+	bool IsPassive;
+	float CardValue;
+	SKILL()
+	{
+		SkillName[0] = 0;
+	}
+};
 class CardDB
 {	
 	Card CDB[CARD_MAX_ID]; // this can cause stack overflow, but should work fastest
@@ -258,9 +268,10 @@ class CardDB
 	MSUINT RIIndex;
 	MSUINT Index;
 	MDECKS DIndex;
-	char SKILLS[CARD_ABILITIES_MAX][CARD_NAME_MAX_LENGTH];
+	//char SKILLS[CARD_ABILITIES_MAX][CARD_NAME_MAX_LENGTH];
 	MSKILLS SIndex;
 public://protected:
+	SKILL Skills[CARD_ABILITIES_MAX];
 	MSETS SetIndex;
 	CardDB() 
 	{
@@ -356,6 +367,27 @@ public:
 		pugi::xml_node root = doc.child("root");
 		for (pugi::xml_node_iterator it = root.begin(); it != root.end(); ++it)
 		{
+			if (!_strcmpi(it->name(),"skillType"))
+			{
+				const char *id = it->child("id").child_value();
+				//const char *name = it->child("name").child_value();
+				//<cardValue passive='1' cost='2.5' />
+				for (pugi::xml_node child = it->first_child(); child; child = child.next_sibling())
+				{
+					if (!_strcmpi(child.name(),"cardValue"))
+					{
+						MSKILLS::iterator si = SIndex.find(id);
+						if (si == SIndex.end())
+							printf("Skill \"%s\" not found in index!\n",id);
+						else
+						{
+							Skills[si->second].IsPassive = child.attribute("passive").as_bool();
+							Skills[si->second].CardValue = child.attribute("cost").as_float();
+							//printf("%s : %d %.1f\n",id,child.attribute("passive").as_bool(),child.attribute("cost").as_float()); 
+						}
+					}
+				}
+			}
 			if (!_strcmpi(it->name(),"unit"))
 			{
 				const char *Name = it->child("name").child_value();
@@ -535,9 +567,7 @@ public:
 	}
 	void Initialize()
 	{
-		// must load skills before than anything
-		for (UCHAR i=0;i<CARD_ABILITIES_MAX;i++)
-			SKILLS[i][0] = 0;
+		// must load skills earlier than anything
 		AddSkill(ACTIVATION_ENFEEBLE,"Enfeeble");
 		AddSkill(ACTIVATION_HEAL,"Heal");
 		AddSkill(ACTIVATION_INFUSE,"Infuse");
@@ -588,13 +618,13 @@ public:
 	{
 		char buffer[CARD_NAME_MAX_LENGTH];
 		strcpy_s(buffer,CARD_NAME_MAX_LENGTH,Name);
-		strlwr(buffer);
-		strcpy_s(SKILLS[Id],CARD_NAME_MAX_LENGTH,Name);
+		strlwr(buffer);		
+		strcpy_s(Skills[Id].SkillName,CARD_NAME_MAX_LENGTH,Name);
 		SIndex.insert(PAIRMSKILLS(buffer,Id));
 	}
 	const char *GetSkill(UCHAR Indx)
 	{
-		return SKILLS[Indx];
+		return Skills[Indx].SkillName;
 	}
 	UCHAR GetSkillID(const char *Name)
 	{
@@ -610,7 +640,7 @@ public:
 	UCHAR GetSkillIDSlow(const char *Name)
 	{
 		for (UCHAR i=0;i<CARD_ABILITIES_MAX;i++)
-			if (!_strcmpi(Name,SKILLS[i]))
+			if (!_strcmpi(Name,Skills[i].SkillName))
 				return i;
 		return 0; // not found
 	}
