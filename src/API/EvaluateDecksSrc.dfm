@@ -1969,6 +1969,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Top = 35
             Properties.OnChange = UpdateFilterEvent
             TabOrder = 0
+            OnKeyDown = ceFilterKeyDown
             Width = 146
           end
           object ccbSets: TcxCheckComboBox
@@ -2167,6 +2168,14 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Properties.OnChange = UpdateFilterEvent
             TabOrder = 10
             Width = 39
+          end
+          object cbInstant: TcxCheckBox
+            Left = 131
+            Top = 35
+            Caption = 'Instant'
+            Properties.Alignment = taRightJustify
+            TabOrder = 11
+            Width = 59
           end
         end
       end
@@ -2687,6 +2696,10 @@ object EvaluateDecksForm: TEvaluateDecksForm
               Style.IsFontAssigned = True
               Height = 61
               Width = 112
+            end
+            object lTimeTaken: TcxLabel
+              Left = 223
+              Top = 47
             end
           end
           object pEvalBot: TPanel

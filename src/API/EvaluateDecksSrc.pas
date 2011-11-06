@@ -345,6 +345,8 @@ type
     vcNet: TcxGridColumn;
     cxGridLevel1: TcxGridLevel;
     splEval: TcxSplitter;
+    lTimeTaken: TcxLabel;
+    cbInstant: TcxCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -481,6 +483,8 @@ type
     function CheckCardImages: boolean;
     procedure cbUseGenericFilterClick(Sender: TObject);
     procedure cbUseSpecificFilterClick(Sender: TObject);
+    procedure ceFilterKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -789,6 +793,7 @@ begin
     CopyMemory(Addr(ep), lpBaseAddress, SizeOf(ep));
 
     iWildCard := ep.WildCardId;
+    EvaluateDecksForm.lTimeTaken.Caption := IntToStr(ep.Seconds) + ' sec.'; // well thats form ...
 
     result.Result := ep.Result;
     CopyMemory(Addr(result.ResultByCard), Addr(ep.ResultByCard), SizeOf(result.ResultByCard));
@@ -3329,7 +3334,13 @@ begin
   if bFilterChanged or (Sender is TcxTextEdit) or (Sender = cbSkillTargetFaction) or
     (Sender = cbSkillTargetAll) then
   begin
-    UpdateFilter;
+    if (Sender is TcxTextEdit) then
+    begin
+     if (Length((Sender as TcxTextEdit).Text) > 2) OR cbInstant.Checked then
+       UpdateFilter;
+    end
+    else
+      UpdateFilter;
     bFilterChanged := false;
   end;
 end;
@@ -3407,6 +3418,13 @@ begin
   if cbWildCard.Checked then
     cbOrderMatters.Checked := false;
   cbWildCardName.Enabled := cbWildCard.Checked;
+end;
+
+procedure TEvaluateDecksForm.ceFilterKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = 13 then
+    UpdateFilter;
 end;
 
 function TEvaluateDecksForm.ParseWildCCB(ccb: TcxCheckComboBox): integer;
