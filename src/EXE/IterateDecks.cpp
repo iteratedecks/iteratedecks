@@ -64,15 +64,12 @@ In other words, it is the same as on auto, only the counters reset every time yo
 */
 	if (CSIndex && rbc)
 		tAtk.SetFancyStatsBuffer(CSIndex,rbc);
-	UCHAR iAtkLastManualTurn = 0, iDefLastManualTurn = 0; // or are both counters equal?
+	UCHAR iLastManualTurn = 0;
+	UCHAR iAutoAtkDmg = 0, iAutoDefDmg = 0;
 	for (UCHAR i=0; (i < MAX_TURN);)
 	{
 		if (bSurge)
 		{
-			if (tDef.Deck.size() >= 2)
-				tDef.DamageToCommander = 0; // reset
-			if (tDef.Deck.size() == 2)
-				iDefLastManualTurn = i;
 			tDef.AttackDeck(tAtk);
 			if (!tAtk.Commander.IsAlive())
 			{
@@ -86,10 +83,20 @@ In other words, it is the same as on auto, only the counters reset every time yo
 					r.LPoints+=10;
 				else
 					r.LPoints+=tDef.DamageToCommander;
+				iAutoAtkDmg += tAtk.DamageToCommander;
+				iAutoDefDmg += tDef.DamageToCommander;
+				if (iAutoAtkDmg > 10)
+					r.AutoPoints += 10;
+				else
+					r.AutoPoints += iAutoAtkDmg;
+				if (iAutoDefDmg > 10)
+					r.LAutoPoints += 10;
+				else
+					r.LAutoPoints += iAutoDefDmg;
 				r.Loss++;
 				if (i < 10)
 					r.LAutoPoints+=5; // +5 points for losing by turn 10 on auto
-				if (i < iDefLastManualTurn + 10)
+				if (i < iLastManualTurn + 10)
 					r.LPoints+=5; // +5 points for losing by turn T+10 
 				break;
 			}
@@ -139,9 +146,14 @@ In other words, it is the same as on auto, only the counters reset every time yo
 			}
 		}
 		if (tAtk.Deck.size() >= 2)
+		{
+			iAutoAtkDmg += tAtk.DamageToCommander;
+			iAutoDefDmg += tDef.DamageToCommander;
 			tAtk.DamageToCommander = 0; // reset
+			tDef.DamageToCommander = 0; // reset
+		}
 		if (tAtk.Deck.size() == 2)
-			iAtkLastManualTurn = i;
+			iLastManualTurn = i;
 		tAtk.AttackDeck(tDef);
 		if (!tDef.Commander.IsAlive())
 		{
@@ -156,6 +168,16 @@ In other words, it is the same as on auto, only the counters reset every time yo
 				r.LPoints+=10;
 			else
 				r.LPoints+=tDef.DamageToCommander;
+			iAutoAtkDmg += tAtk.DamageToCommander;
+			iAutoDefDmg += tDef.DamageToCommander;
+			if (iAutoAtkDmg > 10)
+				r.AutoPoints += 10;
+			else
+				r.AutoPoints += iAutoAtkDmg;
+			if (iAutoDefDmg > 10)
+				r.LAutoPoints += 10;
+			else
+				r.LAutoPoints += iAutoDefDmg;
 			if (bSurge)
 			{
 				r.Points+=20; // +20 points for winning on surge
@@ -163,17 +185,13 @@ In other words, it is the same as on auto, only the counters reset every time yo
 			}
 			if (i < 10)
 				r.AutoPoints+=5; // +5 points for winning by turn 10 on auto
-			if (i < iAtkLastManualTurn + 10)
+			if (i < iLastManualTurn + 10)
 				r.Points+=5; // +5 points for winning by turn T+10
 			break;
 		}
 		i++;
 		if (!bSurge)
 		{
-			if (tDef.Deck.size() >= 2)
-				tDef.DamageToCommander = 0; // reset
-			if (tDef.Deck.size() == 2)
-				iDefLastManualTurn = i;
 			tDef.AttackDeck(tAtk);
 			if (!tAtk.Commander.IsAlive())
 			{
@@ -187,10 +205,20 @@ In other words, it is the same as on auto, only the counters reset every time yo
 					r.LPoints+=10;
 				else
 					r.LPoints+=tDef.DamageToCommander;
+				iAutoAtkDmg += tAtk.DamageToCommander;
+				iAutoDefDmg += tDef.DamageToCommander;
+				if (iAutoAtkDmg > 10)
+					r.AutoPoints += 10;
+				else
+					r.AutoPoints += iAutoAtkDmg;
+				if (iAutoDefDmg > 10)
+					r.LAutoPoints += 10;
+				else
+					r.LAutoPoints += iAutoDefDmg;
 				r.Loss++;
 				if (i < 10)
 					r.LAutoPoints+=5; // +5 points for losing by turn 10 on auto
-				if (i < iDefLastManualTurn + 10)
+				if (i < iLastManualTurn + 10)
 					r.LPoints+=5; // +5 points for losing by turn T+10
 				break;
 			}
@@ -211,6 +239,16 @@ In other words, it is the same as on auto, only the counters reset every time yo
 			r.LPoints+=10;
 		else
 			r.LPoints+=tDef.DamageToCommander;
+		iAutoAtkDmg += tAtk.DamageToCommander;
+		iAutoDefDmg += tDef.DamageToCommander;
+		if (iAutoAtkDmg > 10)
+			r.AutoPoints += 10;
+		else
+			r.AutoPoints += iAutoAtkDmg;
+		if (iAutoDefDmg > 10)
+			r.LAutoPoints += 10;
+		else
+			r.LAutoPoints += iAutoDefDmg;
 	}
 	tAtk.SweepFancyStatsRemaining();
 }
@@ -236,7 +274,8 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 
 	if (CSIndex && rbc)
 		tAtk.SetFancyStatsBuffer(CSIndex,rbc);
-	UCHAR iAtkLastManualTurn = 0;
+	UCHAR iLastManualTurn = 0;
+	UCHAR iAutoAtkDmg = 0;
 	for (UCHAR i=0; (i < MAX_TURN); )
 	{
 		if (CSIndex && rbc)
@@ -268,9 +307,12 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 			}
 		}
 		if (tAtk.Deck.size() >= 2)
+		{
+			iAutoAtkDmg += tAtk.DamageToCommander;
 			tAtk.DamageToCommander = 0; // reset
+		}
 		if (tAtk.Deck.size() == 2)
-			iAtkLastManualTurn = i;
+			iLastManualTurn = i;
 		tAtk.AttackDeck(tDef);
 		if (!tDef.Commander.IsAlive())
 		{
@@ -281,9 +323,14 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 				r.Points+=10;
 			else
 				r.Points+=tAtk.DamageToCommander;
+			iAutoAtkDmg += tAtk.DamageToCommander;
+			if (iAutoAtkDmg >= 10)   // + points for dealing damage to enemy commander
+				r.AutoPoints+=10;
+			else
+				r.AutoPoints+=iAutoAtkDmg;
 			if (i < 10)
 				r.AutoPoints+=5; // +5 points for winning by turn 10 on auto
-			if (i < iAtkLastManualTurn + 10)
+			if (i < iLastManualTurn + 10)
 				r.Points+=5; // +5 points for winning by turn T+10
 			break;
 		}
@@ -874,9 +921,39 @@ int _tmain(int argc, char* argv[])
 #else
 	bConsoleOutput = false;
 	DB.LoadCardXML("cards.xml");
+/*
+	for (UINT i=0000;i<1000;i++)
+	{
+		const Card *c = &DB.GetCard(i);
+		float f = 0;
+		if (c->IsCard() && (c->GetWait() == 4) && (c->GetRarity() >= RARITY_RARE) && (c->GetSet() != 0))
+		{
+			//printf("%s ",c->GetName());
+			for (UCHAR k=0;k<c->GetAbilitiesCount();k++)
+			{
+				UCHAR aid = c->GetAbilityInOrder(k);
+				UCHAR cnt = c->GetTargetCount(aid);
+				if (cnt < 1)
+					cnt = 1;
+				float fmod = (cnt + 9) / 10;//(cnt + 1) / 2;
+				if (c->GetTargetFaction(aid) != FACTION_NONE)
+					fmod /= 2;
+				f += c->GetAbility(aid) * DB.Skills[aid].CardValue * fmod / ** (1 + DB.Skills[aid].IsPassive) / 1* /;
+				//printf("%d : %d x %.1f = %.1f | ",aid,c->GetAbility(aid),DB.Skills[aid].CardValue,c->GetAbility(aid) * DB.Skills[aid].CardValue);
+			}
+			// attack = 6
+			// health = 3
+			printf("%.1f	%.1f	[%d]	%s\n",f,f+(c->GetHealth()-1) * 2 + c->GetAttack() * 3,c->GetRarity(),c->GetName());
+			//printf("\n");
+		}
+	}
+
+	*/
+	bConsoleOutput = true;
 	DB.LoadRaidXML("raids.xml");
 	{
-		ActiveDeck X("QVDw+kD5EFE2+jH8",DB.GetPointer()),Y("RkBvBxB0DNDhDnE0FAFZGrH8IBfZfvvQ",DB.GetPointer());
+		ActiveDeck X("QHB++pB+",DB.GetPointer()),Y;
+		Y.Commander = DB.CARD("Freddie");
 		RESULTS res;
 		RESULT_BY_CARD rescs[DEFAULT_DECK_SIZE+1];
 
