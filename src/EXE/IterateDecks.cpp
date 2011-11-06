@@ -225,6 +225,23 @@ In other words, it is the same as on auto, only the counters reset every time yo
 			i++;
 		}
 	}
+	// check if cards stayed in deck - we finished before they could be played, lol
+	if (CSIndex && rbc && (!tAtk.Deck.empty()))
+	{
+		// well, we can't actually pick all the remaining cards and assign this win/loss to all of them
+		// we have to pick ONE LAST
+		// random? but order could matter
+		// remove all the cards except for last to be picked
+		while (tAtk.Deck.size() > 1)
+			tAtk.PickNextCard(true);
+		UINT id = tAtk.Deck[0].GetId(); // thats the last card
+		// this card did not participate in current game
+		rbc[CSIndex[id]].WLGames++;
+		if (!tAtk.Commander.IsAlive())
+			rbc[CSIndex[id]].WLLoss++;
+		if (!tDef.Commander.IsAlive())
+			rbc[CSIndex[id]].WLWin++;
+	}
 	// stalled
 	if (tAtk.Commander.IsDefined() && tDef.Commander.IsDefined() && tAtk.Commander.IsAlive() && tDef.Commander.IsAlive())
 	{

@@ -1675,7 +1675,7 @@ public:
 						while (vi != targets.end())
 						{
 							if (((*vi)->GetWait() == 0) && 
-								(((*vi)->GetAttack() >= 1) || (Src.GetTargetCount(aid) == TARGETSCOUNT_ALL)) && // at least 1 Attack OR it is WEAKEN ALL, that can lower ur attack down to -100500
+								((*vi)->GetAttack() >= 1) && // at least 1 Attack OR it is WEAKEN ALL, that can lower ur attack down to -100500
 								(!(*vi)->GetEffect(ACTIVATION_JAM)) && // neither Jammed
 								(!(*vi)->GetEffect(DMGDEPENDANT_IMMOBILIZE))    // nor Immobilized
 								)
@@ -1741,14 +1741,8 @@ public:
 		for (VCARDS::iterator vi = Structures.begin();vi != Structures.end();vi++)
 			SweepFancyStats(*vi);
 	}
-	void AttackDeck(ActiveDeck &Def)
+	const Card *PickNextCard(bool bNormalPick = true)
 	{
-		// process poison
-		for (UCHAR i=0;i<Units.size();i++)
-		{
-			Units[i].ResetShield(); // according to wiki, shield doesn't affect poison, it wears off before poison procs I believe
-			Units[i].ProcessPoison();
-		}
 		// pick a random card
 		VCARDS::iterator vi = Deck.begin();
 		UCHAR indx = 0;
@@ -1811,25 +1805,41 @@ public:
 		{
 			if (!indx)
 			{
-				if (bConsoleOutput)
+				if (bNormalPick)
 				{
-					Commander.PrintDesc();
-					printf(" picks ");
-					vi->PrintDesc();
-					printf("\n");
+					if (bConsoleOutput)
+					{
+						Commander.PrintDesc();
+						printf(" picks ");
+						vi->PrintDesc();
+						printf("\n");
+					}
+					if (vi->GetType() == TYPE_ASSAULT)
+						Units.push_back(*vi);
+					if (vi->GetType() == TYPE_STRUCTURE)
+						Structures.push_back(*vi);
+					if (vi->GetType() == TYPE_ACTION)
+						Actions.push_back(*vi);
+					vi = Deck.erase(vi);
 				}
-				if (vi->GetType() == TYPE_ASSAULT)
-					Units.push_back(*vi);
-				if (vi->GetType() == TYPE_STRUCTURE)
-					Structures.push_back(*vi);
-				if (vi->GetType() == TYPE_ACTION)
-					Actions.push_back(*vi);
-				vi = Deck.erase(vi);
-				break;
+				return vi->GetOriginalCard();
 			}
 			vi++;
 			indx--;
 		}
+		return 0; // no cards for u
+	}
+	void AttackDeck(ActiveDeck &Def)
+	{
+		// process poison
+		for (UCHAR i=0;i<Units.size();i++)
+		{
+			Units[i].ResetShield(); // according to wiki, shield doesn't affect poison, it wears off before poison procs I believe
+			Units[i].ProcessPoison();
+		}
+
+		PickNextCard();
+
 		PlayedCard Empty;
 		UCHAR iFusionCount = 0;
 		for (UCHAR i=0;i<Structures.size();i++)
@@ -1906,7 +1916,7 @@ public:
 			Units[i].EndTurn();
 		}
 		// clear dead units here yours and enemy
-		vi = Units.begin();
+		VCARDS::iterator vi = Units.begin();
 		while (vi != Units.end())
 			if (!vi->IsAlive())
 			{
