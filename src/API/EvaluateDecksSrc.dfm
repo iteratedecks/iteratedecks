@@ -6286,6 +6286,20 @@ object EvaluateDecksForm: TEvaluateDecksForm
           Width = 164
         end
       end
+      object lMaxTurn: TcxLabel
+        Left = 207
+        Top = 16
+        Caption = 'Maximum turn:'
+      end
+      object seMaxTurn: TcxSpinEdit
+        Left = 288
+        Top = 15
+        Properties.AssignedValues.MinValue = True
+        Properties.MaxValue = 100.000000000000000000
+        TabOrder = 7
+        Value = 50
+        Width = 49
+      end
     end
   end
   object tLoad: TTimer

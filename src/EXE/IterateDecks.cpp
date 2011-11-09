@@ -33,6 +33,7 @@
 #define MAX_FILTER_ID_COUNT		50
 
 CardDB DB; // just to make all easier ...
+UINT MaxTurn = MAX_TURN;
 
 void Simulate(ActiveDeck &tAtk, ActiveDeck &tDef, RESULTS &r, const UCHAR *CSIndex = 0, RESULT_BY_CARD *rbc = 0, bool bSurge = false)
 {
@@ -66,7 +67,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 		tAtk.SetFancyStatsBuffer(CSIndex,rbc);
 	UCHAR iLastManualTurn = 0;
 	UCHAR iAutoAtkDmg = 0, iAutoDefDmg = 0;
-	for (UCHAR i=0; (i < MAX_TURN);)
+	for (UCHAR i=0; (i < MaxTurn);)
 	{
 		if (bSurge)
 		{
@@ -114,7 +115,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 				xwl.Deck.clear();
 				xwl.SetFancyStatsBuffer(0,0); // don't inherit buffers here
 				ywl.SetFancyStatsBuffer(0,0); // don't inherit buffers here
-				for (UCHAR iwl=i; (iwl < MAX_TURN); )
+				for (UCHAR iwl=i; (iwl < MaxTurn); )
 				{
 					if (bSurge && (iwl > i)) // double defence turn without this check
 					{	
@@ -294,7 +295,7 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 		tAtk.SetFancyStatsBuffer(CSIndex,rbc);
 	UCHAR iLastManualTurn = 0;
 	UCHAR iAutoAtkDmg = 0;
-	for (UCHAR i=0; (i < MAX_TURN); )
+	for (UCHAR i=0; (i < MaxTurn); )
 	{
 		if (CSIndex && rbc)
 		{
@@ -305,7 +306,7 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 				// play variation without this card
 				rbc[CSIndex[id]].WLGames++;
 				ActiveDeck xwl(tAtk),ywl(tDef);
-				for (UCHAR iwl=i; (iwl < MAX_TURN); )
+				for (UCHAR iwl=i; (iwl < MaxTurn); )
 				{
 					xwl.AttackDeck(ywl);
 					iwl++;
@@ -489,6 +490,7 @@ struct EVAL_PARAMS
 	int WildFilterFaction;
 	int WildFilterInclude[MAX_FILTER_ID_COUNT];
 	int WildFilterExclude[MAX_FILTER_ID_COUNT];
+	UINT MaxTurn;
 };
 
 int _tmain(int argc, char* argv[])
@@ -790,6 +792,8 @@ int _tmain(int argc, char* argv[])
 	DB.LoadCardXML("cards.xml");
 	DB.LoadRaidXML("raids.xml");
 
+	MaxTurn = pEvalParams->MaxTurn;
+
 	ActiveDeck X,Y;
 	DB.CreateDeck(pEvalParams->AtkDeck,X);
 	DB.CreateDeck(pEvalParams->DefDeck,Y);
@@ -1033,7 +1037,7 @@ int _tmain(int argc, char* argv[])
 
 			//Simulate(x,y,res,false);
 
-			for (UCHAR i=0; (i < MAX_TURN); i++)
+			for (UCHAR i=0; (i < MaxTurn); i++)
 			{
 				if (x.Deck.size() == 1)
 				{
@@ -1042,7 +1046,7 @@ int _tmain(int argc, char* argv[])
 					// play variation without this card
 					rescs[CSIndex[id]].WLGames++;
 					ActiveDeck xwl(x),ywl(y);
-					for (UCHAR iwl=i; (iwl < MAX_TURN); iwl++)
+					for (UCHAR iwl=i; (iwl < MaxTurn); iwl++)
 					{
 						xwl.AttackDeck(ywl);
 						if (!ywl.Commander.IsAlive())

@@ -27,6 +27,8 @@ const
   CARD_ABILITIES_MAX = 70;
   cMaxBuffer = 65535;
   NAME_VALUE_SEPARATOR = '%';  // just a character that goes before '[' for StringList.Sort
+  cDefaultMaxTurn = 50;
+  
 type
   TCard = record
     Id: UINT;
@@ -103,6 +105,7 @@ type
     WildFilterFaction: integer;
     WildFilterInclude: array[0..MAX_FILTER_ID_COUNT - 1] of integer;
     WildFilterExclude: array[0..MAX_FILTER_ID_COUNT - 1] of integer;
+    MaxTurn: DWORD;
   end;
 
 type
@@ -347,6 +350,8 @@ type
     splEval: TcxSplitter;
     lTimeTaken: TcxLabel;
     cbInstant: TcxCheckBox;
+    lMaxTurn: TcxLabel;
+    seMaxTurn: TcxSpinEdit;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -512,6 +517,10 @@ type
     LastCardIndexBot: integer;
     bFilterChanged: boolean;
     //LastRecordIndex: integer;
+    mDefDeckName: string;
+    vDefDeckName: string;
+    mAtkDeckName: string;
+    vAtkDeckName: string;
   public
     { Public declarations }
   end;
@@ -697,7 +706,7 @@ end;
 
 function IterateDecks(Exe: string; Cwd: string; Seed: DWORD; AtkDeck: string;
   DefDeck: string; RaidID: integer; GamesPerThread: DWORD; Threads: DWORD;
-  bIsSurge: boolean; bOrderMatters: boolean; var iWildCard: integer;
+  bIsSurge: boolean; MaxTurn: DWORD; bOrderMatters: boolean; var iWildCard: integer;
   iWildFilterType: integer = 0; iWildFilterRarity: integer = 0;
   iWildFilterFaction: integer = 0; pWildFilterInclude: Pointer = nil;
   pWildFilterExclude: Pointer = nil): FULLRESULT;
@@ -722,6 +731,8 @@ begin
   ep.Threads := Threads;
   ep.Surge := bIsSurge;
   ep.OrderMatters := bOrderMatters;
+
+  ep.MaxTurn := MaxTurn;
 
   if iWildCard <> 0 then
   begin
@@ -973,6 +984,10 @@ begin
     end
     else
       Deck[i].Visible := false;
+    if bIsTopDeck then
+      vAtkDeckName := ''
+    else
+      vDefDeckName := '';
   end;
   if i > 0 then
     if bIsTopDeck then
@@ -1019,13 +1034,19 @@ procedure TEvaluateDecksForm.GenericImageMouseDown(Sender: TObject;
 begin
   if Button = mbLeft then
     if Cards[(Sender as TcxImage).Tag].CardType = TYPE_COMMANDER then
-      CopyCard((Sender as TcxImage), imgTop)
+    begin
+      CopyCard((Sender as TcxImage), imgTop);
+      vAtkDeckName := '';
+    end
     else
       AddCard(TopDeck, true, Sender as TcxImage);
   if Button = mbRight then
   begin
     if Cards[(Sender as TcxImage).Tag].CardType = TYPE_COMMANDER then
-      CopyCard((Sender as TcxImage), imgBot)
+    begin
+      CopyCard((Sender as TcxImage), imgBot);
+      vDefDeckName := '';
+    end
     else
       AddCard(BotDeck, false, Sender as TcxImage);
   end;
@@ -1066,6 +1087,7 @@ begin
     begin
       ClearCard(Sender as TcxImage);
       RearrangeDeck(TopDeck, (Sender as TcxImage).Tag);
+      vAtkDeckName := '';
     end;
   end;
   UpdateButtonsVisibility;
@@ -1081,6 +1103,7 @@ begin
     begin
       ClearCard(Sender as TcxImage);
       RearrangeDeck(BotDeck, (Sender as TcxImage).Tag);
+      vDefDeckName := '';
     end;
   end;
   UpdateButtonsVisibility;
@@ -1313,6 +1336,7 @@ procedure TEvaluateDecksForm.vBotDataControllerRecordChanged(
 var
   skd: string;
 begin
+   mDefDeckName := '';
   //LastRecordIndex := vTop.DataController.FocusedRecordIndex;
   if (AItemIndex = vBotName.Index) then
     if LastCardIndexBot < 0 then
@@ -1480,6 +1504,7 @@ procedure TEvaluateDecksForm.vTopDataControllerRecordChanged(
 var
   skd: string;
 begin
+  mAtkDeckName := '';
   //LastRecordIndex := vTop.DataController.FocusedRecordIndex;
   if (AItemIndex = vTopName.Index) then
     if LastCardIndex < 0 then
@@ -1669,6 +1694,10 @@ begin
           AddCard(Deck, bIsTopDeck, Images[id]);
       end;
     end;
+    if bIsTopDeck then
+      vAtkDeckName := DeckName
+    else
+      vDefDeckName := DeckName;
   finally
     FreeMem(p1);
     Free;
@@ -1785,6 +1814,7 @@ begin
       FreeMem(p1);
       sl.Free;
     end;
+    vDefDeckName := '';
   except
     ShowMessage('Error while loading hash.');
   end;
@@ -1825,6 +1855,7 @@ begin
         vBot.DataController.SetValue(i, vBotName.Index, '');
       end;
     end;
+    mDefDeckName := '';
   finally
     FreeMem(p1);
     Free;
@@ -2048,7 +2079,7 @@ begin
 
       wildcard := 0;
       r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, -1, games
-        div tc, tc, false, cbBOrderMatters.Checked, wildcard);
+        div tc, tc, false, cDefaultMaxTurn, cbBOrderMatters.Checked, wildcard);
 
       with vBatchResult.DataController do
       begin
@@ -2068,7 +2099,7 @@ begin
 
       wildcard := 0;
       r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, -1, games
-        div tc, tc, true, cbBOrderMatters.Checked, wildcard);
+        div tc, tc, true, cDefaultMaxTurn, cbBOrderMatters.Checked, wildcard);
 
       with vBatchResult.DataController do
       begin
@@ -2413,6 +2444,7 @@ begin
         vTop.DataController.SetValue(i, vTopName.Index, '');
       end;
     end;
+    mAtkDeckName := Name;
   finally
     FreeMem(p1);
     Free;
@@ -2474,6 +2506,7 @@ begin
         vBot.DataController.SetValue(i, vBotName.Index, '');
       end;
     end;
+    mDefDeckName := cbmCustom.Text;
   finally
     FreeMem(p1);
     Free;
@@ -2535,6 +2568,7 @@ begin
         vBot.DataController.SetValue(i, vBotName.Index, '');
       end;
     end;
+    mDefDeckName := cbmMission.Text;
   finally
     FreeMem(p1);
     Free;
@@ -2670,11 +2704,34 @@ begin
       if cbOrderMatters.Checked then
         Values[rec, vcType.Index] := Values[rec, vcType.Index] + ', ordered';
 
+      if seMaxTurn.Value <> cDefaultMaxTurn then
+        Values[rec, vcType.Index] := Values[rec, vcType.Index] + ', '+IntToStr(seMaxTurn.Value) + ' turns';
+
       if cbOrderMatters.Checked then
         s := atk
       else
         s := StringReplace(FormatDeck(sl1.CommaText), '"', '', [rfReplaceAll]);
+      if bImages then
+      begin
+        if vAtkDeckName <> '' then
+          s := vAtkDeckName;
+      end
+      else
+      begin
+        if mAtkDeckName <> '' then
+          s := mAtkDeckName;
+      end;
       Values[rec, vcAtk.Index] := StringReplace(s, ',', ', ', [rfReplaceAll]);
+      if bImages then
+      begin
+        if vDefDeckName <> '' then
+          sl2.Text := vDefDeckName;
+      end
+      else
+      begin
+        if mDefDeckName <> '' then
+          sl2.Text := mDefDeckName;
+      end;
       Values[rec, vcDef.Index] := StringReplace(StringReplace(FormatDeck(sl2.CommaText), '"', '', [rfReplaceAll]), ',', ', ', [rfReplaceAll]);
     end;
 
@@ -2782,7 +2839,7 @@ begin
             WildFilterInclude[i] := wcid;
 
       r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, raid,
-        games div tc, tc, bIsSurge, cbOrderMatters.Checked,
+        games div tc, tc, bIsSurge, seMaxTurn.Value, cbOrderMatters.Checked,
         wildcard, ft, fr, ff, Addr(WildFilterInclude), Addr(WildFilterExclude));
       if wildcard > 0 then
       begin
@@ -3114,6 +3171,7 @@ begin
       FreeMem(p1);
       sl.Free;
     end;
+    vAtkDeckName := '';
   except
     ShowMessage('Error while loading hash.');
   end;
@@ -3161,6 +3219,7 @@ begin
         vTop.DataController.SetValue(i, vTopName.Index, '');
       end;
     end;
+    mAtkDeckName := '';
   finally
     FreeMem(p1);
     Free;
@@ -3471,6 +3530,10 @@ begin
     Application.Terminate;
     Halt;
   end;
+  mDefDeckName := '';
+  vDefDeckName := '';
+  mAtkDeckName := '';
+  vAtkDeckName := '';
   ImageCount := 0;
   iHoverTag := -1;
   slLibIndex := TStringList.Create;
