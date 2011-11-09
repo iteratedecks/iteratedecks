@@ -7637,7 +7637,7 @@
 	</unit>
 	
 	<unit>
-		<id>520</id>
+		<id>531</id>
 		<name>Use This One</name>
 		<picture>alex.jpg</picture>
 		<attack>1</attack>
@@ -7682,11 +7682,11 @@
 		<id>182</id>
 		<name>TEST</name>
 		<picture>alex.jpg</picture>
-		<attack>1</attack>
-		<health>10</health>
-		<cost>1</cost>
+		<attack>2</attack>
+		<health>9</health>
+		<cost>4</cost>
 		<rarity>1</rarity> <gold_cost>10000</gold_cost>
-		<type>3</type>
+		<type>1</type>
 	</unit>
 	
 	<unit>
@@ -7725,8 +7725,7 @@
 		<health>10</health>
 		<cost>0</cost>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
-		<skill id='strike' x='10' all='1' />
-		<skill id='siege' x='10' />
+		<skill id='jam' />
 		<type>1</type> 
 	</unit>
 
