@@ -111,11 +111,12 @@ In other words, it is the same as on auto, only the counters reset every time yo
 				// play variation without this card
 				rbc[CSIndex[id]].WLGames++;
 				ActiveDeck xwl(tAtk),ywl(tDef);
+				xwl.Deck.clear();
 				xwl.SetFancyStatsBuffer(0,0); // don't inherit buffers here
 				ywl.SetFancyStatsBuffer(0,0); // don't inherit buffers here
 				for (UCHAR iwl=i; (iwl < MAX_TURN); )
 				{
-					if (bSurge)
+					if (bSurge && (iwl > i)) // double defence turn without this check
 					{	
 						ywl.AttackDeck(xwl);
 						iwl++;
