@@ -352,6 +352,7 @@ type
     cbInstant: TcxCheckBox;
     lMaxTurn: TcxLabel;
     seMaxTurn: TcxSpinEdit;
+    cbEnableRating: TcxCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -490,6 +491,7 @@ type
     procedure cbUseSpecificFilterClick(Sender: TObject);
     procedure ceFilterKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure cbEnableRatingClick(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -625,6 +627,8 @@ function GetDeckFromHash(Hash: string; buffer: PChar; size: DWORD): boolean; cde
 function GetDeckFromString(CardList: string; OutputIDList: PChar): boolean; cdecl; external DLLFILE;
 
 procedure SpeedTest; cdecl; external DLLFILE;
+
+function RateCard(Id: DWORD; var OffenceValue: double; var DefenceValue: double; iFormulaUsed: byte): boolean; cdecl; external DLLFILE;
 
 procedure AppendLine(FileName: string; Line: string);
 var
@@ -843,6 +847,11 @@ procedure TEvaluateDecksForm.cbDisplayNameClick(Sender: TObject);
 begin
   vcbAgainstName.Visible := cbDisplayName.Checked;
   vcbAgainst.Visible := not cbDisplayName.Checked;
+end;
+
+procedure TEvaluateDecksForm.cbEnableRatingClick(Sender: TObject);
+begin
+  ImageCount := 0;
 end;
 
 procedure TEvaluateDecksForm.bEvalExportClick(Sender: TObject);
@@ -3684,6 +3693,7 @@ var
   //C: ^TCard;
   ListItem: TListItem;
   card: ^TCard;
+  ov, dv: double;
 begin
   card := C;
   if not Assigned(Cards[Index]) then
@@ -3713,6 +3723,8 @@ begin
     Brush.Style := bsSolid;
     with intbitmap.Canvas do
     begin
+      Font.Color := clBlack;
+      Font.Style := [];
       brush.Color := GetFactionColor(Cards[index].Faction);
 
       FillRect(ClipRect);
@@ -3743,13 +3755,32 @@ begin
           TextOut(IL.Width - 25, IL.Height - 27, IntToStr(Cards[Index].Health))
         else
           TextOut(IL.Width - 16, IL.Height - 27, IntToStr(Cards[Index].Health));
+      // test part
+      if cbEnableRating.Checked then
+      begin
+        Font.Size := 8;
+        Font.Style := [fsBold];
+        Font.Color := clWebTomato;
+        RateCard(Cards[Index].Id, ov, dv, 0);
+        Brush.Color := clBlack;
+        Brush.Style := bssolid;
+        //FillRect(RECT(23, IL.Height - 87, 100, IL.Height - 55));
+        if dv = 0.0 then
+          TextOut(3, IL.Height - 55, 'Active: ' + FormatFloat('0.##',ov))
+        else
+        begin
+          TextOut(3, IL.Height - 67, 'Active: ' + FormatFloat('0.##',ov));
+          TextOut(3, IL.Height - 55, 'Passive: ' + FormatFloat('#.##',dv));
+        end;
+        //RateCard(Cards[Index].Id, ov, dv, 0);
+      end;
     end;
     //Bitmap.Canvas.Ellipse(50,50,150,150);
     //Bitmap.Canvas.CopyRect(RECT(0,0,IL.Width,IL.Height),Picture.Bitmap.Canvas,RECT(0,0,Picture.Width,Picture.Height));
     //Bitmap.Canvas.StretchDraw(RECT(0,20,IL.Width,IL.Height+20),Picture.Graphic);
     //Bitmap.Canvas.Draw(0, 0, Picture.Graphic);
     //IL.Add(Bitmap,Bitmap);
-    IL.AddMasked(intBitmap, clNone);
+    //IL.AddMasked(intBitmap, clNone);
 
     // "OLD" images inteface
 
@@ -3761,6 +3792,7 @@ begin
       Images[Index].Left := (cImageW + cBorder) * ((Index - iOffset) mod 2);
       Images[Index].Top := (cImageH + cBorder) * ((Index - iOffset) div 2);
     end;
+    Images[Index].Clear;
     Images[Index].Properties.GraphicClassName := 'TJPEGImage';
     Images[Index].Properties.ReadOnly := true;
     Images[Index].Picture.Bitmap.Assign(intBitmap);
@@ -3817,6 +3849,9 @@ begin
          //Bitmap.Canvas.StretchDraw(RECT(0,10,Bitmap.Width,Bitmap.Height+10),Picture.Graphic);
     ILS.AddMasked(intBitmap,clNone);
 }
+
+    //intPicture.
+    //intbitmap.Height := IL.Height;
 
     result := true;
   except

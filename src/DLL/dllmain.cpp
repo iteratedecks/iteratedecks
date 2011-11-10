@@ -459,6 +459,10 @@ extern "C"
 	{
 		return DB.InsertDeck(0,CardList,OutputIDList);
 	}
+	IDAPI bool RateCard(const UINT Id, double &OffenceValue, double &DefenceValue, const UCHAR iFormulaUsed = 0)
+	{
+		return DB.RateCard(Id, OffenceValue, DefenceValue, iFormulaUsed);
+	}
 }
 
 

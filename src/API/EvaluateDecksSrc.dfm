@@ -6300,6 +6300,14 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Value = 50
         Width = 49
       end
+      object cbEnableRating: TcxCheckBox
+        Left = 207
+        Top = 47
+        Caption = 'Enable card rating (Visual / Experimental)'
+        TabOrder = 8
+        OnClick = cbEnableRatingClick
+        Width = 234
+      end
     end
   end
   object tLoad: TTimer

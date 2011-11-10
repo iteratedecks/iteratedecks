@@ -546,6 +546,53 @@ public:
 		}
 		return (loaded > 0);
 	}
+	bool RateCard(const UINT Id, double &OffenceValue, double &DefenceValue, const UCHAR iFormulaVersion = 0)
+	{
+		const Card *c = &CDB[Id];
+		if (!c->IsCard()) // invalid
+			return false;
+		float fd = 0.0, fo = 0.0;
+		for (UCHAR k=0;k<c->GetAbilitiesCount();k++)
+		{
+			UCHAR aid = c->GetAbilityInOrder(k);
+			UCHAR cnt = c->GetTargetCount(aid);
+			if (cnt < 1)
+				cnt = 1;
+			float fmod = ((float)cnt + 5) / 6;//(cnt + 1) / 2;
+			if (c->GetTargetFaction(aid) != FACTION_NONE)
+				fmod *= 0.75; // should be 0.75 or 0.8 methinks
+			//ss += c->GetAbility(aid) * DB.Skills[aid].CardValue * fmod;
+			//printf("[%d]: %d x %.1f x %.1f ~ %.1f | ",cnt,c->GetAbility(aid),DB.Skills[aid].CardValue,fmod,c->GetAbility(aid) * DB.Skills[aid].CardValue * fmod);
+			//if (c->GetTargetFaction(aid) != FACTION_NONE)
+			//	printf(" specific");
+			//if (c->GetTargetFaction(aid) != FACTION_NONE)
+			//	fmod /= 2;
+			if (Skills[aid].IsPassive)
+				fd += c->GetAbility(aid) * Skills[aid].CardValue;
+			else
+				fo += c->GetAbility(aid) * Skills[aid].CardValue * fmod;
+			//f += c->GetAbility(aid) * DB.Skills[aid].CardValue;/* * fmod /** (1 + DB.Skills[aid].IsPassive) / 1*/;
+			//printf("%d : %d x %.1f = %.1f | ",aid,c->GetAbility(aid),DB.Skills[aid].CardValue,c->GetAbility(aid) * DB.Skills[aid].CardValue);
+		}
+		//printf("%.1f + %.1f	%.1f	|",fd,fo,fo+fd+2.5*c->GetAttack()+1.5*(c->GetHealth()/*-1*/)-2.5*c->GetWait());
+		//printf("	%.1f\n",fo / (c->GetWait() + 1)+fd+2.5*c->GetAttack() / (c->GetWait() + 0.5)+1.5*(c->GetHealth()/*-1*/));
+		/*printf("	D %.1f	O- %.1f	O* %.1f\n",
+			fd + 1.5*(c->GetHealth()),
+			fo + 2.5*c->GetAttack() - 2.5*c->GetWait(),
+			fo / (c->GetWait() + 0.5) + 2.5*c->GetAttack() / (c->GetWait() + 0.5)
+			);*/
+		if (!iFormulaVersion)
+		{
+			OffenceValue = (fo + 1.5*c->GetAttack()) * (10 - c->GetWait()) / 10;
+			DefenceValue = fd + 1*(c->GetHealth());
+		}
+		else
+		{
+			OffenceValue = fo + 2.5*c->GetAttack() - 2.5*c->GetWait();
+			DefenceValue = fd + 1.5*(c->GetHealth());
+		}
+		return true;
+	}
 	void GenRaidDeck(ActiveDeck &D, UINT RaidID)
 	{
 		_ASSERT(RaidID < RAID_MAX_ID);
