@@ -220,7 +220,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 				r.Loss++;
 				if (i < 10)
 					r.LAutoPoints+=5; // +5 points for losing by turn 10 on auto
-				if (i < iLastManualTurn + 10)
+				if ((!iLastManualTurn) || (i < iLastManualTurn + 10))
 					r.LPoints+=5; // +5 points for losing by turn T+10
 				break;
 			}
@@ -308,6 +308,7 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 				// play variation without this card
 				rbc[CSIndex[id]].WLGames++;
 				ActiveDeck xwl(tAtk),ywl(tDef);
+				xwl.Deck.clear();
 				for (UCHAR iwl=i; (iwl < MaxTurn); )
 				{
 					xwl.AttackDeck(ywl);
@@ -351,7 +352,7 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 				r.AutoPoints+=iAutoAtkDmg;
 			if (i < 10)
 				r.AutoPoints+=5; // +5 points for winning by turn 10 on auto
-			if (i < iLastManualTurn + 10)
+			if ((!iLastManualTurn) || (i < iLastManualTurn + 10))
 				r.Points+=5; // +5 points for winning by turn T+10
 			break;
 		}
@@ -363,6 +364,23 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 			break;
 		}
 		i++;
+	}
+	// check if cards stayed in deck - we finished before they could be played, lol
+	if (CSIndex && rbc && (!tAtk.Deck.empty()))
+	{
+		// well, we can't actually pick all the remaining cards and assign this win/loss to all of them
+		// we have to pick ONE LAST
+		// random? but order could matter
+		// remove all the cards except for last to be picked
+		while (tAtk.Deck.size() > 1)
+			tAtk.PickNextCard(true);
+		UINT id = tAtk.Deck[0].GetId(); // thats the last card
+		// this card did not participate in current game
+		rbc[CSIndex[id]].WLGames++;
+		if (!tAtk.Commander.IsAlive())
+			rbc[CSIndex[id]].WLLoss++;
+		if (!tDef.Commander.IsAlive())
+			rbc[CSIndex[id]].WLWin++;
 	}
 	tAtk.SweepFancyStatsRemaining();
 	r.Games++;
