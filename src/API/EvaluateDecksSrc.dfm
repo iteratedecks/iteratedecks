@@ -6221,6 +6221,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Width = 169
         Height = 17
         Caption = 'Slow dll, but with progress bar'
+        Enabled = False
         TabOrder = 1
         OnClick = bFastThreadedClick
       end

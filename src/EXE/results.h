@@ -18,6 +18,7 @@ struct RESULTS
 {
 	DWORD Win;
 	DWORD Loss;
+	DWORD Games;
 	DWORD Points;
 	DWORD AutoPoints;
 	DWORD LPoints;
@@ -26,6 +27,7 @@ struct RESULTS
 	{
 		Win = 0;
 		Loss = 0;
+		Games = 0;
 		Points = 0;
 		AutoPoints = 0;
 		LPoints = 0;
@@ -35,6 +37,7 @@ struct RESULTS
 	{
 		Win += rAdd.Win;
 		Loss += rAdd.Loss;
+		Games += rAdd.Games;
 		Points += rAdd.Points;
 		AutoPoints += rAdd.AutoPoints;
 		LPoints += rAdd.LPoints;

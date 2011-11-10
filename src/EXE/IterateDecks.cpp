@@ -270,6 +270,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 			r.LAutoPoints += iAutoDefDmg;
 	}
 	tAtk.SweepFancyStatsRemaining();
+	r.Games++;
 }
 
 struct EVAL_THREAD_PARAMS
@@ -283,6 +284,7 @@ struct EVAL_THREAD_PARAMS
 	const UCHAR *CSIndex;
 	RESULT_BY_CARD rbc[DEFAULT_DECK_SIZE+1];
 	bool bSurge;
+	int *pState;
 };
 
 void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* = 0*/, RESULT_BY_CARD *rbc/* = 0*/, DWORD RaidID)
@@ -363,6 +365,7 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 		i++;
 	}
 	tAtk.SweepFancyStatsRemaining();
+	r.Games++;
 }
 
 static unsigned int __stdcall ThreadFunc(void *pvParam)
@@ -371,7 +374,7 @@ static unsigned int __stdcall ThreadFunc(void *pvParam)
 	srand((unsigned)p->Seed); // it seems like each thread shares seed with others before it starts, so we should reset seed or we will gate the same random sequences in all threads
 	RESULTS lr;
 	RESULT_BY_CARD rbc[DEFAULT_DECK_SIZE+1];
-	for (DWORD i=0;i<p->gamesperthread;i++)
+	for (DWORD i=0;(i<p->gamesperthread) && (*(p->pState) >= 0);i++)
 	{
 		if (p->RaidID < 0)
 		{
@@ -389,7 +392,7 @@ static unsigned int __stdcall ThreadFunc(void *pvParam)
 	return (UINT)p;
 }
 
-void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDef, int RaidID, RESULTS &ret, RESULT_BY_CARD *rbc, DWORD gamesperthread, DWORD threadscount = 1, bool bSurge = false)
+void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDef, int RaidID, RESULTS &ret, RESULT_BY_CARD *rbc, int &State, DWORD gamesperthread, DWORD threadscount = 1, bool bSurge = false)
 {
 	// create Index
 	UCHAR CSIndex[CARD_MAX_ID];
@@ -415,7 +418,7 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 	if (threadscount <= 1)
 	{
 		srand((unsigned)Seed);
-		for (DWORD i=0;i<gamesperthread;i++)
+		for (DWORD i=0;(i<gamesperthread) && (State >= 0);i++)
 		{
 			if (RaidID < 0)
 			{
@@ -444,6 +447,7 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 			parms[i].gamesperthread = gamesperthread;
 			parms[i].Seed = Seed + i; // offset seed or we will have same results for all threads
 			parms[i].bSurge = bSurge;
+			parms[i].pState = &State;
 
 			m_ulThreadHandle[i] = _beginthreadex(0,
 										0,
@@ -491,6 +495,8 @@ struct EVAL_PARAMS
 	int WildFilterInclude[MAX_FILTER_ID_COUNT];
 	int WildFilterExclude[MAX_FILTER_ID_COUNT];
 	UINT MaxTurn;
+	// control
+	int State; // set to -1 to stop
 };
 
 int _tmain(int argc, char* argv[])
@@ -918,7 +924,7 @@ int _tmain(int argc, char* argv[])
 				continue;
 			RESULTS lresult;
 			RESULT_BY_CARD lrbc[DEFAULT_DECK_SIZE+1];
-			EvaluateInThreads(pEvalParams->Seed,x,Y,pEvalParams->RaidID,lresult,lrbc,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge);
+			EvaluateInThreads(pEvalParams->Seed,x,Y,pEvalParams->RaidID,lresult,lrbc,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge);
 			if (lresult.Win > pEvalParams->Result.Win)
 			{
 				pEvalParams->Result = lresult;
@@ -930,7 +936,7 @@ int _tmain(int argc, char* argv[])
 			pEvalParams->WildcardId = BestCard;
 	}
 	else // simple eval
-		EvaluateInThreads(pEvalParams->Seed,X,Y,pEvalParams->RaidID,pEvalParams->Result,pEvalParams->ResultByCard,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge);
+		EvaluateInThreads(pEvalParams->Seed,X,Y,pEvalParams->RaidID,pEvalParams->Result,pEvalParams->ResultByCard,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge);
 	time_t t1;
 	time(&t1);
 	pEvalParams->Seconds = (DWORD)t1-t;

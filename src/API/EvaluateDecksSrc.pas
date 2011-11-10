@@ -58,6 +58,7 @@ type
   RESULTS = record
     Win: DWORD;
     Loss: DWORD;
+    Games: DWORD;
     Points: DWORD;
     AutoPoints: DWORD;
     LPoints: DWORD;
@@ -106,6 +107,7 @@ type
     WildFilterInclude: array[0..MAX_FILTER_ID_COUNT - 1] of integer;
     WildFilterExclude: array[0..MAX_FILTER_ID_COUNT - 1] of integer;
     MaxTurn: DWORD;
+    State: integer;
   end;
 
 type
@@ -523,6 +525,8 @@ type
     vDefDeckName: string;
     mAtkDeckName: string;
     vAtkDeckName: string;
+    //
+    EvaluateParams: ^TEvalParams;
   public
     { Public declarations }
   end;
@@ -720,42 +724,9 @@ var
 
   hFileMapObj: THandle;
   lpBaseAddress: PChar;
-  ep: TEvalParams;
+  pEP: ^TEvalParams;
+  wait: DWORD;
 begin
-  ep.RaidID := RaidID;
-  StrPCopy(ep.AtkDeck, AtkDeck);
-  StrPCopy(ep.DefDeck, DefDeck);
-  {  StrPCopy(ep.AtkDeck,'Thadius,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Rocket Infantry');
-    StrPCopy(ep.DefDeck,'Vyander,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing');
-    StrPCopy(ep.AtkDeck,'Dracorex,Azure Reaper,Azure Reaper,Azure Reaper,Azure Reaper,Sustainer Xolan,Sustainer Xolan,Sustainer Xolan,Vaporwing,Rifter,Apex');
-    StrPCopy(ep.DefDeck,'Dracorex,Azure Reaper,Azure Reaper,Azure Reaper,Azure Reaper,Sustainer Xolan,Sustainer Xolan,Sustainer Xolan,Vaporwing,Rifter,Apex');
-  }
-  ep.Seed := Seed;
-  ep.GamesPerThread := GamesPerThread;
-  ep.Threads := Threads;
-  ep.Surge := bIsSurge;
-  ep.OrderMatters := bOrderMatters;
-
-  ep.MaxTurn := MaxTurn;
-
-  if iWildCard <> 0 then
-  begin
-    ep.WildCardId := iWildCard;
-    ep.WildFilterType := iWildFilterType;
-    ep.WildFilterRarity := iWildFilterRarity;
-    ep.WildFilterFaction := iWildFilterFaction;
-    if pWildFilterInclude <> nil then
-      CopyMemory(Addr(ep.WildFilterInclude), pWildFilterInclude, SizeOf(ep.WildFilterInclude))
-    else
-      FillChar(ep.WildFilterInclude,sizeof(ep.WildFilterInclude),0);
-    if pWildFilterExclude <> nil then
-      CopyMemory(Addr(ep.WildFilterExclude), pWildFilterExclude, SizeOf(ep.WildFilterExclude))
-    else
-      FillChar(ep.WildFilterExclude,sizeof(ep.WildFilterExclude),0);
-  end
-  else
-    ep.WildCardId := 0;
-
   hFileMapObj := CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0,
     256, 'Local\IterateDecksSharedMemory');
   if (hFileMapObj = 0) then
@@ -771,6 +742,44 @@ begin
     //ошибочка вышла
     ShowMessage('Can''t link FileMapping!');
 
+  EvaluateDecksForm.EvaluateParams := Pointer(lpBaseAddress); // I hate pointers in delphi ...
+  pEP := Pointer(lpBaseAddress);
+
+  pEP.RaidID := RaidID;
+  pEP.State := 0;
+  StrPCopy(pEP.AtkDeck, AtkDeck);
+  StrPCopy(pEP.DefDeck, DefDeck);
+  {  StrPCopy(ep.AtkDeck,'Thadius,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Rocket Infantry');
+    StrPCopy(ep.DefDeck,'Vyander,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing,Vaporwing');
+    StrPCopy(ep.AtkDeck,'Dracorex,Azure Reaper,Azure Reaper,Azure Reaper,Azure Reaper,Sustainer Xolan,Sustainer Xolan,Sustainer Xolan,Vaporwing,Rifter,Apex');
+    StrPCopy(ep.DefDeck,'Dracorex,Azure Reaper,Azure Reaper,Azure Reaper,Azure Reaper,Sustainer Xolan,Sustainer Xolan,Sustainer Xolan,Vaporwing,Rifter,Apex');
+  }
+  pEP.Seed := Seed;
+  pEP.GamesPerThread := GamesPerThread;
+  pEP.Threads := Threads;
+  pEP.Surge := bIsSurge;
+  pEP.OrderMatters := bOrderMatters;
+
+  pEP.MaxTurn := MaxTurn;
+
+  if iWildCard <> 0 then
+  begin
+    pEP.WildCardId := iWildCard;
+    pEP.WildFilterType := iWildFilterType;
+    pEP.WildFilterRarity := iWildFilterRarity;
+    pEP.WildFilterFaction := iWildFilterFaction;
+    if pWildFilterInclude <> nil then
+      CopyMemory(Addr(pEP.WildFilterInclude), pWildFilterInclude, SizeOf(pEP.WildFilterInclude))
+    else
+      FillChar(pEP.WildFilterInclude,sizeof(pEP.WildFilterInclude),0);
+    if pWildFilterExclude <> nil then
+      CopyMemory(Addr(pEP.WildFilterExclude), pWildFilterExclude, SizeOf(pEP.WildFilterExclude))
+    else
+      FillChar(pEP.WildFilterExclude,sizeof(pEP.WildFilterExclude),0);
+  end
+  else
+    pEP.WildCardId := 0;
+
   try
     with SI do
     begin
@@ -784,36 +793,31 @@ begin
       //hStdOutput := StdOutPipeWrite;
       //hStdError := StdOutPipeWrite;
     end;
-    CopyMemory(lpBaseAddress, Addr(ep), SizeOf(ep));
+    //CopyMemory(lpBaseAddress, Addr(ep), SizeOf(ep));
 
     if CreateProcess(nil, PChar(Exe),
       nil, nil, True, 0, nil,
       PChar(Cwd), SI, PI) then
     try
-      {repeat
-        WasOK := ReadFile(StdOutPipeRead, Buffer, 255, BytesRead, nil);
-        if BytesRead > 0 then
-        begin
-          Buffer[BytesRead] := #0;
-          Result := Result + Buffer;
-        end;
-      until not WasOK or (BytesRead = 0); }
-      WaitForSingleObject(PI.hProcess, INFINITE);
+      EvaluateDecksForm.bRun.Caption := 'Stop';
+      repeat
+        wait := WaitForSingleObject(PI.hProcess, 100{INFINITE});
+        Application.ProcessMessages;
+      until wait <> WAIT_TIMEOUT;
     finally
+      EvaluateDecksForm.bRun.Caption := 'Run';
       CloseHandle(PI.hThread);
       CloseHandle(PI.hProcess);
     end;
-
   finally
-    CopyMemory(Addr(ep), lpBaseAddress, SizeOf(ep));
+    iWildCard := pEP.WildCardId;
+    EvaluateDecksForm.lTimeTaken.Caption := IntToStr(pEP.Seconds) + ' sec.'; // well thats form ...
 
-    iWildCard := ep.WildCardId;
-    EvaluateDecksForm.lTimeTaken.Caption := IntToStr(ep.Seconds) + ' sec.'; // well thats form ...
-
-    result.Result := ep.Result;
-    CopyMemory(Addr(result.ResultByCard), Addr(ep.ResultByCard), SizeOf(result.ResultByCard));
+    result.Result := pEP.Result;
+    CopyMemory(Addr(result.ResultByCard), Addr(pEP.ResultByCard), SizeOf(result.ResultByCard));
 
     UnMapViewOfFile(lpBaseAddress);
+    EvaluateDecksForm.EvaluateParams := nil;
     //освободим объект FileMapping
     CloseHandle(hFileMapObj);
   end;
@@ -2093,15 +2097,15 @@ begin
       with vBatchResult.DataController do
       begin
         Values[rec, vcbFWins.Index] := r.Result.Win;
-        Values[rec, vcbFStalled.Index] := games - r.Result.Win - r.Result.Loss;
+        Values[rec, vcbFStalled.Index] := r.Result.games - r.Result.Win - r.Result.Loss;
         Values[rec, vcbFLoss.Index] := r.Result.Loss;
-        Values[rec, vcbFGames.Index] := games;
-        Values[rec, vcbFRatio.Index] := r.Result.Win / games;
-        Values[rec, vcbFAvgD.Index] := r.Result.Points / games;
-        Values[rec, vcbFAvgDA.Index] := r.Result.AutoPoints / games;
-        Values[rec, vcbFAvgS.Index] := r.Result.LPoints / games;
-        Values[rec, vcbFAvgSA.Index] := r.Result.LAutoPoints / games;
-        Values[rec, vcbFNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / games;
+        Values[rec, vcbFGames.Index] := r.Result.games;
+        Values[rec, vcbFRatio.Index] := r.Result.Win / r.Result.games;
+        Values[rec, vcbFAvgD.Index] := r.Result.Points / r.Result.games;
+        Values[rec, vcbFAvgDA.Index] := r.Result.AutoPoints / r.Result.games;
+        Values[rec, vcbFAvgS.Index] := r.Result.LPoints / r.Result.games;
+        Values[rec, vcbFAvgSA.Index] := r.Result.LAutoPoints / r.Result.games;
+        Values[rec, vcbFNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / r.Result.games;
       end;
 
       Application.ProcessMessages;
@@ -2113,15 +2117,15 @@ begin
       with vBatchResult.DataController do
       begin
         Values[rec, vcbSWins.Index] := r.Result.Win;
-        Values[rec, vcbSStalled.Index] := games - r.Result.Win - r.Result.Loss;
+        Values[rec, vcbSStalled.Index] := r.Result.games - r.Result.Win - r.Result.Loss;
         Values[rec, vcbSLoss.Index] := r.Result.Loss;
-        Values[rec, vcbSGames.Index] := games;
-        Values[rec, vcbSRatio.Index] := r.Result.Win / games;
-        Values[rec, vcbSAvgD.Index] := r.Result.Points / games;
-        Values[rec, vcbSAvgDA.Index] := r.Result.AutoPoints / games;
-        Values[rec, vcbSAvgS.Index] := r.Result.LPoints / games;
-        Values[rec, vcbSAvgSA.Index] := r.Result.LAutoPoints / games;
-        Values[rec, vcbSNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / games;
+        Values[rec, vcbSGames.Index] := r.Result.games;
+        Values[rec, vcbSRatio.Index] := r.Result.Win / r.Result.games;
+        Values[rec, vcbSAvgD.Index] := r.Result.Points / r.Result.games;
+        Values[rec, vcbSAvgDA.Index] := r.Result.AutoPoints / r.Result.games;
+        Values[rec, vcbSAvgS.Index] := r.Result.LPoints / r.Result.games;
+        Values[rec, vcbSAvgSA.Index] := r.Result.LAutoPoints / r.Result.games;
+        Values[rec, vcbSNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / r.Result.games;
       end;
 
       Application.ProcessMessages;
@@ -2609,6 +2613,12 @@ var
    WildFilterInclude: array[0..MAX_FILTER_ID_COUNT - 1] of integer;
    WildFilterExclude: array[0..MAX_FILTER_ID_COUNT - 1] of integer;
 begin
+  if EvaluateParams <> nil then
+  begin
+    EvaluateParams.State := -1;
+    exit;
+  end;
+
   //CoInitialize(nil);
   sl1 := TStringList.Create;
   sl2 := TStringList.Create;
@@ -2896,7 +2906,7 @@ begin
             if r.ResultByCard[z].WLGames > 0 then
             begin
               Values[lrec, vcsImportance.Index] :=
-                (r.Result.Win / games) - (r.ResultByCard[z].WLWin / r.ResultByCard[z].WLGames);
+                (r.Result.Win / r.Result.games) - (r.ResultByCard[z].WLWin / r.ResultByCard[z].WLGames);
               Values[lrec, vcsWinrate.Index] :=
                 r.ResultByCard[z].WLWin / r.ResultByCard[z].WLGames;
               Values[lrec, vcsWon.Index] := r.ResultByCard[z].WLWin;
@@ -2917,7 +2927,7 @@ begin
         vCardStats.EndUpdate;
       end;
 
-      i := games;
+      i := r.Result.games;
     end;
     //wins := Evaluate(sl1.CommaText,sl2.CommaText,games);
 
@@ -3530,6 +3540,7 @@ var
   fileDate: Integer;
 begin
   randomize();
+  EvaluateParams := nil;
   sLocalDir := ExtractFilePath(ParamStr(0));
   Caption := Application.Title;
   if SizeOf(TCard) <> GetCardSize() then
