@@ -97,7 +97,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 				r.Loss++;
 				if (i < 10)
 					r.LAutoPoints+=5; // +5 points for losing by turn 10 on auto
-				if (i < iLastManualTurn + 10)
+				if ((!iLastManualTurn) || (i < iLastManualTurn + 10))
 					r.LPoints+=5; // +5 points for losing by turn T+10 
 				break;
 			}
@@ -187,7 +187,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 			}
 			if (i < 10)
 				r.AutoPoints+=5; // +5 points for winning by turn 10 on auto
-			if (i < iLastManualTurn + 10)
+			if ((!iLastManualTurn) || (i < iLastManualTurn + 10))
 				r.Points+=5; // +5 points for winning by turn T+10
 			break;
 		}
@@ -943,12 +943,204 @@ int _tmain(int argc, char* argv[])
 #else
 	bConsoleOutput = false;
 	DB.LoadCardXML("cards.xml");
-/*
+
+	// parameter weights:
+	// attack
+	// health
+	// wait
+	// skills cost/weights(should take from xml for now)
+	// skill weight for ALL 10 targets
+	// skill weight for FACTION condition
+	// - set cost (set + rarity, aggregated)
+
+	// create matrix
+#define PARAMS_COUNT	4
+	UINT rcount = 0;
+	double mp[PARAMS_COUNT][1000],F[1000];
+	for (UINT i=0000;i<1000;i++)
+	{
+		const Card *c = &DB.GetCard(i);
+		float fo = 0, fd = 0;
+		if (c->IsCard()/* && (c->GetWait() == 3)/*&& (c->GetWait() == 1) && (c->GetRarity() >= RARITY_COMMON)*/ && (c->GetSet() != 0))
+		{
+			//printf("%s %d %d [%d] ",c->GetName(),c->GetAttack(),c->GetHealth(),c->GetWait());
+			printf("%d=	%d	%d	[%d]	",c->GetRarity(),c->GetAttack(),c->GetHealth(),c->GetWait());
+			//bool bSkip = false;
+			//float ss = 0.0;
+			for (UCHAR k=0;k<c->GetAbilitiesCount();k++)
+			{
+				UCHAR aid = c->GetAbilityInOrder(k);
+				UCHAR cnt = c->GetTargetCount(aid);
+				if (cnt < 1)
+					cnt = 1;
+				float fmod = ((float)cnt + 5) / 6;//(cnt + 1) / 2;
+				if (c->GetTargetFaction(aid) != FACTION_NONE)
+					fmod *= 0.75; // should be 0.75 or 0.8 methinks
+				//ss += c->GetAbility(aid) * DB.Skills[aid].CardValue * fmod;
+				//printf("[%d]: %d x %.1f x %.1f ~ %.1f | ",cnt,c->GetAbility(aid),DB.Skills[aid].CardValue,fmod,c->GetAbility(aid) * DB.Skills[aid].CardValue * fmod);
+				//if (c->GetTargetFaction(aid) != FACTION_NONE)
+				//	printf(" specific");
+				//if (c->GetTargetFaction(aid) != FACTION_NONE)
+				//	fmod /= 2;
+				if (DB.Skills[aid].IsPassive)
+					fd += c->GetAbility(aid) * DB.Skills[aid].CardValue;
+				else
+					fo += c->GetAbility(aid) * DB.Skills[aid].CardValue * fmod;
+				//f += c->GetAbility(aid) * DB.Skills[aid].CardValue;/* * fmod /** (1 + DB.Skills[aid].IsPassive) / 1*/;
+				//printf("%d : %d x %.1f = %.1f | ",aid,c->GetAbility(aid),DB.Skills[aid].CardValue,c->GetAbility(aid) * DB.Skills[aid].CardValue);
+			}
+			//printf("%.1f + %.1f	%.1f	|",fd,fo,fo+fd+2.5*c->GetAttack()+1.5*(c->GetHealth()/*-1*/)-2.5*c->GetWait());
+			//printf("	%.1f\n",fo / (c->GetWait() + 1)+fd+2.5*c->GetAttack() / (c->GetWait() + 0.5)+1.5*(c->GetHealth()/*-1*/));
+			printf("	D %.1f	O- %.1f	O* %.1f\n",
+				fd + 1.5*(c->GetHealth()),
+				fo + 2.5*c->GetAttack() - 2.5*c->GetWait(),
+				fo / (c->GetWait() + 0.5) + 2.5*c->GetAttack() / (c->GetWait() + 0.5)
+				);
+			mp[0][rcount] = c->GetAttack();
+			mp[1][rcount] = c->GetHealth();
+			mp[2][rcount] = fd;
+			mp[3][rcount] = fo;
+			//mp[4][rcount] = c->GetWait() + 1; // may want to try and filter out with constant wait first
+			F[rcount] = c->GetRarity()+1;
+			rcount++;
+			// attack = 6
+			// health = 3
+			//printf("%.1f	%.1f	[%d]	%s\n",f,f+(c->GetHealth()-1) * 2 + c->GetAttack() * 3,c->GetRarity(),c->GetName());
+			//printf("\n");
+		}
+	}
+	printf("MP:\n");
+	for (UINT i=0;i<rcount;i++)
+	{
+		for (UINT k=0;k<PARAMS_COUNT;k++)
+		{
+			printf("%.2f ",mp[k][i]);
+		}
+		printf("= %.2f ",F[i]);
+		printf("\n");
+	}
+	// normalize matrix
+	/*
+	1 2 3
+	4 5 6
+	  x
+	1 4
+	2 5
+	3 6	
+	*/
+	double A[PARAMS_COUNT][PARAMS_COUNT],f[PARAMS_COUNT];
+	for (UINT i=0;i<PARAMS_COUNT;i++)
+	{
+		for (UINT k=0;k<PARAMS_COUNT;k++)
+		{
+			double zf = 0.0;
+			for (UINT z=0;z<rcount;z++)
+			{
+				zf += mp[i][z] * mp[k][z];
+			}
+			A[i][k] = zf;
+		}
+		double zf = 0.0;
+		for (UINT z=0;z<rcount;z++)
+			zf += F[z] * mp[i][z];
+		f[i] = zf;
+	}
+
+	printf("NM:\n");
+	for (UINT i=0;i<PARAMS_COUNT;i++)
+	{
+		for (UINT k=0;k<PARAMS_COUNT;k++)
+		{
+			printf("%.2f ",A[i][k]);
+		}
+		printf("= %.2f ",f[i]);
+		printf("\n");
+	}
+
+	// this snippet is from my 2003 year classes...
+	// simple iteration method
+	{
+		double B[PARAMS_COUNT][PARAMS_COUNT],b[PARAMS_COUNT],r[PARAMS_COUNT],x[PARAMS_COUNT],xprev[PARAMS_COUNT],temp[PARAMS_COUNT],e=0.1101;
+		int i,n,k,j;
+		bool flag;
+
+		{
+			//приводим систему Ax=f к виду x=Bx+b
+			for (int i=0; i<PARAMS_COUNT; ++i)
+			{
+				b[i]=f[i]/A[i][i];
+				for (int j=0; j<PARAMS_COUNT; ++j)
+				{
+					if (i!=j)
+						B[i][j]=-A[i][j]/A[i][i];
+					else
+						B[i][j]=0;
+				};
+			};
+
+			//метод простых итераций
+			memcpy(x,b,sizeof(x));
+			n=0;
+			do
+			{
+				++n;
+				memcpy(temp,x,sizeof(x));
+				memcpy(x,xprev,sizeof(x));
+				memcpy(xprev,temp,sizeof(x));
+				for (j=0; j<PARAMS_COUNT; ++j)
+				{
+					x[j]=b[j];
+					for (k=0; k<PARAMS_COUNT; ++k)
+						x[j]+=B[j][k]*xprev[k];
+				}
+
+				//вычисление вектора невязки приближения x
+				for (i=0; i<PARAMS_COUNT; ++i)
+				{
+					r[i]=x[i];
+					for (j=0; j<PARAMS_COUNT; ++j)
+					r[i]-=B[i][j]*x[j];
+					r[i]-=b[i];
+				}
+
+				int i1=0;
+				for (i=0; i<PARAMS_COUNT; ++i)
+					if (fabs(r[i1])<e)
+						++i1;
+
+					if (i1<PARAMS_COUNT) flag=true;
+					else flag=false;
+			} while (flag);
+
+			//вывод решения
+			for (k=0; k<PARAMS_COUNT; k++)
+				printf("x%d = %.2f\n",k,x[k]);
+				//cout<<"x"<<k<<" = "<<x[k]<<endl;
+
+			//вывод вектора невязки
+			printf("dispersion:\n");
+			//cout<<"vector nevyazki:"<<endl;
+			for (i=0; i<PARAMS_COUNT; i++)
+			{
+				e=0;
+				for (j=0; j<PARAMS_COUNT; j++)
+					e+=A[i][j]*x[j];
+				printf("   %.2f\n",e-f[i]);
+				//cout<<"   "<<e-f[i]<<endl;
+			}
+			//вывод количества потребовавшихся итераций
+			printf("Number of iterations: %d\n",n);
+			//cout<<"Number of iterations: "<<n<<endl;
+			//cout<<endl;
+		}
+	}
+
+//////////////////********************
 	for (UINT i=0000;i<1000;i++)
 	{
 		const Card *c = &DB.GetCard(i);
 		float f = 0;
-		if (c->IsCard() && (c->GetWait() == 4) && (c->GetRarity() >= RARITY_RARE) && (c->GetSet() != 0))
+		if (c->IsCard() && (c->GetWait() == 1) && (c->GetRarity() >= RARITY_COMMON) && (c->GetSet() != 0))
 		{
 			//printf("%s ",c->GetName());
 			for (UCHAR k=0;k<c->GetAbilitiesCount();k++)
@@ -960,7 +1152,7 @@ int _tmain(int argc, char* argv[])
 				float fmod = (cnt + 9) / 10;//(cnt + 1) / 2;
 				if (c->GetTargetFaction(aid) != FACTION_NONE)
 					fmod /= 2;
-				f += c->GetAbility(aid) * DB.Skills[aid].CardValue * fmod / ** (1 + DB.Skills[aid].IsPassive) / 1* /;
+				f += c->GetAbility(aid) * DB.Skills[aid].CardValue;/* * fmod /** (1 + DB.Skills[aid].IsPassive) / 1*/;
 				//printf("%d : %d x %.1f = %.1f | ",aid,c->GetAbility(aid),DB.Skills[aid].CardValue,c->GetAbility(aid) * DB.Skills[aid].CardValue);
 			}
 			// attack = 6
@@ -970,7 +1162,7 @@ int _tmain(int argc, char* argv[])
 		}
 	}
 
-	*/
+	
 	bConsoleOutput = true;
 	DB.LoadRaidXML("raids.xml");
 	{
