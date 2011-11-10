@@ -2474,7 +2474,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Caption = 'Evaluate'
       ImageIndex = 2
       OnShow = tsEvalShow
-      object cxPageControl1: TcxPageControl
+      object pcEval: TcxPageControl
         Left = 0
         Top = 0
         Width = 784

@@ -293,7 +293,7 @@ type
     lUpdateNote: TcxLabel;
     cxLabel3: TcxLabel;
     bCheckImages: TcxButton;
-    cxPageControl1: TcxPageControl;
+    pcEval: TcxPageControl;
     tsEEvaluate: TcxTabSheet;
     tsEWildcard: TcxTabSheet;
     gbGenericFilter: TcxGroupBox;
@@ -726,6 +726,7 @@ var
   lpBaseAddress: PChar;
   pEP: ^TEvalParams;
   wait: DWORD;
+  i: integer;
 begin
   hFileMapObj := CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0,
     256, 'Local\IterateDecksSharedMemory');
@@ -799,9 +800,12 @@ begin
       nil, nil, True, 0, nil,
       PChar(Cwd), SI, PI) then
     try
+      i := 0;
       EvaluateDecksForm.bRun.Caption := 'Stop';
       repeat
         wait := WaitForSingleObject(PI.hProcess, 100{INFINITE});
+        EvaluateDecksForm.lTimeTaken.Caption := FormatFloat('0.0 sec.',i * 0.1);
+        inc(i);
         Application.ProcessMessages;
       until wait <> WAIT_TIMEOUT;
     finally
