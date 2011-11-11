@@ -559,7 +559,7 @@
 		<num_to_complete>3</num_to_complete>
 		<x>410</x>
 		<y>220</y>
-		<xp>23</xp>
+		<xp>23</xp> <!-- 23 -->
 		<energy>14</energy>
 		<money>250</money>
 		<rep faction='2' amount='10' />

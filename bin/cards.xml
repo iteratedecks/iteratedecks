@@ -7102,10 +7102,168 @@
 		<type>3</type>
 		<set>5000</set>
 	</unit>
+	
+	<!-- Reward Update -->
+	
+	<unit> <!-- Might add another health -->
+		<id>529</id>
+		<name>Solitary Mech</name>
+		<picture>bob.jpg</picture>
+		<attack>1</attack>
+		<health>4</health>
+		<cost>1</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='protect' x='1' y='9' />
+		<skill id='flurry' x='1' />
+		<type>9</type>
+		<set>5000</set>
+	</unit>
+	
+	<unit>
+		<id>524</id>
+		<name>Ravenous Dredge</name>
+		<picture>mouthwalker.jpg</picture>
+		<attack>1</attack>
+		<health>4</health>
+		<cost>1</cost>
+		<unique>1</unique>
+		<reserve>1</reserve>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='regenerate' x='2' />
+		<skill id='rally' x='1' y='3' />
+		<skill id='poison' x='1' />
+		<type>3</type>
+		<set>5000</set>
+	</unit>
+	
+	<unit>
+		<id>525</id>
+		<name>Ozeous</name>
+		<picture>razorback.jpg</picture>
+		<attack>2</attack>
+		<health>7</health>
+		<cost>3</cost>
+		<unique>1</unique>
+		<reserve>1</reserve>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='tribute' />
+		<skill id='strike' x='2' />
+		<type>4</type>
+		<set>5000</set>
+	</unit>
+	
+	<unit>
+		<id>522</id>
+		<name>Savior</name>
+		<picture>avenger2.jpg</picture>
+		<attack>2</attack>
+		<health>9</health>
+		<cost>4</cost>
+		<unique>1</unique>
+		<reserve>1</reserve>
+		<skill id='mimic' />
+		<skill id='protect' x='1' y='1' all='1' />
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<type>1</type>
+		<set>5000</set>
+	</unit>
 
 <!-- END FACTION REWARDS -->
 
-<!-- WAITLISTED SET -->
+<!-- Level Rewards -->
+
+	<unit>
+		<id>520</id>
+		<name>Elusive Panzer</name>
+		<picture>panther.jpg</picture>
+		<attack>3</attack>
+		<health>5</health>
+		<cost>3</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='evade' />
+		<skill id='antiair' x='3' />
+		<type>1</type>
+		<set>5000</set>
+	</unit>
+	
+	<unit>
+		<id>530</id>
+		<name>Solar Powerhouse</name>
+		<picture>centuriantransport.jpg</picture>
+		<attack>1</attack>
+		<health>7</health>
+		<cost>4</cost>
+		<unique>1</unique>
+		<reserve>1</reserve>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='armored' x='2' />
+		<skill id='rally' x='3' y='8' />
+		<skill id='supply' x='2' />
+		<type>8</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>523</id>
+		<name>Special Forces</name>
+		<picture>blitzsquad.jpg</picture>
+		<attack>1</attack>
+		<health>6</health>
+		<cost>3</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='tribute' />
+		<skill id='rally' x='2' />
+		<skill id='immobilize' />
+		<type>9</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>526</id>
+		<name>Avatar</name>
+		<picture>rightgunner.jpg</picture>
+		<attack>2</attack>
+		<health>5</health>
+		<cost>2</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='flurry' x='1' />
+		<skill id='valor' x='2' />
+		<type>8</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>527</id>
+		<name>Destructive Ram</name>
+		<picture>hogan.jpg</picture>
+		<attack>2</attack>
+		<health>8</health>
+		<cost>4</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='berserk' x='2' />
+		<skill id='crush' x='4' />
+		<skill id='siphon' x='4' />
+		<type>3</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>528</id>
+		<name>Realm Traverser</name>
+		<picture>vortextank.jpg</picture>
+		<attack>3</attack>
+		<health>4</health>
+		<cost>2</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='protect' x='1' y='4' />
+		<skill id='immobilize' />
+		<type>4</type>
+		<set>5000</set>
+	</unit>
+
+<!-- END Level Rewards -->
+
+<!-- Promo Cards -->
 	
 	<!-- BLOCK 1 -->
 	
@@ -7683,8 +7841,8 @@
 		<name>TEST</name>
 		<picture>alex.jpg</picture>
 		<attack>2</attack>
-		<health>9</health>
-		<cost>4</cost>
+		<health>2</health>
+		<cost>0</cost>
 		<rarity>1</rarity> <gold_cost>10000</gold_cost>
 		<type>1</type>
 	</unit>
@@ -7721,11 +7879,11 @@
 		<id>138</id>
 		<name>X-Dog, Lord of the Apocalypse</name>
 		<picture>xdog.jpg</picture>
-		<attack>0</attack>
+		<attack>2</attack>
 		<health>10</health>
 		<cost>0</cost>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
-		<skill id='jam' />
+		<skill id='siphon' x='2' />
 		<type>1</type> 
 	</unit>
 
@@ -10123,7 +10281,8 @@
 		<loop_anim>fogloop.swf</loop_anim>
 		<desc>Damage-Dependant - Whatever</desc>
 		<cardValue cost='1.5' />
-	</skillType><skillType>
+	</skillType>
+	<skillType>
 		<id>chaos</id>
 		<name>Chaos</name>
 		<icon>CrushSkillIcon</icon>
