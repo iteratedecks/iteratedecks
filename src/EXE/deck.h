@@ -813,7 +813,10 @@ private:
 						}
 						// substract armor from dmg
 						if (armor >= dmg)
+						{
+							targets[s]->fsAvoided += dmg;
 							dmg = 0;
+						}
 						else
 						{
 							targets[s]->fsAvoided += armor;
@@ -1805,6 +1808,7 @@ public:
 		{
 			if (!indx)
 			{
+				const Card * c = vi->GetOriginalCard();
 				if (bNormalPick)
 				{
 					if (bConsoleOutput)
@@ -1822,7 +1826,7 @@ public:
 						Actions.push_back(*vi);
 					vi = Deck.erase(vi);
 				}
-				return vi->GetOriginalCard();
+				return c;
 			}
 			vi++;
 			indx--;
