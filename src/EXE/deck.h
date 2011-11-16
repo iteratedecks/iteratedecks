@@ -408,7 +408,7 @@ public:
 		//OriginalCard.Infuse(setfaction);
 		Faction = setfaction;
 	}
-	const UCHAR SufferDmg(const UCHAR Dmg, const UCHAR Pierce = 0)
+	const UCHAR SufferDmg(const UCHAR Dmg, const UCHAR Pierce = 0, UCHAR *actualdamagedealt = 0)
 	{
 		_ASSERT(OriginalCard);
 // Regeneration happens before the additional strikes from Flurry.
@@ -448,6 +448,11 @@ public:
 					PrintDesc();
 					printf(" died!\n");
 				}
+			}
+			if (actualdamagedealt) // siphon and leech are kinda bugged - overkill damage counts as full attack damage even if card has 1 hp left, therefore this workaround
+			{
+				actualdamagedealt = dealt;
+				return dmg;
 			}
 			// crush damage will be dealt even if the defending unit Regenerates
 			return dealt;// note that CRUSH & BACKFIRE are processed elsewhere
@@ -827,8 +832,9 @@ private:
 					//printf("%s %d = %d => %s %d\n",SRC.GetName(),SRC.GetHealth(),dmg,targets[s]->GetName(),targets[s]->GetHealth());
 					if (dmg)
 					{
-						dmg = targets[s]->SufferDmg(dmg, pierce);
-						SRC.fsDmgDealt += dmg;
+						UCHAR actualdamagedealt = 0;
+						dmg = targets[s]->SufferDmg(dmg, pierce,&actualdamagedealt);
+						SRC.fsDmgDealt += actualdamagedealt;
 					}
 					// and now dmg dependant effects
 					if (!targets[s]->IsAlive()) // target just died
@@ -1911,7 +1917,7 @@ public:
 			{
 				//if (!Units[i].GetEffect(ACTIVATION_JAM)) // jammed - checked in beginturn
 				ApplyEffects(Units[i],i,Def);
-				if ((!Units[i].GetEffect(DMGDEPENDANT_IMMOBILIZE)) /*&& (!Units[i].GetEffect(ACTIVATION_JAM))*/) 
+				if ((!Units[i].GetEffect(DMGDEPENDANT_IMMOBILIZE)) && (!Units[i].GetEffect(ACTIVATION_JAM))) // tis funny but I need to check Jam for second time in case it was just paybacked
 				{
 					if (Units[i].IsAlive() && Units[i].GetAttack()) // can't attack with dead unit ;) also if attack = 0 then dont attack at all
 						Attack(i,Def);
