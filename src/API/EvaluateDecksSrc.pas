@@ -1,4 +1,4 @@
-unit EvaluateDecksSrc;
+п»їunit EvaluateDecksSrc;
 
 interface
 
@@ -14,7 +14,7 @@ uses
   EmbeddedWB, WinInet, ComCtrls, cxListView, Jpeg, cxCheckComboBox,
   cxCurrencyEdit, ActiveX, cxSpinEdit, cxRadioGroup, cxGroupBox, DBClient,
   GIFImg, ShellApi, cxCheckListBox, cxGridBandedTableView, cxGridExportLink, ClipBrd,
-  cxSplitter;
+  cxSplitter, Extended;
 
 const
   MAX_CARD_COUNT = 700;
@@ -355,6 +355,12 @@ type
     lMaxTurn: TcxLabel;
     seMaxTurn: TcxSpinEdit;
     cbEnableRating: TcxCheckBox;
+    cxLabel5: TcxLabel;
+    ilType: TcxImageList;
+    gbCombinedDefence: TcxGroupBox;
+    cbUseComplexDefence: TcxCheckBox;
+    cbComplexDefence: TcxComboBox;
+    bRefreshDefence: TcxButton;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -494,6 +500,9 @@ type
     procedure ceFilterKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure cbEnableRatingClick(Sender: TObject);
+    procedure LoadDefenceLists;
+    procedure bRefreshDefenceClick(Sender: TObject);
+    procedure tsBatchShow(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -557,6 +566,8 @@ const
   sCustomDecks = 'Custom.txt';
   sCardNotFound = 'Card "%s" not found in database.';
   cFansiteBaseLink = 'http://tyrant.40in.net/deck.php?id=';
+  sOptimusFont = 'cig\fonts\Optimus.ttf';
+  sEnigmaticFont = 'cig\fonts\Enigmatic.ttf';
 
 const
   DLLFILE = 'IterateDecksDLL.dll';
@@ -731,16 +742,16 @@ begin
   hFileMapObj := CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0,
     256, 'Local\IterateDecksSharedMemory');
   if (hFileMapObj = 0) then
-    //ошибочка вышла
+    //РѕС€РёР±РѕС‡РєР° РІС‹С€Р»Р°
     ShowMessage('Can'' create FileMapping!')
   else
   begin
-    //подключим FileMapping к адресному пространству
-    //и получим начальный адрес данных
+    //РїРѕРґРєР»СЋС‡РёРј FileMapping Рє Р°РґСЂРµСЃРЅРѕРјСѓ РїСЂРѕСЃС‚СЂР°РЅСЃС‚РІСѓ
+    //Рё РїРѕР»СѓС‡РёРј РЅР°С‡Р°Р»СЊРЅС‹Р№ Р°РґСЂРµСЃ РґР°РЅРЅС‹С…
     lpBaseAddress := MapViewOfFile(hFileMapObj, FILE_MAP_ALL_ACCESS, 0, 0, 0);
   end;
   if lpBaseAddress = nil then
-    //ошибочка вышла
+    //РѕС€РёР±РѕС‡РєР° РІС‹С€Р»Р°
     ShowMessage('Can''t link FileMapping!');
 
   EvaluateDecksForm.EvaluateParams := Pointer(lpBaseAddress); // I hate pointers in delphi ...
@@ -822,7 +833,7 @@ begin
 
     UnMapViewOfFile(lpBaseAddress);
     EvaluateDecksForm.EvaluateParams := nil;
-    //освободим объект FileMapping
+    //РѕСЃРІРѕР±РѕРґРёРј РѕР±СЉРµРєС‚ FileMapping
     CloseHandle(hFileMapObj);
   end;
 end;
@@ -844,6 +855,11 @@ begin
   ToCard.Picture := FromCard.Picture;
   ToCard.ShowHint := true;
   ToCard.Hint := FromCard.Hint;
+end;
+
+procedure TEvaluateDecksForm.bRefreshDefenceClick(Sender: TObject);
+begin
+  LoadDefenceLists;
 end;
 
 procedure TEvaluateDecksForm.cbUseSpecificFilterClick(Sender: TObject);
@@ -2047,94 +2063,181 @@ begin
     atk := StringReplace(sl1.CommaText, '"', '', [rfReplaceAll]);
     tc := seThreads.Value;
 
-    if (atk = '') then
-    begin
-      ShowMessage('Your deck is empty.');
-      exit;
-    end;
-
-    for i := 0 to clbTestAgainst.Count - 1 do
-    begin
-      if not clbTestAgainst.Items[i].Checked then
-        continue;
-
+    if cbUseComplexDefence.Checked then
+    try
+      // alternate version ...
       GetMem(p1, cMaxBuffer); // initialize
-      with TStringList.Create do
-      try
-        sl2.CommaText := GetCustomDeck(clbTestAgainst.Items[i].Text, 0, p1,
-          cMaxBuffer);
-      finally
-        FreeMem(p1);
-      end;
-
-      def := StringReplace(sl2.CommaText, '"', '', [rfReplaceAll]);
-      if (def = '') then
-      begin
-        //ShowMessage('One of the decks is empty.');
-        continue;
-      end;
-      with vBatchResult.DataController do
-      begin
-        AppendRecord;
-        rec := RecordCount - 1;
-        Values[rec, vcbAgainstName.Index] := clbTestAgainst.Items[i].Text;
-        Values[rec, vcbAgainst.Index] := StringReplace(StringReplace(FormatDeck(sl2.CommaText), '"', '', [rfReplaceAll]), ',', ', ',
-          [rfReplaceAll]);
-      end;
-
-      if cbRandomSeed.Checked then
-      begin
-        seed := random(MaxInt);
-        seSeed.Text := IntToStr(seed);
-      end
+      if not FileExists(sLocalDir + cAttackFile) then
+        ShowMessage('File not found: '+sLocalDir + cAttackFile)
       else
-      try
-        seed := StrToInt(seSeed.Text);
-      except
-        seed := 0;
-      end;
+        sl1.LoadFromFile(sLocalDir + cAttackFile);
 
-      wildcard := 0;
-      r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, -1, games
-        div tc, tc, false, cDefaultMaxTurn, cbBOrderMatters.Checked, wildcard);
-
-      with vBatchResult.DataController do
+      for i := 0 to sl1.Count - 1 do
       begin
-        Values[rec, vcbFWins.Index] := r.Result.Win;
-        Values[rec, vcbFStalled.Index] := r.Result.games - r.Result.Win - r.Result.Loss;
-        Values[rec, vcbFLoss.Index] := r.Result.Loss;
-        Values[rec, vcbFGames.Index] := r.Result.games;
-        Values[rec, vcbFRatio.Index] := r.Result.Win / r.Result.games;
-        Values[rec, vcbFAvgD.Index] := r.Result.Points / r.Result.games;
-        Values[rec, vcbFAvgDA.Index] := r.Result.AutoPoints / r.Result.games;
-        Values[rec, vcbFAvgS.Index] := r.Result.LPoints / r.Result.games;
-        Values[rec, vcbFAvgSA.Index] := r.Result.LAutoPoints / r.Result.games;
-        Values[rec, vcbFNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / r.Result.games;
+        if not GetDeckFromString(sl1[i], p1) then
+          continue;
+        // transform
+        sl2.CommaText := p1;
+        for seed := 0 to sl2.Count - 1 do
+          sl2[seed] := '[' + sl2[seed] + ']';
+        // iteration
+        atk := sl2.CommaText;
+        def := sLocalDir + cDefenceFolder + cbComplexDefence.Text;
+        with vBatchResult.DataController do
+        begin
+          AppendRecord;
+          rec := RecordCount - 1;
+          Values[rec, vcbAgainstName.Index] := 'Deck #'+IntToStr(i);
+          Values[rec, vcbAgainst.Index] := sl1[i];
+        end;
+
+        if cbRandomSeed.Checked then
+        begin
+          seed := random(MaxInt);
+          seSeed.Text := IntToStr(seed);
+        end
+        else
+        try
+          seed := StrToInt(seSeed.Text);
+        except
+          seed := 0;
+        end;
+
+        wildcard := 0;
+        r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, -1, games
+          div tc, tc, false, cDefaultMaxTurn, cbBOrderMatters.Checked, wildcard);
+
+        with vBatchResult.DataController do
+        begin
+          Values[rec, vcbFWins.Index] := r.Result.Win;
+          Values[rec, vcbFStalled.Index] := r.Result.games - r.Result.Win - r.Result.Loss;
+          Values[rec, vcbFLoss.Index] := r.Result.Loss;
+          Values[rec, vcbFGames.Index] := r.Result.games;
+          Values[rec, vcbFRatio.Index] := r.Result.Win / r.Result.games;
+          Values[rec, vcbFAvgD.Index] := r.Result.Points / r.Result.games;
+          Values[rec, vcbFAvgDA.Index] := r.Result.AutoPoints / r.Result.games;
+          Values[rec, vcbFAvgS.Index] := r.Result.LPoints / r.Result.games;
+          Values[rec, vcbFAvgSA.Index] := r.Result.LAutoPoints / r.Result.games;
+          Values[rec, vcbFNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / r.Result.games;
+        end;
+
+        Application.ProcessMessages;
+
+        wildcard := 0;
+        r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, -1, games
+          div tc, tc, true, cDefaultMaxTurn, cbBOrderMatters.Checked, wildcard);
+
+        with vBatchResult.DataController do
+        begin
+          Values[rec, vcbSWins.Index] := r.Result.Win;
+          Values[rec, vcbSStalled.Index] := r.Result.games - r.Result.Win - r.Result.Loss;
+          Values[rec, vcbSLoss.Index] := r.Result.Loss;
+          Values[rec, vcbSGames.Index] := r.Result.games;
+          Values[rec, vcbSRatio.Index] := r.Result.Win / r.Result.games;
+          Values[rec, vcbSAvgD.Index] := r.Result.Points / r.Result.games;
+          Values[rec, vcbSAvgDA.Index] := r.Result.AutoPoints / r.Result.games;
+          Values[rec, vcbSAvgS.Index] := r.Result.LPoints / r.Result.games;
+          Values[rec, vcbSAvgSA.Index] := r.Result.LAutoPoints / r.Result.games;
+          Values[rec, vcbSNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / r.Result.games;
+        end;
+
+        Application.ProcessMessages;
       end;
-
-      Application.ProcessMessages;
-
-      wildcard := 0;
-      r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, -1, games
-        div tc, tc, true, cDefaultMaxTurn, cbBOrderMatters.Checked, wildcard);
-
-      with vBatchResult.DataController do
+    finally
+      FreeMem(p1);
+    end
+    else
+    begin
+      // normal version
+      if (atk = '') then
       begin
-        Values[rec, vcbSWins.Index] := r.Result.Win;
-        Values[rec, vcbSStalled.Index] := r.Result.games - r.Result.Win - r.Result.Loss;
-        Values[rec, vcbSLoss.Index] := r.Result.Loss;
-        Values[rec, vcbSGames.Index] := r.Result.games;
-        Values[rec, vcbSRatio.Index] := r.Result.Win / r.Result.games;
-        Values[rec, vcbSAvgD.Index] := r.Result.Points / r.Result.games;
-        Values[rec, vcbSAvgDA.Index] := r.Result.AutoPoints / r.Result.games;
-        Values[rec, vcbSAvgS.Index] := r.Result.LPoints / r.Result.games;
-        Values[rec, vcbSAvgSA.Index] := r.Result.LAutoPoints / r.Result.games;
-        Values[rec, vcbSNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / r.Result.games;
+        ShowMessage('Your deck is empty.');
+        exit;
       end;
 
-      Application.ProcessMessages;
+      for i := 0 to clbTestAgainst.Count - 1 do
+      begin
+        if not clbTestAgainst.Items[i].Checked then
+          continue;
 
+        GetMem(p1, cMaxBuffer); // initialize
+        with TStringList.Create do
+        try
+          sl2.CommaText := GetCustomDeck(clbTestAgainst.Items[i].Text, 0, p1,
+            cMaxBuffer);
+        finally
+          FreeMem(p1);
+        end;
+
+        def := StringReplace(sl2.CommaText, '"', '', [rfReplaceAll]);
+        if (def = '') then
+        begin
+          //ShowMessage('One of the decks is empty.');
+          continue;
+        end;
+        with vBatchResult.DataController do
+        begin
+          AppendRecord;
+          rec := RecordCount - 1;
+          Values[rec, vcbAgainstName.Index] := clbTestAgainst.Items[i].Text;
+          Values[rec, vcbAgainst.Index] := StringReplace(StringReplace(FormatDeck(sl2.CommaText), '"', '', [rfReplaceAll]), ',', ', ',
+            [rfReplaceAll]);
+        end;
+
+        if cbRandomSeed.Checked then
+        begin
+          seed := random(MaxInt);
+          seSeed.Text := IntToStr(seed);
+        end
+        else
+        try
+          seed := StrToInt(seSeed.Text);
+        except
+          seed := 0;
+        end;
+
+        wildcard := 0;
+        r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, -1, games
+          div tc, tc, false, cDefaultMaxTurn, cbBOrderMatters.Checked, wildcard);
+
+        with vBatchResult.DataController do
+        begin
+          Values[rec, vcbFWins.Index] := r.Result.Win;
+          Values[rec, vcbFStalled.Index] := r.Result.games - r.Result.Win - r.Result.Loss;
+          Values[rec, vcbFLoss.Index] := r.Result.Loss;
+          Values[rec, vcbFGames.Index] := r.Result.games;
+          Values[rec, vcbFRatio.Index] := r.Result.Win / r.Result.games;
+          Values[rec, vcbFAvgD.Index] := r.Result.Points / r.Result.games;
+          Values[rec, vcbFAvgDA.Index] := r.Result.AutoPoints / r.Result.games;
+          Values[rec, vcbFAvgS.Index] := r.Result.LPoints / r.Result.games;
+          Values[rec, vcbFAvgSA.Index] := r.Result.LAutoPoints / r.Result.games;
+          Values[rec, vcbFNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / r.Result.games;
+        end;
+
+        Application.ProcessMessages;
+
+        wildcard := 0;
+        r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, -1, games
+          div tc, tc, true, cDefaultMaxTurn, cbBOrderMatters.Checked, wildcard);
+
+        with vBatchResult.DataController do
+        begin
+          Values[rec, vcbSWins.Index] := r.Result.Win;
+          Values[rec, vcbSStalled.Index] := r.Result.games - r.Result.Win - r.Result.Loss;
+          Values[rec, vcbSLoss.Index] := r.Result.Loss;
+          Values[rec, vcbSGames.Index] := r.Result.games;
+          Values[rec, vcbSRatio.Index] := r.Result.Win / r.Result.games;
+          Values[rec, vcbSAvgD.Index] := r.Result.Points / r.Result.games;
+          Values[rec, vcbSAvgDA.Index] := r.Result.AutoPoints / r.Result.games;
+          Values[rec, vcbSAvgS.Index] := r.Result.LPoints / r.Result.games;
+          Values[rec, vcbSAvgSA.Index] := r.Result.LAutoPoints / r.Result.games;
+          Values[rec, vcbSNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / r.Result.games;
+        end;
+
+        Application.ProcessMessages;
+      end;
     end;
+
     //ShowMessage('Attacker wins '+inttostr(wins)+' of '+inttostr(games)+' games.');
   finally
     sl1.Free;
@@ -2708,7 +2811,10 @@ begin
     end;
 
     atk := StringReplace(sl1.CommaText, '"', '', [rfReplaceAll]);
-    def := StringReplace(sl2.CommaText, '"', '', [rfReplaceAll]);
+    if cbUseComplexDefence.Checked then
+       def := sLocalDir + cDefenceFolder + cbComplexDefence.Text
+    else
+       def := StringReplace(sl2.CommaText, '"', '', [rfReplaceAll]);
     if (atk = '') or ((def = '') and (not bIsRaid)) then
     begin
       Exception.Create('One of the decks is empty, can''t continue');
@@ -2755,6 +2861,8 @@ begin
         if mDefDeckName <> '' then
           sl2.Text := mDefDeckName;
       end;
+      if cbUseComplexDefence.Checked then
+        sl2.Text := cbComplexDefence.Text;
       Values[rec, vcDef.Index] := StringReplace(StringReplace(FormatDeck(sl2.CommaText), '"', '', [rfReplaceAll]), ',', ', ', [rfReplaceAll]);
     end;
 
@@ -3537,6 +3645,31 @@ begin
   end;
 end;
 
+procedure TEvaluateDecksForm.LoadDefenceLists;
+var
+  sl: TStringList;
+  i: integer;
+begin
+  gbCombinedDefence.Visible := DirectoryExists(sLocalDir + cDefenceFolder);
+  if not gbCombinedDefence.Visible then
+  begin
+    cbUseComplexDefence.Checked := false;
+    exit;
+  end;
+  sl := TStringList.Create;
+  try
+    cbComplexDefence.Properties.Items.Clear;
+    ListFileDir(sLocalDir + cDefenceFolder,sl);
+    for i := 0 to sl.Count - 1 do
+      cbComplexDefence.Properties.Items.Add({ChangeFileExt(}ExtractFileName(sl[i]){,'')});
+    if cbComplexDefence.Properties.Items.Count > 0 then
+      cbComplexDefence.ItemIndex := 0;
+  finally
+    sl.Free;
+  end;
+  //cbComplexDefence
+end;
+
 procedure TEvaluateDecksForm.FormCreate(Sender: TObject);
 var
   p1: pchar;
@@ -3547,6 +3680,12 @@ begin
   EvaluateParams := nil;
   sLocalDir := ExtractFilePath(ParamStr(0));
   Caption := Application.Title;
+
+  LoadDefenceLists;
+
+  //AddFontResource(PAnsiChar(sLocalDir + sOptimusFont));
+  AddFontResource(PAnsiChar(sLocalDir + sEnigmaticFont));
+
   if SizeOf(TCard) <> GetCardSize() then
   begin
     tLoad.Enabled := false;
@@ -3615,6 +3754,9 @@ begin
   slSkillList.Free;
   //slSetList.Free;
   slUpdate.Free;
+
+  //RemoveFontResource(PAnsiChar(sLocalDir + sOptimusFont));
+  RemoveFontResource(PAnsiChar(sLocalDir + sEnigmaticFont));
 end;
 
 procedure TEvaluateDecksForm.FormMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -3704,11 +3846,12 @@ end;
 
 function TEvaluateDecksForm.LoadCardImage(C: Pointer; Index: integer): boolean;
 var
-  K: integer;
+  K, L: integer;
   //C: ^TCard;
   ListItem: TListItem;
   card: ^TCard;
   ov, dv: double;
+  bf: BlendFunction;
 begin
   card := C;
   if not Assigned(Cards[Index]) then
@@ -3734,27 +3877,43 @@ begin
     intPicture.LoadFromFile(sLocalDir + sCardsDir + card.Picture);
 
     intbitmap.Height := IL.Height;
-    intbitmap.Width := intPicture.Graphic.Width;
+    intbitmap.Width := IL.Width;
     Brush.Style := bsSolid;
     with intbitmap.Canvas do
     begin
-      Font.Color := clBlack;
+      Font.Name := 'Enigmatic';
+      Font.Color := clWhite;
       Font.Style := [];
-      brush.Color := GetFactionColor(Cards[index].Faction);
 
-      FillRect(ClipRect);
+      Brush.Style := bsclear;
+      //brush.Color := GetFactionColor(Cards[index].Faction);
+
+      //FillRect(ClipRect);
       //FillRect(RECT(0,0,IL.Width,20)) ;
 
-      Font.Size := 10;
-      TextOut(16, 2, Cards[Index].Name);
+      Draw(4, 11, intPicture.Graphic);
 
-      Brush.Color := clSilver;
-      FillRect(RECT(0, 170, IL.Width, 170 + 50));
+      //intMask.PixelFormat:=pf32bit;
+      IL.GetImage(Cards[Index].Faction, intMask);
 
-      Draw(0, 20, intPicture.Graphic);
+{bf.BlendOp:=AC_SRC_OVER;
+bf.BlendFlags:=0;
+bf.AlphaFormat:=AC_SRC_ALPHA;
+bf.SourceConstantAlpha:=255;
+
+Windows.AlphaBlend(Canvas.Handle, 0, 0, intMask.Width, intMask.Height, intMask.Canvas.Handle, 0, 0, intMask.Width, intMask.Height, bf);
+}
+      intMask.Transparent := true;
+      Draw(0, 0, intMask);
+
+      Font.Size := 10;   // 14 pt?
+      TextOut(32, 7, Cards[Index].Name);
+
+      //Brush.Color := clSilver;
+      //FillRect(RECT(0, 170, IL.Width, 170 + 50));
+
 
       intal.Text := GetAbilityList(Cards[Index]);
-      Brush.Style := bsclear;
       Font.Size := 7;
       for k := 0 to intal.Count - 1 do
         TextOut(25, 172 + k * 12, intal[k]);
@@ -3770,6 +3929,38 @@ begin
           TextOut(IL.Width - 25, IL.Height - 27, IntToStr(Cards[Index].Health))
         else
           TextOut(IL.Width - 16, IL.Height - 27, IntToStr(Cards[Index].Health));
+
+      // type icon
+      K := 0;
+{#define RARITY_COMMON			0
+#define RARITY_UNCOMMON			1
+#define RARITY_RARE				2
+#define RARITY_UNIQUE			3
+#define RARITY_LEGENDARY		4
+#define RARITY_STORYCOMMANDER	10 }
+      if Cards[Index].Rarity < 3 then
+        K := Cards[Index].Rarity * 4
+      else
+        if Cards[Index].Rarity < 4 then // UNIQUE = RARE
+          K := 2 * 4
+        else
+          K := 3 * 4; // LEGENDARY
+{#define TYPE_NONE				0
+#define TYPE_COMMANDER			1
+#define TYPE_ASSAULT			2
+#define TYPE_STRUCTURE			3
+#define TYPE_ACTION				4 }
+      L := Cards[Index].CardType - 1;
+      if L >= 0 then
+      begin
+        ilType.GetImage(K + L, intMask);
+        intMask.Transparent := true;
+        Draw(5, 1, intMask);
+      end;
+
+
+
+
       // test part
       if cbEnableRating.Checked then
       begin
@@ -4081,12 +4272,23 @@ begin
 //  Canvas.UnLock;
 end;
 
+procedure TEvaluateDecksForm.tsBatchShow(Sender: TObject);
+begin
+  gbCombinedDefence.Parent := tsBatch;
+  gbCombinedDefence.Left := 391;
+  gbCombinedDefence.Top := 57;
+end;
+
 procedure TEvaluateDecksForm.tsDecksShow(Sender: TObject);
 var
   s, i: DWORD;
 begin
   if ImageCount > 0 then
     exit; // already loaded
+
+  if Application.MessageBox(
+            'Card images are about to be loaded.'#13'Are you sure you want to continue?','Load images',MB_OKCANCEL) <> ID_OK then
+    exit;
 
   s := GetDBSize();
   if s > 0 then
@@ -4124,6 +4326,10 @@ var
   i, id: integer;
   s, wc: string;
 begin
+  gbCombinedDefence.Parent := pEvalTop;
+  gbCombinedDefence.Left := 543;
+  gbCombinedDefence.Top := 0;
+
   wc := cbWildCardName.Text;
   cbWildCardName.Properties.Items.Clear;
   try
