@@ -392,12 +392,25 @@ static unsigned int __stdcall ThreadFunc(void *pvParam)
 	srand((unsigned)p->Seed); // it seems like each thread shares seed with others before it starts, so we should reset seed or we will gate the same random sequences in all threads
 	RESULTS lr;
 	RESULT_BY_CARD rbc[DEFAULT_DECK_SIZE+1];
+	UINT customcount = DB.GetCustomCount();
+	UINT customindex = 100; // doesn't matter if it is not 0
+	ActiveDeck customdeck;
 	for (DWORD i=0;(i<p->gamesperthread) && (*(p->pState) >= 0);i++)
 	{
 		if (p->RaidID < 0)
 		{
 			ActiveDeck Atk(*p->Atk);
 			ActiveDeck Def(*p->Def);
+			if (!Def.IsValid())
+			{
+				UINT idx = i * customcount / p->gamesperthread;
+				if (idx != customindex)
+				{
+					DB.GetCustomDeck(idx,customdeck);
+					customindex = idx;
+				}
+				Def = customdeck;
+			}
 			Simulate(Atk,Def,lr,p->CSIndex,rbc,p->bSurge);
 		}
 		else
@@ -436,12 +449,25 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 	if (threadscount <= 1)
 	{
 		srand((unsigned)Seed);
+		UINT customcount = DB.GetCustomCount();
+		UINT customindex = 100; // doesn't matter if it is not 0
+		ActiveDeck customdeck;
 		for (DWORD i=0;(i<gamesperthread) && (State >= 0);i++)
 		{
 			if (RaidID < 0)
 			{
 				ActiveDeck tAtk(gAtk);
 				ActiveDeck tDef(gDef);
+				if (!tDef.IsValid())
+				{
+					const UINT idx = i * customcount / gamesperthread;
+					if (idx != customindex)
+					{
+						DB.GetCustomDeck(idx,customdeck);
+						customindex = idx;
+					}
+					tDef = customdeck;
+				}
 				Simulate(tAtk,tDef,ret,CSIndex,rbc,bSurge);
 			}
 			else
@@ -519,6 +545,698 @@ struct EVAL_PARAMS
 
 int _tmain(int argc, char* argv[])
 {
+#if !_DEBUG
+	// executable uses shared memory to recieve parameters from API
+	HANDLE hFileMapping = CreateFileMapping(
+			INVALID_HANDLE_VALUE,    // use paging file
+			NULL,                    // default security
+			PAGE_READWRITE,          // read/write access
+			0,                       // maximum object size (high-order DWORD)
+			sizeof(EVAL_PARAMS),     // maximum object size (low-order DWORD)
+			SM_NAME);                // name of mapping object
+	if (hFileMapping == NULL)
+	{
+		printf("Could not create file mapping object (%d).\n",
+			GetLastError());
+		return 1;
+	}
+	EVAL_PARAMS* pEvalParams = (EVAL_PARAMS*)MapViewOfFile(hFileMapping,   // handle to map object
+				FILE_MAP_ALL_ACCESS, // read/write permission
+				0,
+				0,
+				sizeof(EVAL_PARAMS));
+	if (pEvalParams == NULL)
+	{
+		printf("Could not map view of file (%d).\n",
+			GetLastError());
+		return 1;
+	}
+
+	//memcpy(buffer,(PVOID)pBuf,BUF_SIZE);
+	//printf(buffer);
+
+	bConsoleOutput = false;
+	DB.LoadCardXML("cards.xml");
+	DB.LoadRaidXML("raids.xml");
+
+	MaxTurn = pEvalParams->MaxTurn;
+
+	ActiveDeck X,Y;
+	DB.CreateDeck(pEvalParams->AtkDeck,X);
+	if (DB.LoadDecks(pEvalParams->DefDeck) == -2) // FNF
+		DB.CreateDeck(pEvalParams->DefDeck,Y);
+	X.SetOrderMatters(pEvalParams->OrderMatters);
+
+	memset(&pEvalParams->Result,0,sizeof(RESULTS));
+	memset(&pEvalParams->ResultByCard,0,sizeof(RESULT_BY_CARD) * (DEFAULT_DECK_SIZE + 1));	
+
+	time_t t;
+
+	time(&t);
+	if (pEvalParams->WildcardId)
+	{
+		typedef set <UINT>		SID;
+		SID CardPool;
+		for (UINT k=0;k<MAX_FILTER_ID_COUNT;k++)
+		{
+			if (pEvalParams->WildFilterInclude[k])
+				CardPool.insert(pEvalParams->WildFilterInclude[k]);
+			else
+				break;
+		}
+		if (pEvalParams->WildcardId < 0)
+		{
+			// remove all non-commander cards from pool
+			for (SID::iterator si = CardPool.begin(); si != CardPool.end(); si++)
+				while ((si != CardPool.end()) && (DB.GetCard(*si).GetType() != TYPE_COMMANDER))
+					si = CardPool.erase(si);
+			// commander
+			for (UINT icmd=1000;icmd<2000;icmd++)
+			{
+				Card c = DB.GetCard(icmd);
+				if (c.IsCard() && c.GetSet())
+				{
+					UCHAR ifilter = 0;
+					for (UINT k=pEvalParams->WildFilterRarity;k;k/=10)
+						if (c.GetRarity()+1 == k%10) // need an offset here since Common = 0
+						{
+							ifilter++;
+							break;
+						}
+					for (UINT k=pEvalParams->WildFilterFaction;k;k/=10)
+						if (c.GetFaction() == k%10)
+						{
+							ifilter++;
+							break;
+						}
+					if (ifilter >= 2)
+						CardPool.insert(icmd);
+				}
+			}
+		}
+		else
+		{
+			// remove all commander cards from pool
+			for (SID::iterator si = CardPool.begin(); si != CardPool.end(); si++)
+				while ((si != CardPool.end()) && (DB.GetCard(*si).GetType() == TYPE_COMMANDER))
+					si = CardPool.erase(si);
+			// card in deck
+			for (VCARDS::iterator vi=X.Deck.begin();vi!=X.Deck.end();vi++)
+				if (vi->GetId() == pEvalParams->WildcardId)
+				{
+					vi = X.Deck.erase(vi); // remove that card
+					break; // just replace one
+				}
+			for (UINT icard=0;icard<3000;icard++)
+			{
+				if ((icard >= 1000) && (icard < 2000)) // commanders
+					continue;
+
+				Card c = DB.GetCard(icard);
+				if (c.IsCard() && c.GetSet())
+				{
+					UCHAR ifilter = 0;
+					for (UINT k=pEvalParams->WildFilterType;k;k/=10)
+						if (c.GetType() == k%10)
+						{
+							ifilter++;
+							break;
+						}
+					for (UINT k=pEvalParams->WildFilterRarity;k;k/=10)
+						if (c.GetRarity() + 1 == k%10) // need an offset here since Common = 0
+						{
+							ifilter++;
+							break;
+						}
+					for (UINT k=pEvalParams->WildFilterFaction;k;k/=10)
+						if (c.GetFaction() == k%10)
+						{
+							ifilter++;
+							break;
+						}
+					if (ifilter >= 3)
+						CardPool.insert(icard);
+				}
+			}
+		}
+		// apply exclude filter
+		for (UINT k=0;k<MAX_FILTER_ID_COUNT;k++)
+		{
+			if (pEvalParams->WildFilterExclude[k])
+			{
+				SID::iterator si = CardPool.find(pEvalParams->WildFilterExclude[k]);
+				if (si != CardPool.end())
+					CardPool.erase(si);
+			}
+			else
+				break;
+		}
+		if (CardPool.empty())
+			pEvalParams->WildcardId = -1; // tell API that there were no cards in filter
+
+		UINT BestCard = 0;
+		for (SID::iterator si=CardPool.begin();si!=CardPool.end();si++)
+		{
+			ActiveDeck x(X);
+			if (pEvalParams->WildcardId < 0)
+				x.Commander = PlayedCard(&DB.GetCard(*si));
+			else
+				x.Deck.push_back(&DB.GetCard(*si));
+			if (!x.IsValid())
+				continue;
+			RESULTS lresult;
+			RESULT_BY_CARD lrbc[DEFAULT_DECK_SIZE+1];
+			EvaluateInThreads(pEvalParams->Seed,x,Y,pEvalParams->RaidID,lresult,lrbc,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge);
+			if (lresult.Win > pEvalParams->Result.Win)
+			{
+				pEvalParams->Result = lresult;
+				memcpy(pEvalParams->ResultByCard,lrbc,sizeof(lrbc));
+				BestCard = *si;
+			}
+		}
+		if (BestCard)
+			pEvalParams->WildcardId = BestCard;
+	}
+	else // simple eval
+		EvaluateInThreads(pEvalParams->Seed,X,Y,pEvalParams->RaidID,pEvalParams->Result,pEvalParams->ResultByCard,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge);
+	time_t t1;
+	time(&t1);
+	pEvalParams->Seconds = (DWORD)t1-t;
+	printf("Finished in %d sec\n",t1-t);
+
+	UnmapViewOfFile(pEvalParams);
+	CloseHandle(hFileMapping);
+
+   return 1;
+#else
+	bConsoleOutput = false;
+	DB.LoadCardXML("cards.xml");
+
+	ActiveDeck z("PoAv",DB.GetPointer());
+	ActiveDeck x("PoFZ",DB.GetPointer());
+
+	RESULTS r;
+	for (UINT k=0;k<1000;k++)
+	{
+		ActiveDeck a(x),b(z);
+		Simulate(a,b,r);
+	}
+	printf("%d\n",r.Win);
+	return 0;
+	// parameter weights:
+	// attack
+	// health
+	// wait
+	// skills cost/weights(should take from xml for now)
+	// skill weight for ALL 10 targets
+	// skill weight for FACTION condition
+	// - set cost (set + rarity, aggregated)
+
+	// create matrix
+	/*
+#define PARAMS_COUNT	4
+	UINT rcount = 0;
+	double mp[PARAMS_COUNT][1000],F[1000];
+	for (UINT i=0000;i<1000;i++)
+	{
+		const Card *c = &DB.GetCard(i);
+		float fo = 0, fd = 0;
+		if (c->IsCard()/* && (c->GetWait() == 3)&& (c->GetWait() == 1) && (c->GetRarity() >= RARITY_COMMON) && (c->GetSet() != 0))
+		{
+			//printf("%s %d %d [%d] ",c->GetName(),c->GetAttack(),c->GetHealth(),c->GetWait());
+			printf("%d=	%d	%d	[%d]	",c->GetRarity(),c->GetAttack(),c->GetHealth(),c->GetWait());
+			//bool bSkip = false;
+			//float ss = 0.0;
+			for (UCHAR k=0;k<c->GetAbilitiesCount();k++)
+			{
+				UCHAR aid = c->GetAbilityInOrder(k);
+				UCHAR cnt = c->GetTargetCount(aid);
+				if (cnt < 1)
+					cnt = 1;
+				float fmod = ((float)cnt + 5) / 6;//(cnt + 1) / 2;
+				if (c->GetTargetFaction(aid) != FACTION_NONE)
+					fmod *= 0.75; // should be 0.75 or 0.8 methinks
+				//ss += c->GetAbility(aid) * DB.Skills[aid].CardValue * fmod;
+				//printf("[%d]: %d x %.1f x %.1f ~ %.1f | ",cnt,c->GetAbility(aid),DB.Skills[aid].CardValue,fmod,c->GetAbility(aid) * DB.Skills[aid].CardValue * fmod);
+				//if (c->GetTargetFaction(aid) != FACTION_NONE)
+				//	printf(" specific");
+				//if (c->GetTargetFaction(aid) != FACTION_NONE)
+				//	fmod /= 2;
+				if (DB.Skills[aid].IsPassive)
+					fd += c->GetAbility(aid) * DB.Skills[aid].CardValue;
+				else
+					fo += c->GetAbility(aid) * DB.Skills[aid].CardValue * fmod;
+				//f += c->GetAbility(aid) * DB.Skills[aid].CardValue;/* * fmod /** (1 + DB.Skills[aid].IsPassive) / 1/;
+				//printf("%d : %d x %.1f = %.1f | ",aid,c->GetAbility(aid),DB.Skills[aid].CardValue,c->GetAbility(aid) * DB.Skills[aid].CardValue);
+			}
+			//printf("%.1f + %.1f	%.1f	|",fd,fo,fo+fd+2.5*c->GetAttack()+1.5*(c->GetHealth()/*-1/)-2.5*c->GetWait());
+			//printf("	%.1f\n",fo / (c->GetWait() + 1)+fd+2.5*c->GetAttack() / (c->GetWait() + 0.5)+1.5*(c->GetHealth()/-1/));
+			printf("	D %.1f	O- %.1f	O* %.1f\n",
+				fd + 1.5*(c->GetHealth()),
+				fo + 2.5*c->GetAttack() - 2.5*c->GetWait(),
+				fo / (c->GetWait() + 0.5) + 2.5*c->GetAttack() / (c->GetWait() + 0.5)
+				);
+			mp[0][rcount] = c->GetAttack();
+			mp[1][rcount] = c->GetHealth();
+			mp[2][rcount] = fd;
+			mp[3][rcount] = fo;
+			//mp[4][rcount] = c->GetWait() + 1; // may want to try and filter out with constant wait first
+			F[rcount] = c->GetRarity()+1;
+			rcount++;
+			// attack = 6
+			// health = 3
+			//printf("%.1f	%.1f	[%d]	%s\n",f,f+(c->GetHealth()-1) * 2 + c->GetAttack() * 3,c->GetRarity(),c->GetName());
+			//printf("\n");
+		}
+	}
+	printf("MP:\n");
+	for (UINT i=0;i<rcount;i++)
+	{
+		for (UINT k=0;k<PARAMS_COUNT;k++)
+		{
+			printf("%.2f ",mp[k][i]);
+		}
+		printf("= %.2f ",F[i]);
+		printf("\n");
+	}
+	// normalize matrix
+	/*
+	1 2 3
+	4 5 6
+	  x
+	1 4
+	2 5
+	3 6	
+	/
+	double A[PARAMS_COUNT][PARAMS_COUNT],f[PARAMS_COUNT];
+	for (UINT i=0;i<PARAMS_COUNT;i++)
+	{
+		for (UINT k=0;k<PARAMS_COUNT;k++)
+		{
+			double zf = 0.0;
+			for (UINT z=0;z<rcount;z++)
+			{
+				zf += mp[i][z] * mp[k][z];
+			}
+			A[i][k] = zf;
+		}
+		double zf = 0.0;
+		for (UINT z=0;z<rcount;z++)
+			zf += F[z] * mp[i][z];
+		f[i] = zf;
+	}
+
+	printf("NM:\n");
+	for (UINT i=0;i<PARAMS_COUNT;i++)
+	{
+		for (UINT k=0;k<PARAMS_COUNT;k++)
+		{
+			printf("%.2f ",A[i][k]);
+		}
+		printf("= %.2f ",f[i]);
+		printf("\n");
+	}
+
+	// this snippet is from my 2003 year classes...
+	// simple iteration method
+	{
+		double B[PARAMS_COUNT][PARAMS_COUNT],b[PARAMS_COUNT],r[PARAMS_COUNT],x[PARAMS_COUNT],xprev[PARAMS_COUNT],temp[PARAMS_COUNT],e=0.1101;
+		int i,n,k,j;
+		bool flag;
+
+		{
+			//приводим систему Ax=f к виду x=Bx+b
+			for (int i=0; i<PARAMS_COUNT; ++i)
+			{
+				b[i]=f[i]/A[i][i];
+				for (int j=0; j<PARAMS_COUNT; ++j)
+				{
+					if (i!=j)
+						B[i][j]=-A[i][j]/A[i][i];
+					else
+						B[i][j]=0;
+				};
+			};
+
+			//метод простых итераций
+			memcpy(x,b,sizeof(x));
+			n=0;
+			do
+			{
+				++n;
+				memcpy(temp,x,sizeof(x));
+				memcpy(x,xprev,sizeof(x));
+				memcpy(xprev,temp,sizeof(x));
+				for (j=0; j<PARAMS_COUNT; ++j)
+				{
+					x[j]=b[j];
+					for (k=0; k<PARAMS_COUNT; ++k)
+						x[j]+=B[j][k]*xprev[k];
+				}
+
+				//вычисление вектора невязки приближения x
+				for (i=0; i<PARAMS_COUNT; ++i)
+				{
+					r[i]=x[i];
+					for (j=0; j<PARAMS_COUNT; ++j)
+					r[i]-=B[i][j]*x[j];
+					r[i]-=b[i];
+				}
+
+				int i1=0;
+				for (i=0; i<PARAMS_COUNT; ++i)
+					if (fabs(r[i1])<e)
+						++i1;
+
+					if (i1<PARAMS_COUNT) flag=true;
+					else flag=false;
+			} while (flag);
+
+			//вывод решения
+			for (k=0; k<PARAMS_COUNT; k++)
+				printf("x%d = %.2f\n",k,x[k]);
+				//cout<<"x"<<k<<" = "<<x[k]<<endl;
+
+			//вывод вектора невязки
+			printf("dispersion:\n");
+			//cout<<"vector nevyazki:"<<endl;
+			for (i=0; i<PARAMS_COUNT; i++)
+			{
+				e=0;
+				for (j=0; j<PARAMS_COUNT; j++)
+					e+=A[i][j]*x[j];
+				printf("   %.2f\n",e-f[i]);
+				//cout<<"   "<<e-f[i]<<endl;
+			}
+			//вывод количества потребовавшихся итераций
+			printf("Number of iterations: %d\n",n);
+			//cout<<"Number of iterations: "<<n<<endl;
+			//cout<<endl;
+		}
+	}*/
+
+//////////////////********************
+	for (UINT i=0000;i<1000;i++)
+	{
+		const Card *c = &DB.GetCard(i);
+		float f = 0;
+		if (c->IsCard() && (c->GetWait() == 1) && (c->GetRarity() >= RARITY_COMMON) && (c->GetSet() != 0))
+		{
+			//printf("%s ",c->GetName());
+			for (UCHAR k=0;k<c->GetAbilitiesCount();k++)
+			{
+				UCHAR aid = c->GetAbilityInOrder(k);
+				UCHAR cnt = c->GetTargetCount(aid);
+				if (cnt < 1)
+					cnt = 1;
+				float fmod = (cnt + 9) / 10;//(cnt + 1) / 2;
+				if (c->GetTargetFaction(aid) != FACTION_NONE)
+					fmod /= 2;
+				f += c->GetAbility(aid) * DB.Skills[aid].CardValue;/* * fmod /** (1 + DB.Skills[aid].IsPassive) / 1*/;
+				//printf("%d : %d x %.1f = %.1f | ",aid,c->GetAbility(aid),DB.Skills[aid].CardValue,c->GetAbility(aid) * DB.Skills[aid].CardValue);
+			}
+			// attack = 6
+			// health = 3
+			printf("%.1f	%.1f	[%d]	%s\n",f,f+(c->GetHealth()-1) * 2 + c->GetAttack() * 3,c->GetRarity(),c->GetName());
+			//printf("\n");
+		}
+	}
+
+	
+	/*bConsoleOutput = true;
+	DB.LoadRaidXML("raids.xml");
+	{
+		ActiveDeck X("QHB++pB+",DB.GetPointer()),Y;
+		Y.Commander = DB.CARD("Freddie");
+		RESULTS res;
+		RESULT_BY_CARD rescs[DEFAULT_DECK_SIZE+1];
+
+		EvaluateInThreads(0,X,Y,-1,res,rescs,2000,1);
+
+		printf("%d\n",res.Win);
+		for (UINT i=0;i<DEFAULT_DECK_SIZE+1;i++)
+			rescs[i].Print();
+		scanf("%c");
+	}*/
+	{
+		//ActiveDeck X("PsDIfcfc",DB.GetPointer()),
+		//	Y("Q4BhBvBwBxCDC1DIDJDNfvfwvI",DB.GetPointer());//
+		
+		//ActiveDeck X("P9Dw",DB.GetPointer());
+		//ActiveDeck Y(/*"ReFF"*/"ReAo",DB.GetPointer());
+		ActiveDeck X("QVDw+kD5EFE2+jH8",DB.GetPointer()),Y("RkBvBxB0DNDhDnE0FAFZGrH8IBfZfvvQ",DB.GetPointer());
+		//ActiveDeck X("QVA2A2CcE+E+Fg+jGpGr"
+			//"QVA2CcCtE+E+Fg+jGpGr" // best BR4 deck
+			//"QVB0DN+lEhfvfvfv" // pumpool
+		//	,DB.GetPointer()),Y("RdAXCCDIDNDdEGEREoFBFHFbGWfogBu4",DB.GetPointer());
+		
+		
+		//ActiveDeck X,Y;
+		//DB.CreateDeck("Lord of Tartarus,Mawcor,Asylum,Asylum,Chaos Wave",X);
+		//DB.CreateDeck("Dracorex[1080],Carcass Scrounge,Blood Spout,Abomination,Hatchet,Beholder,Acid Spewer,Mawcor,Lummox,Pummeller,Blood Pool,Blood Wall,Impede Assault",Y);
+		//X.SetOrderMatters(true);
+
+		RESULTS res;
+		RESULT_BY_CARD rescs[DEFAULT_DECK_SIZE+1];
+		// Index
+		UCHAR CSIndex[CARD_MAX_ID];
+		CSIndex[X.Commander.GetId()] = 0;
+		rescs[0].Id = X.Commander.GetId();
+		for (UCHAR i=0;i<X.Deck.size();i++)
+		{
+			UCHAR idx = 0;
+			for (idx=0;idx<DEFAULT_DECK_SIZE+1;idx++)
+				if (rescs[idx].Id == X.Deck[i].GetId())
+					break;
+				else
+					if (!rescs[idx].IsValid())
+					{
+						rescs[idx].Id = i;
+						break;
+					}
+			_ASSERT(idx);
+			CSIndex[X.Deck[i].GetId()] = idx;
+			rescs[idx].Id = X.Deck[i].GetId();
+		}
+		//
+		UINT games = 1000;
+		for (UINT k=0;k<games;k++)
+		{
+			ActiveDeck x(X);
+			ActiveDeck y(Y);
+
+			x.SetFancyStatsBuffer(CSIndex,rescs);
+
+			//Simulate(x,y,res,false);
+
+			for (UCHAR i=0; (i < MaxTurn); i++)
+			{
+				if (x.Deck.size() == 1)
+				{
+					// last card is about to be played
+					UINT id = x.Deck[0].GetId(); // it's ID
+					// play variation without this card
+					rescs[CSIndex[id]].WLGames++;
+					ActiveDeck xwl(x),ywl(y);
+					for (UCHAR iwl=i; (iwl < MaxTurn); iwl++)
+					{
+						xwl.AttackDeck(ywl);
+						if (!ywl.Commander.IsAlive())
+						{
+							rescs[CSIndex[id]].WLWin++;
+							break;
+						}
+						ywl.AttackDeck(xwl);
+						if (!xwl.Commander.IsAlive())
+						{
+							rescs[CSIndex[id]].WLLoss++;
+							break;
+						}
+					}
+				}
+				x.AttackDeck(y);
+				if (!y.Commander.IsAlive())
+				{
+					res.Win++;
+					// sweep fs
+					x.SweepFancyStatsRemaining(); // this is wrong - i should sweep remaining even on losses in case of fear based enemy deck or any cards still present
+					break;
+				}
+				y.AttackDeck(x);
+				if (!x.Commander.IsAlive())
+				{
+					res.Loss++;
+					break;
+				}
+			}
+		}
+		printf("%d\n",res.Win);
+		for (UINT i=0;i<DEFAULT_DECK_SIZE+1;i++)
+			rescs[i].Print();
+	}
+
+	{
+	RESULTS res;
+	for (UINT i=0;10;i++)
+	{
+	ActiveDeck a("QCAXBJDd+nD+",DB.GetPointer());
+	EvaluateRaidOnce(a,res,0,0,7);
+	}
+	}
+
+	ActiveDeck m119("RZDWEjEmFKFNFPFdFfFgFsFtgNge",DB.GetPointer());
+	for (UINT i=0;i<1000;i++)
+	{
+		const Card *c = &DB.GetCard(i);
+		if (c->IsCard() && (c->GetSet() > 0))
+		{
+#define GAMES_COUNT	100
+#define GAMES_EMUL	10
+			RESULTS res;
+			for (UINT t=0;t<10;t++)
+			{
+				for (UINT k=0;k<GAMES_COUNT;k++)
+				{
+					ActiveDeck tm(m119);
+					ActiveDeck a(DB.CARD("Dracorex"));		
+					for (UCHAR l=0;l<GAMES_EMUL;l++)
+						a.Add(c);
+
+					Simulate(a,tm,res);
+				}
+				if (res.Win < (GAMES_COUNT / 2))
+					break; // chance is lower then half, drop this
+			}
+			if (res.Win > GAMES_COUNT * GAMES_EMUL / 2)
+			{
+				printf("%.3f	%s\n",(float)res.Win / GAMES_COUNT,c->GetName());
+			}
+		}
+	}
+
+/*	ActiveDeck X(DB.CARD("Yurich"));
+	X.Deck.push_back(DB.CARD("Colossus"));
+	X.Deck.push_back(DB.CARD("Colossus"));
+	X.Deck.push_back(DB.CARD("Colossus"));
+	X.Deck.push_back(DB.CARD("Colossus"));
+	X.Deck.push_back(DB.CARD("Colossus"));
+	X.Deck.push_back(DB.CARD("Colossus"));
+	X.Deck.push_back(DB.CARD("Colossus"));
+	X.Deck.push_back(DB.CARD("Goliath"));
+	X.Deck.push_back(DB.CARD("Demolition Bot"));
+	X.Deck.push_back(DB.CARD("Dozer Tank"));
+
+/*	ActiveDeck Y(DB.CARD("Yurich"));
+	Y.Deck.push_back(DB.CARD("Colossus"));
+	Y.Deck.push_back(DB.CARD("Colossus"));
+	Y.Deck.push_back(DB.CARD("Colossus"));
+	Y.Deck.push_back(DB.CARD("Colossus"));
+	Y.Deck.push_back(DB.CARD("Colossus"));
+	Y.Deck.push_back(DB.CARD("Colossus"));
+	Y.Deck.push_back(DB.CARD("Colossus"));
+	Y.Deck.push_back(DB.CARD("Goliath"));
+	Y.Deck.push_back(DB.CARD("Demolition Bot"));
+	Y.Deck.push_back(DB.CARD("Dozer Tank"));
+	
+/*	ActiveDeck X(DB.CARD("Dracorex"));
+	X.Deck.push_back(DB.CARD("Azure Reaper"));
+	X.Deck.push_back(DB.CARD("Azure Reaper"));
+	X.Deck.push_back(DB.CARD("Azure Reaper"));
+	X.Deck.push_back(DB.CARD("Azure Reaper"));
+	X.Deck.push_back(DB.CARD("Sustainer Xolan"));
+	X.Deck.push_back(DB.CARD("Sustainer Xolan"));
+	X.Deck.push_back(DB.CARD("Sustainer Xolan"));
+	X.Deck.push_back(DB.CARD("Vaporwing"));
+	X.Deck.push_back(DB.CARD("Rifter"));
+	X.Deck.push_back(DB.CARD("Apex"));
+
+	ActiveDeck Y(DB.CARD("Dracorex"));
+	Y.Deck.push_back(DB.CARD("Pummeller"));
+	Y.Deck.push_back(DB.CARD("Pummeller"));
+	Y.Deck.push_back(DB.CARD("Pummeller"));
+	Y.Deck.push_back(DB.CARD("Pummeller"));
+	Y.Deck.push_back(DB.CARD("Pummeller"));
+	Y.Deck.push_back(DB.CARD("Blood Pool"));
+	Y.Deck.push_back(DB.CARD("Blood Pool"));
+	Y.Deck.push_back(DB.CARD("Blood Pool"));
+	Y.Deck.push_back(DB.CARD("Draconian Queen"));
+	Y.Deck.push_back(DB.CARD("Valefar"));
+
+/*	ActiveDeck X(DB.CARD("Freddie"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	X.Deck.push_back(DB.CARD("Sharpshooter"));
+	//X.Deck.push_back(DB.CARD("Rocket Infantry"));
+	//ActiveDeck Y;
+	//DB.GenRaidDeck(Y,11);
+/*	ActiveDeck Y(DB.CARD("Vyander"));
+	Y.Deck.push_back(DB.CARD("Vaporwing"));
+	Y.Deck.push_back(DB.CARD("Vaporwing"));
+	Y.Deck.push_back(DB.CARD("Vaporwing"));
+	Y.Deck.push_back(DB.CARD("Vaporwing"));
+	Y.Deck.push_back(DB.CARD("Vaporwing"));
+	Y.Deck.push_back(DB.CARD("Vaporwing"));
+	Y.Deck.push_back(DB.CARD("Vaporwing"));
+	Y.Deck.push_back(DB.CARD("Vaporwing"));
+	Y.Deck.push_back(DB.CARD("Vaporwing"));
+	Y.Deck.push_back(DB.CARD("Vaporwing"));
+*/	
+/*	ActiveDeck Y(DB.CARD("Vyander"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));
+	Y.Deck.push_back(DB.CARD("Kraken"));*/
+
+	ActiveDeck X(DB.CARD("Vyander"));
+	X.Deck.push_back(DB.CARD("Stealthy Niaq"));
+	X.Deck.push_back(DB.CARD("Stealthy Niaq"));
+	//X.Deck.push_back(DB.CARD("Heavy Infantry"));
+	ActiveDeck Y(DB.CARD("Vyander"));
+	//Y.Deck.push_back(DB.CARD("Chopper"));
+	Y.Deck.push_back(DB.CARD("Predator"));
+	Y.Deck.push_back(DB.CARD("Predator"));
+	//Y.Deck.push_back(DB.CARD("Enclave Warlord"));
+	//Y.Deck.push_back(DB.CARD("Enclave Warlord"));
+	//Y.Deck.push_back(DB.CARD("Enclave Warlord"));
+
+
+	printf("X hash: %s\n",X.GetHash64().c_str());
+	printf("Y hash: %s\n",Y.GetHash64().c_str());
+
+	Branching B(X,Y);
+	while (B.Evaluate());
+	//B.Evaluate();
+	// X hash: P3AGBW+p
+	// Y hash: QbDO+q
+
+	ActiveDeck Z((const char*)"P3AGBW+p",DB.GetPointer());
+	Z.PrintShort();
+	ActiveDeck S((const char*)"QbDO+q",DB.GetPointer());
+	S.PrintShort();
+
+	RESULTS res;
+	int State;
+	time_t t;
+
+	time(&t);
+	EvaluateInThreads(100500,X,Y,-1,res,0,State,2500,4);
+	time_t t1;
+	time(&t1);
+	printf("Finished in %d sec\n",t1-t);
+#endif
 	//printf("%d\n",sizeof(EVAL_PARAMS));
 	/*DB.LoadCardXML("cards.xml");
 	ActiveDeck D("QVB0DN+lEhfvfvfv",DB.GetPointer());
@@ -782,683 +1500,5 @@ int _tmain(int argc, char* argv[])
 	scanf("%s");
 	}
 */
-#if !_DEBUG
-	// executable uses shared memory to recieve parameters from API
-	HANDLE hFileMapping = CreateFileMapping(
-			INVALID_HANDLE_VALUE,    // use paging file
-			NULL,                    // default security
-			PAGE_READWRITE,          // read/write access
-			0,                       // maximum object size (high-order DWORD)
-			sizeof(EVAL_PARAMS),     // maximum object size (low-order DWORD)
-			SM_NAME);                // name of mapping object
-	if (hFileMapping == NULL)
-	{
-		printf("Could not create file mapping object (%d).\n",
-			GetLastError());
-		return 1;
-	}
-	EVAL_PARAMS* pEvalParams = (EVAL_PARAMS*)MapViewOfFile(hFileMapping,   // handle to map object
-				FILE_MAP_ALL_ACCESS, // read/write permission
-				0,
-				0,
-				sizeof(EVAL_PARAMS));
-	if (pEvalParams == NULL)
-	{
-		printf("Could not map view of file (%d).\n",
-			GetLastError());
-		return 1;
-	}
-
-	//memcpy(buffer,(PVOID)pBuf,BUF_SIZE);
-	//printf(buffer);
-
-	bConsoleOutput = false;
-	DB.LoadCardXML("cards.xml");
-	DB.LoadRaidXML("raids.xml");
-
-	MaxTurn = pEvalParams->MaxTurn;
-
-	ActiveDeck X,Y;
-	DB.CreateDeck(pEvalParams->AtkDeck,X);
-	DB.CreateDeck(pEvalParams->DefDeck,Y);
-	X.SetOrderMatters(pEvalParams->OrderMatters);
-
-	memset(&pEvalParams->Result,0,sizeof(RESULTS));
-	memset(&pEvalParams->ResultByCard,0,sizeof(RESULT_BY_CARD) * (DEFAULT_DECK_SIZE + 1));	
-
-	time_t t;
-
-	time(&t);
-	if (pEvalParams->WildcardId)
-	{
-		typedef set <UINT>		SID;
-		SID CardPool;
-		for (UINT k=0;k<MAX_FILTER_ID_COUNT;k++)
-		{
-			if (pEvalParams->WildFilterInclude[k])
-				CardPool.insert(pEvalParams->WildFilterInclude[k]);
-			else
-				break;
-		}
-		if (pEvalParams->WildcardId < 0)
-		{
-			// remove all non-commander cards from pool
-			for (SID::iterator si = CardPool.begin(); si != CardPool.end(); si++)
-				while ((si != CardPool.end()) && (DB.GetCard(*si).GetType() != TYPE_COMMANDER))
-					si = CardPool.erase(si);
-			// commander
-			for (UINT icmd=1000;icmd<2000;icmd++)
-			{
-				Card c = DB.GetCard(icmd);
-				if (c.IsCard() && c.GetSet())
-				{
-					UCHAR ifilter = 0;
-					for (UINT k=pEvalParams->WildFilterRarity;k;k/=10)
-						if (c.GetRarity()+1 == k%10) // need an offset here since Common = 0
-						{
-							ifilter++;
-							break;
-						}
-					for (UINT k=pEvalParams->WildFilterFaction;k;k/=10)
-						if (c.GetFaction() == k%10)
-						{
-							ifilter++;
-							break;
-						}
-					if (ifilter >= 2)
-						CardPool.insert(icmd);
-				}
-			}
-		}
-		else
-		{
-			// remove all commander cards from pool
-			for (SID::iterator si = CardPool.begin(); si != CardPool.end(); si++)
-				while ((si != CardPool.end()) && (DB.GetCard(*si).GetType() == TYPE_COMMANDER))
-					si = CardPool.erase(si);
-			// card in deck
-			for (VCARDS::iterator vi=X.Deck.begin();vi!=X.Deck.end();vi++)
-				if (vi->GetId() == pEvalParams->WildcardId)
-				{
-					vi = X.Deck.erase(vi); // remove that card
-					break; // just replace one
-				}
-			for (UINT icard=0;icard<3000;icard++)
-			{
-				if ((icard >= 1000) && (icard < 2000)) // commanders
-					continue;
-
-				Card c = DB.GetCard(icard);
-				if (c.IsCard() && c.GetSet())
-				{
-					UCHAR ifilter = 0;
-					for (UINT k=pEvalParams->WildFilterType;k;k/=10)
-						if (c.GetType() == k%10)
-						{
-							ifilter++;
-							break;
-						}
-					for (UINT k=pEvalParams->WildFilterRarity;k;k/=10)
-						if (c.GetRarity() + 1 == k%10) // need an offset here since Common = 0
-						{
-							ifilter++;
-							break;
-						}
-					for (UINT k=pEvalParams->WildFilterFaction;k;k/=10)
-						if (c.GetFaction() == k%10)
-						{
-							ifilter++;
-							break;
-						}
-					if (ifilter >= 3)
-						CardPool.insert(icard);
-				}
-			}
-		}
-		// apply exclude filter
-		for (UINT k=0;k<MAX_FILTER_ID_COUNT;k++)
-		{
-			if (pEvalParams->WildFilterExclude[k])
-			{
-				SID::iterator si = CardPool.find(pEvalParams->WildFilterExclude[k]);
-				if (si != CardPool.end())
-					CardPool.erase(si);
-			}
-			else
-				break;
-		}
-		if (CardPool.empty())
-			pEvalParams->WildcardId = -1; // tell API that there were no cards in filter
-
-		UINT BestCard = 0;
-		for (SID::iterator si=CardPool.begin();si!=CardPool.end();si++)
-		{
-			ActiveDeck x(X);
-			if (pEvalParams->WildcardId < 0)
-				x.Commander = PlayedCard(&DB.GetCard(*si));
-			else
-				x.Deck.push_back(&DB.GetCard(*si));
-			if (!x.IsValid())
-				continue;
-			RESULTS lresult;
-			RESULT_BY_CARD lrbc[DEFAULT_DECK_SIZE+1];
-			EvaluateInThreads(pEvalParams->Seed,x,Y,pEvalParams->RaidID,lresult,lrbc,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge);
-			if (lresult.Win > pEvalParams->Result.Win)
-			{
-				pEvalParams->Result = lresult;
-				memcpy(pEvalParams->ResultByCard,lrbc,sizeof(lrbc));
-				BestCard = *si;
-			}
-		}
-		if (BestCard)
-			pEvalParams->WildcardId = BestCard;
-	}
-	else // simple eval
-		EvaluateInThreads(pEvalParams->Seed,X,Y,pEvalParams->RaidID,pEvalParams->Result,pEvalParams->ResultByCard,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge);
-	time_t t1;
-	time(&t1);
-	pEvalParams->Seconds = (DWORD)t1-t;
-	printf("Finished in %d sec\n",t1-t);
-
-	UnmapViewOfFile(pEvalParams);
-	CloseHandle(hFileMapping);
-
-   return 1;
-#else
-	bConsoleOutput = false;
-	DB.LoadCardXML("cards.xml");
-
-	// parameter weights:
-	// attack
-	// health
-	// wait
-	// skills cost/weights(should take from xml for now)
-	// skill weight for ALL 10 targets
-	// skill weight for FACTION condition
-	// - set cost (set + rarity, aggregated)
-
-	// create matrix
-#define PARAMS_COUNT	4
-	UINT rcount = 0;
-	double mp[PARAMS_COUNT][1000],F[1000];
-	for (UINT i=0000;i<1000;i++)
-	{
-		const Card *c = &DB.GetCard(i);
-		float fo = 0, fd = 0;
-		if (c->IsCard()/* && (c->GetWait() == 3)/*&& (c->GetWait() == 1) && (c->GetRarity() >= RARITY_COMMON)*/ && (c->GetSet() != 0))
-		{
-			//printf("%s %d %d [%d] ",c->GetName(),c->GetAttack(),c->GetHealth(),c->GetWait());
-			printf("%d=	%d	%d	[%d]	",c->GetRarity(),c->GetAttack(),c->GetHealth(),c->GetWait());
-			//bool bSkip = false;
-			//float ss = 0.0;
-			for (UCHAR k=0;k<c->GetAbilitiesCount();k++)
-			{
-				UCHAR aid = c->GetAbilityInOrder(k);
-				UCHAR cnt = c->GetTargetCount(aid);
-				if (cnt < 1)
-					cnt = 1;
-				float fmod = ((float)cnt + 5) / 6;//(cnt + 1) / 2;
-				if (c->GetTargetFaction(aid) != FACTION_NONE)
-					fmod *= 0.75; // should be 0.75 or 0.8 methinks
-				//ss += c->GetAbility(aid) * DB.Skills[aid].CardValue * fmod;
-				//printf("[%d]: %d x %.1f x %.1f ~ %.1f | ",cnt,c->GetAbility(aid),DB.Skills[aid].CardValue,fmod,c->GetAbility(aid) * DB.Skills[aid].CardValue * fmod);
-				//if (c->GetTargetFaction(aid) != FACTION_NONE)
-				//	printf(" specific");
-				//if (c->GetTargetFaction(aid) != FACTION_NONE)
-				//	fmod /= 2;
-				if (DB.Skills[aid].IsPassive)
-					fd += c->GetAbility(aid) * DB.Skills[aid].CardValue;
-				else
-					fo += c->GetAbility(aid) * DB.Skills[aid].CardValue * fmod;
-				//f += c->GetAbility(aid) * DB.Skills[aid].CardValue;/* * fmod /** (1 + DB.Skills[aid].IsPassive) / 1*/;
-				//printf("%d : %d x %.1f = %.1f | ",aid,c->GetAbility(aid),DB.Skills[aid].CardValue,c->GetAbility(aid) * DB.Skills[aid].CardValue);
-			}
-			//printf("%.1f + %.1f	%.1f	|",fd,fo,fo+fd+2.5*c->GetAttack()+1.5*(c->GetHealth()/*-1*/)-2.5*c->GetWait());
-			//printf("	%.1f\n",fo / (c->GetWait() + 1)+fd+2.5*c->GetAttack() / (c->GetWait() + 0.5)+1.5*(c->GetHealth()/*-1*/));
-			printf("	D %.1f	O- %.1f	O* %.1f\n",
-				fd + 1.5*(c->GetHealth()),
-				fo + 2.5*c->GetAttack() - 2.5*c->GetWait(),
-				fo / (c->GetWait() + 0.5) + 2.5*c->GetAttack() / (c->GetWait() + 0.5)
-				);
-			mp[0][rcount] = c->GetAttack();
-			mp[1][rcount] = c->GetHealth();
-			mp[2][rcount] = fd;
-			mp[3][rcount] = fo;
-			//mp[4][rcount] = c->GetWait() + 1; // may want to try and filter out with constant wait first
-			F[rcount] = c->GetRarity()+1;
-			rcount++;
-			// attack = 6
-			// health = 3
-			//printf("%.1f	%.1f	[%d]	%s\n",f,f+(c->GetHealth()-1) * 2 + c->GetAttack() * 3,c->GetRarity(),c->GetName());
-			//printf("\n");
-		}
-	}
-	printf("MP:\n");
-	for (UINT i=0;i<rcount;i++)
-	{
-		for (UINT k=0;k<PARAMS_COUNT;k++)
-		{
-			printf("%.2f ",mp[k][i]);
-		}
-		printf("= %.2f ",F[i]);
-		printf("\n");
-	}
-	// normalize matrix
-	/*
-	1 2 3
-	4 5 6
-	  x
-	1 4
-	2 5
-	3 6	
-	*/
-	double A[PARAMS_COUNT][PARAMS_COUNT],f[PARAMS_COUNT];
-	for (UINT i=0;i<PARAMS_COUNT;i++)
-	{
-		for (UINT k=0;k<PARAMS_COUNT;k++)
-		{
-			double zf = 0.0;
-			for (UINT z=0;z<rcount;z++)
-			{
-				zf += mp[i][z] * mp[k][z];
-			}
-			A[i][k] = zf;
-		}
-		double zf = 0.0;
-		for (UINT z=0;z<rcount;z++)
-			zf += F[z] * mp[i][z];
-		f[i] = zf;
-	}
-
-	printf("NM:\n");
-	for (UINT i=0;i<PARAMS_COUNT;i++)
-	{
-		for (UINT k=0;k<PARAMS_COUNT;k++)
-		{
-			printf("%.2f ",A[i][k]);
-		}
-		printf("= %.2f ",f[i]);
-		printf("\n");
-	}
-
-	// this snippet is from my 2003 year classes...
-	// simple iteration method
-	{
-		double B[PARAMS_COUNT][PARAMS_COUNT],b[PARAMS_COUNT],r[PARAMS_COUNT],x[PARAMS_COUNT],xprev[PARAMS_COUNT],temp[PARAMS_COUNT],e=0.1101;
-		int i,n,k,j;
-		bool flag;
-
-		{
-			//приводим систему Ax=f к виду x=Bx+b
-			for (int i=0; i<PARAMS_COUNT; ++i)
-			{
-				b[i]=f[i]/A[i][i];
-				for (int j=0; j<PARAMS_COUNT; ++j)
-				{
-					if (i!=j)
-						B[i][j]=-A[i][j]/A[i][i];
-					else
-						B[i][j]=0;
-				};
-			};
-
-			//метод простых итераций
-			memcpy(x,b,sizeof(x));
-			n=0;
-			do
-			{
-				++n;
-				memcpy(temp,x,sizeof(x));
-				memcpy(x,xprev,sizeof(x));
-				memcpy(xprev,temp,sizeof(x));
-				for (j=0; j<PARAMS_COUNT; ++j)
-				{
-					x[j]=b[j];
-					for (k=0; k<PARAMS_COUNT; ++k)
-						x[j]+=B[j][k]*xprev[k];
-				}
-
-				//вычисление вектора невязки приближения x
-				for (i=0; i<PARAMS_COUNT; ++i)
-				{
-					r[i]=x[i];
-					for (j=0; j<PARAMS_COUNT; ++j)
-					r[i]-=B[i][j]*x[j];
-					r[i]-=b[i];
-				}
-
-				int i1=0;
-				for (i=0; i<PARAMS_COUNT; ++i)
-					if (fabs(r[i1])<e)
-						++i1;
-
-					if (i1<PARAMS_COUNT) flag=true;
-					else flag=false;
-			} while (flag);
-
-			//вывод решения
-			for (k=0; k<PARAMS_COUNT; k++)
-				printf("x%d = %.2f\n",k,x[k]);
-				//cout<<"x"<<k<<" = "<<x[k]<<endl;
-
-			//вывод вектора невязки
-			printf("dispersion:\n");
-			//cout<<"vector nevyazki:"<<endl;
-			for (i=0; i<PARAMS_COUNT; i++)
-			{
-				e=0;
-				for (j=0; j<PARAMS_COUNT; j++)
-					e+=A[i][j]*x[j];
-				printf("   %.2f\n",e-f[i]);
-				//cout<<"   "<<e-f[i]<<endl;
-			}
-			//вывод количества потребовавшихся итераций
-			printf("Number of iterations: %d\n",n);
-			//cout<<"Number of iterations: "<<n<<endl;
-			//cout<<endl;
-		}
-	}
-
-//////////////////********************
-	for (UINT i=0000;i<1000;i++)
-	{
-		const Card *c = &DB.GetCard(i);
-		float f = 0;
-		if (c->IsCard() && (c->GetWait() == 1) && (c->GetRarity() >= RARITY_COMMON) && (c->GetSet() != 0))
-		{
-			//printf("%s ",c->GetName());
-			for (UCHAR k=0;k<c->GetAbilitiesCount();k++)
-			{
-				UCHAR aid = c->GetAbilityInOrder(k);
-				UCHAR cnt = c->GetTargetCount(aid);
-				if (cnt < 1)
-					cnt = 1;
-				float fmod = (cnt + 9) / 10;//(cnt + 1) / 2;
-				if (c->GetTargetFaction(aid) != FACTION_NONE)
-					fmod /= 2;
-				f += c->GetAbility(aid) * DB.Skills[aid].CardValue;/* * fmod /** (1 + DB.Skills[aid].IsPassive) / 1*/;
-				//printf("%d : %d x %.1f = %.1f | ",aid,c->GetAbility(aid),DB.Skills[aid].CardValue,c->GetAbility(aid) * DB.Skills[aid].CardValue);
-			}
-			// attack = 6
-			// health = 3
-			printf("%.1f	%.1f	[%d]	%s\n",f,f+(c->GetHealth()-1) * 2 + c->GetAttack() * 3,c->GetRarity(),c->GetName());
-			//printf("\n");
-		}
-	}
-
-	
-	bConsoleOutput = true;
-	DB.LoadRaidXML("raids.xml");
-	{
-		ActiveDeck X("QHB++pB+",DB.GetPointer()),Y;
-		Y.Commander = DB.CARD("Freddie");
-		RESULTS res;
-		RESULT_BY_CARD rescs[DEFAULT_DECK_SIZE+1];
-
-		EvaluateInThreads(0,X,Y,-1,res,rescs,2000,1);
-
-		printf("%d\n",res.Win);
-		for (UINT i=0;i<DEFAULT_DECK_SIZE+1;i++)
-			rescs[i].Print();
-		scanf("%c");
-	}
-	{
-		//ActiveDeck X("PsDIfcfc",DB.GetPointer()),
-		//	Y("Q4BhBvBwBxCDC1DIDJDNfvfwvI",DB.GetPointer());//
-		
-		//ActiveDeck X("P9Dw",DB.GetPointer());
-		//ActiveDeck Y(/*"ReFF"*/"ReAo",DB.GetPointer());
-		ActiveDeck X("QVDw+kD5EFE2+jH8",DB.GetPointer()),Y("RkBvBxB0DNDhDnE0FAFZGrH8IBfZfvvQ",DB.GetPointer());
-		//ActiveDeck X("QVA2A2CcE+E+Fg+jGpGr"
-			//"QVA2CcCtE+E+Fg+jGpGr" // best BR4 deck
-			//"QVB0DN+lEhfvfvfv" // pumpool
-		//	,DB.GetPointer()),Y("RdAXCCDIDNDdEGEREoFBFHFbGWfogBu4",DB.GetPointer());
-		
-		
-		//ActiveDeck X,Y;
-		//DB.CreateDeck("Lord of Tartarus,Mawcor,Asylum,Asylum,Chaos Wave",X);
-		//DB.CreateDeck("Dracorex[1080],Carcass Scrounge,Blood Spout,Abomination,Hatchet,Beholder,Acid Spewer,Mawcor,Lummox,Pummeller,Blood Pool,Blood Wall,Impede Assault",Y);
-		//X.SetOrderMatters(true);
-
-		RESULTS res;
-		RESULT_BY_CARD rescs[DEFAULT_DECK_SIZE+1];
-		// Index
-		UCHAR CSIndex[CARD_MAX_ID];
-		CSIndex[X.Commander.GetId()] = 0;
-		rescs[0].Id = X.Commander.GetId();
-		for (UCHAR i=0;i<X.Deck.size();i++)
-		{
-			UCHAR idx = 0;
-			for (idx=0;idx<DEFAULT_DECK_SIZE+1;idx++)
-				if (rescs[idx].Id == X.Deck[i].GetId())
-					break;
-				else
-					if (!rescs[idx].IsValid())
-					{
-						rescs[idx].Id = i;
-						break;
-					}
-			_ASSERT(idx);
-			CSIndex[X.Deck[i].GetId()] = idx;
-			rescs[idx].Id = X.Deck[i].GetId();
-		}
-		//
-		UINT games = 1000;
-		for (UINT k=0;k<games;k++)
-		{
-			ActiveDeck x(X);
-			ActiveDeck y(Y);
-
-			x.SetFancyStatsBuffer(CSIndex,rescs);
-
-			//Simulate(x,y,res,false);
-
-			for (UCHAR i=0; (i < MaxTurn); i++)
-			{
-				if (x.Deck.size() == 1)
-				{
-					// last card is about to be played
-					UINT id = x.Deck[0].GetId(); // it's ID
-					// play variation without this card
-					rescs[CSIndex[id]].WLGames++;
-					ActiveDeck xwl(x),ywl(y);
-					for (UCHAR iwl=i; (iwl < MaxTurn); iwl++)
-					{
-						xwl.AttackDeck(ywl);
-						if (!ywl.Commander.IsAlive())
-						{
-							rescs[CSIndex[id]].WLWin++;
-							break;
-						}
-						ywl.AttackDeck(xwl);
-						if (!xwl.Commander.IsAlive())
-						{
-							rescs[CSIndex[id]].WLLoss++;
-							break;
-						}
-					}
-				}
-				x.AttackDeck(y);
-				if (!y.Commander.IsAlive())
-				{
-					res.Win++;
-					// sweep fs
-					x.SweepFancyStatsRemaining(); // this is wrong - i should sweep remaining even on losses in case of fear based enemy deck or any cards still present
-					break;
-				}
-				y.AttackDeck(x);
-				if (!x.Commander.IsAlive())
-				{
-					res.Loss++;
-					break;
-				}
-			}
-		}
-		printf("%d\n",res.Win);
-		for (UINT i=0;i<DEFAULT_DECK_SIZE+1;i++)
-			rescs[i].Print();
-	}
-
-	{
-	RESULTS res;
-	for (UINT i=0;10;i++)
-	{
-	ActiveDeck a("QCAXBJDd+nD+",DB.GetPointer());
-	EvaluateRaidOnce(a,res,0,0,7);
-	}
-	}
-
-	ActiveDeck m119("RZDWEjEmFKFNFPFdFfFgFsFtgNge",DB.GetPointer());
-	for (UINT i=0;i<1000;i++)
-	{
-		const Card *c = &DB.GetCard(i);
-		if (c->IsCard() && (c->GetSet() > 0))
-		{
-#define GAMES_COUNT	100
-#define GAMES_EMUL	10
-			RESULTS res;
-			for (UINT t=0;t<10;t++)
-			{
-				for (UINT k=0;k<GAMES_COUNT;k++)
-				{
-					ActiveDeck tm(m119);
-					ActiveDeck a(DB.CARD("Dracorex"));		
-					for (UCHAR l=0;l<GAMES_EMUL;l++)
-						a.Add(c);
-
-					Simulate(a,tm,res);
-				}
-				if (res.Win < (GAMES_COUNT / 2))
-					break; // chance is lower then half, drop this
-			}
-			if (res.Win > GAMES_COUNT * GAMES_EMUL / 2)
-			{
-				printf("%.3f	%s\n",(float)res.Win / GAMES_COUNT,c->GetName());
-			}
-		}
-	}
-
-/*	ActiveDeck X(DB.CARD("Yurich"));
-	X.Deck.push_back(DB.CARD("Colossus"));
-	X.Deck.push_back(DB.CARD("Colossus"));
-	X.Deck.push_back(DB.CARD("Colossus"));
-	X.Deck.push_back(DB.CARD("Colossus"));
-	X.Deck.push_back(DB.CARD("Colossus"));
-	X.Deck.push_back(DB.CARD("Colossus"));
-	X.Deck.push_back(DB.CARD("Colossus"));
-	X.Deck.push_back(DB.CARD("Goliath"));
-	X.Deck.push_back(DB.CARD("Demolition Bot"));
-	X.Deck.push_back(DB.CARD("Dozer Tank"));
-
-/*	ActiveDeck Y(DB.CARD("Yurich"));
-	Y.Deck.push_back(DB.CARD("Colossus"));
-	Y.Deck.push_back(DB.CARD("Colossus"));
-	Y.Deck.push_back(DB.CARD("Colossus"));
-	Y.Deck.push_back(DB.CARD("Colossus"));
-	Y.Deck.push_back(DB.CARD("Colossus"));
-	Y.Deck.push_back(DB.CARD("Colossus"));
-	Y.Deck.push_back(DB.CARD("Colossus"));
-	Y.Deck.push_back(DB.CARD("Goliath"));
-	Y.Deck.push_back(DB.CARD("Demolition Bot"));
-	Y.Deck.push_back(DB.CARD("Dozer Tank"));
-	
-/*	ActiveDeck X(DB.CARD("Dracorex"));
-	X.Deck.push_back(DB.CARD("Azure Reaper"));
-	X.Deck.push_back(DB.CARD("Azure Reaper"));
-	X.Deck.push_back(DB.CARD("Azure Reaper"));
-	X.Deck.push_back(DB.CARD("Azure Reaper"));
-	X.Deck.push_back(DB.CARD("Sustainer Xolan"));
-	X.Deck.push_back(DB.CARD("Sustainer Xolan"));
-	X.Deck.push_back(DB.CARD("Sustainer Xolan"));
-	X.Deck.push_back(DB.CARD("Vaporwing"));
-	X.Deck.push_back(DB.CARD("Rifter"));
-	X.Deck.push_back(DB.CARD("Apex"));
-
-	ActiveDeck Y(DB.CARD("Dracorex"));
-	Y.Deck.push_back(DB.CARD("Pummeller"));
-	Y.Deck.push_back(DB.CARD("Pummeller"));
-	Y.Deck.push_back(DB.CARD("Pummeller"));
-	Y.Deck.push_back(DB.CARD("Pummeller"));
-	Y.Deck.push_back(DB.CARD("Pummeller"));
-	Y.Deck.push_back(DB.CARD("Blood Pool"));
-	Y.Deck.push_back(DB.CARD("Blood Pool"));
-	Y.Deck.push_back(DB.CARD("Blood Pool"));
-	Y.Deck.push_back(DB.CARD("Draconian Queen"));
-	Y.Deck.push_back(DB.CARD("Valefar"));
-
-/*	ActiveDeck X(DB.CARD("Freddie"));
-	X.Deck.push_back(DB.CARD("Sharpshooter"));
-	X.Deck.push_back(DB.CARD("Sharpshooter"));
-	X.Deck.push_back(DB.CARD("Sharpshooter"));
-	X.Deck.push_back(DB.CARD("Sharpshooter"));
-	X.Deck.push_back(DB.CARD("Sharpshooter"));
-	X.Deck.push_back(DB.CARD("Sharpshooter"));
-	X.Deck.push_back(DB.CARD("Sharpshooter"));
-	X.Deck.push_back(DB.CARD("Sharpshooter"));
-	X.Deck.push_back(DB.CARD("Sharpshooter"));
-	X.Deck.push_back(DB.CARD("Sharpshooter"));
-	//X.Deck.push_back(DB.CARD("Rocket Infantry"));
-	//ActiveDeck Y;
-	//DB.GenRaidDeck(Y,11);
-/*	ActiveDeck Y(DB.CARD("Vyander"));
-	Y.Deck.push_back(DB.CARD("Vaporwing"));
-	Y.Deck.push_back(DB.CARD("Vaporwing"));
-	Y.Deck.push_back(DB.CARD("Vaporwing"));
-	Y.Deck.push_back(DB.CARD("Vaporwing"));
-	Y.Deck.push_back(DB.CARD("Vaporwing"));
-	Y.Deck.push_back(DB.CARD("Vaporwing"));
-	Y.Deck.push_back(DB.CARD("Vaporwing"));
-	Y.Deck.push_back(DB.CARD("Vaporwing"));
-	Y.Deck.push_back(DB.CARD("Vaporwing"));
-	Y.Deck.push_back(DB.CARD("Vaporwing"));
-*/	
-/*	ActiveDeck Y(DB.CARD("Vyander"));
-	Y.Deck.push_back(DB.CARD("Kraken"));
-	Y.Deck.push_back(DB.CARD("Kraken"));
-	Y.Deck.push_back(DB.CARD("Kraken"));
-	Y.Deck.push_back(DB.CARD("Kraken"));
-	Y.Deck.push_back(DB.CARD("Kraken"));
-	Y.Deck.push_back(DB.CARD("Kraken"));
-	Y.Deck.push_back(DB.CARD("Kraken"));
-	Y.Deck.push_back(DB.CARD("Kraken"));
-	Y.Deck.push_back(DB.CARD("Kraken"));
-	Y.Deck.push_back(DB.CARD("Kraken"));*/
-
-	ActiveDeck X(DB.CARD("Vyander"));
-	X.Deck.push_back(DB.CARD("Stealthy Niaq"));
-	X.Deck.push_back(DB.CARD("Stealthy Niaq"));
-	//X.Deck.push_back(DB.CARD("Heavy Infantry"));
-	ActiveDeck Y(DB.CARD("Vyander"));
-	//Y.Deck.push_back(DB.CARD("Chopper"));
-	Y.Deck.push_back(DB.CARD("Predator"));
-	Y.Deck.push_back(DB.CARD("Predator"));
-	//Y.Deck.push_back(DB.CARD("Enclave Warlord"));
-	//Y.Deck.push_back(DB.CARD("Enclave Warlord"));
-	//Y.Deck.push_back(DB.CARD("Enclave Warlord"));
-
-
-	printf("X hash: %s\n",X.GetHash64().c_str());
-	printf("Y hash: %s\n",Y.GetHash64().c_str());
-
-	Branching B(X,Y);
-	while (B.Evaluate());
-	//B.Evaluate();
-	// X hash: P3AGBW+p
-	// Y hash: QbDO+q
-
-	ActiveDeck Z((const char*)"P3AGBW+p",DB.GetPointer());
-	Z.PrintShort();
-	ActiveDeck S((const char*)"QbDO+q",DB.GetPointer());
-	S.PrintShort();
-
-	RESULTS res;
-	time_t t;
-
-	time(&t);
-	EvaluateInThreads(100500,X,Y,-1,res,0,0,2500,4);
-	time_t t1;
-	time(&t1);
-	printf("Finished in %d sec\n",t1-t);
-#endif
 }
 

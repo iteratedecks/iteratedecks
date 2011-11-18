@@ -756,7 +756,7 @@ public:
 	{
 		FILE *f;
 		int errline = -1, cline = 0; // no errors
-		int Tag = 0;
+		int Tag = TAG_CUSTOM;
 		if (!fopen_s(&f,FileName,"r"))
 		{
 			// detect Tag
@@ -1183,6 +1183,34 @@ public:
 		if (mi != Index.end())
 			for (UCHAR k=0;k<DEFAULT_DECK_SIZE;k++)
 				Deck.push_back(&CDB[mi->second]);
+	}
+	const UINT GetCustomCount()
+	{
+		UINT c = 0;
+		for (MDECKS::iterator mi = DIndex.begin(); mi != DIndex.end(); mi++)
+			if (mi->first.Tag == TAG_CUSTOM)
+				c++;
+		return c;
+	}
+	bool GetCustomDeck(UINT Index, ActiveDeck &R)
+	{
+		for (MDECKS::iterator mi = DIndex.begin(); mi != DIndex.end(); mi++)
+			if (mi->first.Tag == TAG_CUSTOM)
+			{
+				if (!Index)
+				{
+					if (mi->second.empty())
+						return false;
+					VSTRINGS::iterator vi = mi->second.begin();
+					R.Commander = &GetCard(*vi);
+					R.Deck.clear();
+					for (vi++;vi != mi->second.end();vi++)
+						R.Add(&GetCard(*vi));
+					return true;
+				}
+				Index--;
+			}
+		return false;
 	}
 	// named decks
 	ActiveDeck GetNamedDeck(const char* DeckName, const int Tag)
