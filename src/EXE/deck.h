@@ -705,6 +705,14 @@ private:
 		Structures.reserve(DEFAULT_DECK_RESERVE_SIZE);
 		Actions.reserve(DEFAULT_DECK_RESERVE_SIZE);
 	}
+	UCHAR GetAliveUnitsCount()
+	{
+		UCHAR c = 0;
+		for (UCHAR i=0;i<Units.size();i++)
+			if (Units[i].IsAlive())
+				c++;
+		return c;
+	}
 	void Attack(UCHAR index, ActiveDeck &Def)
 	{
 #define SRC	Units[index]
@@ -722,7 +730,7 @@ private:
 		if ((index >= (UCHAR)Def.Units.size()) || (!Def.Units[index].IsAlive()) || (SRC.GetAbility(COMBAT_FEAR)))
 		{
 			// Deal DMG To Commander BUT STILL PROC50 FLURRY and PROBABLY VALOR
-			UCHAR valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (Units.size() < Def.Units.size())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
+			UCHAR valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
 			for (UCHAR i=0;i<iflurry;i++)
 			{
 				if (Def.Commander.IsAlive())
@@ -771,7 +779,7 @@ private:
 					// if target dies during flurry and slot(s == 1) is aligned to SRC, we deal dmg to commander
 					if ((!targets[s]->IsAlive()) && ((swipe == 1) || (s == 1)))
 					{
-						UCHAR valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (Units.size() < Def.Units.size())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
+						UCHAR valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
 						if (Def.Commander.IsAlive())
 							DamageToCommander += SRC.GetAttack()+valor;
 						Def.Commander.HitCommander(SRC.GetAttack()+valor,SRC,Def.Structures);
@@ -786,7 +794,7 @@ private:
 					_ASSERT(targets[s]->IsAlive()); // must be alive here
 					// actual attack
 					// must check valor before every attack
-					UCHAR valor = (SRC.GetAbility(COMBAT_VALOR) && (Units.size() < Def.Units.size())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
+					UCHAR valor = (SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
 					// attacking flyer
 					UCHAR antiair = SRC.GetAbility(COMBAT_ANTIAIR);
 					if (targets[s]->GetAbility(DEFENSIVE_FLYING))
