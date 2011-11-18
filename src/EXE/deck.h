@@ -451,7 +451,7 @@ public:
 			}
 			if (actualdamagedealt) // siphon and leech are kinda bugged - overkill damage counts as full attack damage even if card has 1 hp left, therefore this workaround
 			{
-				actualdamagedealt = dealt;
+				*actualdamagedealt = dealt;
 				return dmg;
 			}
 			// crush damage will be dealt even if the defending unit Regenerates
