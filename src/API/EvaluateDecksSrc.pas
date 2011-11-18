@@ -503,6 +503,8 @@ type
     procedure LoadDefenceLists;
     procedure bRefreshDefenceClick(Sender: TObject);
     procedure tsBatchShow(Sender: TObject);
+    procedure vTopNamePropertiesCloseUp(Sender: TObject);
+    procedure vBotNamePropertiesCloseUp(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -1426,6 +1428,12 @@ begin
     end;
 end;
 
+procedure TEvaluateDecksForm.vBotNamePropertiesCloseUp(Sender: TObject);
+begin
+  if (not VarIsNull(vBotName.EditValue)) and (not vBotName.IsLast) then
+    vBot.DataController.GotoNext;
+end;
+
 procedure TEvaluateDecksForm.vBotNamePropertiesValidate(Sender: TObject;
   var DisplayValue: Variant; var ErrorText: TCaption; var Error: Boolean);
 var
@@ -1591,6 +1599,12 @@ begin
       SetValue(FocusedRecordIndex, vTopHealth.Index, NULL);
       SetValue(FocusedRecordIndex, vTopSkills.Index, NULL);
     end;
+end;
+
+procedure TEvaluateDecksForm.vTopNamePropertiesCloseUp(Sender: TObject);
+begin
+  if (not VarIsNull(vTopName.EditValue)) and (not vTopName.IsLast) then
+    vTop.DataController.GotoNext;
 end;
 
 procedure TEvaluateDecksForm.vTopNamePropertiesValidate(Sender: TObject;
@@ -2074,6 +2088,11 @@ begin
 
       for i := 0 to sl1.Count - 1 do
       begin
+        if (Trim(sl1[i]) = '') then
+          continue;
+        if (Copy(Trim(sl1[i]),1,2) = '//') then
+          continue;
+
         if not GetDeckFromString(sl1[i], p1) then
           continue;
         // transform
@@ -3681,8 +3700,10 @@ begin
   sLocalDir := ExtractFilePath(ParamStr(0));
   Caption := Application.Title;
 
+{#IFDEF DEVELOPMENT}
   LoadDefenceLists;
-
+  Caption := Caption + ' DEV';
+{#ENDIF}
   //AddFontResource(PAnsiChar(sLocalDir + sOptimusFont));
   AddFontResource(PAnsiChar(sLocalDir + sEnigmaticFont));
 
