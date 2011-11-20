@@ -280,7 +280,7 @@ public:
 				printf("%d ",i);
 		printf("\n");
 	}
-	void Destroy() { Id = 0; AbilitiesOrdered.clear(); }
+	void Destroy() {	Id = 0;	}
 	~Card()	{ Destroy(); }
 	const bool IsCard() const { return (Id != 0); }
 	const UINT GetId() const { return Id; }
