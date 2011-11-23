@@ -62,30 +62,33 @@ char FACTIONS[6][CARD_NAME_MAX_LENGTH] = {0,"Imperial","Raider","Bloodthirsty","
 
 #define ABILITY_ENABLED			1  // just a helper, no use
 
-#define ACTIVATION_ENFEEBLE		11
-#define ACTIVATION_HEAL			12
-#define ACTIVATION_INFUSE		13	// this currently works only for Commander	
-#define ACTIVATION_JAM			14
-#define ACTIVATION_MIMIC		15
-#define ACTIVATION_PROTECT		16
-#define ACTIVATION_RALLY		17
-#define ACTIVATION_RECHARGE		18
-#define ACTIVATION_REPAIR		19
-#define ACTIVATION_SHOCK		20
-#define ACTIVATION_SIEGE		21
-#define ACTIVATION_SPLIT		22
-#define ACTIVATION_STRIKE		23
-#define ACTIVATION_SUPPLY		24
-#define ACTIVATION_WEAKEN		25
+#define ACTIVATION_CHAOS		11
+#define ACTIVATION_CLEANSE		12
+#define ACTIVATION_ENFEEBLE		13
+#define ACTIVATION_HEAL			14
+#define ACTIVATION_INFUSE		15	// this currently works only for Commander	
+#define ACTIVATION_JAM			16
+#define ACTIVATION_MIMIC		17
+#define ACTIVATION_PROTECT		18
+#define ACTIVATION_RALLY		19
+#define ACTIVATION_RECHARGE		20
+#define ACTIVATION_REPAIR		21
+#define ACTIVATION_SHOCK		22
+#define ACTIVATION_SIEGE		23
+#define ACTIVATION_SPLIT		24
+#define ACTIVATION_STRIKE		25
+#define ACTIVATION_SUPPLY		26
+#define ACTIVATION_WEAKEN		27
 
 #define DEFENSIVE_ARMORED		31
 #define DEFENSIVE_COUNTER		32
 #define DEFENSIVE_EVADE			33
 #define DEFENSIVE_FLYING		34
 #define DEFENSIVE_PAYBACK		35
-#define DEFENSIVE_REGENERATE	36
-#define DEFENSIVE_TRIBUTE		37
-#define DEFENSIVE_WALL			38
+#define DEFENSIVE_REFRESH		36
+#define DEFENSIVE_REGENERATE	37
+#define DEFENSIVE_TRIBUTE		38
+#define DEFENSIVE_WALL			39
 
 #define COMBAT_ANTIAIR			41
 #define COMBAT_FEAR				42
@@ -96,10 +99,11 @@ char FACTIONS[6][CARD_NAME_MAX_LENGTH] = {0,"Imperial","Raider","Bloodthirsty","
 
 #define DMGDEPENDANT_BERSERK	51
 #define DMGDEPENDANT_CRUSH		52
-#define DMGDEPENDANT_IMMOBILIZE	53
-#define DMGDEPENDANT_LEECH		54
-#define DMGDEPENDANT_POISON		55
-#define DMGDEPENDANT_SIPHON		56 
+#define DMGDEPENDANT_DISEASE	53
+#define DMGDEPENDANT_IMMOBILIZE	54
+#define DMGDEPENDANT_LEECH		55
+#define DMGDEPENDANT_POISON		56
+#define DMGDEPENDANT_SIPHON		57 
 
 #define SPECIAL_BACKFIRE		61  // Destroyed - When this is destroyed, deal damage to own Commander.
 
@@ -371,11 +375,14 @@ public:
 				printf(" Jammed");
 			if (Effects[DMGDEPENDANT_IMMOBILIZE])
 				printf(" Immobilized");
+			if (Effects[DMGDEPENDANT_DISEASE])
+				printf(" Diseased");
+			if (Effects[ACTIVATION_CHAOS])
+				printf(" Chaosed");
 		}
 	}
 	const bool BeginTurn()
 	{
-		Effects[ACTIVATION_ENFEEBLE] = 0;
 		return (Health && (!Effects[ACTIVATION_JAM]) && (!Wait));
 	}
 	void ProcessPoison()
@@ -391,12 +398,59 @@ public:
 	{
 		Effects[ACTIVATION_PROTECT] = 0;
 	}
-	void EndTurn()
+	void Refresh()
 	{
+		Health = OriginalCard->GetHealth();
+	}
+	void ClearEnfeeble()
+	{
+		Effects[ACTIVATION_ENFEEBLE] = 0;
+	}
+	void RemoveDebuffs()
+	{
+/*
+by Moraku:
+Chaos: Removed after owner ends his turn.
+Disease: Never removed (unless cleansed).
+Enfeeble: Removed after either player ends his turn.
+Fusion: Never removed (unless less than 3 Fusion cards active).
+Immobilize: Removed after owner ends his turn.
+Infusion: Never removed.
+Jam: Removed after owner ends his turn.
+Poison: Never removed (unless cleansed).
+Protect: Removed before owner begins his turn.
+Rally: Removed after owner ends his turn.
+Weaken: Removed after owner ends his turn.
+Valor: Removed after owner ends his turn.
+*/
 		Effects[ACTIVATION_JAM] = 0;
 		Effects[DMGDEPENDANT_IMMOBILIZE] = 0;
+		Effects[ACTIVATION_CHAOS] = 0;
+		// really?
 		Effects[ACTIVATION_RALLY] = 0;
 		Effects[ACTIVATION_WEAKEN] = 0;
+	}
+	void Cleanse()
+	{
+		Effects[DMGDEPENDANT_POISON] = 0;
+		Effects[DMGDEPENDANT_DISEASE] = 0;
+		Effects[ACTIVATION_JAM] = 0;
+		Effects[DMGDEPENDANT_IMMOBILIZE] = 0;
+		Effects[ACTIVATION_ENFEEBLE] = 0;
+		Effects[ACTIVATION_CHAOS] = 0;
+	}
+	bool IsCleanseTarget()
+	{
+		// Poison, Disease, Jam, Immobilize, Enfeeble, Chaos. (Does not remove Weaken.)
+		return (Effects[DMGDEPENDANT_POISON] || 
+				Effects[DMGDEPENDANT_DISEASE] || 
+				Effects[ACTIVATION_JAM] ||
+				Effects[DMGDEPENDANT_IMMOBILIZE] || 
+				Effects[ACTIVATION_ENFEEBLE] ||
+				Effects[ACTIVATION_CHAOS]);
+	}
+	void EndTurn()
+	{
 		Played(); // for rally
 		if (Wait > 0)
 			Wait--;
@@ -430,7 +484,7 @@ public:
 		if (dmg >= Health)
 		{
 			UCHAR dealt = Health;
-			if ((OriginalCard->GetAbility(DEFENSIVE_REGENERATE))&&(PROC50))
+			if ((!IsDiseased()) && (OriginalCard->GetAbility(DEFENSIVE_REGENERATE))&&(PROC50))
 			{
 				Health = OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
 				fsHealed += OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
@@ -656,8 +710,10 @@ public:
 		//if (amount > Effects[ACTIVATION_PROTECT])
 		Effects[ACTIVATION_PROTECT] += amount;
 	}
+	const bool IsDiseased() const	{	return Effects[DMGDEPENDANT_DISEASE] > 0; }
 	UCHAR Heal(UCHAR amount)
 	{
+		_ASSERT(!IsDiseased()); // disallowed
 		if (Health + amount >  OriginalCard->GetHealth())
 		{
 			amount = (OriginalCard->GetHealth() - Health);
@@ -886,6 +942,12 @@ private:
 							targets[s]->SetEffect(DMGDEPENDANT_IMMOBILIZE,SRC.GetAbility(DMGDEPENDANT_IMMOBILIZE));
 							SRC.fsSpecial++; // is it good?
 						}
+						// disease
+						if (SRC.GetAbility(DMGDEPENDANT_DISEASE))
+						{
+							targets[s]->SetEffect(DMGDEPENDANT_DISEASE,SRC.GetAbility(DMGDEPENDANT_DISEASE));
+							SRC.fsSpecial++; // is it good?
+						}
 						// poison
 						if (SRC.GetAbility(DMGDEPENDANT_POISON))
 							if (targets[s]->GetEffect(DMGDEPENDANT_POISON) < SRC.GetAbility(DMGDEPENDANT_POISON)) // overflow
@@ -898,7 +960,7 @@ private:
 					if (SRC.IsAlive() && SRC.GetAbility(DMGDEPENDANT_LEECH))
 					{
 						UCHAR leech = (SRC.GetAbility(DMGDEPENDANT_LEECH) < dmg) ? SRC.GetAbility(DMGDEPENDANT_LEECH) : dmg;
-						if (leech)
+						if (leech && (!SRC.IsDiseased()))
 							SRC.fsHealed += SRC.Heal(leech);
 					}
 					// siphon
@@ -1110,7 +1172,74 @@ public:
 		UCHAR ac = Src.GetAbilitiesCount();
 		for (UCHAR aindex=0;aindex<ac;aindex++)
 		{
+			UCHAR chaos = Src.GetEffect(ACTIVATION_CHAOS); // I need to check this every time card uses skill because it could be paybacked chaos - such as Pulsifier with payback, chaos and mimic
+
 			aid = Src.GetAbilityInOrder(aindex);
+			// cleanse
+			if (aid == ACTIVATION_CLEANSE)
+			{
+				effect = Src.GetAbility(aid) * FusionMultiplier; // will it be fusioned? who knows
+				if (effect > 0)
+				{
+					if (IsMimiced)
+						faction = FACTION_NONE;
+					else
+						faction = Src.GetTargetFaction(aid);
+					GetTargets(Units,faction,targets);
+					if (targets.size())
+					{
+						PVCARDS::iterator vi = targets.begin();
+						while (vi != targets.end())
+						{
+							if (!(*vi)->IsCleanseTarget())
+								vi = targets.erase(vi);
+							else vi++;
+						}
+						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+						{
+							destindex = rand() % targets.size();
+							tmp = targets[destindex];
+							targets.clear();
+							targets.push_back(tmp);
+						}
+						for (vi = targets.begin();vi != targets.end();vi++)
+						{
+							if (bConsoleOutput)
+							{
+								Src.PrintDesc();
+								printf(" cleanse ");
+								(*vi)->PrintDesc();
+								printf("\n");
+							}
+							(*vi)->Cleanse();
+							if (!IsMimiced)
+								Src.fsSpecial += effect;
+							else
+								Mimicer->fsSpecial += effect;
+							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
+							{
+								if (IsMimiced)
+								{
+									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != (*vi)))
+									{
+										Mimicer->Cleanse();
+										(*vi)->fsSpecial += effect;
+									}
+								}
+								else
+								{
+									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
+									{
+										Src.Cleanse();
+										(*vi)->fsSpecial += effect;
+									}
+								}
+							}
+						}
+					}
+					targets.clear();
+				}
+			}
 			// enfeeble
 			if (aid == ACTIVATION_ENFEEBLE)
 			{
@@ -1121,7 +1250,10 @@ public:
 						faction = FACTION_NONE;
 					else
 						faction = Src.GetTargetFaction(aid);
-					GetTargets(Dest.Units,faction,targets);
+					if (chaos > 0)
+						GetTargets(Units,faction,targets);
+					else
+						GetTargets(Dest.Units,faction,targets);
 					if (targets.size())
 					{
 						if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL)
@@ -1132,7 +1264,7 @@ public:
 							targets.push_back(tmp);
 						}
 						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
-							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
+							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
 							{
 								// evaded
 							}
@@ -1143,7 +1275,7 @@ public:
 									Src.fsSpecial += effect;
 								else
 									Mimicer->fsSpecial += effect;
-								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50)  // payback
+								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback
 								{
 									Src.SetEffect(aid,Src.GetEffect(aid) + effect);
 									(*vi)->fsSpecial += effect;
@@ -1176,7 +1308,7 @@ public:
 						PVCARDS::iterator vi = targets.begin();
 						while (vi != targets.end())
 						{
-							if ((*vi)->GetHealth() == (*vi)->GetMaxHealth())
+							if (((*vi)->GetHealth() == (*vi)->GetMaxHealth()) || ((*vi)->IsDiseased()))
 								vi = targets.erase(vi);
 							else vi++;
 						}
@@ -1205,7 +1337,7 @@ public:
 							{
 								if (IsMimiced)
 								{
-									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != (*vi)))
+									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != (*vi)) && (!Mimicer->IsDiseased()))
 									{
 										Mimicer->Heal(effect);
 										(*vi)->fsHealed += effect;
@@ -1213,7 +1345,7 @@ public:
 								}
 								else
 								{
-									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
+									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)) && (!Src.IsDiseased()))
 									{
 										Src.Heal(effect);
 										(*vi)->fsHealed += effect;
@@ -1242,7 +1374,7 @@ public:
 						PVCARDS::iterator vi = targets.begin();
 						while (vi != targets.end())
 						{
-							if ((*vi)->GetHealth() == (*vi)->GetMaxHealth())
+							if (((*vi)->GetHealth() == (*vi)->GetMaxHealth()) || (*vi)->IsDiseased())
 								vi = targets.erase(vi);
 							else vi++;
 						}
@@ -1264,7 +1396,7 @@ public:
 							{
 								if (IsMimiced)
 								{
-									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != (*vi)))
+									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != (*vi)) && (!Mimicer->IsDiseased()))
 									{
 										Mimicer->Heal(effect);
 										(*vi)->fsHealed += effect;
@@ -1272,7 +1404,7 @@ public:
 								}
 								else
 								{
-									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
+									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)) && (!Src.IsDiseased()))
 									{
 										Src.Heal(effect);
 										(*vi)->fsHealed += effect;
@@ -1363,7 +1495,10 @@ public:
 						faction = FACTION_NONE;
 					else
 						faction = Src.GetTargetFaction(aid);
-					GetTargets(Dest.Units,faction,targets);
+					if (chaos > 0)
+						GetTargets(Units,faction,targets);
+					else
+						GetTargets(Dest.Units,faction,targets);
 					if (targets.size())
 					{
 						PVCARDS::iterator vi = targets.begin();
@@ -1382,7 +1517,7 @@ public:
 						}
 						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
 							if (PROC50)
-								if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
+								if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
 								{
 									// evaded
 									// no fancy stats here?!
@@ -1394,7 +1529,7 @@ public:
 										Src.fsSpecial += effect;
 									else
 										Mimicer->fsSpecial += effect;
-		/*  ?  */					if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50)  // payback is it 1/2 or 1/4 chance to return jam with payback????
+		/*  ?  */					if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback is it 1/2 or 1/4 chance to return jam with payback????
 									{
 										Src.SetEffect(aid,effect);
 										(*vi)->fsSpecial += effect;
@@ -1421,7 +1556,10 @@ public:
 						faction = FACTION_NONE;
 					else
 						faction = Src.GetTargetFaction(aid);
-					GetTargets(Dest.Units,faction,targets);
+					if (chaos > 0)
+						GetTargets(Units,faction,targets);
+					else
+						GetTargets(Dest.Units,faction,targets);
 					if (targets.size())
 					{
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL))
@@ -1432,7 +1570,7 @@ public:
 							targets.push_back(tmp);
 						}
 						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
-							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
+							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
 							{
 								// evaded
 							}
@@ -1445,7 +1583,10 @@ public:
 									(*vi)->PrintDesc();
 									printf("\n");
 								}
-								ApplyEffects(*(*vi),Position,Dest,true,false,&Src);	
+								if (chaos > 0)
+									ApplyEffects(*(*vi),Position,*this,true,false,&Src);
+								else
+									ApplyEffects(*(*vi),Position,Dest,true,false,&Src);	
 							}
 					}
 					targets.clear();
@@ -1588,7 +1729,10 @@ public:
 						faction = FACTION_NONE;
 					else
 						faction = Src.GetTargetFaction(aid);
-					GetTargets(Dest.Structures,faction,targets);
+					if (chaos > 0)
+						GetTargets(Structures,faction,targets);
+					else	
+						GetTargets(Dest.Structures,faction,targets);
 					if (targets.size())
 					{
 						if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL)
@@ -1600,7 +1744,7 @@ public:
 						}
 						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
 					
-							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
+							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
 							{
 								// evaded
 								(*vi)->fsAvoided += effect;
@@ -1640,7 +1784,10 @@ public:
 						faction = FACTION_NONE;
 					else
 						faction = Src.GetTargetFaction(aid);
-					GetTargets(Dest.Units,faction,targets);
+					if (chaos > 0)
+						GetTargets(Units,faction,targets);
+					else
+						GetTargets(Dest.Units,faction,targets);
 					if (targets.size())
 					{
 						if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL)
@@ -1651,7 +1798,7 @@ public:
 							targets.push_back(tmp);
 						}
 						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
-							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
+							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
 							{
 								// evaded
 								(*vi)->fsAvoided += effect;
@@ -1670,7 +1817,7 @@ public:
 									Src.fsDmgDealt += sdmg;
 								else
 									Mimicer->fsDmgDealt += sdmg;
-								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50)  // payback
+								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback
 									(*vi)->fsDmgDealt += Src.StrikeDmg(effect);
 							}			
 					}
@@ -1693,7 +1840,10 @@ public:
 						faction = FACTION_NONE;
 					else
 						faction = Src.GetTargetFaction(aid);
-					GetTargets(Dest.Units,faction,targets);
+					if (chaos > 0)
+						GetTargets(Units,faction,targets);
+					else
+						GetTargets(Dest.Units,faction,targets);
 					if (targets.size())
 					{
 						PVCARDS::iterator vi = targets.begin();
@@ -1702,7 +1852,64 @@ public:
 							if (((*vi)->GetWait() == 0) && 
 								((*vi)->GetAttack() >= 1) && // at least 1 Attack OR it is WEAKEN ALL, that can lower ur attack down to -100500
 								(!(*vi)->GetEffect(ACTIVATION_JAM)) && // neither Jammed
-								(!(*vi)->GetEffect(DMGDEPENDANT_IMMOBILIZE))    // nor Immobilized
+								(!(*vi)->GetEffect(DMGDEPENDANT_IMMOBILIZE)) &&   // nor Immobilized
+								((!(*vi)->GetPlayed()) || (!chaos)) // if it is chaosed - only target cards that didn't play yet
+								)
+								vi++; // skip
+							else
+								vi = targets.erase(vi);
+						}
+						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+						{
+							destindex = rand() % targets.size();
+							tmp = targets[destindex];
+							targets.clear();
+							targets.push_back(tmp);
+						}
+						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
+							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
+							{
+								// evaded
+							}
+							else
+							{
+								if (bConsoleOutput)
+								{
+									Src.PrintDesc();
+									printf(" weaken ");
+									(*vi)->PrintDesc();
+									printf(" for %d\n",effect);
+								}
+								UCHAR we = (*vi)->Weaken(effect);
+								if (!IsMimiced)
+									Src.fsSpecial += we;
+								else
+									Mimicer->fsSpecial += we;
+								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50 && (!chaos))  // payback
+									(*vi)->fsSpecial += Src.Weaken(effect);
+							}
+					}
+				}
+			}
+			// Chaos		
+			if (aid == ACTIVATION_CHAOS)
+			{
+				effect = Src.GetAbility(aid);
+				if (effect > 0)
+				{
+					if (IsMimiced)
+						faction = FACTION_NONE;
+					else
+						faction = Src.GetTargetFaction(aid);
+					GetTargets(Dest.Units,faction,targets);
+					if (targets.size())
+					{
+						PVCARDS::iterator vi = targets.begin();
+						while (vi != targets.end())
+						{
+							if (((*vi)->GetWait() == 0) && 
+								(!(*vi)->GetEffect(ACTIVATION_JAM)) && // not Jammed
+								(!(*vi)->GetEffect(ACTIVATION_CHAOS))    // not Chaosed
 								)
 								vi++; // skip
 							else
@@ -1725,17 +1932,21 @@ public:
 								if (bConsoleOutput)
 								{
 									Src.PrintDesc();
-									printf(" weaken ");
+									printf(" chaos ");
 									(*vi)->PrintDesc();
-									printf(" for %d\n",effect);
+									printf("\n");
 								}
-								UCHAR we = (*vi)->Weaken(effect);
+								(*vi)->SetEffect(ACTIVATION_CHAOS,effect);
+								UCHAR we = effect;
 								if (!IsMimiced)
 									Src.fsSpecial += we;
 								else
 									Mimicer->fsSpecial += we;
 								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50)  // payback
-									(*vi)->fsSpecial += Src.Weaken(effect);
+								{
+									Src.SetEffect(ACTIVATION_CHAOS,effect);
+									(*vi)->fsSpecial += effect;
+								}
 							}
 					}
 				}
@@ -1941,6 +2152,9 @@ public:
 			}
 			Units[i].EndTurn();
 		}
+		// refresh commander
+		if (Commander.GetAbility(DEFENSIVE_REFRESH)) // Bench told refresh procs at the end of player's turn
+			Commander.Refresh();
 		// clear dead units here yours and enemy
 		VCARDS::iterator vi = Units.begin();
 		while (vi != Units.end())
@@ -1952,6 +2166,10 @@ public:
 			else
 			{
 				vi->ResetPlayedFlag();
+				vi->ClearEnfeeble(); // this is important for chaosed skills
+				if ((!vi->IsDiseased()) && (vi->GetAbility(DEFENSIVE_REFRESH))) // Bench told refresh procs at the end of player's turn
+					vi->Refresh();
+				vi->RemoveDebuffs(); // post-turn
 				vi++;
 			}
 		vi = Structures.begin();
@@ -1962,7 +2180,11 @@ public:
 				vi = Structures.erase(vi);
 			}
 			else
+			{
+				if ((!vi->IsDiseased()) && (vi->GetAbility(DEFENSIVE_REFRESH))) // Bench told refresh procs at the end of player's turn
+					vi->Refresh();
 				vi++;
+			}
 		//
 		vi = Def.Units.begin();
 		while (vi != Def.Units.end())
@@ -1972,7 +2194,10 @@ public:
 				vi = Def.Units.erase(vi);
 			}
 			else
+			{
+				vi->ClearEnfeeble(); // this is important for chaosed skills
 				vi++;
+			}
 		vi = Def.Structures.begin();
 		while (vi != Def.Structures.end())
 			if (!vi->IsAlive())

@@ -615,6 +615,8 @@ public:
 	void Initialize()
 	{
 		// must load skills earlier than anything
+		AddSkill(ACTIVATION_CHAOS,"Chaos");
+		AddSkill(ACTIVATION_CLEANSE,"Cleanse");
 		AddSkill(ACTIVATION_ENFEEBLE,"Enfeeble");
 		AddSkill(ACTIVATION_HEAL,"Heal");
 		AddSkill(ACTIVATION_INFUSE,"Infuse");
@@ -636,6 +638,7 @@ public:
 		AddSkill(DEFENSIVE_EVADE,"Evade");
 		AddSkill(DEFENSIVE_FLYING,"Flying");
 		AddSkill(DEFENSIVE_PAYBACK,"Payback");
+		AddSkill(DEFENSIVE_REFRESH,"Refresh");
 		AddSkill(DEFENSIVE_REGENERATE,"Regenerate");
 		AddSkill(DEFENSIVE_TRIBUTE,"Tribute");		
 		AddSkill(DEFENSIVE_WALL,"Wall");
@@ -650,6 +653,7 @@ public:
 
 		AddSkill(DMGDEPENDANT_BERSERK,"Berserk");
 		AddSkill(DMGDEPENDANT_CRUSH,"Crush");
+		AddSkill(DMGDEPENDANT_DISEASE,"Disease");
 		AddSkill(DMGDEPENDANT_IMMOBILIZE,"Immobilize");
 		AddSkill(DMGDEPENDANT_LEECH,"Leech");
 		AddSkill(DMGDEPENDANT_POISON,"Poison");
