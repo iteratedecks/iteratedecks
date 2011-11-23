@@ -17,7 +17,7 @@ uses
   cxSplitter, Extended;
 
 const
-  MAX_CARD_COUNT = 700;
+  MAX_CARD_COUNT = 800;
   MAX_DECK_SIZE = 20;
   MAX_SETS_COUNT = 20;
   DEFAULT_DECK_SIZE = 10;
@@ -3545,7 +3545,8 @@ begin
   begin
     if (Sender is TcxTextEdit) then
     begin
-     if (Length((Sender as TcxTextEdit).Text) > 2) OR cbInstant.Checked then
+     if (Length((Sender as TcxTextEdit).Text) > 2) OR cbInstant.Checked
+       OR (Length((Sender as TcxTextEdit).Text) = 0) then
        UpdateFilter;
     end
     else
@@ -3912,7 +3913,7 @@ begin
       //FillRect(ClipRect);
       //FillRect(RECT(0,0,IL.Width,20)) ;
 
-      Draw(4, 11, intPicture.Graphic);
+      Draw(4, 10, intPicture.Graphic);
 
       //intMask.PixelFormat:=pf32bit;
       IL.GetImage(Cards[Index].Faction, intMask);
