@@ -97,7 +97,7 @@
 		<location_id>7</location_id>
 		<num_players>50</num_players>
 		<mission_req>41</mission_req> <!-- TODO Mission 41 -->
-		<x>200</x>
+		<x>260</x>
 		<y>260</y>
 		<time>24</time>
 		<thumb>xenowalker150.jpg</thumb>

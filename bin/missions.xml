@@ -4793,7 +4793,7 @@
 		<y>120</y>
 		<xp>34</xp>
 		<energy>14</energy>
-		<money>900</money>
+		<money>700</money>
 		<rep faction='10' amount='15' />
 		<commander>1109</commander>
 		<desc>They are seething with anger at your presence and will strike aggressively.</desc>
@@ -6183,8 +6183,965 @@
 		<req>170</req>
 	</mission>
 	
-	
 	<!-- END Halloween Promotion 2011 Missions -->
+	
+	<!-- Homeworld Missions -->
+
+		<!-- First Location -->
+
+	<mission> <!-- Last Purity Location -->
+		<id>172</id>
+		<name>Mission 120</name>
+		<picture>mission172.jpg</picture>
+		<location_id>19</location_id>
+		<num_to_complete>5</num_to_complete>
+		<x>370</x>
+		<y>230</y>
+		<xp>26</xp> <!-- 2.4 -->
+		<energy>11</energy>
+		<money>525</money> <!-- 12 -->
+		<rep faction='13' amount='5' />
+		<commander>1109</commander>
+		<desc>They have learned to counter some of our strategies. - Go to Wasteland after this mission.</desc>
+		<speech>
+			<line commander='1042'>We intercepted a transmission to Deacon. It appears that Halcyon is planning something big. We must return to the Wasteland and assure he does not endanger anymore lives.</line>
+			<line commander='1109'>You have ruined everything. I will assure you do not live to see the end.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1042'>Head for the Wasteland. We cannot waste anymore time.</line>
+			<line commander='1097'>I'm afraid I cannot accompany you. I must remain on these islands.</line>
+			<line commander='1026'>I also must depart, now more than ever the Raiders are in a state of chaos. I must try and maintain order or I fear the worst.</line>
+		</speechComplete>
+		<deck>
+			<card>476</card>
+			<card>445</card>
+			<card>446</card>
+			<card>411</card>
+			<card>405</card>
+			<card>259</card>
+			<card>95</card>
+			<card>192</card>
+			<card>2077</card>
+			<card>3015</card>
+		</deck>
+		<rewards>
+			<card>445</card>
+		</rewards>
+		<req>155</req>
+	</mission>
+
+	<mission>
+		<id>173</id>
+		<name>Mission 121</name>
+		<picture>mission173.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>490</x>
+		<y>340</y>
+		<xp>29</xp>
+		<energy>12</energy>
+		<money>600</money>
+		<rep faction='13' amount='6' />
+		<commander>1125</commander>
+		<desc>The Imperials don't look like they are here to welcome you.</desc>
+		<speech>
+			<line commander='1042'>I never imagined the Wasteland would look this bad. The Blight seems to be worse here than anywhere else we have seen.</line>
+			<line commander='1042'>Maybe these Imperials can lead us to Halcyon.</line>
+		</speech>
+		<deck>
+			<card>445</card>
+			<card>476</card>
+			<card>475</card>
+			<card>477</card>
+			<card>104</card>
+			<card>89</card>
+			<card>86</card>
+			<card>307</card>
+			<card>195</card>
+			<card>2087</card>
+		</deck>
+		<rewards>
+			<card>2082</card>
+		</rewards>
+		<req>172</req>
+	</mission>
+
+	<mission>
+		<id>174</id>
+		<name>Mission 122</name>
+		<picture>mission174.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>430</x>
+		<y>310</y>
+		<xp>32</xp>
+		<energy>13</energy>
+		<money>650</money>
+		<rep faction='13' amount='8' /> 
+		<commander>1133</commander>
+		<desc>The Raiders are trying to cause as much destruction and panic as quickly as possible before they move on.</desc>
+		<speech>
+			<line commander='1042'>There is mass panic everywhere. The Imperials are distracted trying to control the madness to do anything about the spread of the Blight.</line>
+			<line commander='1042'>The Raiders have taken advantage of this oppurtunity to invade the Wasteland. Maybe if we take them out we can lure Halcyon out of hiding.</line>
+		</speech>
+		<deck>
+			<card>447</card>
+			<card>92</card>
+			<card>478</card>
+			<card>173</card>
+			<card>198</card>
+			<card>428</card>
+			<card>394</card>
+			<card>290</card>
+			<card>2081</card>
+			<card>3041</card>
+		</deck>
+		<rewards>
+			<card>459</card>
+		</rewards>
+		<req>173</req>
+	</mission>
+
+	<mission>
+		<id>175</id>
+		<name>Mission 123</name>
+		<picture>mission175.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>380</x>
+		<y>330</y>
+		<xp>38</xp>
+		<energy>15</energy>
+		<money>775</money>
+		<rep faction='13' amount='9' /> 
+		<commander>1127</commander>
+		<desc>The Disease caused by the Blight is being spread by the Bloodthirsty.</desc>
+		<speech>
+			<line commander='1042'>The Bloodthirsty are accelerating the spread of the Blight through the Wasteland. It is beginning to cause Disease.</line>
+		</speech>
+		<deck>
+			<card>470</card>
+			<card>440</card>
+			<card>480</card>
+			<card>515</card>
+			<card>292</card>
+			<card>133</card>
+			<card>135</card>
+			<card>431</card>
+			<card>434</card>
+			<card>406</card>
+			<card>3041</card>
+		</deck>
+		<rewards>
+			<card>470</card>
+		</rewards>
+		<req>174</req>
+	</mission>
+
+	<mission>
+		<id>176</id>
+		<name>Mission 124</name>
+		<picture>mission176.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>320</x>
+		<y>310</y>
+		<xp>40</xp>
+		<energy>16</energy>
+		<money>850</money>
+		<rep faction='13' amount='11' /> 
+		<commander>1125</commander>
+		<desc>Halcyon has outfitted the Imperials to defend against all forms of attack.</desc>
+		<speech>
+			<line commander='1125'>We must protect Lord Halcyon at all costs!</line>
+		</speech>
+		<speechComplete>
+			<line commander='1049'>Enough! You made your point. What happened in the past is done. If we work together we may be able to put an end to this crisis.</line>
+			<line commander='1042'>And how are we supposed to trust you?</line>
+			<line commander='1049'>Because you are much less of a threat than the Blight and we need your help.</line>
+			<line commander='1042'>What do you propose?</line>
+			<line commander='1049'>The Blight is pouring out of every Nexus. If we can disable them or even destroy them we have a chance to contain the situation.</line>
+			<line commander='1049'>We're attempting to stop the Nexus here, but there is another on Vistik Island.</line>
+			<line commander='1049'>Once we have control of this Nexus I will radio you so you can do the same there. Emanuel and his unit will escort you.</line>
+		</speechComplete>
+		<deck>
+			<card>445</card>
+			<card>475</card>
+			<card>477</card>
+			<card>192</card>
+			<card>258</card>
+			<card>423</card>
+			<card>395</card>
+			<card>411</card>
+			<card>72</card>
+			<card>89</card>
+			<card>2086</card>
+			<card>2082</card>
+		</deck>
+		<rewards>
+			<card>446</card>
+		</rewards>
+		<req>175</req>
+	</mission>
+
+<!-- Second Location -->
+
+	<mission>
+		<id>177</id>
+		<name>Mission 125</name>
+		<picture>mission177.jpg</picture>
+		<location_id>20</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>420</x>
+		<y>220</y>
+		<xp>32</xp>
+		<energy>13</energy>
+		<money>675</money>
+		<rep faction='13' amount='12' />
+		<commander>1131</commander>
+		<desc>The Righteous have brought powerful forces and are prepared to stave off the Blight.</desc>
+		<speech>
+			<line commander='1042'>I'm still not sure I trust Halcyon, but if he is right we could finally put an end to all of this.</line>
+			<line commander='1042'>What are the Righteous doing here? We can't take any chances they will disrupt us.</line>
+		</speech>
+		<deck>
+			<card>482</card>
+			<card>487</card>
+			<card>462</card>
+			<card>491</card>
+			<card>352</card>
+			<card>291</card>
+			<card>335</card>
+			<card>437</card>
+			<card>2079</card>
+			<card>3042</card>
+		</deck>
+		<rewards>
+			<card>482</card>
+		</rewards>
+		<req>176</req>
+	</mission>
+
+	<mission> 
+		<id>178</id>
+		<name>Mission 126</name>
+		<picture>mission178.jpg</picture>
+		<location_id>20</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>370</x>
+		<y>160</y>
+		<xp>35</xp>
+		<energy>14</energy>
+		<money>750</money>
+		<rep faction='13' amount='13' /> 
+		<commander>1127</commander>
+		<desc>The Blight is giving the Bloodthirsty new tactics to fight with.</desc>
+		<speech>
+			<line commander='1125'>Stop you fools! The Righteous have agreed to help us.</line>
+			<line commander='1042'>They only wish for the Sentinels to destroy everything.</line>
+			<line commander='1131'>The damage the Pantheons have sustained may be irreparable in what little time we have left.</line>
+			<line commander='1131'>We are willing to seek alternatives for stopping the Tartarus invasion.</line>
+			<line commander='1125'>We must move quickly. Bloodthirsty are gathering.</line>
+		</speech>
+		<deck>
+			<card>515</card>
+			<card>496</card>
+			<card>484</card>
+			<card>440</card>
+			<card>113</card>
+			<card>470</card>
+			<card>427</card>
+			<card>205</card>
+			<card>255</card>
+			<card>2052</card>
+		</deck>
+		<rewards>
+			<card>440</card>
+		</rewards>
+		<req>177</req>
+	</mission>
+
+	<mission>
+		<id>179</id>
+		<name>Mission 127</name>
+		<picture>mission179.jpg</picture>
+		<location_id>20</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>280</x>
+		<y>180</y>
+		<xp>36</xp>
+		<energy>14</energy>
+		<money>775</money>
+		<rep faction='13' amount='15' /> 
+		<commander>1127</commander>
+		<desc>They will grind you down let the Disease destroy you.</desc>
+		<speech>
+			<line commander='1042'>So what is the plan exactly Emanuel?</line>
+			<line commander='1125'>Find the Nexus, kill the Bloodthirsty, then wait for Halcyon's orders. Was that not clear before?</line>
+			<line commander='1042'>Just trying to make sure there actually is a plan and that we didn't just come here to die.</line>
+		</speech>
+		<deck>
+			<card>440</card>
+			<card>496</card>
+			<card>515</card>
+			<card>323</card>
+			<card>296</card>
+			<card>217</card>
+			<card>248</card>
+			<card>205</card>
+			<card>2005</card>
+			<card>3041</card>
+		</deck>
+		<rewards>
+			<card>3042</card>
+		</rewards>
+		<req>178</req>
+	</mission>
+
+	<mission> 
+		<id>180</id>
+		<name>Mission 128</name>
+		<picture>mission180.jpg</picture>
+		<location_id>20</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>310</x>
+		<y>110</y>
+		<xp>39</xp>
+		<energy>15</energy>
+		<money>825</money>
+		<rep faction='14' amount='5' /> 
+		<commander>1129</commander>
+		<desc>The Xeno are spreading Chaos, don't let your units get caught in the madness.</desc>
+		<speech>
+			<line commander='1125'>Xeno sightings and invasions have been much more frequent, but we are unsure of their intentions.</line>
+			<line commander='1125'>The Blight has made our forces weaker giving them an advantage to attack us, but if they allow the spread of the Blight to continue this planet will be sapped of resources and useless to them.</line>
+			<line commander='1131'>The Blight's power is enticing to any weak minded creature.</line>
+		</speech>
+		<deck>
+			<card>471</card>
+			<card>486</card>
+			<card>465</card>
+			<card>514</card>
+			<card>493</card>
+			<card>353</card>
+			<card>432</card>
+			<card>194</card>
+			<card>2071</card>
+			<card>3043</card>
+		</deck>
+		<rewards>
+			<card>471</card>
+		</rewards>
+		<req>179</req>
+	</mission>
+
+	<mission> 
+		<id>181</id>
+		<name>Mission 129</name>
+		<picture>mission181.jpg</picture>
+		<location_id>20</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>240</x>
+		<y>90</y>
+		<xp>42</xp>
+		<energy>16</energy>
+		<money>900</money>
+		<rep faction='14' amount='6' />
+		<commander>1129</commander>
+		<desc>Their forces are trying to sneak past ours while we are distracted by the Chaos.</desc>
+		<speech>
+			<line commander='1125'>The Nexus is just up ahead. We originally had it guarded, but when the Blight emerged our unit was chased out by Bloodthirsty and Xeno.</line>
+		</speech>
+		<deck>
+			<card>452</card>
+			<card>465</card>
+			<card>490</card>
+			<card>514</card>
+			<card>493</card>
+			<card>240</card>
+			<card>126</card>
+			<card>206</card>
+			<card>2080</card>
+			<card>2060</card>
+		</deck>
+		<rewards>
+			<card>2080</card>
+		</rewards>
+		<req>180</req>
+	</mission>
+
+	<mission>
+		<id>182</id>
+		<name>Mission 130</name>
+		<picture>mission182.jpg</picture>
+		<location_id>20</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>220</x>
+		<y>130</y>
+		<xp>45</xp>
+		<energy>17</energy>
+		<money>975</money>
+		<rep faction='14' amount='7' /> 
+		<commander>1126</commander>
+		<desc>These are some of the most well coordinated Imperials we have ever faced, and they are able to heal themselves.</desc>
+		<speech>
+			<line commander='1042'>I've never seen a Nexus like that. I can almost feel the dark energy emitting from it.</line>
+			<line commander='1042'>Alright, so what do we do now? Just sit around and wait for Halcyon?</line>
+			<line commander='1125'>No, this is where we put an end to all of your heroics. You have been a nuisance to Halcyon for too long.</line>
+		</speech>
+		<deck>
+			<card>446</card>
+			<card>474</card>
+			<card>472</card>
+			<card>473</card>
+			<card>318</card>
+			<card>468</card>
+			<card>338</card>
+			<card>430</card>
+			<card>307</card>
+			<card>239</card>
+			<card>2057</card>
+		</deck>
+		<rewards>
+			<card>472</card>
+		</rewards>
+		<req>181</req>
+	</mission>
+
+	<mission>
+		<id>183</id>
+		<name>Mission 131</name>
+		<picture>mission183.jpg</picture>
+		<location_id>20</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>160</x>
+		<y>160</y>
+		<xp>48</xp>
+		<energy>18</energy>
+		<money>1050</money>
+		<rep faction='14' amount='8' /> 
+		<commander>1131</commander>
+		<desc>They are going to hit hard and be able to protect their heavy hitters. - Go to Red Sands after this Mission</desc>
+		<speech>
+			<line commander='1042'>I knew Halcyon couldn't be trusted! I could kill him myself!</line>
+			<line commander='1042'>Sorry, we will deal with Halcyon later, for now lets see if there is actually anything we can do to stop this Nexus.</line>
+			<line commander='1131'>You will perish if you even get close. If the Nexus senses it is disrupted at all it send out a massive shockwave that will devastate everything in the blast, but the Nexus will remain unscathed.</line>
+			<line commander='1042'>If you knew this then why did you agree to help the Imperials?</line>
+			<line commander='1131'>We have not given them any assistance. Our only intention was to seek vengeance for delaying the Sentinels and possibly destroying this world as we know it.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1042'>We leave for the Red Sands. Halcyon will have the coastline of the Wasteland too heavily fortified for us to land there. Hurry we have wasted enough time.</line>
+		</speechComplete>
+		<deck>
+			<card>482</card>
+			<card>487</card>
+			<card>469</card>
+			<card>532</card>
+			<card>497</card>
+			<card>330</card>
+			<card>335</card>
+			<card>214</card>
+			<card>350</card>
+			<card>333</card>
+			<card>2079</card>
+			<card>3030</card>
+		</deck>
+		<rewards>
+			<card>462</card>
+		</rewards>
+		<req>182</req>
+	</mission>
+
+<!-- Third Location -->
+
+	<mission> 
+		<id>184</id>
+		<name>Mission 132</name>
+		<picture>mission184.jpg</picture>
+		<location_id>6</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>200</x>
+		<y>60</y>
+		<xp>34</xp>
+		<energy>13</energy>
+		<money>725</money>
+		<rep faction='14' amount='10' /> 
+		<commander>1133</commander>
+		<desc>Don't be fooled if the Raiders appear unorganized, they have brought powerful units to this fight.</desc>
+		<speech>
+			<line commander='1042'>The Raiders are rampaging through destroying everything in sight and killing innocents. They are trying to accelerate the spread of panic and chaos.</line>
+			<line commander='1042'>Commander we cannot justify letting them get away with this. Even if it delays our confrontation with Halcyon.</line>
+		</speech>
+		<deck>
+			<card>443</card>
+			<card>516</card>
+			<card>459</card>
+			<card>417</card>
+			<card>317</card>
+			<card>464</card>
+			<card>478</card>
+			<card>327</card>
+			<card>2023</card>
+			<card>3043</card>
+		</deck>
+		<rewards>
+			<card>443</card>
+		</rewards>
+		<req>183</req>
+	</mission>
+
+	<mission> 
+		<id>185</id>
+		<name>Mission 133</name>
+		<picture>mission185.jpg</picture>
+		<location_id>6</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>140</x>
+		<y>100</y>
+		<xp>37</xp>
+		<energy>14</energy>
+		<money>800</money>
+		<rep faction='14' amount='12' />
+		<commander>1134</commander>
+		<desc>Your threat has caused the Raiders to band together against you.</desc>
+		<speech>
+			<line commander='1042'>It is tragic, these people are scared and have everything taken from them, and Halcyon hasn't thought to do anything for them.</line>
+		</speech>
+		<deck>
+			<card>449</card>
+			<card>448</card>
+			<card>442</card>
+			<card>460</card>
+			<card>495</card>
+			<card>215</card>
+			<card>237</card>
+			<card>314</card>
+			<card>2081</card>
+			<card>3041</card>
+		</deck>
+		<rewards>
+			<card>2084</card>
+		</rewards>
+		<req>184</req>
+	</mission>
+
+	<mission> 
+		<id>186</id>
+		<name>Mission 134</name>
+		<picture>mission186.jpg</picture>
+		<location_id>6</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>100</x>
+		<y>130</y>
+		<xp>40</xp>
+		<energy>15</energy>
+		<money>875</money>
+		<rep faction='14' amount='13' /> 
+		<commander>1130</commander>
+		<desc>Without Imperial interference, the Xeno's have become more dug-in.</desc>
+		<speech>
+			<line commander='1042'>The Raiders are fleeing, but now the Xeno are attempting to pick up where they left off.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1042'>We are wasting too much time. We have to get to the Wasteland or we may lose our chance to confront Halcyon.</line>
+		</speechComplete>
+		<deck>
+			<card>493</card>
+			<card>514</card>
+			<card>517</card>
+			<card>471</card>
+			<card>485</card>
+			<card>452</card>
+			<card>441</card>
+			<card>469</card>
+			<card>156</card>
+			<card>3043</card>
+		</deck>
+		<rewards>
+			<card>1121</card>
+		</rewards>
+		<req>185</req>
+	</mission>
+
+	<mission>
+		<id>187</id>
+		<name>Mission 135</name>
+		<picture>mission187.jpg</picture>
+		<location_id>6</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>50</x>
+		<y>200</y>
+		<xp>46</xp>
+		<energy>17</energy>
+		<money>1025</money>
+		<rep faction='14' amount='15' /> 
+		<commander>1126</commander>
+		<desc>The Imperials appear to be fleeing rather than helping anyone.</desc>
+		<speech>
+			<line commander='1042'>Imperials have spotted us, we cannot let them relay our position back to Halcyon.</line>
+		</speech>
+		<deck>
+			<card>468</card>
+			<card>475</card>
+			<card>476</card>
+			<card>473</card>
+			<card>498</card>
+			<card>186</card>
+			<card>104</card>
+			<card>304</card>
+			<card>344</card>
+			<card>2086</card>
+		</deck>
+		<rewards>
+			<card>474</card>
+		</rewards>
+		<req>186</req>
+	</mission>
+
+	<mission> 
+		<id>188</id>
+		<name>Mission 136</name>
+		<picture>mission188.jpg</picture>
+		<location_id>6</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>130</x>
+		<y>200</y>
+		<xp>52</xp>
+		<energy>19</energy>
+		<money>1150</money>
+		<rep faction='15' amount='5' /> 
+		<commander>1132</commander>
+		<desc>Although they were not looking for a fight. The Righteous are ready to battle.</desc>
+		<speech>
+			<line commander='1042'>Gaia? You followed us here?</line>
+			<line commander='1131'>No, I just overheard Emanuel talking about Halcyon's plan to activate the Nexus in an attempt to get it to implode and destroy itself.</line>
+			<line commander='1042'>That's madness! You know he will fail, are you here to stop him?</line>
+			<line commander='1131'>His foolish plan does not affect the Righteous' plans. We prefer to let the Imperials destroy themselves.</line>
+		</speech>
+		<deck>
+			<card>497</card>
+			<card>532</card>
+			<card>492</card>
+			<card>429</card>
+			<card>489</card>
+			<card>433</card>
+			<card>438</card>
+			<card>288</card>
+			<card>55</card>
+			<card>2064</card>
+			<card>3021</card>
+		</deck>
+		<rewards>
+			<card>2079</card>
+		</rewards>
+		<req>187</req>
+	</mission>
+
+	<mission> 
+		<id>189</id>
+		<name>Mission 137</name>
+		<picture>mission189.jpg</picture>
+		<location_id>6</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>160</x>
+		<y>270</y>
+		<xp>56</xp>
+		<energy>20</energy>
+		<money>1250</money>
+		<rep faction='15' amount='6' /> 
+		<commander>1128</commander>
+		<desc>The Red Sands have practically become home to the Bloodthirsty. Next mission is in Wasteland</desc>
+		<speech>
+			<line commander='1042'>Halcyon must be insane. The Nexus will kill thousands and destroy all progress that has been made in the Wasteland.</line>
+		</speech>
+		<deck>
+			<card>315</card>
+			<card>479</card>
+			<card>467</card>
+			<card>483</card>
+			<card>439</card>
+			<card>500</card>
+			<card>407</card>
+			<card>345</card>
+			<card>255</card>
+			<card>200</card>
+			<card>2009</card>
+			<card>2051</card>
+		</deck>
+		<rewards>
+			<card>440</card>
+		</rewards>
+		<req>188</req>
+	</mission>
+
+<!-- Fourth Location -->
+ 
+	<mission> 
+		<id>190</id>
+		<name>Mission 138</name>
+		<picture>mission190.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>220</x>
+		<y>60</y>
+		<xp>39</xp>
+		<energy>14</energy>
+		<money>775</money>
+		<rep faction='15' amount='7' /> 
+		<commander>1128</commander>
+		<desc>You are surrounding by some of the largest Bloodthirsty you have ever faced.</desc>
+		<speech>
+			<line commander='1042'>I understand now, Halcyon has been letting the Bloodthirsty, Xeno, and Raider run rampant hoping they will get caught in the blast.</line>
+			<line commander='1042'>Which means we are going to have to fight through them to reach the Nexus.</line>
+		</speech>
+		<deck>
+			<card>320</card>
+			<card>328</card>
+			<card>289</card>
+			<card>496</card>
+			<card>205</card>
+			<card>111</card>
+			<card>481</card>
+			<card>467</card>
+			<card>113</card>
+			<card>2052</card>
+		</deck>
+		<rewards>
+			<card>1122</card>
+		</rewards>
+		<req>189</req>
+	</mission>
+
+	<mission>
+		<id>191</id>
+		<name>Mission 139</name>
+		<picture>mission191.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>160</x>
+		<y>120</y>
+		<xp>42</xp>
+		<energy>15</energy>
+		<money>850</money>
+		<rep faction='15' amount='9' /> 
+		<commander>1128</commander>
+		<desc>You must break through the Bloodthirsty to continue forward.</desc>
+		<speech>
+			<line commander='1042'>I wish we had time to evacuate these people but with all the trouble the Bloodthirsty are causing we would never reach the Nexus in time.</line>
+		</speech>
+		<deck>
+			<card>483</card>
+			<card>263</card>
+			<card>481</card>
+			<card>440</card>
+			<card>292</card>
+			<card>296</card>
+			<card>231</card>
+			<card>62</card>
+			<card>308</card>
+			<card>2083</card>
+		</deck>
+		<rewards>
+			<card>480</card>
+		</rewards>
+		<req>190</req>
+	</mission>
+
+	<mission>
+		<id>192</id>
+		<name>Mission 140</name>
+		<picture>mission192.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>220</x>
+		<y>160</y>
+		<xp>45</xp>
+		<energy>16</energy>
+		<money>950</money>
+		<rep faction='15' amount='10' /> 
+		<commander>1130</commander>
+		<desc>This is one of the largest invasions by the Xeno in the Wasteland.</desc>
+		<speech>
+			<line commander='1042'>How can anyone follow Halcyon's after all the atrocities he has committed, but now he has gone too far.</line>
+		</speech>
+		<deck>
+			<card>78</card>
+			<card>465</card>
+			<card>30</card>
+			<card>441</card>
+			<card>353</card>
+			<card>514</card>
+			<card>493</card>
+			<card>490</card>
+			<card>180</card>
+			<card>2085</card>
+		</deck>
+		<rewards>
+			<card>2085</card>
+		</rewards>
+		<req>191</req>
+	</mission>
+
+	<mission>
+		<id>193</id>
+		<name>Mission 141</name>
+		<picture>mission193.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>200</x>
+		<y>240</y>
+		<xp>51</xp>
+		<energy>18</energy>
+		<money>1075</money>
+		<rep faction='15' amount='12' />
+		<commander>1134</commander>
+		<desc>Either the blast from the Nexus or you will have to remove these Raiders from the Wasteland.</desc>
+		<speech>
+			<line commander='1049'>Katana, come in. Are you there?</line>
+			<line commander='1042'>Halcyon! What is wrong with you? You will kill thousands in the aftermath of the Nexus' Blast.</line>
+			<line commander='1049'>Do you really think I would go through with this without assessing all of the risks?</line>
+			<line commander='1049'>We're surrounding the Nexus in a containment field. The blast will cause the Nexus to collapse on itself.</line>
+			<line commander='1049'>If you disrupt it at all then you will be responsible for the devastation that will follow.</line>
+		</speech>
+		<deck>
+			<card>245</card>
+			<card>516</card>
+			<card>495</card>
+			<card>449</card>
+			<card>478</card>
+			<card>442</card>
+			<card>464</card>
+			<card>447</card>
+			<card>2085</card>
+			<card>3041</card>
+		</deck>
+		<rewards>
+			<card>448</card>
+		</rewards>
+		<req>192</req>
+	</mission>
+
+	<mission>
+		<id>194</id>
+		<name>Mission 142</name>
+		<picture>mission194.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>220</x>
+		<y>290</y>
+		<xp>58</xp>
+		<energy>20</energy>
+		<money>1225</money>
+		<rep faction='15' amount='13' /> 
+		<commander>1128</commander>
+		<desc>Our proximity to the Nexus is raising the Bloodthirsty's aggressiveness.</desc>
+		<speech>
+			<line commander='1042'>There is no way Halcyon can contain the blast from the Nexus, we have to try and stop it.</line>
+		</speech>
+		<deck>
+			<card>496</card>
+			<card>484</card>
+			<card>483</card>
+			<card>481</card>
+			<card>467</card>
+			<card>225</card>
+			<card>345</card>
+			<card>323</card>
+			<card>406</card>
+			<card>346</card>
+			<card>2083</card>
+		</deck>
+		<rewards>
+			<card>481</card>
+		</rewards>
+		<req>193</req>
+	</mission>
+
+	<mission>
+		<id>195</id>
+		<name>Mission 143</name>
+		<picture>mission195.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>150</x>
+		<y>270</y>
+		<xp>61</xp>
+		<energy>21</energy>
+		<money>1325</money>
+		<rep faction='15' amount='14' />
+		<commander>1126</commander>
+		<desc>The Imperials will use a range of tactics to prevent you from reaching the Nexus.</desc>
+		<speech>
+			<line commander='1042'>Quickly Commander, the Imperials are ready to set off the Nexus. We cannot let that happen!</line>
+		</speech>
+		<deck>
+			<card>473</card>
+			<card>498</card>
+			<card>468</card>
+			<card>473</card>
+			<card>477</card>
+			<card>423</card>
+			<card>90</card>
+			<card>259</card>
+			<card>95</card>
+			<card>86</card>
+			<card>2010</card>
+			<card>3043</card>
+		</deck>
+		<rewards>
+			<card>3041</card>
+		</rewards>
+		<req>194</req>
+	</mission>
+
+	<mission>
+		<id>196</id>
+		<name>Mission 144</name>
+		<picture>mission196.jpg</picture>
+		<location_id>7</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>110</x>
+		<y>290</y> 
+		<xp>65</xp> <!-- 2.95 -->
+		<energy>22</energy>
+		<money>1400</money> <!-- 16.0 -->
+		<rep faction='15' amount='15' />
+		<commander>1126</commander>
+		<desc>You will survive the blast underground but you still have to worry about the Imperials.</desc>
+		<speech>
+			<line commander='1042'>No! We're too late. The Nexus is building up energy. Hurry, if we get underground we should be able to avoid the damage from the shockwave.</line>
+			<line commander='1042'>Our only hope now is too wait it out, we should at least be safe down here.</line>
+			<line commander='1125'>Guess Again.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1042'>That was it, I'm shaking at the thought of what is left out there but we must see.</line>
+			<line commander='1042'>It is even worse than I thought, there is not a trace of anything left, it is just gone.</line>
+			<line commander='1042'>I don't know where you are hiding Halcyon, but do you see where your arrogance has lead you? Do you see the destruction and all of the lives that have been lost.</line>
+			<line commander='1049'>You fail to look at the big picture Katana. The Blight in the Wasteland has also been destroyed. It is gone for good.</line>
+			<line commander='1042'>No its not. I'm watching it grow over the land it once inhabited as quickly as it was destroyed. And the Nexus is still active.</line>
+		</speechComplete>
+		<deck>
+			<card>103</card>
+			<card>192</card>
+			<card>220</card>
+			<card>104</card>
+			<card>186</card>
+			<card>436</card>
+			<card>430</card>
+			<card>307</card>
+			<card>468</card>
+			<card>473</card>
+			<card>3004</card>
+			<card>2057</card>
+			<card>2027</card>
+		</deck>
+		<rewards>
+			<card>473</card>
+		</rewards>
+		<req>195</req>
+	</mission>
+
+<!-- END Homeworld Missions -->
 	
 	<!-- END MISSIONS -->
 	
@@ -6250,6 +7207,9 @@
 		<picture_file>redsandsmap.jpg</picture_file>
 		<battlefield>battlefield2.jpg</battlefield>
 		<effect x='292' y='220'>redsandseffects.swf</effect>
+		<extraEffect req='183'>redsandsblight1.swf</extraEffect>
+		<extraEffect req='185'>redsandsblight2.swf</extraEffect>
+		<extraEffect req='187'>redsandsblight3.swf</extraEffect>
 		<nav>Nav6</nav>
 		<req>28</req>
 	</location>
@@ -6261,6 +7221,9 @@
 		<picture_file>wastelandmap.png</picture_file>
 		<battlefield>wasteland.png</battlefield>
 		<effect x='292' y='220'>wastelandeffects.swf</effect>
+		<extraEffect req='172'>wastelandblight1.swf</extraEffect>
+		<extraEffect req='189'>wastelandblight2.swf</extraEffect>
+		<extraEffect req='193'>wastelandblight3.swf</extraEffect>
 		<nav>Nav7</nav>
 		<req>35</req>
 	</location>
@@ -6315,7 +7278,7 @@
 		<picture>Tartarus2Map</picture>
 		<effect x='292' y='220'>Tartarus2FX.swf</effect>
 		<nav>Nav13</nav>
-		<req>96</req> <!-- 96 -->
+		<req>96</req>
 	</location>
 	
 	<location>
@@ -6324,7 +7287,7 @@
 		<picture>Tartarus3Map</picture>
 		<effect x='292' y='220'>Tartarus3FX.swf</effect>
 		<nav>Nav14</nav>
-		<req>103</req> <!-- 103 -->
+		<req>103</req>
 	</location>
 	
 	<location>
@@ -6333,7 +7296,7 @@
 		<picture>Tartarus4Map</picture>
 		<effect x='292' y='220'>Tartarus4FX.swf</effect>
 		<nav>Nav15</nav>
-		<req>109</req> <!-- 109 -->
+		<req>109</req>
 	</location>
 	
 	<location>
@@ -6342,7 +7305,7 @@
 		<picture>PurityRing1Map</picture>
 		<effect x='292' y='220'>purityring1FX.swf</effect>
 		<nav>Nav16</nav>
-		<req>129</req> <!-- 129 -->
+		<req>129</req>
 	</location>
 
 	<location>
@@ -6351,7 +7314,7 @@
 		<picture>PurityRing2Map</picture>
 		<effect x='292' y='220'>purityring2FX.swf</effect>
 		<nav>Nav17</nav>
-		<req>137</req> <!-- 137 -->
+		<req>137</req>
 	</location>
 
 	<location>
@@ -6360,7 +7323,7 @@
 		<picture>PurityRing3Map</picture>
 		<effect x='292' y='220'>purityring3FX.swf</effect>
 		<nav>Nav18</nav>
-		<req>143</req> <!-- 143 -->
+		<req>143</req>
 	</location>
 
 	<location>
@@ -6369,7 +7332,16 @@
 		<picture>PurityRing4Map</picture>
 		<effect x='292' y='220'>purityring4FX.swf</effect>
 		<nav>Nav19</nav>
-		<req>149</req> <!-- 149 -->
+		<req>149</req>
+	</location>
+	
+	<location>
+		<id>20</id>
+		<name>Vistik Island</name>
+		<picture>MapHomeworld</picture>
+		<effect x='292' y='220'>HWislandFX.swf</effect>
+		<nav>Nav21</nav>
+		<req>176</req>
 	</location>
 	
 	<faction>
@@ -6693,6 +7665,88 @@
 			<rep_req>2000</rep_req>
 			<cost>12000</cost>
 			<card>423</card>
+		</reward>
+	</faction>
+	
+	<faction>
+		<id>13</id>
+		<location_id>19</location_id>
+		<location_id>7</location_id>
+		<location_id>20</location_id>
+		<name>Heretic Nation</name>
+		<icon>FactionIconReckoners</icon>
+		<repbase>1000</repbase>
+		<reward id='1'>
+			<rep_level>1</rep_level>
+			<rep_req>200</rep_req>
+			<cost>500</cost>
+			<card>515</card>
+		</reward>
+		<reward id='2'>
+			<rep_level>2</rep_level>
+			<rep_req>800</rep_req>
+			<cost>5000</cost>
+			<card>3043</card>
+		</reward>
+		<reward id='3'>
+			<rep_level>3</rep_level>
+			<rep_req>2000</rep_req>
+			<cost>20000</cost>
+			<card>516</card>
+		</reward>
+	</faction>
+	
+	<faction>
+		<id>14</id>
+		<location_id>20</location_id>
+		<location_id>6</location_id>
+		<name>Chaos Squad</name>
+		<icon>FactionIconChaosSquad</icon>
+		<repbase>1000</repbase>
+		<reward id='1'>
+			<rep_level>1</rep_level>
+			<rep_req>200</rep_req>
+			<cost>500</cost>
+			<card>464</card>
+		</reward>
+		<reward id='2'>
+			<rep_level>2</rep_level>
+			<rep_req>800</rep_req>
+			<cost>5000</cost>
+			<card>500</card>
+		</reward>
+		<reward id='3'>
+			<rep_level>3</rep_level>
+			<rep_req>2000</rep_req>
+			<cost>20000</cost>
+			<card>514</card>
+		</reward>
+	</faction>
+	
+	<faction>
+		<id>15</id>
+		<location_id>6</location_id>
+		<location_id>7</location_id>
+		<name>New Beginnings</name>
+		<icon>FactionIconNewDawn</icon>
+		<repbase>1000</repbase>
+		<reward id='1'>
+			<rep_level>1</rep_level>
+			<rep_req>200</rep_req>
+			<cost>500</cost>
+			<card>517</card>
+		</reward>
+		<reward id='2'>
+			<rep_level>2</rep_level>
+			<rep_req>800</rep_req>
+			<cost>5000</cost>
+			<card>1120</card>
+		</reward>
+		<reward id='3'>
+			<rep_level>3</rep_level>
+			<rep_req>2000</rep_req>
+			<cost>20000</cost>
+			<card>532</card>
 		</reward>
 	</faction>
 	
