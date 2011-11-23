@@ -622,7 +622,15 @@ public:
 		return OriginalCard->GetAbility(id); 
 	}
 	const UCHAR GetTargetCount(const UCHAR id) const { return OriginalCard->GetTargetCount(id); }
-	const UCHAR GetTargetFaction(const UCHAR id) const { return OriginalCard->GetTargetFaction(id); }
+	const UCHAR GetTargetFaction(const UCHAR id) const
+	{
+		// this is for infuse
+		// if card was infused, we gotta force target faction it was infused into
+		if ((Faction != OriginalCard->GetFaction()) && (OriginalCard->GetTargetFaction(id) != FACTION_NONE))// check if card was infused and targetfaction is determined
+			return Faction; // force faction it was infused into
+		else
+			return OriginalCard->GetTargetFaction(id);
+	}
 	const bool GetPlayed() const { return bPlayed; }
 	void Played() { bPlayed = true; }
 	void ResetPlayedFlag() { bPlayed = false; }
