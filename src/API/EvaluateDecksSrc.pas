@@ -568,8 +568,8 @@ const
   sCustomDecks = 'Custom.txt';
   sCardNotFound = 'Card "%s" not found in database.';
   cFansiteBaseLink = 'http://tyrant.40in.net/deck.php?id=';
-  sOptimusFont = 'cig\fonts\Optimus.ttf';
-  sEnigmaticFont = 'cig\fonts\Enigmatic.ttf';
+  sOptimusFont = 'fonts\Optimus.ttf';
+  sEnigmaticFont = 'fonts\Enigmatic.TTF';
 
 const
   DLLFILE = 'IterateDecksDLL.dll';
@@ -2285,6 +2285,9 @@ begin
       fname := sLocalDir + sCardsDir + Cards[i].Picture;
       if not FileExists(fname) then
       begin
+        IdHttp.OnWork := nil;
+        IdHttp.OnWorkBegin := nil;
+        IdHttp.OnWorkEnd := nil;
         ictoupdate := ictoupdate + 1;
         if ictoupdate = 1 then
           if Application.MessageBox(
@@ -2305,6 +2308,9 @@ begin
               Cards[i].Picture + #13 + E.Message);
           end;
         end;
+        IdHttp.OnWork := IdHttpWork;
+        IdHttp.OnWorkBegin := IdHttpWorkBegin;
+        IdHttp.OnWorkEnd := IdHttpWorkEnd;
       end;
       ProgressUpdate(i);
     end;
@@ -3701,10 +3707,10 @@ begin
   sLocalDir := ExtractFilePath(ParamStr(0));
   Caption := Application.Title;
 
-{#IFDEF DEVELOPMENT}
+{$IFDEF DEVELOPMENT}
   LoadDefenceLists;
   Caption := Caption + ' DEV';
-{#ENDIF}
+{$ENDIF}
   //AddFontResource(PAnsiChar(sLocalDir + sOptimusFont));
   AddFontResource(PAnsiChar(sLocalDir + sEnigmaticFont));
 
@@ -3994,11 +4000,11 @@ Windows.AlphaBlend(Canvas.Handle, 0, 0, intMask.Width, intMask.Height, intMask.C
         Brush.Style := bssolid;
         //FillRect(RECT(23, IL.Height - 87, 100, IL.Height - 55));
         if dv = 0.0 then
-          TextOut(3, IL.Height - 55, 'Active: ' + FormatFloat('0.##',ov))
+          TextOut(8, IL.Height - 75, 'Active: ' + FormatFloat('0.##',ov))
         else
         begin
-          TextOut(3, IL.Height - 67, 'Active: ' + FormatFloat('0.##',ov));
-          TextOut(3, IL.Height - 55, 'Passive: ' + FormatFloat('#.##',dv));
+          TextOut(8, IL.Height - 87, 'Active: ' + FormatFloat('0.##',ov));
+          TextOut(8, IL.Height - 75, 'Passive: ' + FormatFloat('#.##',dv));
         end;
         //RateCard(Cards[Index].Id, ov, dv, 0);
       end;

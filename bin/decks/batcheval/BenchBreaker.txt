@@ -35,10 +35,8 @@ Fear Rush II:Lord of Tartarus,Grim Specter,Grim Specter,Grim Specter,Grim Specte
 Fear Rush III:Dracorex,Grim Specter,Grim Specter,Grim Specter,Grim Specter,Warehouse,Warehouse
 Fear Rush IV:Lord of Tartarus,Grim Specter,Grim Specter,Grim Specter,Grim Specter,Asylum,Asylum
 GS Fear:Dracorex,Grim Specter,Grim Specter,Grim Specter,Grim Specter,Warehouse,Warehouse
-Hades Stall:Dracorex,Hades,Pantheon,Noxious Den,Command Center,Command Center,Missile Silo,Gatling Tower,Gatling Tower,Gatling Tower,Gatling Tower
 Hades Wall	:Dracorex,Hades,Pantheon,Noxious Den,Command Center,Command Center,Missile Silo,Gatling Tower,Gatling Tower,Gatling Tower,Gatling Tower
 II Rush:Aiko,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Ravenous Dredge,Predator,Tiamat,Mortar Bunker
-II Rush		:Aiko,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Ravenous Dredge,Predator,Tiamat,Mortar Bunker
 II spam:Thadius,Mortar Bunker,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Irradiated Infantry,Tiamat
 Imperial Mixed:Eva,Sharpshooter,Sharpshooter,Sharpshooter,Trident,Trident,Warehouse,Warehouse,Tiamat,Exodrone,Poseidon
 Imperial Rush:Thadius,Irradiated Infantry,Irradiated Infantry,Trident,Trident,Sharpshooter,Sharpshooter,Tiamat,Fighter Jet,Rox Chainblade,Mortar Bunker
