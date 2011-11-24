@@ -5,7 +5,7 @@ AZR Spam I:Dracorex,Azure Reaper,Azure Reaper,Azure Reaper,Azure Reaper,Azure Re
 AZR Spam II:Vyander,Azure Reaper,Azure Reaper,Azure Reaper,Azure Reaper,Azure Reaper,Stealthy Niaq,Daemon,Apollo,Rifter,Predator
 Avatars		:Empress,Avatar(4),Adytum(4),Bridge of Destiny,Pantheon
 Atlas Multi I:Atlas,Azure Reaper,Electromagnetic Pulse,Titan,Stealthy Niaq,Dozer Tank,Predator,Rifter,Fighter Jet,Omega,Tiamat
-Atlas Multi II:Atlas,Dozer Tank,Apollo,Azure Reaper,Azure Reaper,Stealthy Niaq,Beetle Bomber,Predator,bulldozer,Electromagnetic Pulse,Tiamat
+Atlas Multi II:Atlas,Dozer Tank,Apollo,Azure Reaper,Azure Reaper,Stealthy Niaq,Beetle Bomber,Predator,Bulldozer,Electromagnetic Pulse,Tiamat
 BT Rush:Lord of Tartarus,Hatchet,Hatchet,Ravenous Dredge,Shapeshifter,Venomous Raptor,Brawler,Razogoth's Heir,Asylum,Asylum,Asylum
 Balanced Strike:Atlas,Tiamat,Predator,Omega,Ravenous Dredge,Stealthy Niaq,Azure Reaper,Hierophant,Elusive Panzer,Sharpshooter,T-46 Leonidas
 Berserkers	:Dracorex,Support Carrier,Support Carrier,Support Carrier,Support Carrier,Support Carrier,Apollo,Gorivore,Elemental,Abominable Horror,Abominable Horror
@@ -76,9 +76,8 @@ Salvager Spam III:Duncan,Cannon Walker,Cannon Walker,Salvager,Salvager,Salvager,
 Salvagers:Duncan,Salvager,Salvager,Salvager,Salvager,Salvager,Cannon Walker,Cannon Walker,Command Center,Command Center,Command Center
 Sharpie Spam:Freddie,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Sharpshooter,Tiamat,Poseidon,Mortar Bunker,Mortar Bunker
 Strike Rush I:Atlas,Sharpshooter,Trident,Trident,Stealthy Niaq,Dozer Tank,Predator,Rifter,Electromagnetic Pulse,Omega,Tiamat
-Strike Rush II:Petrisis,Sharpshooter,Electromagnetic Pulse,Hunter,Sabre,Rifter,Predator,Dozer Tank,Rifter,Omega,Tiamat
+Strike Rush II:Petrisis,Sharpshooter,Electromagnetic Pulse,Hunter,Sabre,Rifter,Predator,Dozer Tank,Omega,Tiamat
 Sulfuris Sentry Rush:Lord of Tartarus,Sulfuris Sentry,Sulfuris Sentry,Sulfuris Sentry,Sulfuris Sentry,Sulfuris Sentry,Asylum,Asylum,Asylum,Asylum,Asylum
-Supported Berserkers:[what DarkBlood said]
 Tac Inf Fear:Dalia,Tactical Infantry,Tactical Infantry,Tactical Infantry,Tactical Infantry,Tactical Infantry,Tactical Infantry,Tactical Infantry,Tactical Infantry,Tactical Infantry,Tactical Infantry
 Toxic Dodger	:Dracorex,Toxic Cannon,Sharpshooter,Hierophant,Azure Reaper,Azure Reaper,Rifter,Stealthy Niaq,Ravenous Dredge,Warehouse,Warehouse
 Toxic Evasion:Atlas,Toxic Cannon,Toxic Cannon,Sharpshooter,Sharpshooter,Warehouse,Warehouse,Azure Reaper,Azure Reaper,Hierophant,Stealthy Niaq
