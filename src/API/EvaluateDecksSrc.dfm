@@ -2683,24 +2683,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
               TabOrder = 7
               Width = 137
             end
-            object cxLabel4: TcxLabel
-              Left = 425
-              Top = 5
-              AutoSize = False
-              Caption = 
-                'Wildcard searches a replacement for selected card in a card pool' +
-                ', represented by filters with most wins'
-              ParentFont = False
-              Properties.WordWrap = True
-              Style.Font.Charset = DEFAULT_CHARSET
-              Style.Font.Color = clWindowText
-              Style.Font.Height = -9
-              Style.Font.Name = 'Tahoma'
-              Style.Font.Style = []
-              Style.IsFontAssigned = True
-              Height = 61
-              Width = 112
-            end
             object lTimeTaken: TcxLabel
               Left = 223
               Top = 47
@@ -2709,7 +2691,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
               Left = 543
               Top = 0
               Caption = 'Complex defence'
-              TabOrder = 10
+              TabOrder = 9
               Visible = False
               Height = 64
               Width = 162
@@ -2739,6 +2721,13 @@ object EvaluateDecksForm: TEvaluateDecksForm
                 TabOrder = 2
                 OnClick = bRefreshDefenceClick
               end
+            end
+            object cbTourney: TcxCheckBox
+              Left = 211
+              Top = 20
+              Caption = 'Tourney'
+              TabOrder = 10
+              Width = 65
             end
           end
           object pEvalBot: TPanel
@@ -3361,6 +3350,8 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Left = 239
         Top = 30
         Caption = 'This simulations always run in blazing fast mode'
+        Properties.WordWrap = True
+        Width = 202
       end
       object bBEvalExport: TcxButton
         Left = 239
@@ -3380,11 +3371,18 @@ object EvaluateDecksForm: TEvaluateDecksForm
       end
       object cbDisplayName: TcxCheckBox
         Left = 239
-        Top = 53
+        Top = 66
         Caption = 'Display deck name'
         TabOrder = 7
         OnClick = cbDisplayNameClick
         Width = 121
+      end
+      object cbBTourney: TcxCheckBox
+        Left = 447
+        Top = 22
+        Caption = 'Tourney'
+        TabOrder = 8
+        Width = 65
       end
     end
     object tsUpdate: TcxTabSheet

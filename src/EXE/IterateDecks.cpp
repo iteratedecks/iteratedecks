@@ -285,6 +285,7 @@ struct EVAL_THREAD_PARAMS
 	RESULT_BY_CARD rbc[DEFAULT_DECK_SIZE+1];
 	bool bSurge;
 	int *pState;
+	UCHAR TournamentMode;
 };
 
 void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* = 0*/, RESULT_BY_CARD *rbc/* = 0*/, DWORD RaidID)
@@ -411,6 +412,13 @@ static unsigned int __stdcall ThreadFunc(void *pvParam)
 				}
 				Def = customdeck;
 			}
+			if (p->TournamentMode > 0)
+			{
+				if (p->bSurge)
+					Def.DelayFirstCard();
+				else
+					Atk.DelayFirstCard();
+			}
 			Simulate(Atk,Def,lr,p->CSIndex,rbc,p->bSurge);
 		}
 		else
@@ -423,7 +431,7 @@ static unsigned int __stdcall ThreadFunc(void *pvParam)
 	return (UINT)p;
 }
 
-void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDef, int RaidID, RESULTS &ret, RESULT_BY_CARD *rbc, int &State, DWORD gamesperthread, DWORD threadscount = 1, bool bSurge = false)
+void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDef, int RaidID, RESULTS &ret, RESULT_BY_CARD *rbc, int &State, DWORD gamesperthread, DWORD threadscount = 1, bool bSurge = false, UCHAR TournamentMode = 0)
 {
 	// create Index
 	UCHAR CSIndex[CARD_MAX_ID];
@@ -458,6 +466,14 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 			{
 				ActiveDeck tAtk(gAtk);
 				ActiveDeck tDef(gDef);
+				
+				if (TournamentMode > 0)
+				{
+					if (bSurge)
+						tDef.DelayFirstCard();
+					else
+						tAtk.DelayFirstCard();
+				}
 				if (!tDef.IsValid())
 				{
 					const UINT idx = i * customcount / gamesperthread;
@@ -492,6 +508,7 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 			parms[i].Seed = Seed + i; // offset seed or we will have same results for all threads
 			parms[i].bSurge = bSurge;
 			parms[i].pState = &State;
+			parms[i].TournamentMode = TournamentMode;
 
 			m_ulThreadHandle[i] = _beginthreadex(0,
 										0,
@@ -541,6 +558,8 @@ struct EVAL_PARAMS
 	UINT MaxTurn;
 	// control
 	int State; // set to -1 to stop
+	// tournament mode
+	UCHAR TournamentMode; // 0 - no tourney
 };
 
 int _tmain(int argc, char* argv[])
@@ -706,7 +725,7 @@ int _tmain(int argc, char* argv[])
 				continue;
 			RESULTS lresult;
 			RESULT_BY_CARD lrbc[DEFAULT_DECK_SIZE+1];
-			EvaluateInThreads(pEvalParams->Seed,x,Y,pEvalParams->RaidID,lresult,lrbc,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge);
+			EvaluateInThreads(pEvalParams->Seed,x,Y,pEvalParams->RaidID,lresult,lrbc,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode);
 			if (lresult.Win > pEvalParams->Result.Win)
 			{
 				pEvalParams->Result = lresult;
@@ -718,7 +737,7 @@ int _tmain(int argc, char* argv[])
 			pEvalParams->WildcardId = BestCard;
 	}
 	else // simple eval
-		EvaluateInThreads(pEvalParams->Seed,X,Y,pEvalParams->RaidID,pEvalParams->Result,pEvalParams->ResultByCard,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge);
+		EvaluateInThreads(pEvalParams->Seed,X,Y,pEvalParams->RaidID,pEvalParams->Result,pEvalParams->ResultByCard,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode);
 	time_t t1;
 	time(&t1);
 	pEvalParams->Seconds = (DWORD)t1-t;
@@ -731,9 +750,15 @@ int _tmain(int argc, char* argv[])
 #else
 	bConsoleOutput = false;
 	DB.LoadCardXML("cards.xml");
+	DB.LoadMissionXML("missions.xml");
+	DB.SaveMissionDecks("c:\\pun.txt");
 
 	ActiveDeck z("PoAv",DB.GetPointer());
 	ActiveDeck x("PoFZ",DB.GetPointer());
+
+	DB.CreateDeck("Emanuel[1126],Tiamat,Trident,Helios,Poseidon,Titan,Executioner,Wasteland Skimmer,Hellion,Elite Diver,Revolution,Electromagnetic Pulse,Mortar Bunker,Petrol Rig",z);
+	DB.CreateDeck("Duncan,Salvager,Cannon Walker,Micromech,Juggernaut,Dozer Tank,Command Center",x);
+
 
 	RESULTS r;
 	for (UINT k=0;k<1000;k++)

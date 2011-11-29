@@ -359,6 +359,7 @@ public:
 	UINT fsSpecial; // enfeeble, protect, weaken, rally, poison(when applied)
 public:
 	void DecWait() { if (Wait) Wait--; }
+	void IncWait() { if (Wait) Wait++; }  // this is only for tournaments
 	const char *GetName() const { return OriginalCard->GetName(); }
 	void PrintDesc()
 	{
@@ -756,6 +757,7 @@ public:
 	//
 	bool bOrderMatters;
 	MSID Hand;
+	bool bDelayFirstCard; // tournament-like
 	//
 	const UCHAR *CSIndex;
 	RESULT_BY_CARD *CSResult;
@@ -983,7 +985,7 @@ private:
 #undef SRC
 	}
 public:
-	ActiveDeck() { bOrderMatters = false; CSIndex = 0; CSResult = 0; DamageToCommander = 0; }
+	ActiveDeck() { bOrderMatters = false; bDelayFirstCard = false; CSIndex = 0; CSResult = 0; DamageToCommander = 0; }
 	~ActiveDeck() { Deck.clear(); Units.clear(); Structures.clear(); Actions.clear(); }
 public:
 	void SetFancyStatsBuffer(const UCHAR *resindex, RESULT_BY_CARD *res)
@@ -1010,6 +1012,7 @@ public:
 		CSResult = 0;
 		DamageToCommander = 0;
 		bOrderMatters = false; 
+		bDelayFirstCard = false;
 		unsigned short tid = 0, lastid = 0;
 		size_t len = strlen(HashBase64);
 		_ASSERT(!(len & 1)); // bytes should go in pairs
@@ -1040,7 +1043,7 @@ public:
 			}
 		}
 	}
-	ActiveDeck(const Card *Cmd) { bOrderMatters = false; CSIndex = 0; CSResult = 0; DamageToCommander = 0; Commander = PlayedCard(Cmd); Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); };
+	ActiveDeck(const Card *Cmd) { bOrderMatters = false; bDelayFirstCard = false; CSIndex = 0; CSResult = 0; DamageToCommander = 0; Commander = PlayedCard(Cmd); Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); };
 	ActiveDeck(const ActiveDeck &D) // need copy constructor
 	{
 		Commander = D.Commander;
@@ -1057,6 +1060,7 @@ public:
 		for (UCHAR i=0;i<D.Structures.size();i++)
 			Structures.push_back(D.Structures[i]);
 		bOrderMatters = D.bOrderMatters;
+		bDelayFirstCard = D.bDelayFirstCard;
 		CSIndex = D.CSIndex;
 		CSResult = D.CSResult;
 		DamageToCommander = D.DamageToCommander;
@@ -1146,6 +1150,10 @@ public:
 	void SetOrderMatters(const bool bMatters)
 	{
 		bOrderMatters = bMatters;
+	}
+	void DelayFirstCard()
+	{
+		bDelayFirstCard = true;
 	}
 	void Add(const Card *c)
 	{
@@ -2050,6 +2058,11 @@ public:
 						printf(" picks ");
 						vi->PrintDesc();
 						printf("\n");
+					}
+					if (bDelayFirstCard)
+					{
+						vi->IncWait();
+						bDelayFirstCard = false;
 					}
 					if (vi->GetType() == TYPE_ASSAULT)
 						Units.push_back(*vi);

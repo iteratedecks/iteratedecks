@@ -108,6 +108,7 @@ type
     WildFilterExclude: array[0..MAX_FILTER_ID_COUNT - 1] of integer;
     MaxTurn: DWORD;
     State: integer;
+    TournamentMode: byte;
   end;
 
 type
@@ -318,7 +319,6 @@ type
     cbOrderMatters: TcxCheckBox;
     cbWildCard: TcxCheckBox;
     cbWildCardName: TcxComboBox;
-    cxLabel4: TcxLabel;
     gStats: TcxGrid;
     vCardStats: TcxGridTableView;
     vcsCard: TcxGridColumn;
@@ -361,6 +361,8 @@ type
     cbUseComplexDefence: TcxCheckBox;
     cbComplexDefence: TcxComboBox;
     bRefreshDefence: TcxButton;
+    cbTourney: TcxCheckBox;
+    cbBTourney: TcxCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -570,6 +572,7 @@ const
   cFansiteBaseLink = 'http://tyrant.40in.net/deck.php?id=';
   sOptimusFont = 'fonts\Optimus.ttf';
   sEnigmaticFont = 'fonts\Enigmatic.TTF';
+  sIterateDecksCrashed = 'IterateDecks.exe has crashed,'#13'no results can be fetched.'#13'Check if your antivirus software'#13'is not blocking IterateDecks.exe'#13#13'Please report to developer if this'#13'error persists.';
 
 const
   DLLFILE = 'IterateDecksDLL.dll';
@@ -727,7 +730,7 @@ end;
 
 function IterateDecks(Exe: string; Cwd: string; Seed: DWORD; AtkDeck: string;
   DefDeck: string; RaidID: integer; GamesPerThread: DWORD; Threads: DWORD;
-  bIsSurge: boolean; MaxTurn: DWORD; bOrderMatters: boolean; var iWildCard: integer;
+  bIsSurge: boolean; MaxTurn: DWORD; bOrderMatters: boolean; TournamentMode: boolean; var iWildCard: integer;
   iWildFilterType: integer = 0; iWildFilterRarity: integer = 0;
   iWildFilterFaction: integer = 0; pWildFilterInclude: Pointer = nil;
   pWildFilterExclude: Pointer = nil): FULLRESULT;
@@ -773,6 +776,7 @@ begin
   pEP.Threads := Threads;
   pEP.Surge := bIsSurge;
   pEP.OrderMatters := bOrderMatters;
+  pEP.TournamentMode := integer(TournamentMode);
 
   pEP.MaxTurn := MaxTurn;
 
@@ -1486,10 +1490,13 @@ procedure TEvaluateDecksForm.vcTypeCustomDrawCell(
   Sender: TcxCustomGridTableView; ACanvas: TcxCanvas;
   AViewInfo: TcxGridTableDataCellViewInfo; var ADone: Boolean);
 begin
-  if Pos('Fight',AViewInfo.GridRecord.Values[vcType.Index]) > 0  then
-    ACanvas.Font.Color := clRed
-  else if Pos('Surge',AViewInfo.GridRecord.Values[vcType.Index]) > 0 then
-    ACanvas.Font.Color := clBlue;
+  if not VarIsNull(AViewInfo.GridRecord.Values[vcType.Index]) then
+  begin
+    if Pos('Fight',AViewInfo.GridRecord.Values[vcType.Index]) > 0  then
+      ACanvas.Font.Color := clRed
+    else if Pos('Surge',AViewInfo.GridRecord.Values[vcType.Index]) > 0 then
+      ACanvas.Font.Color := clBlue;
+  end;
 end;
 
 {IF VarIsNull(ARecord.Values[Sender.Index]) then exit;
@@ -2124,10 +2131,10 @@ begin
 
         wildcard := 0;
         r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, -1, games
-          div tc, tc, false, cDefaultMaxTurn, cbBOrderMatters.Checked, wildcard);
+          div tc, tc, false, cDefaultMaxTurn, cbBOrderMatters.Checked, cbBTourney.Checked, wildcard);
 
         with vBatchResult.DataController do
-        begin
+        try
           Values[rec, vcbFWins.Index] := r.Result.Win;
           Values[rec, vcbFStalled.Index] := r.Result.games - r.Result.Win - r.Result.Loss;
           Values[rec, vcbFLoss.Index] := r.Result.Loss;
@@ -2138,16 +2145,19 @@ begin
           Values[rec, vcbFAvgS.Index] := r.Result.LPoints / r.Result.games;
           Values[rec, vcbFAvgSA.Index] := r.Result.LAutoPoints / r.Result.games;
           Values[rec, vcbFNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / r.Result.games;
+        except
+          ShowMessage(sIterateDecksCrashed);
+          Abort; // probably exe crashed
         end;
 
         Application.ProcessMessages;
 
         wildcard := 0;
         r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, -1, games
-          div tc, tc, true, cDefaultMaxTurn, cbBOrderMatters.Checked, wildcard);
+          div tc, tc, true, cDefaultMaxTurn, cbBOrderMatters.Checked, cbBTourney.Checked, wildcard);
 
         with vBatchResult.DataController do
-        begin
+        try
           Values[rec, vcbSWins.Index] := r.Result.Win;
           Values[rec, vcbSStalled.Index] := r.Result.games - r.Result.Win - r.Result.Loss;
           Values[rec, vcbSLoss.Index] := r.Result.Loss;
@@ -2158,6 +2168,9 @@ begin
           Values[rec, vcbSAvgS.Index] := r.Result.LPoints / r.Result.games;
           Values[rec, vcbSAvgSA.Index] := r.Result.LAutoPoints / r.Result.games;
           Values[rec, vcbSNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / r.Result.games;
+        except
+          ShowMessage(sIterateDecksCrashed);
+          Abort; // probably exe crashed
         end;
 
         Application.ProcessMessages;
@@ -2217,10 +2230,10 @@ begin
 
         wildcard := 0;
         r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, -1, games
-          div tc, tc, false, cDefaultMaxTurn, cbBOrderMatters.Checked, wildcard);
+          div tc, tc, false, cDefaultMaxTurn, cbBOrderMatters.Checked, cbBTourney.Checked, wildcard);
 
         with vBatchResult.DataController do
-        begin
+        try
           Values[rec, vcbFWins.Index] := r.Result.Win;
           Values[rec, vcbFStalled.Index] := r.Result.games - r.Result.Win - r.Result.Loss;
           Values[rec, vcbFLoss.Index] := r.Result.Loss;
@@ -2231,16 +2244,19 @@ begin
           Values[rec, vcbFAvgS.Index] := r.Result.LPoints / r.Result.games;
           Values[rec, vcbFAvgSA.Index] := r.Result.LAutoPoints / r.Result.games;
           Values[rec, vcbFNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / r.Result.games;
+        except
+          ShowMessage(sIterateDecksCrashed);
+          Abort; // probably exe crashed
         end;
 
         Application.ProcessMessages;
 
         wildcard := 0;
         r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, -1, games
-          div tc, tc, true, cDefaultMaxTurn, cbBOrderMatters.Checked, wildcard);
+          div tc, tc, true, cDefaultMaxTurn, cbBOrderMatters.Checked, cbBTourney.Checked, wildcard);
 
         with vBatchResult.DataController do
-        begin
+        try
           Values[rec, vcbSWins.Index] := r.Result.Win;
           Values[rec, vcbSStalled.Index] := r.Result.games - r.Result.Win - r.Result.Loss;
           Values[rec, vcbSLoss.Index] := r.Result.Loss;
@@ -2251,6 +2267,9 @@ begin
           Values[rec, vcbSAvgS.Index] := r.Result.LPoints / r.Result.games;
           Values[rec, vcbSAvgSA.Index] := r.Result.LAutoPoints / r.Result.games;
           Values[rec, vcbSNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / r.Result.games;
+        except
+          ShowMessage(sIterateDecksCrashed);
+          Abort; // probably exe crashed
         end;
 
         Application.ProcessMessages;
@@ -2996,7 +3015,7 @@ begin
 
       r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, raid,
         games div tc, tc, bIsSurge, seMaxTurn.Value, cbOrderMatters.Checked,
-        wildcard, ft, fr, ff, Addr(WildFilterInclude), Addr(WildFilterExclude));
+        cbTourney.Checked, wildcard, ft, fr, ff, Addr(WildFilterInclude), Addr(WildFilterExclude));
       if wildcard > 0 then
       begin
         s := Cards[StrToInt(slIDIndex.Values[IntToStr(wildcard)])].Name;
@@ -3033,7 +3052,7 @@ begin
             break;
 
           with vCardStats.DataController do
-          begin
+          try
             i := GetIndexFromID(IntToStr(r.ResultByCard[z].Id));
             if i < 0 then
               continue;
@@ -3058,6 +3077,9 @@ begin
               Values[lrec, vcsAvgHealing.Index] := r.ResultByCard[z].FSHealing / r.ResultByCard[z].FSRecordCount;
               Values[lrec, vcsAvgSpecial.Index] := r.ResultByCard[z].FSSpecial / r.ResultByCard[z].FSRecordCount;
             end;
+          except
+            ShowMessage(sIterateDecksCrashed);
+            Abort;
           end;
         end;
       finally
@@ -3069,7 +3091,7 @@ begin
     //wins := Evaluate(sl1.CommaText,sl2.CommaText,games);
 
     with cxView.DataController do
-    begin
+    try
       Values[rec, vcWins.Index] := r.Result.Win;
       Values[rec, vcStalled.Index] := i - r.Result.Win - r.Result.Loss;
       Values[rec, vcGames.Index] := i;
@@ -3079,6 +3101,9 @@ begin
       Values[rec, vcAvgS.Index] := r.Result.LPoints / i;
       Values[rec, vcAvgSA.Index] := r.Result.LAutoPoints / i;
       Values[rec, vcNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / i;
+    except
+      ShowMessage(sIterateDecksCrashed);
+      Abort;
     end;
 
     //ShowMessage('Attacker wins '+inttostr(wins)+' of '+inttostr(games)+' games.');
@@ -3518,6 +3543,8 @@ begin
   if cbmUseRaid.Checked then
     cbSurge.Checked := false;
   gBot.Enabled := not cbmUseRaid.Checked;
+  if cbmUseRaid.Checked then
+    cbTourney.Checked := false;
 end;
 
 procedure TEvaluateDecksForm.cbOrderMattersClick(Sender: TObject);
@@ -3626,6 +3653,8 @@ begin
     ClearDeck(BotDeck);
     LoadRaidCommander;
   end;
+  if cbUseRaid.Checked then
+    cbTourney.Checked := false;
 end;
 
 

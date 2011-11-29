@@ -120,6 +120,8 @@ public:
 	}
 	const UINT GetCommander() const { return Commander; }
 	const char *GetName() const { return Name.c_str(); }
+	const UINT GetCardCount() const { return Deck.size(); }
+	const UINT GetCardID(UINT Index) const { return Deck[Index]; }
 	~MissionInfo()
 	{
 		Commander = 0;
@@ -751,6 +753,25 @@ public:
 		return str;
 	}
 	bool SaveCustomDecks(const char *FileName) { return SaveIndex(FileName,DIndex); }
+	bool SaveMissionDecks(const char *FileName)
+	{
+		FILE *f;
+		if (!fopen_s(&f,FileName,"w"))
+		{
+			for (UINT i=0;i<MISSION_MAX_ID;i++)
+			{				
+				fprintf_s(f,"%s:",MDB[i].GetName());
+				fprintf_s(f,"%s",CDB[MDB[i].GetCommander()].GetName());
+				for (UINT k=0;k<MDB[i].GetCardCount();k++)
+				{
+					fprintf_s(f,",%s",CDB[MDB[i].GetCardID(k)].GetName());
+				}
+				fprintf_s(f,"\n");
+			}
+			return (fclose(f) == 0);
+		}
+		return false;
+	}
 	bool ClearDeckIndex()
 	{
 		DIndex.clear();
