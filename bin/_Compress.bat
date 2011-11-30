@@ -1,3 +1,3 @@
-upx IterateDecks.exe
+_upx IterateDecks.exe
 upx IterateDecksDLL.dll
 upx EvaluateDecks.exe
