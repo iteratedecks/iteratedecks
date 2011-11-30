@@ -97,7 +97,7 @@ Tac Infs	:Dalia,Tactical Infiltrator(10)
 Carrier		:Dracorex,Support Carrier(4),Apollo,Gorivore,Elemental,Destructive Ram,Stealthy Niaq,Bridge of Destiny
 AZR Carrier	:Dracorex,Support Carrier(3),Azure Reaper(6),Rifter
 Berserk Carrier	:Dracorex,Support Carrier(5),Apollo,Gorivore,Elemental,Abominable Horror(2)
-Swipe Carrier	:Dracorex,Support Carrier(3),Necrogeddon,rifter,Xeno Overlord,Lance Rider(2),Recurring Darkness(2)
+Swipe Carrier	:Dracorex,Support Carrier(3),Necrogeddon,Rifter,Xeno Overlord,Lance Rider(2),Recurring Darkness(2)
 // ================================
 // Jammers
 // ================================
