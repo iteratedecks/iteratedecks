@@ -282,7 +282,7 @@ struct EVAL_THREAD_PARAMS
 	DWORD Seed;
 	RESULTS r;
 	const UCHAR *CSIndex;
-	RESULT_BY_CARD rbc[DEFAULT_DECK_SIZE+1];
+	RESULT_BY_CARD rbc[DEFAULT_DECK_RESERVE_SIZE+1];
 	bool bSurge;
 	int *pState;
 	UCHAR TournamentMode;
@@ -392,38 +392,39 @@ static unsigned int __stdcall ThreadFunc(void *pvParam)
 	EVAL_THREAD_PARAMS *p = (EVAL_THREAD_PARAMS *)pvParam;
 	srand((unsigned)p->Seed); // it seems like each thread shares seed with others before it starts, so we should reset seed or we will gate the same random sequences in all threads
 	RESULTS lr;
-	RESULT_BY_CARD rbc[DEFAULT_DECK_SIZE+1];
+	RESULT_BY_CARD rbc[DEFAULT_DECK_RESERVE_SIZE+1];
 	UINT customcount = DB.GetCustomCount();
 	UINT customindex = 100; // doesn't matter if it is not 0
 	ActiveDeck customdeck;
-	for (DWORD i=0;(i<p->gamesperthread) && (*(p->pState) >= 0);i++)
-	{
-		if (p->RaidID < 0)
+	if (p->Atk->IsValid(true))
+		for (DWORD i=0;(i<p->gamesperthread) && (*(p->pState) >= 0);i++)
 		{
-			ActiveDeck Atk(*p->Atk);
-			ActiveDeck Def(*p->Def);
-			if (!Def.IsValid())
+			if (p->RaidID < 0)
 			{
-				UINT idx = i * customcount / p->gamesperthread;
-				if (idx != customindex)
+				ActiveDeck Atk(*p->Atk);
+				ActiveDeck Def(*p->Def);
+				if (!Def.IsValid(true))
 				{
-					DB.GetCustomDeck(idx,customdeck);
-					customindex = idx;
+					UINT idx = i * customcount / p->gamesperthread;
+					if (idx != customindex)
+					{
+						DB.GetCustomDeck(idx,customdeck);
+						customindex = idx;
+					}
+					Def = customdeck;
 				}
-				Def = customdeck;
+				if (p->TournamentMode > 0)
+				{
+					if (p->bSurge)
+						Def.DelayFirstCard();
+					else
+						Atk.DelayFirstCard();
+				}
+				Simulate(Atk,Def,lr,p->CSIndex,rbc,p->bSurge);
 			}
-			if (p->TournamentMode > 0)
-			{
-				if (p->bSurge)
-					Def.DelayFirstCard();
-				else
-					Atk.DelayFirstCard();
-			}
-			Simulate(Atk,Def,lr,p->CSIndex,rbc,p->bSurge);
+			else
+				EvaluateRaidOnce(*(p->Atk),lr,p->CSIndex,rbc,(DWORD)p->RaidID);
 		}
-		else
-			EvaluateRaidOnce(*(p->Atk),lr,p->CSIndex,rbc,(DWORD)p->RaidID);
-	}
 	//_endthread();
 	p->r.Add(lr);
 	for (UCHAR m=0;m<DEFAULT_DECK_SIZE+1;m++)
@@ -440,7 +441,7 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 	for (UCHAR i=0;i<gAtk.Deck.size();i++)
 	{
 		UCHAR idx = 0;
-		for (idx=0;idx<DEFAULT_DECK_SIZE+1;idx++)
+		for (idx=0;idx<DEFAULT_DECK_RESERVE_SIZE+1;idx++)
 			if (rbc[idx].Id == gAtk.Deck[i].GetId())
 				break;
 			else
@@ -543,7 +544,7 @@ struct EVAL_PARAMS
 	DWORD GamesPerThread;
 	DWORD Threads;
 	RESULTS Result;
-	RESULT_BY_CARD ResultByCard[DEFAULT_DECK_SIZE+1];
+	RESULT_BY_CARD ResultByCard[DEFAULT_DECK_RESERVE_SIZE+1];
 	DWORD Seconds;
 	int RaidID;
 	bool Surge;
@@ -607,7 +608,7 @@ int _tmain(int argc, char* argv[])
 	X.SetOrderMatters(pEvalParams->OrderMatters);
 
 	memset(&pEvalParams->Result,0,sizeof(RESULTS));
-	memset(&pEvalParams->ResultByCard,0,sizeof(RESULT_BY_CARD) * (DEFAULT_DECK_SIZE + 1));	
+	memset(&pEvalParams->ResultByCard,0,sizeof(RESULT_BY_CARD) * (DEFAULT_DECK_RESERVE_SIZE + 1));	
 
 	time_t t;
 
@@ -724,7 +725,7 @@ int _tmain(int argc, char* argv[])
 			if (!x.IsValid())
 				continue;
 			RESULTS lresult;
-			RESULT_BY_CARD lrbc[DEFAULT_DECK_SIZE+1];
+			RESULT_BY_CARD lrbc[DEFAULT_DECK_RESERVE_SIZE+1];
 			EvaluateInThreads(pEvalParams->Seed,x,Y,pEvalParams->RaidID,lresult,lrbc,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode);
 			if (lresult.Win > pEvalParams->Result.Win)
 			{

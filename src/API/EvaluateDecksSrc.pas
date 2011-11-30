@@ -21,6 +21,7 @@ const
   MAX_DECK_SIZE = 20;
   MAX_SETS_COUNT = 20;
   DEFAULT_DECK_SIZE = 10;
+  DECK_MAX_SIZE = 15;
   CARD_NAME_MAX_LENGTH = 50;
   FILENAME_MAX_LENGTH = 50;
   MAX_FILTER_ID_COUNT = 50;
@@ -95,7 +96,7 @@ type
     GamesPerThread: DWORD;
     Threads: DWORD;
     Result: RESULTS;
-    ResultByCard: array[0..DEFAULT_DECK_SIZE] of RESULT_BY_CARD;
+    ResultByCard: array[0..DECK_MAX_SIZE] of RESULT_BY_CARD;
     Seconds: DWORD;
     RaidID: integer;
     Surge: boolean;
@@ -572,7 +573,7 @@ const
   cFansiteBaseLink = 'http://tyrant.40in.net/deck.php?id=';
   sOptimusFont = 'fonts\Optimus.ttf';
   sEnigmaticFont = 'fonts\Enigmatic.TTF';
-  sIterateDecksCrashed = 'IterateDecks.exe has crashed,'#13'no results can be fetched.'#13'Check if your antivirus software'#13'is not blocking IterateDecks.exe'#13#13'Please report to developer if this'#13'error persists.';
+  sIterateDecksCrashed = 'IterateDecks.exe has crashed,'#13'no results can be fetched.'#13'Check if your antivirus software'#13'is not blocking IterateDecks.exe'#13'and if decks you use are valid.'#13#13'Please report to developer if this'#13'error persists.';
 
 const
   DLLFILE = 'IterateDecksDLL.dll';
@@ -2147,7 +2148,7 @@ begin
           Values[rec, vcbFNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / r.Result.games;
         except
           ShowMessage(sIterateDecksCrashed);
-          Abort; // probably exe crashed
+          //Abort; // probably exe crashed
         end;
 
         Application.ProcessMessages;
@@ -2170,7 +2171,7 @@ begin
           Values[rec, vcbSNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / r.Result.games;
         except
           ShowMessage(sIterateDecksCrashed);
-          Abort; // probably exe crashed
+          //Abort; // probably exe crashed
         end;
 
         Application.ProcessMessages;
@@ -2246,7 +2247,7 @@ begin
           Values[rec, vcbFNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / r.Result.games;
         except
           ShowMessage(sIterateDecksCrashed);
-          Abort; // probably exe crashed
+          //Abort; // probably exe crashed
         end;
 
         Application.ProcessMessages;
@@ -2269,7 +2270,7 @@ begin
           Values[rec, vcbSNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / r.Result.games;
         except
           ShowMessage(sIterateDecksCrashed);
-          Abort; // probably exe crashed
+          //Abort; // probably exe crashed
         end;
 
         Application.ProcessMessages;
@@ -2895,15 +2896,18 @@ begin
           s := mAtkDeckName;
       end;
       Values[rec, vcAtk.Index] := StringReplace(s, ',', ', ', [rfReplaceAll]);
-      if bImages then
+      if not bIsRaid then
       begin
-        if vDefDeckName <> '' then
-          sl2.Text := vDefDeckName;
-      end
-      else
-      begin
-        if mDefDeckName <> '' then
-          sl2.Text := mDefDeckName;
+        if bImages then
+        begin
+          if vDefDeckName <> '' then
+            sl2.Text := vDefDeckName;
+        end
+        else
+        begin
+          if mDefDeckName <> '' then
+            sl2.Text := mDefDeckName;
+        end;
       end;
       if cbUseComplexDefence.Checked then
         sl2.Text := cbComplexDefence.Text;
@@ -3045,7 +3049,7 @@ begin
       vCardStats.BeginUpdate;
       try
         vCardStats.DataController.RecordCount := 0;
-        zzz := (DEFAULT_DECK_SIZE + 1);
+        zzz := (DECK_MAX_SIZE + 1);
         for z := 0 to zzz do
         begin
           if r.ResultByCard[z].Id = 0 then // invalid card ID
@@ -3540,6 +3544,7 @@ begin
   bmCustomDefence.Enabled := not cbmUseRaid.Checked;
   bmMission.Enabled := not cbmUseRaid.Checked;
   cbSurge.Enabled := not cbmUseRaid.Checked;
+  cbTourney.Enabled := not cbmUseRaid.Checked;
   if cbmUseRaid.Checked then
     cbSurge.Checked := false;
   gBot.Enabled := not cbmUseRaid.Checked;
@@ -3646,6 +3651,7 @@ begin
   bCustomDef.Enabled := not cbUseRaid.Checked;
   bMission.Enabled := not cbUseRaid.Checked;
   cbSurge.Enabled := not cbUseRaid.Checked;
+  cbTourney.Enabled := not cbmUseRaid.Checked;
   if cbUseRaid.Checked then
     cbSurge.Checked := false;
   if cbUseRaid.Checked then

@@ -22,7 +22,7 @@
 #define CARD_ABILITIES_MAX		70 // must sync it with CARD_ABILITIES_MAX in interface
 
 #define DEFAULT_DECK_SIZE		10
-#define DEFAULT_DECK_RESERVE_SIZE	15 // up to 20?
+#define DEFAULT_DECK_RESERVE_SIZE	15 // up to 20? kinda deck max size for structures
 #define DEFAULT_HAND_SIZE		3
 
 #define FANCY_STATS_COUNT		5
@@ -1116,11 +1116,13 @@ public:
 				return (Actions[i] < D.Actions[i]);
 		return false;
 	}
-	const bool IsValid() const
+	const bool IsValid(bool bSoftCheck = false) const
 	{
 		if (!Commander.IsDefined())
 			return false;
 		if (Deck.empty())
+			return true;
+		if (bSoftCheck)
 			return true;
 		set <UINT> cards;
 		bool bLegendary = false;
