@@ -35,10 +35,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsMin: TcxTabSheet
       Caption = 'Minimalistic'
       ImageIndex = 6
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         784
         646)
@@ -54,6 +50,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
           OnKeyDown = vTopKeyDown
           NavigatorButtons.ConfirmDelete = False
           OnCustomDrawCell = vTopCustomDrawCell
+          DataController.Options = [dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoImmediatePost]
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <>
           DataController.Summary.SummaryGroups = <>
@@ -395,6 +392,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
           OnKeyDown = vBotKeyDown
           NavigatorButtons.ConfirmDelete = False
           OnCustomDrawCell = vTopCustomDrawCell
+          DataController.Options = [dcoAssignGroupingValues, dcoAssignMasterDetailKeys, dcoSaveExpanding, dcoImmediatePost]
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <>
           DataController.Summary.SummaryGroups = <>
@@ -1939,10 +1937,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Caption = 'Visual'
       ImageIndex = 0
       OnShow = tsDecksShow
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object rPanel: TPanel
         Left = 434
         Top = 0
@@ -2486,10 +2480,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Caption = 'Evaluate'
       ImageIndex = 2
       OnShow = tsEvalShow
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object pcEval: TcxPageControl
         Left = 0
         Top = 0
@@ -2504,9 +2494,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
         object tsEEvaluate: TcxTabSheet
           Caption = 'Results'
           ImageIndex = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object pEvalMid: TPanel
             Left = 0
             Top = 70
@@ -2853,9 +2840,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
         object tsEWildcard: TcxTabSheet
           Caption = 'Wildcard filters'
           ImageIndex = 1
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object gbGenericFilter: TcxGroupBox
             Left = 3
             Top = 30
@@ -3016,10 +3000,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Caption = 'Batch Eval'
       ImageIndex = 6
       OnShow = tsBatchShow
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         784
         646)
@@ -3166,6 +3146,10 @@ object EvaluateDecksForm: TEvaluateDecksForm
               Format = '#.'
               Kind = skSum
               Column = vcbSStalled
+            end
+            item
+              Kind = skCount
+              Column = vcbAgainstName
             end>
           DataController.Summary.SummaryGroups = <>
           OptionsCustomize.ColumnMoving = False
@@ -3410,10 +3394,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsUpdate: TcxTabSheet
       Caption = 'Update DB'
       ImageIndex = 3
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object bCustom: TcxButton
         Left = 3
         Top = 205
@@ -3573,10 +3553,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsHelp: TcxTabSheet
       Caption = 'Tips'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         784
         646)
@@ -6274,10 +6250,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsSettings: TcxTabSheet
       Caption = 'Settings'
       ImageIndex = 5
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object rgEval: TcxRadioGroup
         Left = 3
         Top = 3
