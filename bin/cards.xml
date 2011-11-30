@@ -9028,16 +9028,12 @@
 	
 	<unit>
 		<id>518</id>
-		<name>Smokestack</name>
-		<picture>BTsmokestack.jpg</picture>
+		<name>Extra</name>
+		<picture>alex.jpg</picture>
 		<attack>1</attack>
 		<health>5</health>
 		<cost>2</cost>
-		<unique>1</unique>
-		<reserve>1</reserve>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
-		<skill id='counter' x='2' />
-		<skill id='poison' x='2' />
 		<type>3</type>
 	</unit>
 	
@@ -9091,7 +9087,6 @@
 		<health>15</health>
 		<cost>2</cost>
 		<rarity>1</rarity> <gold_cost>10000</gold_cost>
-		<skill id='chaos' y='1' />
 		<type>8</type>
 	</unit>
 	
@@ -9109,7 +9104,7 @@
 		<id>2089</id>
 		<name>Test Structure</name>
 		<picture>lambo.jpg</picture>
-		<health>200</health>
+		<health>20</health>
 		<cost>1</cost>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
 		<skill id='wall' />
@@ -9132,7 +9127,7 @@
 		<health>20</health>
 		<cost>0</cost>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
-		<skill id='rally' x='1' y='8' />
+		<skill id='chaos' />
 		<type>1</type> 
 	</unit>
 
@@ -9177,18 +9172,6 @@
 		<skill id='jam' y='4' />
 		<skill id='heal' x='2' y='8' />
 		<skill id='armored' x='3' />
-		<type>8</type>
-	</unit>
-	
-	<unit>
-		<id>139</id>
-		<name>Brigadier General</name>
-		<picture>alex.jpg</picture>
-		<attack>3</attack>
-		<health>4</health>
-		<cost>2</cost>
-		<rarity>2</rarity> <gold_cost>10000</gold_cost>
-		<skill id='rally' x='1' />
 		<type>8</type>
 	</unit>
 	
@@ -11487,7 +11470,7 @@
 		<icon>SkillIconChaos</icon>
 		<target_anim>chaos.swf</target_anim>
 		<loop_anim>chaosloop.swf</loop_anim>
-		<desc>Activation - If an enemy Assault unit were to use an Activation skill that would target one of its enemies, it targets an ally instead. (The skills used by a Chaosed unit cannot be Evaded)</desc>
+		<desc>Activation - If an enemy Assault unit were to use an Activation skill that would target one of its enemies, it targets an ally or itself instead. (The skills used by a Chaosed unit cannot be Evaded)</desc>
 		<cardValue cost='2.5' />
 	</skillType>
 	<skillType>
@@ -11503,7 +11486,7 @@
 		<name>Cleanse</name>
 		<icon>SkillIconReplenish</icon>
 		<target_anim>replenish.swf</target_anim>
-		<desc>Activation - Remove all negative status effects from an ally Assault unit (Poison, Disease, Jam, Immobilize, Enfeeble).</desc>
+		<desc>Activation - Remove all negative status effects from an ally Assault unit (Poison, Disease, Jam, Immobilize, Enfeeble, Chaos).</desc>
 		<cardValue cost='2.0' />
 	</skillType>
 	<skillType>

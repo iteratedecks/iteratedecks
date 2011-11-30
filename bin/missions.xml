@@ -3883,7 +3883,7 @@
 		<deck>
 			<card>289</card>
 			<card>273</card>
-			<card>276</card>
+			<card>264</card>
 			<card>293</card>
 			<card>172</card>
 			<card>135</card>
@@ -4373,7 +4373,7 @@
 		<energy>25</energy>
 		<money>1250</money>
 		<commander>1095</commander>
-		<desc>The Bloodthisrty are beginning to attack in packs.</desc>
+		<desc>The Bloodthirsrty are beginning to attack in packs.</desc>
 		<speech commander='1042'>
 			<line>Those Bloodthirsty are unlike any we have seen so far, we should investigate it may provide clues as to what is going on.</line>
 		</speech>
@@ -6202,7 +6202,7 @@
 		<money>525</money> <!-- 12 -->
 		<rep faction='13' amount='5' />
 		<commander>1109</commander>
-		<desc>They have learned to counter some of our strategies. - Go to Wasteland after this mission.</desc>
+		<desc>They have learned to counter some of our strategies.</desc>
 		<speech>
 			<line commander='1042'>We intercepted a transmission to Deacon. It appears that Halcyon is planning something big. We must return to the Wasteland and assure he does not endanger anymore lives.</line>
 			<line commander='1109'>You have ruined everything. I will assure you do not live to see the end.</line>
@@ -6234,7 +6234,7 @@
 		<id>173</id>
 		<name>Mission 121</name>
 		<picture>mission173.jpg</picture>
-		<location_id>7</location_id>
+		<location_id>20</location_id>
 		<num_to_complete>6</num_to_complete>
 		<x>490</x>
 		<y>340</y>
@@ -6270,7 +6270,7 @@
 		<id>174</id>
 		<name>Mission 122</name>
 		<picture>mission174.jpg</picture>
-		<location_id>7</location_id>
+		<location_id>20</location_id>
 		<num_to_complete>6</num_to_complete>
 		<x>430</x>
 		<y>310</y>
@@ -6282,13 +6282,13 @@
 		<desc>The Raiders are trying to cause as much destruction and panic as quickly as possible before they move on.</desc>
 		<speech>
 			<line commander='1042'>There is mass panic everywhere. The Imperials are distracted trying to control the madness to do anything about the spread of the Blight.</line>
-			<line commander='1042'>The Raiders have taken advantage of this oppurtunity to invade the Wasteland. Maybe if we take them out we can lure Halcyon out of hiding.</line>
+			<line commander='1042'>The Raiders have taken advantage of this opportunity to invade the Wasteland. Maybe if we take them out we can lure Halcyon out of hiding.</line>
 		</speech>
 		<deck>
 			<card>447</card>
 			<card>92</card>
 			<card>478</card>
-			<card>173</card>
+			<card>23</card>
 			<card>198</card>
 			<card>428</card>
 			<card>394</card>
@@ -6306,7 +6306,7 @@
 		<id>175</id>
 		<name>Mission 123</name>
 		<picture>mission175.jpg</picture>
-		<location_id>7</location_id>
+		<location_id>20</location_id>
 		<num_to_complete>7</num_to_complete>
 		<x>380</x>
 		<y>330</y>
@@ -6342,7 +6342,7 @@
 		<id>176</id>
 		<name>Mission 124</name>
 		<picture>mission176.jpg</picture>
-		<location_id>7</location_id>
+		<location_id>20</location_id>
 		<num_to_complete>8</num_to_complete>
 		<x>320</x>
 		<y>310</y>
@@ -6390,7 +6390,7 @@
 		<id>177</id>
 		<name>Mission 125</name>
 		<picture>mission177.jpg</picture>
-		<location_id>20</location_id>
+		<location_id>21</location_id>
 		<num_to_complete>6</num_to_complete>
 		<x>420</x>
 		<y>220</y>
@@ -6426,7 +6426,7 @@
 		<id>178</id>
 		<name>Mission 126</name>
 		<picture>mission178.jpg</picture>
-		<location_id>20</location_id>
+		<location_id>21</location_id>
 		<num_to_complete>6</num_to_complete>
 		<x>370</x>
 		<y>160</y>
@@ -6465,7 +6465,7 @@
 		<id>179</id>
 		<name>Mission 127</name>
 		<picture>mission179.jpg</picture>
-		<location_id>20</location_id>
+		<location_id>21</location_id>
 		<num_to_complete>7</num_to_complete>
 		<x>280</x>
 		<y>180</y>
@@ -6502,7 +6502,7 @@
 		<id>180</id>
 		<name>Mission 128</name>
 		<picture>mission180.jpg</picture>
-		<location_id>20</location_id>
+		<location_id>21</location_id>
 		<num_to_complete>7</num_to_complete>
 		<x>310</x>
 		<y>110</y>
@@ -6539,7 +6539,7 @@
 		<id>181</id>
 		<name>Mission 129</name>
 		<picture>mission181.jpg</picture>
-		<location_id>20</location_id>
+		<location_id>21</location_id>
 		<num_to_complete>8</num_to_complete>
 		<x>240</x>
 		<y>90</y>
@@ -6574,7 +6574,7 @@
 		<id>182</id>
 		<name>Mission 130</name>
 		<picture>mission182.jpg</picture>
-		<location_id>20</location_id>
+		<location_id>21</location_id>
 		<num_to_complete>9</num_to_complete>
 		<x>220</x>
 		<y>130</y>
@@ -6612,7 +6612,7 @@
 		<id>183</id>
 		<name>Mission 131</name>
 		<picture>mission183.jpg</picture>
-		<location_id>20</location_id>
+		<location_id>21</location_id>
 		<num_to_complete>9</num_to_complete>
 		<x>160</x>
 		<y>160</y>
@@ -6621,7 +6621,7 @@
 		<money>1050</money>
 		<rep faction='14' amount='8' /> 
 		<commander>1131</commander>
-		<desc>They are going to hit hard and be able to protect their heavy hitters. - Go to Red Sands after this Mission</desc>
+		<desc>They are going to hit hard and be able to protect their heavy hitters.</desc>
 		<speech>
 			<line commander='1042'>I knew Halcyon couldn't be trusted! I could kill him myself!</line>
 			<line commander='1042'>Sorry, we will deal with Halcyon later, for now lets see if there is actually anything we can do to stop this Nexus.</line>
@@ -6658,7 +6658,7 @@
 		<id>184</id>
 		<name>Mission 132</name>
 		<picture>mission184.jpg</picture>
-		<location_id>6</location_id>
+		<location_id>22</location_id>
 		<num_to_complete>6</num_to_complete>
 		<x>200</x>
 		<y>60</y>
@@ -6694,7 +6694,7 @@
 		<id>185</id>
 		<name>Mission 133</name>
 		<picture>mission185.jpg</picture>
-		<location_id>6</location_id>
+		<location_id>22</location_id>
 		<num_to_complete>6</num_to_complete>
 		<x>140</x>
 		<y>100</y>
@@ -6729,7 +6729,7 @@
 		<id>186</id>
 		<name>Mission 134</name>
 		<picture>mission186.jpg</picture>
-		<location_id>6</location_id>
+		<location_id>22</location_id>
 		<num_to_complete>7</num_to_complete>
 		<x>100</x>
 		<y>130</y>
@@ -6767,7 +6767,7 @@
 		<id>187</id>
 		<name>Mission 135</name>
 		<picture>mission187.jpg</picture>
-		<location_id>6</location_id>
+		<location_id>22</location_id>
 		<num_to_complete>8</num_to_complete>
 		<x>50</x>
 		<y>200</y>
@@ -6802,7 +6802,7 @@
 		<id>188</id>
 		<name>Mission 136</name>
 		<picture>mission188.jpg</picture>
-		<location_id>6</location_id>
+		<location_id>22</location_id>
 		<num_to_complete>9</num_to_complete>
 		<x>130</x>
 		<y>200</y>
@@ -6832,7 +6832,7 @@
 			<card>3021</card>
 		</deck>
 		<rewards>
-			<card>2079</card>
+			<card>2090</card>
 		</rewards>
 		<req>187</req>
 	</mission>
@@ -6841,7 +6841,7 @@
 		<id>189</id>
 		<name>Mission 137</name>
 		<picture>mission189.jpg</picture>
-		<location_id>6</location_id>
+		<location_id>22</location_id>
 		<num_to_complete>10</num_to_complete>
 		<x>160</x>
 		<y>270</y>
@@ -6880,7 +6880,7 @@
 		<id>190</id>
 		<name>Mission 138</name>
 		<picture>mission190.jpg</picture>
-		<location_id>7</location_id>
+		<location_id>23</location_id>
 		<num_to_complete>7</num_to_complete>
 		<x>220</x>
 		<y>60</y>
@@ -6889,7 +6889,7 @@
 		<money>775</money>
 		<rep faction='15' amount='7' /> 
 		<commander>1128</commander>
-		<desc>You are surrounding by some of the largest Bloodthirsty you have ever faced.</desc>
+		<desc>You are surrounded by some of the largest Bloodthirsty you have ever faced.</desc>
 		<speech>
 			<line commander='1042'>I understand now, Halcyon has been letting the Bloodthirsty, Xeno, and Raider run rampant hoping they will get caught in the blast.</line>
 			<line commander='1042'>Which means we are going to have to fight through them to reach the Nexus.</line>
@@ -6916,7 +6916,7 @@
 		<id>191</id>
 		<name>Mission 139</name>
 		<picture>mission191.jpg</picture>
-		<location_id>7</location_id>
+		<location_id>23</location_id>
 		<num_to_complete>8</num_to_complete>
 		<x>160</x>
 		<y>120</y>
@@ -6951,7 +6951,7 @@
 		<id>192</id>
 		<name>Mission 140</name>
 		<picture>mission192.jpg</picture>
-		<location_id>7</location_id>
+		<location_id>23</location_id>
 		<num_to_complete>9</num_to_complete>
 		<x>220</x>
 		<y>160</y>
@@ -6986,7 +6986,7 @@
 		<id>193</id>
 		<name>Mission 141</name>
 		<picture>mission193.jpg</picture>
-		<location_id>7</location_id>
+		<location_id>23</location_id>
 		<num_to_complete>9</num_to_complete>
 		<x>200</x>
 		<y>240</y>
@@ -6995,7 +6995,7 @@
 		<money>1075</money>
 		<rep faction='15' amount='12' />
 		<commander>1134</commander>
-		<desc>Either the blast from the Nexus or you will have to remove these Raiders from the Wasteland.</desc>
+		<desc>Either the blast from the Nexus will remove these Raiders from the Wasteland, or you will have to.</desc>
 		<speech>
 			<line commander='1049'>Katana, come in. Are you there?</line>
 			<line commander='1042'>Halcyon! What is wrong with you? You will kill thousands in the aftermath of the Nexus' Blast.</line>
@@ -7012,7 +7012,7 @@
 			<card>442</card>
 			<card>464</card>
 			<card>447</card>
-			<card>2085</card>
+			<card>2081</card>
 			<card>3041</card>
 		</deck>
 		<rewards>
@@ -7025,7 +7025,7 @@
 		<id>194</id>
 		<name>Mission 142</name>
 		<picture>mission194.jpg</picture>
-		<location_id>7</location_id>
+		<location_id>23</location_id>
 		<num_to_complete>10</num_to_complete>
 		<x>220</x>
 		<y>290</y>
@@ -7061,7 +7061,7 @@
 		<id>195</id>
 		<name>Mission 143</name>
 		<picture>mission195.jpg</picture>
-		<location_id>7</location_id>
+		<location_id>23</location_id>
 		<num_to_complete>10</num_to_complete>
 		<x>150</x>
 		<y>270</y>
@@ -7098,7 +7098,7 @@
 		<id>196</id>
 		<name>Mission 144</name>
 		<picture>mission196.jpg</picture>
-		<location_id>7</location_id>
+		<location_id>23</location_id>
 		<num_to_complete>10</num_to_complete>
 		<x>110</x>
 		<y>290</y> 
@@ -7207,9 +7207,6 @@
 		<picture_file>redsandsmap.jpg</picture_file>
 		<battlefield>battlefield2.jpg</battlefield>
 		<effect x='292' y='220'>redsandseffects.swf</effect>
-		<extraEffect req='183'>redsandsblight1.swf</extraEffect>
-		<extraEffect req='185'>redsandsblight2.swf</extraEffect>
-		<extraEffect req='187'>redsandsblight3.swf</extraEffect>
 		<nav>Nav6</nav>
 		<req>28</req>
 	</location>
@@ -7337,11 +7334,50 @@
 	
 	<location>
 		<id>20</id>
+		<name>Wasteland</name>
+		<picture>WastelandMap</picture>
+		<picture_file>wastelandmap.png</picture_file>
+		<battlefield>wasteland.png</battlefield>
+		<effect x='292' y='220'>wastelandeffects.swf</effect>
+		<extraEffect req='189'>wastelandblight2.swf</extraEffect>
+		<extraEffect req='172'>wastelandblight1.swf</extraEffect>
+		<nav>Nav20</nav>
+		<req>172</req>
+	</location>
+	
+	<location>
+		<id>21</id>
 		<name>Vistik Island</name>
 		<picture>MapHomeworld</picture>
 		<effect x='292' y='220'>HWislandFX.swf</effect>
 		<nav>Nav21</nav>
 		<req>176</req>
+	</location>
+	
+	<location>
+		<id>22</id>
+		<name>The Red Sands</name>
+		<picture>RedSandsMap</picture>
+		<picture_file>redsandsmap.jpg</picture_file>
+		<battlefield>battlefield2.jpg</battlefield>
+		<effect x='292' y='220'>redsandseffects.swf</effect>
+		<extraEffect req='187'>redsandsblight3.swf</extraEffect>
+		<extraEffect req='185'>redsandsblight2.swf</extraEffect>
+		<extraEffect req='183'>redsandsblight1.swf</extraEffect>
+		<nav>Nav22</nav>
+		<req>183</req>
+	</location>
+	
+	<location>
+		<id>23</id>
+		<name>Wasteland</name>
+		<picture>WastelandMap</picture>
+		<picture_file>wastelandmap.png</picture_file>
+		<battlefield>wasteland.png</battlefield>
+		<effect x='292' y='220'>wastelandeffects.swf</effect>
+		<extraEffect req='189'>wastelandblight3.swf</extraEffect>
+		<nav>Nav23</nav>
+		<req>189</req>
 	</location>
 	
 	<faction>
@@ -7671,8 +7707,8 @@
 	<faction>
 		<id>13</id>
 		<location_id>19</location_id>
-		<location_id>7</location_id>
 		<location_id>20</location_id>
+		<location_id>21</location_id>
 		<name>Heretic Nation</name>
 		<icon>FactionIconReckoners</icon>
 		<repbase>1000</repbase>
@@ -7698,8 +7734,8 @@
 	
 	<faction>
 		<id>14</id>
-		<location_id>20</location_id>
-		<location_id>6</location_id>
+		<location_id>21</location_id>
+		<location_id>22</location_id>
 		<name>Chaos Squad</name>
 		<icon>FactionIconChaosSquad</icon>
 		<repbase>1000</repbase>
@@ -7725,8 +7761,8 @@
 	
 	<faction>
 		<id>15</id>
-		<location_id>6</location_id>
-		<location_id>7</location_id>
+		<location_id>22</location_id>
+		<location_id>23</location_id>
 		<name>New Beginnings</name>
 		<icon>FactionIconNewDawn</icon>
 		<repbase>1000</repbase>
