@@ -73,6 +73,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             PropertiesClassName = 'TcxComboBoxProperties'
             Properties.DropDownListStyle = lsEditFixedList
             Properties.ImmediatePost = True
+            Properties.ImmediateUpdateText = True
             Properties.OnCloseUp = vTopNamePropertiesCloseUp
             Properties.OnValidate = vTopNamePropertiesValidate
             Width = 150
@@ -415,6 +416,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             PropertiesClassName = 'TcxComboBoxProperties'
             Properties.DropDownListStyle = lsEditFixedList
             Properties.ImmediatePost = True
+            Properties.ImmediateUpdateText = True
             Properties.OnCloseUp = vBotNamePropertiesCloseUp
             Properties.OnValidate = vBotNamePropertiesValidate
             Width = 150
