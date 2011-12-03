@@ -8963,6 +8963,8 @@
 	
 	<!-- END Block 10 -->
 	
+	<!-- Block 11 Raider -->
+	
 	<unit> 
 		<id>313</id>
 		<name>Destroyer</name>
@@ -9005,6 +9007,54 @@
 		<type>9</type>
 		<set>5001</set>
 	</unit>
+	
+	<!-- END Block 11 -->
+	
+	<!-- Block 12 -->
+	
+	<unit>
+		<id>375</id>
+		<name>Smokestack</name>
+		<picture>BTsmokestack.jpg</picture>
+		<attack>2</attack>
+		<health>4</health>
+		<cost>2</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='chaos' />
+		<skill id='poison' x='2' />
+		<type>3</type>
+		<set>5001</set>
+	</unit>
+	
+	<unit>
+		<id>376</id>
+		<name>Disciple</name>
+		<picture>righthovertank.jpg</picture>
+		<attack>2</attack>
+		<health>4</health>
+		<cost>1</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='cleanse' y='8' />
+		<skill id='siphon' x='3' />
+		<type>8</type>
+		<set>5001</set>
+	</unit>
+
+	<unit>
+		<id>140</id>
+		<name>Beam Cannon</name>
+		<picture>brendanimperial.jpg</picture>
+		<attack>3</attack>
+		<health>6</health>
+		<cost>3</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='protect' x='2' y='1' />
+		<skill id='pierce' x='2' />
+		<type>1</type>
+		<set>5001</set>
+	</unit>
+	
+	<!-- END Block 12 -->
 
 <!-- END PROMO Cards -->
 	<!-- Distraction -->
@@ -9049,7 +9099,7 @@
 	</unit>
 	
 	<unit>
-		<id>1135</id>
+		<id>1141</id>
 		<name>Use This One Commander</name>
 		<picture>alex.jpg</picture>
 		<attack>0</attack>
@@ -9083,10 +9133,11 @@
 		<id>182</id>
 		<name>TEST</name>
 		<picture>alex.jpg</picture>
-		<attack>0</attack>
-		<health>15</health>
-		<cost>2</cost>
+		<attack>2</attack>
+		<health>35</health>
+		<cost>0</cost>
 		<rarity>1</rarity> <gold_cost>10000</gold_cost>
+		<skill id='protect' x='1' />
 		<type>8</type>
 	</unit>
 	
@@ -9096,7 +9147,7 @@
 		<picture>general1.jpg</picture>
 		<attack>0</attack>
 		<health>20</health>
-		<skill id='chaos' />
+		<skill id='rush' x='1' />
 		<rarity>1</rarity> <gold_cost>1000</gold_cost>
 	</unit>
 	
@@ -9128,6 +9179,8 @@
 		<cost>0</cost>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
 		<skill id='chaos' />
+		<skill id='jam' />
+		<skill id='enfeeble' x='1' />
 		<type>1</type> 
 	</unit>
 
@@ -9172,19 +9225,6 @@
 		<skill id='jam' y='4' />
 		<skill id='heal' x='2' y='8' />
 		<skill id='armored' x='3' />
-		<type>8</type>
-	</unit>
-	
-	<unit>
-		<id>140</id>
-		<name>Falcon</name>
-		<picture>alex.jpg</picture>
-		<attack>3</attack>
-		<health>5</health>
-		<cost>3</cost>
-		<rarity>3</rarity> <gold_cost>10000</gold_cost>
-		<skill id='rally' x='3' />
-		<skill id='flying' />
 		<type>8</type>
 	</unit>
 	
@@ -11340,6 +11380,7 @@
 	<skillType>
 		<id>rush</id>
 		<name>Rush</name>
+		<icon>CrushSkillIcon</icon>
 		<target_anim>electricution.swf</target_anim>
 		<desc>Decrease the cost of a random owner's Assault card</desc>
 		<sound>WooshSound</sound>
