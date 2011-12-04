@@ -1182,6 +1182,9 @@ public:
 		UCHAR ac = Src.GetAbilitiesCount();
 		for (UCHAR aindex=0;aindex<ac;aindex++)
 		{
+			if (Src.GetEffect(ACTIVATION_JAM) > 0)
+				break; // card was jammed by payback (or chaos?)
+
 			UCHAR chaos = Src.GetEffect(ACTIVATION_CHAOS); // I need to check this every time card uses skill because it could be paybacked chaos - such as Pulsifier with payback, chaos and mimic
 
 			aid = Src.GetAbilityInOrder(aindex);
