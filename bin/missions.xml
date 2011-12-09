@@ -230,7 +230,7 @@
 		<desc>Enemy tanks are able to strike us from their position, and will damage our Assault units.</desc>
 		<speech>
 			<line commander='1042'>We're almost at the Relay, but Raider tanks have entrenched and are firing on our position.</line>
-			<line commander='1042'>Burn this base to the ground..</line>
+			<line commander='1042'>Burn this base to the ground.</line>
 		</speech>
 		<deck>
 			<card>503</card>
@@ -432,7 +432,7 @@
 		<commander>1048</commander>
 		<desc>The Raiders have a wide variety of tanks ahead, they may be vulnerable to an aerial assault.</desc>
 		<speech>
-			<line commander='1049'>Your recon shows a weakness in the Raider foritifications.   We have no choice but to attack immediately.</line>
+			<line commander='1049'>Your recon shows a weakness in the Raider fortifications.   We have no choice but to attack immediately.</line>
 		</speech>
 		<deck>
 			<card>43</card>
@@ -1126,7 +1126,7 @@
 		<money>700</money>
 		<rep faction='5' amount='8' />
 		<commander>1064</commander>
-		<desc>Xeno are swarming out of no where, be prepared for defensive units that can strike down our force.</desc>
+		<desc>Xeno are swarming out of nowhere, be prepared for defensive units that can strike down our force.</desc>
 		<speech>
 			<line commander='1027'>The Raiders here have been slaughtered by the Enclave, but Halcyon is trapped between Typhon's main force and the Enclave Vanguard.  We must break through!</line>
 		</speech>
@@ -2095,7 +2095,7 @@
 		<money>525</money>
 		<rep faction='6' amount='11' />
 		<commander>1080</commander>
-		<desc>The acid pools of Sulfiris are deadly.</desc>
+		<desc>The acid pools of Sulfuris are deadly.</desc>
 		<speech>
 			<line commander='1026'>This land is infested with Bloodthirsty that have flooded out from the Blightlands.  We cannot avoid them for fear of alerting Typhon's forces.</line>
 
@@ -2750,7 +2750,7 @@
 	<line commander='1026'>It's not about power, Typhon - it's about our state!  You would kill us all for your own lust and vengeance?</line>
 	<line commander='1047'>It's too late for words, Yurich.  The countdown has started, and there's nothing to stop it.  Eventually, the Nexus will open.  </line>
 	<line commander='1047'>An inferno will consume this land, just like Asphodel.  But in its fires, our country will be reborn - a might yet unseen on this planet.</line>
-	<line commander='1047'>I will close my fist around the Empire and extinguish it's flame!</line>
+	<line commander='1047'>I will close my fist around the Empire and extinguish its flame!</line>
 		</speechComplete>
 		<deck>
 			<card>131</card>
@@ -3610,7 +3610,7 @@
 			<line commander='1042'>Wait here Commander. The atmosphere seems to have cleared up, but the next area is covered in acid that is setting off its own gases.</line>
 			<line commander='1042'>I’m not sure we can survive even with our current equipment.</line>
 			<line commander='1042'>Bloodthirsty are coming up from behind! There are too many of them. No time to worry about the unknown, retreat into the opening.</line>
-			<line commander='1042'>They lead us into a trap, more Bloodthirsty were waiting for us. We must make a stand!</line>
+			<line commander='1042'>They led us into a trap, more Bloodthirsty were waiting for us. We must make a stand!</line>
 		</speech>
 		<deck>
 			<card>293</card>
@@ -4373,7 +4373,7 @@
 		<energy>25</energy>
 		<money>1250</money>
 		<commander>1095</commander>
-		<desc>The Bloodthirsrty are beginning to attack in packs.</desc>
+		<desc>The Bloodthirsty are beginning to attack in packs.</desc>
 		<speech commander='1042'>
 			<line>Those Bloodthirsty are unlike any we have seen so far, we should investigate it may provide clues as to what is going on.</line>
 		</speech>
@@ -4408,7 +4408,7 @@
 		<commander>1096</commander>
 		<desc>The Bloodthirsty are banding around some of the largest ones we have ever seen.</desc>
 		<speech>
-		<line commander='1042'>Its the acid we have seen all over Tartarus.</line>
+		<line commander='1042'>It's the acid we have seen all over Tartarus.</line>
 		<line commander='1042'>When it touches the Bloodthirsty they start growing monstrous mutations.</line>
 		</speech>
 		<deck>
@@ -4557,7 +4557,7 @@
 		<money>550</money>
 		<rep faction='10' amount='7' />
 		<commander>1088</commander>
-		<desc>The Raiders and Bloodthisrty won't work together, but they still combine to make a powerful force.</desc>
+		<desc>The Raiders and Bloodthirsty won't work together, but they still combine to make a powerful force.</desc>
 		<speech>
 			<line commander='1042'>Before it seems like the Bloodthirsty were ignoring Typhon. Now they are protecting him.</line>
 		</speech>
@@ -4921,7 +4921,7 @@
 		<speech>
 			<line commander='1042'>Xeno scouts?</line>
 			<line commander='1097'>Before the Blight our islands were protected from invaders, these lands are new to them.</line>
-			<line commander='1042'>Lets take them out before they are able to report back.</line>
+			<line commander='1042'>Let''s take them out before they are able to report back.</line>
 		</speech>
 		<deck>
 			<card>413</card>
@@ -5030,7 +5030,7 @@
 		<speech>
 			<line commander='1042'>I can't believe Yurich would double-cross us like that.</line>
 			<line commander='1097'>She was lying. You would have been unsuccessful had you battled Typhon in his current state.</line>
-			<line commander='1042'>I'll wait til I hear that from him.</line>
+			<line commander='1042'>I'll wait ''til I hear that from him.</line>
 		</speech>
 		<deck>
 			<card>352</card>
@@ -5489,7 +5489,7 @@
 		<desc>The Empress holds the highest command over the Righteous. She will be difficult to defeat.</desc>
 		<speech>
 			<line commander='1042'>How can the Bloodthirsty be so strong if this Pantheon is so much more powerful?</line>
-			<line commander='1097'>This area has the closest link to Tartarus and it's essence fuels them.</line>
+			<line commander='1097'>This area has the closest link to Tartarus and its essence fuels them.</line>
 			<line commander='1097'>We must hasten. The Righteous have been focusing on powering up this Pantheon since we have started destroying the others.</line>
 			<line commander='1026'>Yes, I was trying to explain that I thought the Sentinels were meant to defeat Typhon, I was mistaken.</line>
 			<line commander='1026'>They were created for the sole purpose of protecting the Righteous from anyone who obtained the power of Tartarus, but their solution is to destroy everything.</line>
@@ -5530,7 +5530,7 @@
 		<speech>
 			<line commander='1042'>How was Typhon able to obtain the power of Tartarus if he isn't Bloodthirsty?</line>
 			<line commander='1026'>The acid like ooze that was all over Tartarus. It is what powers the Bloodthirsty we have been fighting.</line>
-			<line commander='1026'>I thought he was trying to weaponize it, cause it's so lethal to Humans. He somehow found a way to become immune to it.</line>
+			<line commander='1026'>I thought he was trying to weaponize it, because it's so lethal to Humans. He somehow found a way to become immune to it.</line>
 			<line commander='1026'>Eventually he used it to transform himself into a Bloodthirsty and activate Tartarus' core.</line>
 		</speech>
 		<deck>
@@ -5781,7 +5781,7 @@
 		<energy>25</energy>
 		<money>1450</money>
 		<commander>1108</commander>
-		<desc>The first wave was mearly a distraction, The larger Righteous units are now ready to fight.</desc>
+		<desc>The first wave was merely a distraction, The larger Righteous units are now ready to fight.</desc>
 		<speech>
 			<line commander='1042'>Can you not see that it is over? The Pantheons have been destroyed!</line>
 			<line commander='1108'>Negative, The Pantheons are being rebuilt as we speak and the Sentinels will be summoned.</line>
@@ -5924,7 +5924,7 @@
 		<energy>25</energy>
 		<money>1450</money>
 		<commander>1109</commander>
-		<desc>Deacon has lead you into a huge force and leaves you with no option but to take them head on.</desc>
+		<desc>Deacon has led you into a huge force and leaves you with no option but to take them head on.</desc>
 		<speech>
 			<line commander='1109'>No matter how much you interfere, the Righteous will not stop until they succeed. Your actions are insignificant.</line>
 		</speech>
@@ -6158,7 +6158,7 @@
 		<speechComplete>
 			<line commander='1042'>Finally you slay the former Commander and as she lay dead the shadows and Bloodthirsty surrounding you vanish.</line>
 			<line commander='1042'>Soon you realize you are no longer in Tartarus and even Lucina's body is gone.</line>
-			<line commander='1042'>It felt like a dream, except you feel stonger now than ever before.</line>
+			<line commander='1042'>It felt like a dream, except you feel stronger now than ever before.</line>
 		</speechComplete>
 		<deck>
 			<card>308</card>
@@ -6624,7 +6624,7 @@
 		<desc>They are going to hit hard and be able to protect their heavy hitters.</desc>
 		<speech>
 			<line commander='1042'>I knew Halcyon couldn't be trusted! I could kill him myself!</line>
-			<line commander='1042'>Sorry, we will deal with Halcyon later, for now lets see if there is actually anything we can do to stop this Nexus.</line>
+			<line commander='1042'>Sorry, we will deal with Halcyon later, for now let''s see if there is actually anything we can do to stop this Nexus.</line>
 			<line commander='1131'>You will perish if you even get close. If the Nexus senses it is disrupted at all it send out a massive shockwave that will devastate everything in the blast, but the Nexus will remain unscathed.</line>
 			<line commander='1042'>If you knew this then why did you agree to help the Imperials?</line>
 			<line commander='1131'>We have not given them any assistance. Our only intention was to seek vengeance for delaying the Sentinels and possibly destroying this world as we know it.</line>
@@ -6850,7 +6850,7 @@
 		<money>1250</money>
 		<rep faction='15' amount='6' /> 
 		<commander>1128</commander>
-		<desc>The Red Sands have practically become home to the Bloodthirsty. Next mission is in Wasteland</desc>
+		<desc>The Red Sands have practically become home to the Bloodthirsty.</desc>
 		<speech>
 			<line commander='1042'>Halcyon must be insane. The Nexus will kill thousands and destroy all progress that has been made in the Wasteland.</line>
 		</speech>
@@ -6962,7 +6962,7 @@
 		<commander>1130</commander>
 		<desc>This is one of the largest invasions by the Xeno in the Wasteland.</desc>
 		<speech>
-			<line commander='1042'>How can anyone follow Halcyon's after all the atrocities he has committed, but now he has gone too far.</line>
+			<line commander='1042'>How can anyone follow Halcyon's after all the atrocities he has committed? Now he has gone too far.</line>
 		</speech>
 		<deck>
 			<card>78</card>
@@ -7110,13 +7110,13 @@
 		<desc>You will survive the blast underground but you still have to worry about the Imperials.</desc>
 		<speech>
 			<line commander='1042'>No! We're too late. The Nexus is building up energy. Hurry, if we get underground we should be able to avoid the damage from the shockwave.</line>
-			<line commander='1042'>Our only hope now is too wait it out, we should at least be safe down here.</line>
-			<line commander='1125'>Guess Again.</line>
+			<line commander='1042'>Our only hope now is to wait it out, we should at least be safe down here.</line>
+			<line commander='1125'>Guess again.</line>
 		</speech>
 		<speechComplete>
 			<line commander='1042'>That was it, I'm shaking at the thought of what is left out there but we must see.</line>
 			<line commander='1042'>It is even worse than I thought, there is not a trace of anything left, it is just gone.</line>
-			<line commander='1042'>I don't know where you are hiding Halcyon, but do you see where your arrogance has lead you? Do you see the destruction and all of the lives that have been lost.</line>
+			<line commander='1042'>I don't know where you are hiding Halcyon, but do you see where your arrogance has led you? Do you see the destruction and all of the lives that have been lost.</line>
 			<line commander='1049'>You fail to look at the big picture Katana. The Blight in the Wasteland has also been destroyed. It is gone for good.</line>
 			<line commander='1042'>No its not. I'm watching it grow over the land it once inhabited as quickly as it was destroyed. And the Nexus is still active.</line>
 		</speechComplete>
@@ -7142,6 +7142,424 @@
 	</mission>
 
 <!-- END Homeworld Missions -->
+
+<!-- Homeworld Side Missions -->
+
+	<mission>
+		<id>197</id>
+		<name>Blight Assault 1</name>
+		<picture>mission197.jpg</picture>
+		<location_id>20</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>290</x>
+		<y>100</y> 
+		<xp>70</xp> <!-- 2.8 -->
+		<energy>25</energy>
+		<money>1500</money> <!-- 15.0 -->
+		<commander>1135</commander>
+		<desc>All three factions are trying to accelerate the spread of Chaos!</desc>
+		<speech>
+			<line commander='1042'>Raiders are leading a pack of Bloodthirsty and swarm of Xeno. They are destroying everything in sight. We must stop them.</line>
+		</speech>
+		<deck>
+			<card>105</card>
+			<card>460</card>
+			<card>464</card>
+			<card>353</card>
+			<card>465</card>
+			<card>493</card>
+			<card>225</card>
+			<card>479</card>
+			<card>483</card>
+			<card>2083</card>
+		</deck>
+		<req>196</req>
+	</mission>
+
+	<mission>
+		<id>198</id>
+		<name>Blight Assault 2</name>
+		<picture>mission198.jpg</picture>
+		<location_id>20</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>240</x>
+		<y>140</y> 
+		<xp>71</xp>
+		<energy>25</energy>
+		<money>1550</money>
+		<commander>1135</commander>
+		<desc>Their strength is growing as quickly as the Blight's power.</desc>
+		<speech>
+			<line commander='1042'>The Blight feeds on the destruction that it causes. They think if they cause more destruction the Blight will feed and spread faster.</line>
+		</speech>
+		<deck>
+			<card>495</card>
+			<card>442</card>
+			<card>247</card>
+			<card>485</card>
+			<card>256</card>
+			<card>441</card>
+			<card>481</card>
+			<card>467</card>
+			<card>200</card>
+			<card>500</card>
+			<card>2050</card>
+			<card>3007</card>
+		</deck>
+		<req>197</req>
+	</mission>
+
+	<mission>
+		<id>199</id>
+		<name>Blight Assault 3</name>
+		<picture>mission199.jpg</picture>
+		<location_id>20</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>320</x>
+		<y>190</y> 
+		<xp>73</xp>
+		<energy>25</energy>
+		<money>1600</money>
+		<commander>1136</commander>
+		<desc>The Bloodthirsty have never assisted others like this before.</desc>
+		<speech>
+			<line commander='1042'>It doesn't matter if we slow the Blight down or not. Stopping them and saving lives is a top priority.</line>
+		</speech>
+		<deck>
+			<card>484</card>
+			<card>166</card>
+			<card>296</card>
+			<card>434</card>
+			<card>523</card>
+			<card>478</card>
+			<card>290</card>
+			<card>92</card>
+			<card>452</card>
+			<card>525</card>
+			<card>171</card>
+			<card>2020</card>
+			<card>3000</card>
+		</deck>
+		<req>198</req>
+	</mission>
+
+	<mission>
+		<id>200</id>
+		<name>Blight Assault 4</name>
+		<picture>mission200.jpg</picture>
+		<location_id>20</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>230</x>
+		<y>220</y> 
+		<xp>75</xp> <!-- 3.0 -->
+		<energy>25</energy>
+		<money>1650</money> <!-- 16.5 -->
+		<commander>1136</commander>
+		<desc>The few that remain will band together to overcome your attack.</desc>
+		<speech>
+			<line commander='1042'>The separate factions are starting to disperse and retreat. We need to finish those that remain.</line>
+		</speech>
+		<deck>
+			<card>166</card>
+			<card>519</card>
+			<card>515</card>
+			<card>320</card>
+			<card>308</card>
+			<card>373</card>
+			<card>339</card>
+			<card>54</card>
+			<card>215</card>
+			<card>432</card>
+			<card>510</card>
+			<card>531</card>
+			<card>2038</card>
+			<card>2032</card>
+			<card>3004</card>
+		</deck>
+		<rewards>
+			<card>166</card>
+		</rewards>
+		<req>199</req>
+	</mission>
+
+	<mission>
+		<id>201</id>
+		<name>Voyage Home 1</name>
+		<picture>mission201.jpg</picture>
+		<location_id>22</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>320</x>
+		<y>320</y> 
+		<xp>70</xp> <!-- 2.8 -->
+		<energy>25</energy>
+		<money>1500</money> <!-- 15.0 -->
+		<commander>1137</commander>
+		<desc>You will need to overcome fast and hard hitting units.</desc>
+		<speech>
+			<line commander='1042'>Long ago when the Raiders also called this land home, there was a powerful military base.</line>
+			<line commander='1042'>Halcyon had it deactivated when he took over, but now some renegade Imperials are trying to help the Raiders restore power to it.</line>
+			<line commander='1042'>If they are successful it will be the first step for the Raiders in taking control of Acheron. We must stop them.</line>
+		</speech>
+		<deck>
+			<card>520</card>
+			<card>436</card>
+			<card>476</card>
+			<card>304</card>
+			<card>189</card>
+			<card>321</card>
+			<card>459</card>
+			<card>448</card>
+			<card>2021</card>
+			<card>2057</card>
+		</deck>
+		<req>196</req>
+	</mission>
+
+	<mission>
+		<id>202</id>
+		<name>Voyage Home 2</name>
+		<picture>mission202.jpg</picture>
+		<location_id>22</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>400</x>
+		<y>280</y> 
+		<xp>71</xp>
+		<energy>25</energy>
+		<money>1550</money>
+		<commander>1137</commander>
+		<desc>Multiple scout teams were looking for the base and they are all beginning to converge on it.</desc>
+		<speech>
+			<line commander='1042'>They found the base and are taking refuge in it, we still have a chance to stop them.</line>
+		</speech>
+		<deck>
+			<card>509</card>
+			<card>443</card>
+			<card>327</card>
+			<card>314</card>
+			<card>260</card>
+			<card>63</card>
+			<card>468</card>
+			<card>498</card>
+			<card>363</card>
+			<card>253</card>
+			<card>3016</card>
+			<card>2077</card>
+		</deck>
+		<req>201</req>
+	</mission>
+
+	<mission>
+		<id>203</id>
+		<name>Voyage Home 3</name>
+		<picture>mission203.jpg</picture>
+		<location_id>22</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>360</x>
+		<y>210</y> 
+		<xp>73</xp>
+		<energy>25</energy>
+		<money>1600</money>
+		<commander>1138</commander>
+		<desc>They are using the power of the Acropolis to their advantage.</desc>
+		<speech>
+			<line commander='1042'>They activated the power, take cover!</line>
+			<line commander='1042'>It is still nowhere near full power. If we are careful we can still defeat the enemy.</line>
+		</speech>
+		<deck>
+			<card>477</card>
+			<card>423</card>
+			<card>430</card>
+			<card>475</card>
+			<card>446</card>
+			<card>529</card>
+			<card>428</card>
+			<card>183</card>
+			<card>317</card>
+			<card>447</card>
+			<card>3021</card>
+			<card>3017</card>
+			<card>2088</card>
+		</deck>
+		<req>202</req>
+	</mission>
+
+	<mission>
+		<id>204</id>
+		<name>Voyage Home 4</name>
+		<picture>mission204.jpg</picture>
+		<location_id>22</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>280</x>
+		<y>250</y> 
+		<xp>75</xp> <!-- 3.0 -->
+		<energy>25</energy>
+		<money>1650</money> <!-- 16.5 -->
+		<commander>1138</commander>
+		<desc>The Acropolis will power both forces beyond their limits.</desc>
+		<speech>
+			<line commander='1042'>We are close Commander. Keep pushing through and we can destroy this structure once and for all.</line>
+		</speech>
+		<deck>
+			<card>122</card>
+			<card>246</card>
+			<card>468</card>
+			<card>476</card>
+			<card>282</card>
+			<card>258</card>
+			<card>47</card>
+			<card>478</card>
+			<card>394</card>
+			<card>270</card>
+			<card>130</card>
+			<card>179</card>
+			<card>3031</card>
+			<card>2059</card>
+			<card>2088</card>
+		</deck>
+		<rewards>
+			<card>2088</card>
+		</rewards>
+		<req>203</req>
+	</mission>
+
+	<mission>
+		<id>205</id>
+		<name>Ancient Fusion 1</name>
+		<picture>mission205.jpg</picture>
+		<location_id>23</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>380</x>
+		<y>340</y> 
+		<xp>70</xp> <!-- 2.8 -->
+		<energy>25</energy>
+		<money>1500</money> <!-- 15.0 -->
+		<commander>1139</commander>
+		<desc>Both factions seem to have similar strategies to defeating you.</desc>
+		<speech>
+			<line commander='1042'>Righteous and Xeno are working together? Whatever they are planning we must stop them.</line>
+		</speech>
+		<deck>
+			<card>528</card>
+			<card>435</card>
+			<card>432</card>
+			<card>261</card>
+			<card>491</card>
+			<card>492</card>
+			<card>488</card>
+			<card>497</card>
+			<card>2053</card>
+			<card>2090</card>
+		</deck>
+		<req>196</req>
+	</mission>
+
+	<mission>
+		<id>206</id>
+		<name>Ancient Fusion 2</name>
+		<picture>mission206.jpg</picture>
+		<location_id>23</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>420</x>
+		<y>280</y> 
+		<xp>71</xp>
+		<energy>25</energy>
+		<money>1550</money>
+		<commander>1139</commander>
+		<desc>Separately they would be easier opponents. But together they may overpower you.</desc>
+		<speech>
+			<line commander='1042'>If we can discover a reason why they would fight together we may find a key to defeating them.</line>
+		</speech>
+		<deck>
+			<card>240</card>
+			<card>531</card>
+			<card>514</card>
+			<card>353</card>
+			<card>241</card>
+			<card>526</card>
+			<card>469</card>
+			<card>438</card>
+			<card>214</card>
+			<card>330</card>
+			<card>3022</card>
+			<card>2062</card>
+		</deck>
+		<req>205</req>
+	</mission>
+
+	<mission>
+		<id>207</id>
+		<name>Ancient Fusion 3</name>
+		<picture>mission207.jpg</picture>
+		<location_id>23</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>350</x>
+		<y>270</y> 
+		<xp>73</xp>
+		<energy>25</energy>
+		<money>1600</money>
+		<commander>1140</commander>
+		<desc>Both sides have brought their strongest forces.</desc>
+		<speech>
+			<line commander='1042'>Not sure of their motives, but they seem to work well together. We should try separating them somehow.</line>
+		</speech>
+		<deck>
+			<card>530</card>
+			<card>489</card>
+			<card>463</card>
+			<card>433</card>
+			<card>288</card>
+			<card>425</card>
+			<card>517</card>
+			<card>465</card>
+			<card>493</card>
+			<card>139</card>
+			<card>3002</card>
+			<card>2085</card>
+			<card>2036</card>
+		</deck>
+		<req>206</req>
+	</mission>
+
+	<mission>
+		<id>208</id>
+		<name>Ancient Fusion 4</name>
+		<picture>mission208.jpg</picture>
+		<location_id>23</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>360</x>
+		<y>220</y> 
+		<xp>75</xp> <!-- 3.0 -->
+		<energy>25</energy>
+		<money>1650</money> <!-- 16.5 -->
+		<commander>1140</commander>
+		<desc>They will use any method to destroy your forces.</desc>
+		<speech>
+			<line commander='1042'>It seems the Righteous and Xeno have some kind of ancient connection. The Xeno may have been invading this planet longer than we initially imagined.</line>
+		</speech>
+		<deck>
+			<card>437</card>
+			<card>365</card>
+			<card>491</card>
+			<card>349</card>
+			<card>352</card>
+			<card>532</card>
+			<card>490</card>
+			<card>418</card>
+			<card>441</card>
+			<card>30</card>
+			<card>78</card>
+			<card>139</card>
+			<card>2071</card>
+			<card>2061</card>
+			<card>3038</card>
+		</deck>
+		<rewards>
+			<card>139</card>
+		</rewards>
+		<req>207</req>
+	</mission>
+
+<!-- END Homeworld Side Missions -->
 	
 	<!-- END MISSIONS -->
 	
