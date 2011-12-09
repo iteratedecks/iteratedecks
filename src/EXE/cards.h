@@ -430,6 +430,8 @@ public:
 					{
 						UCHAR Id = GetSkillID(child.attribute("id").value());
 						_ASSERT(Id); // unknown skill
+						if (!Id)
+							continue;
 						UCHAR Effect = child.attribute("x").as_uint();
 						if (!Effect)
 							Effect = ABILITY_ENABLED; // this value can't be 0, since it will disable the ability
