@@ -71,10 +71,12 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Tag = 111
             Caption = 'Card name'
             PropertiesClassName = 'TcxComboBoxProperties'
+            Properties.ClearKey = 46
             Properties.DropDownListStyle = lsEditFixedList
             Properties.ImmediatePost = True
             Properties.ImmediateUpdateText = True
             Properties.OnCloseUp = vTopNamePropertiesCloseUp
+            Properties.OnEditValueChanged = vTopNamePropertiesEditValueChanged
             Properties.OnValidate = vTopNamePropertiesValidate
             Width = 150
           end
@@ -414,10 +416,12 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Tag = 111
             Caption = 'Card name'
             PropertiesClassName = 'TcxComboBoxProperties'
+            Properties.ClearKey = 46
             Properties.DropDownListStyle = lsEditFixedList
             Properties.ImmediatePost = True
             Properties.ImmediateUpdateText = True
             Properties.OnCloseUp = vBotNamePropertiesCloseUp
+            Properties.OnEditValueChanged = vBotNamePropertiesEditValueChanged
             Properties.OnValidate = vBotNamePropertiesValidate
             Width = 150
           end

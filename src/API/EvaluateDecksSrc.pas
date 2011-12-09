@@ -508,6 +508,8 @@ type
     procedure tsBatchShow(Sender: TObject);
     procedure vTopNamePropertiesCloseUp(Sender: TObject);
     procedure vBotNamePropertiesCloseUp(Sender: TObject);
+    procedure vTopNamePropertiesEditValueChanged(Sender: TObject);
+    procedure vBotNamePropertiesEditValueChanged(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -1439,6 +1441,19 @@ begin
     vBot.DataController.GotoNext;
 end;
 
+procedure TEvaluateDecksForm.vBotNamePropertiesEditValueChanged(
+  Sender: TObject);
+begin
+  if (Sender as TcxComboBox).ItemIndex < 0 then
+    LastCardIndexBot := -1
+  else
+    if (Sender as TcxComboBox).ItemIndex <> LastCardIndexBot then
+    begin
+      vBot.DataController.SetValue(vBot.DataController.FocusedRecordIndex, vBotName.Index, (Sender as TcxComboBox).Text);
+      vBotDataControllerRecordChanged(vBot.DataController,vBot.DataController.FocusedRecordIndex,vBotName.Index);
+    end;
+end;
+
 procedure TEvaluateDecksForm.vBotNamePropertiesValidate(Sender: TObject;
   var DisplayValue: Variant; var ErrorText: TCaption; var Error: Boolean);
 var
@@ -1613,6 +1628,19 @@ procedure TEvaluateDecksForm.vTopNamePropertiesCloseUp(Sender: TObject);
 begin
   if (not VarIsNull(vTopName.EditValue)) and (not vTopName.IsLast) then
     vTop.DataController.GotoNext;
+end;
+
+procedure TEvaluateDecksForm.vTopNamePropertiesEditValueChanged(
+  Sender: TObject);
+begin
+  if (Sender as TcxComboBox).ItemIndex < 0 then
+    LastCardIndex := -1
+  else
+    if (Sender as TcxComboBox).ItemIndex <> LastCardIndex then
+    begin
+      vTop.DataController.SetValue(vTop.DataController.FocusedRecordIndex, vTopName.Index, (Sender as TcxComboBox).Text);
+      vTopDataControllerRecordChanged(vTop.DataController,vTop.DataController.FocusedRecordIndex,vTopName.Index);
+    end;
 end;
 
 procedure TEvaluateDecksForm.vTopNamePropertiesValidate(Sender: TObject;
