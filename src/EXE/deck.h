@@ -65,20 +65,21 @@ char FACTIONS[6][CARD_NAME_MAX_LENGTH] = {0,"Imperial","Raider","Bloodthirsty","
 #define ACTIVATION_CHAOS		11
 #define ACTIVATION_CLEANSE		12
 #define ACTIVATION_ENFEEBLE		13
-#define ACTIVATION_HEAL			14
-#define ACTIVATION_INFUSE		15	// this currently works only for Commander	
-#define ACTIVATION_JAM			16
-#define ACTIVATION_MIMIC		17
-#define ACTIVATION_PROTECT		18
-#define ACTIVATION_RALLY		19
-#define ACTIVATION_RECHARGE		20
-#define ACTIVATION_REPAIR		21
-#define ACTIVATION_SHOCK		22
-#define ACTIVATION_SIEGE		23
-#define ACTIVATION_SPLIT		24
-#define ACTIVATION_STRIKE		25
-#define ACTIVATION_SUPPLY		26
-#define ACTIVATION_WEAKEN		27
+#define ACTIVATION_FREEZE		14
+#define ACTIVATION_HEAL			15
+#define ACTIVATION_INFUSE		16	// this currently works only for Commander	
+#define ACTIVATION_JAM			17
+#define ACTIVATION_MIMIC		18
+#define ACTIVATION_PROTECT		19
+#define ACTIVATION_RALLY		20
+#define ACTIVATION_RECHARGE		21
+#define ACTIVATION_REPAIR		22
+#define ACTIVATION_SHOCK		23
+#define ACTIVATION_SIEGE		24
+#define ACTIVATION_SPLIT		25
+#define ACTIVATION_STRIKE		26
+#define ACTIVATION_SUPPLY		27
+#define ACTIVATION_WEAKEN		28
 
 #define DEFENSIVE_ARMORED		31
 #define DEFENSIVE_COUNTER		32
@@ -111,6 +112,7 @@ char FACTIONS[6][CARD_NAME_MAX_LENGTH] = {0,"Imperial","Raider","Bloodthirsty","
 #define SPECIAL_FUSION			62	// in this sim only works for ACTIVATION skills of STRUCTURES
 #define SPECIAL_AUGMENT			63
 #define SPECIAL_MIST			64 // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
+#define SPECIAL_BLIZZARD		65 // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
 
 #define UNDEFINED_NAME			"UNDEFINED"
 
@@ -374,6 +376,8 @@ public:
 					printf("%s - %X [%d]",OriginalCard->GetName(),this,Health);
 			if (Effects[ACTIVATION_JAM])
 				printf(" Jammed");
+			if (Effects[ACTIVATION_FREEZE])
+				printf(" Frozen");
 			if (Effects[DMGDEPENDANT_IMMOBILIZE])
 				printf(" Immobilized");
 			if (Effects[DMGDEPENDANT_DISEASE])
@@ -384,7 +388,7 @@ public:
 	}
 	const bool BeginTurn()
 	{
-		return (Health && (!Effects[ACTIVATION_JAM]) && (!Wait));
+		return (Health && (!Effects[ACTIVATION_JAM]) && (!Effects[ACTIVATION_FREEZE]) && (!Wait));
 	}
 	void ProcessPoison()
 	{
@@ -425,6 +429,7 @@ Weaken: Removed after owner ends his turn.
 Valor: Removed after owner ends his turn.
 */
 		Effects[ACTIVATION_JAM] = 0;
+		Effects[ACTIVATION_FREEZE] = 0; // is it removed at the end of turn?
 		Effects[DMGDEPENDANT_IMMOBILIZE] = 0;
 		Effects[ACTIVATION_CHAOS] = 0;
 		// really?
@@ -436,6 +441,7 @@ Valor: Removed after owner ends his turn.
 		Effects[DMGDEPENDANT_POISON] = 0;
 		Effects[DMGDEPENDANT_DISEASE] = 0;
 		Effects[ACTIVATION_JAM] = 0;
+		Effects[ACTIVATION_FREEZE] = 0;
 		Effects[DMGDEPENDANT_IMMOBILIZE] = 0;
 		Effects[ACTIVATION_ENFEEBLE] = 0;
 		Effects[ACTIVATION_CHAOS] = 0;
@@ -446,6 +452,7 @@ Valor: Removed after owner ends his turn.
 		return (Effects[DMGDEPENDANT_POISON] || 
 				Effects[DMGDEPENDANT_DISEASE] || 
 				Effects[ACTIVATION_JAM] ||
+				Effects[ACTIVATION_FREEZE] ||
 				Effects[DMGDEPENDANT_IMMOBILIZE] || 
 				Effects[ACTIVATION_ENFEEBLE] ||
 				Effects[ACTIVATION_CHAOS]);
@@ -453,8 +460,8 @@ Valor: Removed after owner ends his turn.
 	void EndTurn()
 	{
 		Played(); // for rally
-		if (Wait > 0)
-			Wait--;
+		if ((Wait > 0) && (!Effects[ACTIVATION_FREEZE]))
+			DecWait();
 	}
 	const UCHAR GetAbilitiesCount() const { return OriginalCard->GetAbilitiesCount(); }
 	const UCHAR GetAbilityInOrder(const UCHAR order) const { return OriginalCard->GetAbilityInOrder(order); }
@@ -1184,6 +1191,8 @@ public:
 		{
 			if (Src.GetEffect(ACTIVATION_JAM) > 0)
 				break; // card was jammed by payback (or chaos?)
+			if (Src.GetEffect(ACTIVATION_FREEZE) > 0)
+				break; // chaos-mimic-freeze makes this possible
 
 			UCHAR chaos = Src.GetEffect(ACTIVATION_CHAOS); // I need to check this every time card uses skill because it could be paybacked chaos - such as Pulsifier with payback, chaos and mimic
 
@@ -1559,6 +1568,66 @@ public:
 					targets.clear();
 				}
 			}
+			// freeze
+			if (aid == ACTIVATION_FREEZE)
+			{
+				effect = Src.GetAbility(aid);
+				if (effect > 0)
+				{
+					if (IsMimiced)
+						faction = FACTION_NONE;
+					else
+						faction = Src.GetTargetFaction(aid);
+					if (chaos > 0)
+						GetTargets(Units,faction,targets);
+					else
+						GetTargets(Dest.Units,faction,targets);
+					if (targets.size())
+					{
+						PVCARDS::iterator vi = targets.begin();
+						while (vi != targets.end())
+						{
+							if (((*vi)->GetEffect(aid)))
+								vi = targets.erase(vi);
+							else vi++;
+						}
+						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+						{
+							destindex = rand() % targets.size();
+							tmp = targets[destindex];
+							targets.clear();
+							targets.push_back(tmp);
+						}
+						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
+							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
+							{
+								// evaded
+								// no fancy stats here?!
+							}
+							else
+							{
+								(*vi)->SetEffect(aid,effect);
+								if (!IsMimiced)
+									Src.fsSpecial += effect;
+								else
+									Mimicer->fsSpecial += effect;
+								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos)) 
+								{
+									Src.SetEffect(aid,effect);
+									(*vi)->fsSpecial += effect;
+								}
+								if (bConsoleOutput)
+								{
+									Src.PrintDesc();
+									printf(" freeze ");
+									(*vi)->PrintDesc();
+									printf("\n");
+								}
+							}
+					}
+					targets.clear();
+				}
+			}
 			// mimic - could be tricky
 			if (aid == ACTIVATION_MIMIC)
 			{
@@ -1626,6 +1695,7 @@ public:
 							if (((*vi)->GetWait()) ||
 								 (*vi)->GetPlayed() ||
 								((*vi)->GetEffect(ACTIVATION_JAM)) || // Jammed
+								((*vi)->GetEffect(ACTIVATION_FREEZE)) || // Frozen
 								((*vi)->GetEffect(DMGDEPENDANT_IMMOBILIZE))   // Immobilized
 								)
 								vi = targets.erase(vi);
@@ -1865,6 +1935,7 @@ public:
 							if (((*vi)->GetWait() == 0) && 
 								((*vi)->GetAttack() >= 1) && // at least 1 Attack OR it is WEAKEN ALL, that can lower ur attack down to -100500
 								(!(*vi)->GetEffect(ACTIVATION_JAM)) && // neither Jammed
+								(!(*vi)->GetEffect(ACTIVATION_FREEZE)) && // neither Frozen
 								(!(*vi)->GetEffect(DMGDEPENDANT_IMMOBILIZE)) &&   // nor Immobilized
 								((!(*vi)->GetPlayed()) || (!chaos)) // if it is chaosed - only target cards that didn't play yet
 								)
@@ -1922,6 +1993,7 @@ public:
 						{
 							if (((*vi)->GetWait() == 0) && 
 								(!(*vi)->GetEffect(ACTIVATION_JAM)) && // not Jammed
+								(!(*vi)->GetEffect(ACTIVATION_FREEZE)) && // not Frozen
 								(!(*vi)->GetEffect(ACTIVATION_CHAOS))    // not Chaosed
 								)
 								vi++; // skip
@@ -2162,7 +2234,7 @@ public:
 			{
 				//if (!Units[i].GetEffect(ACTIVATION_JAM)) // jammed - checked in beginturn
 				ApplyEffects(Units[i],i,Def);
-				if ((!Units[i].GetEffect(DMGDEPENDANT_IMMOBILIZE)) && (!Units[i].GetEffect(ACTIVATION_JAM))) // tis funny but I need to check Jam for second time in case it was just paybacked
+				if ((!Units[i].GetEffect(DMGDEPENDANT_IMMOBILIZE)) && (!Units[i].GetEffect(ACTIVATION_JAM)) && (!Units[i].GetEffect(ACTIVATION_FREEZE))) // tis funny but I need to check Jam for second time in case it was just paybacked
 				{
 					if (Units[i].IsAlive() && Units[i].GetAttack()) // can't attack with dead unit ;) also if attack = 0 then dont attack at all
 						Attack(i,Def);

@@ -624,6 +624,7 @@ public:
 		AddSkill(ACTIVATION_ENFEEBLE,"Enfeeble");
 		AddSkill(ACTIVATION_HEAL,"Heal");
 		AddSkill(ACTIVATION_INFUSE,"Infuse");
+		AddSkill(ACTIVATION_FREEZE,"Freeze");
 		AddSkill(ACTIVATION_JAM,"Jam");
 		AddSkill(ACTIVATION_MIMIC,"Mimic");
 		AddSkill(ACTIVATION_PROTECT,"Protect");
@@ -668,6 +669,7 @@ public:
 		AddSkill(SPECIAL_FUSION,"Fusion");
 		AddSkill(SPECIAL_AUGMENT,"Augment");
 		AddSkill(SPECIAL_MIST,"Mist");
+		AddSkill(SPECIAL_BLIZZARD,"Blizzard");
 	}
 	void AddSkill(UCHAR Id, const char *Name)
 	{

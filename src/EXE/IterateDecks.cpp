@@ -752,7 +752,7 @@ int _tmain(int argc, char* argv[])
 	bConsoleOutput = false;
 	DB.LoadCardXML("cards.xml");
 	DB.LoadMissionXML("missions.xml");
-	DB.SaveMissionDecks("c:\\pun.txt");
+	//DB.SaveMissionDecks("c:\\pun.txt");
 
 	ActiveDeck z("PoAv",DB.GetPointer());
 	ActiveDeck x("PoFZ",DB.GetPointer());
