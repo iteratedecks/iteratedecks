@@ -20,17 +20,6 @@
 		<energy>10</energy>
 		<health>400</health>
 		<commander>1048</commander>
-		<!--
-		<deck>
-			<card>507</card>
-			<card>20</card>
-			<card>124</card>
-			<card>505</card>
-			<card>16</card>
-			<card>503</card>
-			<card>83</card>
-			<card>2015</card>
-		</deck> -->
 		<deck>
 			<always_include>
 				<card>20</card>
@@ -59,6 +48,7 @@
 				<card>16</card>
 			</card_pool>
 		</deck>
+		<item>1</item>
 		<honor_reward>
 			<req>0</req>
 			<honor>0</honor>
@@ -1846,6 +1836,200 @@
 			<honor_cost>1000</honor_cost>
 			<gold_cost>15000</gold_cost>
 			<card>395</card>
+		</reward>
+	</raid>
+	<raid>
+		<id>12</id>
+		<name>Jotun, Sacred Guardian</name>
+		<location_id>24</location_id>
+		<num_players>40</num_players>
+		<mission_req>212</mission_req>
+		<x>400</x>
+		<y>100</y>
+		<time>24</time>
+		<thumb>santacolossus150.jpg</thumb>
+		<layers>
+			<layer start='-60' end='0'>santacolossusfor.png</layer>
+			<layer start='-30' end='20'>santacolossusmid.png</layer>
+			<layer start='-10' end='10'>santacolossusback.jpg</layer>
+		</layers>
+		<energy>10</energy>
+		<health>25000</health> <!-- Not Sure Yet -->
+		<commander>1142</commander>
+		<deck>
+			<always_include>
+				<card>3044</card>
+				<card>199</card>
+				<card>167</card>
+				<card>120</card>
+				<card>544</card>
+			</always_include>
+			<card_pool amount="2"> <!-- 0-1 Drops -->
+				<card>288</card>
+				<card>333</card>
+				<card>376</card>
+				<card>376</card>
+				<card>433</card>
+				<card>433</card>
+				<card>491</card>
+			</card_pool>
+			<card_pool amount="2"> <!-- 2 Drops -->
+				<card>214</card>
+				<card>214</card>
+				<card>214</card>
+				<card>349</card>
+				<card>351</card>
+				<card>365</card>
+				<card>437</card>
+				<card>437</card>
+				<card>488</card>
+				<card>489</card>
+				<card>497</card>
+				<card>497</card>
+				<card>526</card>
+				<card>526</card>
+			</card_pool>
+			<card_pool amount="2"> <!-- 3 Drops -->
+				<card>329</card>
+				<card>330</card>
+				<card>330</card>
+				<card>335</card>
+				<card>352</card>
+				<card>352</card>
+				<card>438</card>
+				<card>494</card>
+				<card>494</card>
+				<card>494</card>
+				<card>532</card>
+				<card>532</card>
+			</card_pool>
+			<card_pool amount="2"> <!-- 4 Drops -->
+				<card>530</card>
+				<card>530</card>
+				<card>469</card>
+				<card>469</card>
+				<card>494</card>
+				<card>494</card>
+				<card>55</card>
+				<card>250</card>
+			</card_pool>
+			<card_pool amount="2"> <!-- Support Drops -->
+				<card>2090</card>
+				<card>2079</card>
+				<card>2079</card>
+				<card>2062</card>
+				<card>2061</card>
+				<card>2036</card>
+				<card>3044</card>
+				<card>3041</card>
+				<card>3031</card>
+				<card>3030</card>
+				<card>3021</card>
+				<card>3018</card>
+				<card>3002</card>
+			</card_pool>
+		</deck>
+		<honor_reward>
+			<req>0</req>
+			<honor>0</honor>
+		</honor_reward>
+		<honor_reward>
+			<req>25</req>
+			<honor>4</honor> <!-- 2 -->
+		</honor_reward>
+		<honor_reward>
+			<req>50</req>
+			<honor>10</honor> <!-- 5 -->
+		</honor_reward>
+		<honor_reward>
+			<req>75</req>
+			<honor>16</honor> <!-- 8 -->
+		</honor_reward>
+		<honor_reward>
+			<req>100</req>
+			<honor>20</honor> <!-- 10 -->
+		</honor_reward>
+		<honor_reward>
+			<req>150</req>
+			<honor>30</honor> <!-- 15 -->
+		</honor_reward>
+		<honor_reward>
+			<req>200</req>
+			<honor>40</honor> <!-- 20 -->
+		</honor_reward>
+		<honor_reward>
+			<req>250</req>
+			<honor>50</honor> <!-- 25 -->
+		</honor_reward>
+		<honor_reward>
+			<req>300</req>
+			<honor>60</honor> <!-- 30 -->
+		</honor_reward>
+		<honor_reward>
+			<req>400</req>
+			<honor>80</honor> <!-- 40 -->
+		</honor_reward>
+		<honor_reward>
+			<req>500</req>
+			<honor>110</honor> <!-- 55 -->
+		</honor_reward>
+		<honor_reward>
+			<req>600</req>
+			<honor>130</honor> <!-- 60 -->
+		</honor_reward>
+		<honor_reward>
+			<req>700</req>
+			<honor>150</honor> <!-- 75 -->
+		</honor_reward>
+		<honor_reward>
+			<req>800</req>
+			<honor>170</honor> <!-- 85 -->
+		</honor_reward>
+		<honor_reward>
+			<req>900</req>
+			<honor>190</honor> <!-- 95 -->
+		</honor_reward>
+		<honor_reward>
+			<req>1000</req>
+			<honor>220</honor> <!-- 110 -->
+		</honor_reward>
+		<honor_reward> <!-- Limited -->
+			<req>1100</req>
+			<honor>240</honor> <!-- 120 -->
+		</honor_reward>
+		<honor_reward>
+			<req>1200</req>
+			<honor>260</honor> <!-- 130 -->
+		</honor_reward>
+		<honor_reward>
+			<req>1300</req>
+			<honor>280</honor> <!-- 140 -->
+		</honor_reward>
+		<honor_reward>
+			<req>1400</req>
+			<honor>300</honor> <!-- 150 -->
+		</honor_reward>
+		<honor_reward> <!-- END Limited -->
+			<req>1500</req>
+			<honor>350</honor> <!-- 160 -->
+		</honor_reward>
+		<reward>
+			<id>1</id>
+			<honor_cost>100</honor_cost>
+			<gold_cost>15000</gold_cost>
+			<card>542</card>
+		</reward>
+		<reward>
+			<id>2</id>
+			<honor_cost>500</honor_cost>
+			<gold_cost>20000</gold_cost>
+			<card>543</card>
+		</reward>
+		<reward>
+			<id>3</id>
+			<honor_cost>1000</honor_cost>
+			<gold_cost>100000</gold_cost>
+			<card>535</card> <!-- Limited Time -->
 		</reward>
 	</raid>
 </root>

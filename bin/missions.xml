@@ -6625,7 +6625,7 @@
 		<speech>
 			<line commander='1042'>I knew Halcyon couldn't be trusted! I could kill him myself!</line>
 			<line commander='1042'>Sorry, we will deal with Halcyon later, for now let''s see if there is actually anything we can do to stop this Nexus.</line>
-			<line commander='1131'>You will perish if you even get close. If the Nexus senses it is disrupted at all it send out a massive shockwave that will devastate everything in the blast, but the Nexus will remain unscathed.</line>
+			<line commander='1131'>You will perish if you even get close. If the Nexus senses it is disrupted at all it will send out a massive shockwave that will devastate everything in the blast, but the Nexus will remain unscathed.</line>
 			<line commander='1042'>If you knew this then why did you agree to help the Imperials?</line>
 			<line commander='1131'>We have not given them any assistance. Our only intention was to seek vengeance for delaying the Sentinels and possibly destroying this world as we know it.</line>
 		</speech>
@@ -7560,6 +7560,313 @@
 	</mission>
 
 <!-- END Homeworld Side Missions -->
+
+<!-- Some New Missions -->
+
+	<mission>
+		<id>209</id>
+		<name>Winter Solstice 1</name>
+		<picture>mission209.jpg</picture>
+		<location_id>24</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>60</x>
+		<y>120</y> 
+		<xp>72</xp>
+		<energy>15</energy> <!--15 for promo, 25 after-->
+		<money>1500</money>
+		<commander>1143</commander>
+		<desc>Bloodthirsty are the least organized but are still drawn to the power.</desc>
+		<speech>
+			<line commander='1042'>Rumors are circulating about an ancient power that lies dormant within this island.  Commander if we can control this power we will be able to put an end to this madness.</line>
+			<line commander='1042'>But it will be a difficult journey. Every faction has their focus drawn to this island and the power that is sealed away.</line>
+		</speech>
+		<deck>
+			<card>308</card>
+			<card>508</card>
+			<card>527</card>
+			<card>524</card>
+			<card>496</card>
+			<card>111</card>
+			<card>323</card>
+			<card>320</card>
+			<card>409</card>
+			<card>407</card>
+			<card>419</card>
+			<card>431</card>
+			<card>248</card>
+			<card>2032</card>
+			<card>3041</card>
+		</deck>
+		<req>129</req>
+	</mission>
+
+	<mission>
+		<id>210</id>
+		<name>Winter Solstice 2</name>
+		<picture>mission210.jpg</picture>
+		<location_id>24</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>160</x>
+		<y>160</y> 
+		<xp>72</xp>
+		<energy>15</energy> <!--15 for promo, 25 after-->
+		<money>1500</money>
+		<commander>1144</commander>
+		<desc>The Xeno have shifted their entire focus to this island.</desc>
+		<speech>
+			<line commander='1042'>What we seek is an ancient being with connections to the Righteous. It’s power is supposed to rival that of the Sentinels and the Blight.</line>
+		</speech>
+		<deck>
+			<card>126</card>
+			<card>178</card>
+			<card>173</card>
+			<card>261</card>
+			<card>310</card>
+			<card>418</card>
+			<card>316</card>
+			<card>485</card>
+			<card>525</card>
+			<card>528</card>
+			<card>531</card>
+			<card>156</card>
+			<card>3038</card>
+			<card>2028</card>
+			<card>2071</card>
+		</deck>
+		<req>209</req>
+	</mission>
+
+	<mission>
+		<id>211</id>
+		<name>Winter Solstice 3</name>
+		<picture>mission211.jpg</picture>
+		<location_id>24</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>220</x>
+		<y>130</y> 
+		<xp>72</xp>
+		<energy>15</energy> <!--15 for promo, 25 after-->
+		<money>1500</money>
+		<commander>1145</commander>
+		<desc>Raiders have been searching this area a long time and they are well equipped to defend it.</desc>
+		<speech>
+			<line commander='1042'>The ground is beginning to tremble. Can you feel the power surround you? We must be close.</line>
+		</speech>
+		<deck>
+			<card>125</card>
+			<card>130</card>
+			<card>245</card>
+			<card>257</card>
+			<card>314</card>
+			<card>373</card>
+			<card>394</card>
+			<card>449</card>
+			<card>529</card>
+			<card>495</card>
+			<card>523</card>
+			<card>428</card>
+			<card>290</card>
+			<card>2081</card>
+			<card>2058</card>
+		</deck>
+		<req>210</req>
+	</mission>
+
+	<mission>
+		<id>212</id>
+		<name>Winter Solstice 4</name>
+		<picture>mission212.jpg</picture>
+		<location_id>24</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>300</x>
+		<y>90</y> 
+		<xp>72</xp>
+		<energy>15</energy> <!--15 for promo, 25 after-->
+		<money>1500</money>
+		<commander>1146</commander>
+		<desc>Imperials were able to track the location of the power and it is within their grasp.</desc>
+		<speech>
+			<line commander='1042'>We must be the first to command the Ancient Power. If anyone else is able to abuse it, the results will be catastrophic.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1042'>Jotun, The Sacred Guardian has awakened!</line>
+		</speechComplete>
+		<deck>
+			<card>520</card>
+			<card>423</card>
+			<card>498</card>
+			<card>473</card>
+			<card>304</card>
+			<card>344</card>
+			<card>259</card>
+			<card>307</card>
+			<card>39</card>
+			<card>186</card>
+			<card>282</card>
+			<card>436</card>
+			<card>192</card>
+			<card>2082</card>
+			<card>2086</card>
+		</deck>
+		<req>211</req>
+		<rewards>
+			<card>1141</card>
+		</rewards>
+	</mission>
+
+	<mission>
+		<id>213</id>
+		<name>Winter Solstice 5</name>
+		<picture>mission213.jpg</picture>
+		<location_id>24</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>440</x>
+		<y>150</y> 
+		<xp>75</xp>
+		<energy>15</energy> <!--15 for promo, 25 after-->
+		<money>1600</money>
+		<commander>1146</commander>
+		<desc>Imperials will try to destroy you quickly and let your remains become trampled by the Jotun.</desc>
+		<speech>
+			<line commander='1042'>The Righteous may have activated Jotun, but it is proving too powerful for them to control. We can slip away disguised by the mayhem.</line>
+			<line commander='1042'>We must flee from the island. We will regroup elsewhere and formulate a plan to bring this monstrosity down.</line>
+		</speech>
+		<deck>
+			<card>522</card>
+			<card>86</card>
+			<card>63</card>
+			<card>140</card>
+			<card>103</card>
+			<card>259</card>
+			<card>311</card>
+			<card>318</card>
+			<card>468</card>
+			<card>535</card>
+			<card>430</card>
+			<card>411</card>
+			<card>95</card>
+			<card>3021</card>
+			<card>2057</card>
+		</deck>
+		<req>212</req>
+	</mission>
+
+	<mission>
+		<id>214</id>
+		<name>Winter Solstice 6</name>
+		<picture>mission214.jpg</picture>
+		<location_id>24</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>370</x>
+		<y>220</y> 
+		<xp>75</xp>
+		<energy>15</energy> <!--15 for promo, 25 after-->
+		<money>1600</money>
+		<commander>1145</commander>
+		<desc>The Raiders tried to build their forces to withstand the Jotun.</desc>
+		<speech>
+			<line commander='1042'>The Jotun is releasing all of its power. This island can’t take it; it is falling apart and sinking like a ship.</line>
+		</speech>
+		<deck>
+			<card>245</card>
+			<card>478</card>
+			<card>533</card>
+			<card>301</card>
+			<card>442</card>
+			<card>339</card>
+			<card>215</card>
+			<card>183</card>
+			<card>73</card>
+			<card>121</card>
+			<card>460</card>
+			<card>516</card>
+			<card>3004</card>
+			<card>2023</card>
+			<card>2065</card>
+		</deck>
+		<req>213</req>
+	</mission>
+
+	<mission>
+		<id>215</id>
+		<name>Winter Solstice 7</name>
+		<picture>mission215.jpg</picture>
+		<location_id>24</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>270</x>
+		<y>210</y> 
+		<xp>75</xp>
+		<energy>15</energy> <!--15 for promo, 25 after-->
+		<money>1600</money>
+		<commander>1144</commander>
+		<desc>Elite Xeno have flown in to assist their forces.</desc>
+		<speech>
+			<line commander='1042'>Here is the plan. Once we evacuate the island we unload everything we have on the Jotun.</line> 
+			<line commander='1042'>It may not be harmed, but it should cause the rest of the island to collapse into the Ocean taking the Jotun with it. Sealing it once again.</line>
+		</speech>
+		<deck>
+			<card>537</card>
+			<card>490</card>
+			<card>353</card>
+			<card>510</card>
+			<card>240</card>
+			<card>159</card>
+			<card>397</card>
+			<card>514</card>
+			<card>441</card>
+			<card>418</card>
+			<card>30</card>
+			<card>452</card>
+			<card>206</card>
+			<card>2085</card>
+			<card>3007</card>
+		</deck>
+		<req>214</req>
+	</mission>
+
+	<mission>
+		<id>216</id>
+		<name>Winter Solstice 8</name>
+		<picture>mission216.jpg</picture>
+		<location_id>24</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>200</x>
+		<y>280</y> 
+		<xp>75</xp>
+		<energy>15</energy> <!--15 for promo, 25 after-->
+		<money>1600</money>
+		<commander>1143</commander>
+		<desc>Most of the Bloodthirsty have been destroyed but powerful foes remain.</desc>
+		<speech>
+			<line commander='1042'>You have come this far Commander, you cannot give up. Search inside for the power you have had all along.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1042'>Congratulations Commander. You escaped the Jotun and grasped a power only obtained by confronting a force such as that one.</line>
+		</speechComplete>
+		<deck>
+			<card>534</card>
+			<card>527</card>
+			<card>500</card>
+			<card>484</card>
+			<card>512</card>
+			<card>515</card>
+			<card>540</card>
+			<card>431</card>
+			<card>346</card>
+			<card>315</card>
+			<card>255</card>
+			<card>225</card>
+			<card>231</card>
+			<card>2052</card>
+			<card>2049</card>
+		</deck>
+		<req>215</req>
+		<rewards>
+			<card>534</card>
+		</rewards>
+	</mission>
+
+<!-- END Some New Missions -->
 	
 	<!-- END MISSIONS -->
 	
@@ -7796,6 +8103,15 @@
 		<extraEffect req='189'>wastelandblight3.swf</extraEffect>
 		<nav>Nav23</nav>
 		<req>189</req>
+	</location>
+	
+	<location>
+		<id>24</id>
+		<name>Arctis Prime</name>
+		<picture>NorthPoleMap</picture>
+		<effect x='292' y='220'>northpolemapFX.swf</effect>
+		<nav>Nav24</nav>
+		<req>129</req>
 	</location>
 	
 	<faction>
