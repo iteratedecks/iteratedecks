@@ -17,7 +17,7 @@ uses
   cxSplitter, Extended;
 
 const
-  MAX_CARD_COUNT = 800;
+  MAX_CARD_COUNT = 850;
   MAX_DECK_SIZE = 20;
   MAX_SETS_COUNT = 20;
   DEFAULT_DECK_SIZE = 10;
@@ -364,6 +364,7 @@ type
     bRefreshDefence: TcxButton;
     cbTourney: TcxCheckBox;
     cbBTourney: TcxCheckBox;
+    bBatchRunEval: TcxButton;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -510,6 +511,7 @@ type
     procedure vBotNamePropertiesCloseUp(Sender: TObject);
     procedure vTopNamePropertiesEditValueChanged(Sender: TObject);
     procedure vBotNamePropertiesEditValueChanged(Sender: TObject);
+    procedure bBatchRunEvalClick(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -541,6 +543,8 @@ type
     vDefDeckName: string;
     mAtkDeckName: string;
     vAtkDeckName: string;
+    //
+    bStopBatchRunEval: boolean;
     //
     EvaluateParams: ^TEvalParams;
   public
@@ -1785,6 +1789,32 @@ begin
     FreeMem(p1);
     Free;
   end;
+end;
+
+procedure TEvaluateDecksForm.bBatchRunEvalClick(Sender: TObject);
+var i: integer;
+begin
+  if bBatchRunEval.Caption = 'Stop' then
+  begin
+    bStopBatchRunEval := true;
+    exit;
+  end;
+  
+  bStopBatchRunEval := false;
+  bBatchRunEval.Caption := 'Stop';
+  for I := 0 to cbmCustom.Properties.Items.Count - 1 do
+  begin
+    if bStopBatchRunEval then
+      break;
+    cbmCustom.ItemIndex := i;
+    bmCustomAttack.Click;
+    repeat
+     sleep(100);
+     application.processmessages;
+    until EvaluateDecksForm.bRun.Caption <> 'Stop';
+    bRun.Click;
+  end;
+  bBatchRunEval.Caption := 'Run this test with all custom decks';
 end;
 
 procedure TEvaluateDecksForm.bBEvalExportClick(Sender: TObject);

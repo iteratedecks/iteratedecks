@@ -2635,7 +2635,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             end
             object bEvalExport: TcxButton
               Left = 3
-              Top = 30
+              Top = 43
               Width = 107
               Height = 21
               Caption = 'Export to Excel'
@@ -2644,7 +2644,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             end
             object bClear: TcxButton
               Left = 116
-              Top = 30
+              Top = 43
               Width = 89
               Height = 21
               Caption = 'Clear history'
@@ -2736,6 +2736,15 @@ object EvaluateDecksForm: TEvaluateDecksForm
               Caption = 'Tourney'
               TabOrder = 10
               Width = 65
+            end
+            object bBatchRunEval: TcxButton
+              Left = 3
+              Top = 26
+              Width = 202
+              Height = 15
+              Caption = 'Run this test with all custom decks'
+              TabOrder = 11
+              OnClick = bBatchRunEvalClick
             end
           end
           object pEvalBot: TPanel
