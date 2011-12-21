@@ -512,6 +512,7 @@ type
     procedure vTopNamePropertiesEditValueChanged(Sender: TObject);
     procedure vBotNamePropertiesEditValueChanged(Sender: TObject);
     procedure bBatchRunEvalClick(Sender: TObject);
+    procedure ResetBatchRunEval;
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -1791,6 +1792,12 @@ begin
   end;
 end;
 
+procedure TEvaluateDecksForm.ResetBatchRunEval;
+begin
+  bBatchRunEval.Caption := 'Run this test with all custom decks';
+  bStopBatchRunEval := true;
+end;
+
 procedure TEvaluateDecksForm.bBatchRunEvalClick(Sender: TObject);
 var i: integer;
 begin
@@ -1814,7 +1821,7 @@ begin
     until EvaluateDecksForm.bRun.Caption <> 'Stop';
     bRun.Click;
   end;
-  bBatchRunEval.Caption := 'Run this test with all custom decks';
+  ResetBatchRunEval;
 end;
 
 procedure TEvaluateDecksForm.bBEvalExportClick(Sender: TObject);
@@ -3140,6 +3147,7 @@ begin
               Values[lrec, vcsAvgSpecial.Index] := r.ResultByCard[z].FSSpecial / r.ResultByCard[z].FSRecordCount;
             end;
           except
+            ResetBatchRunEval;
             ShowMessage(sIterateDecksCrashed);
             Abort;
           end;
@@ -3164,6 +3172,7 @@ begin
       Values[rec, vcAvgSA.Index] := r.Result.LAutoPoints / i;
       Values[rec, vcNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / i;
     except
+      ResetBatchRunEval;
       ShowMessage(sIterateDecksCrashed);
       Abort;
     end;
