@@ -853,9 +853,9 @@ public:
 	}
 	bool InsertDeck(int Tag, const char *List, char *output_id_buffer = 0)
 	{
-		MDECKS::iterator mi;
 		VSTRINGS cardlist;
 		MDECKS *Into = &DIndex;
+		MDECKS::iterator mi = Into->end();
 		char buffer[4*CARD_NAME_MAX_LENGTH]; // somehow it's corrupted often, overflows :(
 		size_t len = strlen(List);
 		size_t p = 0,brs = 0,cnt = 0;
@@ -1002,7 +1002,7 @@ public:
 								mi->second.push_back(trim(buffer));
 							else
 							{
-								const Card * c = CARD(trim(buffer));
+								const Card * c = &GetCardSmart(trim(buffer));
 								if (c)
 								{
 									char itoabuffer[10];
