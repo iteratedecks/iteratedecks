@@ -352,6 +352,7 @@ private:
 	UCHAR Faction; // this is for Infuse
 	UCHAR Effects[CARD_ABILITIES_MAX];
 	bool bPlayed;
+	bool bActivated;
 public:
 	// fancy stats
 	UINT fsDmgDealt; // attack, counter, strike, poison is not here(hard to track the source of poison)
@@ -388,7 +389,10 @@ public:
 	}
 	const bool BeginTurn()
 	{
-		return (Health && (!Effects[ACTIVATION_JAM]) && (!Effects[ACTIVATION_FREEZE]) && (!Wait));
+		const bool bDoBegin = (Health && (!Effects[ACTIVATION_JAM]) && (!Effects[ACTIVATION_FREEZE]) && (!Wait));
+		if (bDoBegin && (!bActivated))
+			bActivated = true;
+		return bDoBegin;
 	}
 	void ProcessPoison()
 	{
@@ -441,7 +445,7 @@ Valor: Removed after owner ends his turn.
 		Effects[DMGDEPENDANT_POISON] = 0;
 		Effects[DMGDEPENDANT_DISEASE] = 0;
 		Effects[ACTIVATION_JAM] = 0;		
-		if (!Wait)  // this is bullshit!
+		if (bActivated)  // this is bullshit!
 			Effects[ACTIVATION_FREEZE] = 0;
 		Effects[DMGDEPENDANT_IMMOBILIZE] = 0;
 		Effects[ACTIVATION_ENFEEBLE] = 0;
@@ -453,7 +457,7 @@ Valor: Removed after owner ends his turn.
 		return (Effects[DMGDEPENDANT_POISON] || 
 				Effects[DMGDEPENDANT_DISEASE] || 
 				Effects[ACTIVATION_JAM] ||
-				Effects[ACTIVATION_FREEZE] ||
+				(Effects[ACTIVATION_FREEZE] && bActivated) ||
 				Effects[DMGDEPENDANT_IMMOBILIZE] || 
 				Effects[ACTIVATION_ENFEEBLE] ||
 				Effects[ACTIVATION_CHAOS]);
@@ -585,6 +589,8 @@ Valor: Removed after owner ends his turn.
 			return false;
 		if (bPlayed != C.bPlayed)
 			return false;
+		if (bActivated != C.bActivated)
+			return false;		
 		if (Faction != C.Faction)
 			return false;
 		return (!memcmp(Effects,C.Effects,CARD_ABILITIES_MAX * sizeof(UCHAR)));
@@ -600,6 +606,8 @@ Valor: Removed after owner ends his turn.
 		if (Health != C.Health)
 			return true;
 		if (bPlayed != C.bPlayed)
+			return true;
+		if (bActivated != C.bActivated)
 			return true;
 		if (Faction != C.Faction)
 			return true;
@@ -617,6 +625,8 @@ Valor: Removed after owner ends his turn.
 			return (Health < C.Health);
 		if (bPlayed != C.bPlayed)
 			return (bPlayed < C.bPlayed);
+		if (bActivated != C.bActivated)
+			return (bActivated < C.bActivated);		
 		if (Faction != C.Faction)
 			return (Faction < C.Faction);
 		int mr = memcmp(Effects,C.Effects,CARD_ABILITIES_MAX * sizeof(UCHAR)) < 0;
@@ -631,6 +641,7 @@ Valor: Removed after owner ends his turn.
 		Wait = card->GetWait();
 		Faction = card->GetFaction();
 		bPlayed = false;
+		bActivated = false;
 		memset(Effects,0,CARD_ABILITIES_MAX);
 		fsDmgDealt = 0;
 		fsDmgMitigated = 0;
@@ -648,6 +659,7 @@ Valor: Removed after owner ends his turn.
 		Wait = card->GetWait();
 		Faction = card->GetFaction();
 		bPlayed = false;
+		bActivated = false;
 		memset(Effects,0,CARD_ABILITIES_MAX);
 		fsDmgDealt = 0;
 		fsDmgMitigated = 0;
@@ -741,6 +753,7 @@ Valor: Removed after owner ends his turn.
 		Wait = 0;
 		Faction = 0;
 		bPlayed = false;
+		bActivated = false;
 		OriginalCard = 0;
 		memset(Effects,0,CARD_ABILITIES_MAX);
 		fsDmgDealt = 0;
