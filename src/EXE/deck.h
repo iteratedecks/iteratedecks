@@ -440,8 +440,9 @@ Valor: Removed after owner ends his turn.
 	{
 		Effects[DMGDEPENDANT_POISON] = 0;
 		Effects[DMGDEPENDANT_DISEASE] = 0;
-		Effects[ACTIVATION_JAM] = 0;
-		Effects[ACTIVATION_FREEZE] = 0;
+		Effects[ACTIVATION_JAM] = 0;		
+		if (!Wait)  // this is bullshit!
+			Effects[ACTIVATION_FREEZE] = 0;
 		Effects[DMGDEPENDANT_IMMOBILIZE] = 0;
 		Effects[ACTIVATION_ENFEEBLE] = 0;
 		Effects[ACTIVATION_CHAOS] = 0;
