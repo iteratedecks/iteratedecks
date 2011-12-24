@@ -114,6 +114,8 @@ char FACTIONS[6][CARD_NAME_MAX_LENGTH] = {0,"Imperial","Raider","Bloodthirsty","
 #define SPECIAL_MIST			64 // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
 #define SPECIAL_BLIZZARD		65 // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
 
+#define MAX_SKILL_ID			100
+
 #define UNDEFINED_NAME			"UNDEFINED"
 
 using namespace std;
@@ -409,6 +411,7 @@ public:
 	}
 	void Refresh()
 	{
+		fsHealed += (OriginalCard->GetHealth() - Health);
 		Health = OriginalCard->GetHealth();
 	}
 	void ClearEnfeeble()
@@ -783,6 +786,8 @@ public:
 	const UCHAR *CSIndex;
 	RESULT_BY_CARD *CSResult;
 	//
+	UCHAR SkillProcs[MAX_SKILL_ID];
+	//
 	UINT DamageToCommander; // for points calculation - damage dealt to ENEMY commander
 private:
 	void Reserve()
@@ -1006,7 +1011,7 @@ private:
 #undef SRC
 	}
 public:
-	ActiveDeck() { bOrderMatters = false; bDelayFirstCard = false; CSIndex = 0; CSResult = 0; DamageToCommander = 0; }
+	ActiveDeck() { bOrderMatters = false; bDelayFirstCard = false; CSIndex = 0; CSResult = 0; DamageToCommander = 0; memset(SkillProcs,0,MAX_SKILL_ID*sizeof(UCHAR)); }
 	~ActiveDeck() { Deck.clear(); Units.clear(); Structures.clear(); Actions.clear(); }
 public:
 	void SetFancyStatsBuffer(const UCHAR *resindex, RESULT_BY_CARD *res)
@@ -1035,6 +1040,7 @@ public:
 		bOrderMatters = false; 
 		bDelayFirstCard = false;
 		unsigned short tid = 0, lastid = 0;
+		memset(SkillProcs,0,MAX_SKILL_ID*sizeof(UCHAR));
 		size_t len = strlen(HashBase64);
 		_ASSERT(!(len & 1)); // bytes should go in pairs
 		len = len >> 1; // div 2
@@ -1064,7 +1070,7 @@ public:
 			}
 		}
 	}
-	ActiveDeck(const Card *Cmd) { bOrderMatters = false; bDelayFirstCard = false; CSIndex = 0; CSResult = 0; DamageToCommander = 0; Commander = PlayedCard(Cmd); Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); };
+	ActiveDeck(const Card *Cmd) { bOrderMatters = false; bDelayFirstCard = false; CSIndex = 0; CSResult = 0; DamageToCommander = 0; Commander = PlayedCard(Cmd); Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); memset(SkillProcs,0,MAX_SKILL_ID*sizeof(UCHAR)); };
 	ActiveDeck(const ActiveDeck &D) // need copy constructor
 	{
 		Commander = D.Commander;
@@ -1082,6 +1088,7 @@ public:
 			Structures.push_back(D.Structures[i]);
 		bOrderMatters = D.bOrderMatters;
 		bDelayFirstCard = D.bDelayFirstCard;
+		memcpy(SkillProcs,D.SkillProcs,MAX_SKILL_ID*sizeof(UCHAR));
 		CSIndex = D.CSIndex;
 		CSResult = D.CSResult;
 		DamageToCommander = D.DamageToCommander;
@@ -1195,6 +1202,16 @@ public:
 
 		bool bSplit = false;
 
+		bool bIsSelfMimic = false; // Chaosed Mimic indicator
+		if (IsMimiced && Mimicer && (!Units.empty()))
+		{
+			for (UCHAR i=0;i<Units.size();i++)
+				if (Mimicer = &Units[i])
+				{
+					bIsSelfMimic = true;
+					break;
+				}
+		}
 		// here is a good question - can paybacked skill be paybacked? - nope
 		// can paybacked skill be evaded? - doubt
 		// in current model, it can't be, payback applies effect right away, without simulationg it's cast
@@ -1252,6 +1269,10 @@ public:
 								Src.fsSpecial += effect;
 							else
 								Mimicer->fsSpecial += effect;
+							if ((!IsMimiced) || bIsSelfMimic)
+								SkillProcs[aid]++;
+							else
+								Dest.SkillProcs[aid]++;
 							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
 							{
 								if (IsMimiced)
@@ -1303,6 +1324,7 @@ public:
 							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
 							{
 								// evaded
+								Dest.SkillProcs[DEFENSIVE_EVADE]++;
 							}
 							else
 							{
@@ -1311,10 +1333,15 @@ public:
 									Src.fsSpecial += effect;
 								else
 									Mimicer->fsSpecial += effect;
+								if ((!IsMimiced) || bIsSelfMimic)
+									SkillProcs[aid]++;
+								else
+									Dest.SkillProcs[aid]++;
 								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback
 								{
 									Src.SetEffect(aid,Src.GetEffect(aid) + effect);
 									(*vi)->fsSpecial += effect;
+									Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
 								}
 								if (bConsoleOutput)
 								{
@@ -1369,6 +1396,10 @@ public:
 								Src.fsHealed += effect;
 							else
 								Mimicer->fsHealed += effect;
+							if ((!IsMimiced) || bIsSelfMimic)
+								SkillProcs[aid]++;
+							else
+								Dest.SkillProcs[aid]++;
 							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
 							{
 								if (IsMimiced)
@@ -1428,6 +1459,10 @@ public:
 								Src.fsHealed += effect;
 							else
 								Mimicer->fsHealed += effect;
+							if ((!IsMimiced) || bIsSelfMimic)
+								SkillProcs[aid]++;
+							else
+								Dest.SkillProcs[aid]++;
 							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
 							{
 								if (IsMimiced)
@@ -1495,6 +1530,10 @@ public:
 								Src.fsSpecial += effect;
 							else
 								Mimicer->fsSpecial += effect;
+							if ((!IsMimiced) || bIsSelfMimic)
+								SkillProcs[aid]++;
+							else
+								Dest.SkillProcs[aid]++;
 							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
 							{
 								if (IsMimiced)
@@ -1557,6 +1596,7 @@ public:
 								{
 									// evaded
 									// no fancy stats here?!
+									Dest.SkillProcs[DEFENSIVE_EVADE]++;
 								}
 								else
 								{
@@ -1565,10 +1605,15 @@ public:
 										Src.fsSpecial += effect;
 									else
 										Mimicer->fsSpecial += effect;
+									if ((!IsMimiced) || bIsSelfMimic)
+										SkillProcs[aid]++;
+									else
+										Dest.SkillProcs[aid]++;
 		/*  ?  */					if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback is it 1/2 or 1/4 chance to return jam with payback????
 									{
 										Src.SetEffect(aid,effect);
 										(*vi)->fsSpecial += effect;
+										Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
 									}
 									if (bConsoleOutput)
 									{
@@ -1617,6 +1662,7 @@ public:
 							{
 								// evaded
 								// no fancy stats here?!
+								Dest.SkillProcs[DEFENSIVE_EVADE]++;
 							}
 							else
 							{
@@ -1625,10 +1671,15 @@ public:
 									Src.fsSpecial += effect;
 								else
 									Mimicer->fsSpecial += effect;
+								if ((!IsMimiced) || bIsSelfMimic)
+									SkillProcs[aid]++;
+								else
+									Dest.SkillProcs[aid]++;
 								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos)) 
 								{
 									Src.SetEffect(aid,effect);
 									(*vi)->fsSpecial += effect;
+									Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
 								}
 								if (bConsoleOutput)
 								{
@@ -1669,6 +1720,7 @@ public:
 							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
 							{
 								// evaded
+								Dest.SkillProcs[DEFENSIVE_EVADE]++;
 							}
 							else
 							{
@@ -1679,6 +1731,7 @@ public:
 									(*vi)->PrintDesc();
 									printf("\n");
 								}
+								SkillProcs[aid]++;
 								if (chaos > 0)
 									ApplyEffects(*(*vi),Position,*this,true,false,&Src);
 								else
@@ -1736,6 +1789,10 @@ public:
 								Src.fsSpecial += effect;
 							else
 								Mimicer->fsSpecial += effect;
+							if ((!IsMimiced) || bIsSelfMimic)
+								SkillProcs[aid]++;
+							else
+								Dest.SkillProcs[aid]++;
 							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
 							{
 								if (IsMimiced)
@@ -1801,6 +1858,10 @@ public:
 								Src.fsHealed += effect;
 							else
 								Mimicer->fsHealed += effect;
+							if ((!IsMimiced) || bIsSelfMimic)
+								SkillProcs[aid]++;
+							else
+								Dest.SkillProcs[aid]++;
 						}
 					}
 					targets.clear();
@@ -1845,6 +1906,7 @@ public:
 							{
 								// evaded
 								(*vi)->fsAvoided += effect;
+								Dest.SkillProcs[DEFENSIVE_EVADE]++;
 							}
 							else
 							{
@@ -1853,6 +1915,10 @@ public:
 									Src.fsDmgDealt += sdmg;
 								else
 									Mimicer->fsDmgDealt += sdmg;
+								if ((!IsMimiced) || bIsSelfMimic)
+									SkillProcs[aid]++;
+								else
+									Dest.SkillProcs[aid]++;
 							}
 					}
 					targets.clear();
@@ -1899,6 +1965,7 @@ public:
 							{
 								// evaded
 								(*vi)->fsAvoided += effect;
+								Dest.SkillProcs[DEFENSIVE_EVADE]++;
 							}
 							else
 							{
@@ -1914,8 +1981,15 @@ public:
 									Src.fsDmgDealt += sdmg;
 								else
 									Mimicer->fsDmgDealt += sdmg;
+								if ((!IsMimiced) || bIsSelfMimic)
+									SkillProcs[aid]++;
+								else
+									Dest.SkillProcs[aid]++;
 								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback
+								{
 									(*vi)->fsDmgDealt += Src.StrikeDmg(effect);
+									Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+								}
 							}			
 					}
 				}
@@ -1968,6 +2042,7 @@ public:
 							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
 							{
 								// evaded
+								Dest.SkillProcs[DEFENSIVE_EVADE]++;
 							}
 							else
 							{
@@ -1983,8 +2058,15 @@ public:
 									Src.fsSpecial += we;
 								else
 									Mimicer->fsSpecial += we;
+								if ((!IsMimiced) || bIsSelfMimic)
+									SkillProcs[aid]++;
+								else
+									Dest.SkillProcs[aid]++;
 								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50 && (!chaos))  // payback
+								{
 									(*vi)->fsSpecial += Src.Weaken(effect);
+									Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+								}
 							}
 					}
 				}
@@ -2025,6 +2107,7 @@ public:
 							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
 							{
 								// evaded
+								Dest.SkillProcs[DEFENSIVE_EVADE]++;
 							}
 							else
 							{
@@ -2041,10 +2124,15 @@ public:
 									Src.fsSpecial += we;
 								else
 									Mimicer->fsSpecial += we;
+								if ((!IsMimiced) || bIsSelfMimic)
+									SkillProcs[aid]++;
+								else
+									Dest.SkillProcs[aid]++;
 								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50)  // payback
 								{
 									Src.SetEffect(ACTIVATION_CHAOS,effect);
 									(*vi)->fsSpecial += effect;
+									Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
 								}
 							}
 					}
