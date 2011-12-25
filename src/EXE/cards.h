@@ -451,7 +451,7 @@ public:
 				//	printf("Conflicted: %s : %d and %d\n",c.GetName(),mi->second,c.GetId());
 				// so card should be treated as new if it's picture changed, so API would know it should download new pic
 				bool isnew = ((!CDB[Id].IsCard()) || (stricmp(CDB[Id].GetPicture(),c.GetPicture())));
-				bool ins = Insert(c,(Set > 0));
+				bool ins = Insert(c);
 				if (ins && returnnewcards && isnew)
 				{
 					if (returnnewcards[0])
@@ -705,7 +705,7 @@ public:
 	{
 		return Index.size();
 	}
-	bool Insert(Card &c, bool bOverwrite=false)
+	bool Insert(Card &c)
 	{
 		if (c.GetId())
 		{
@@ -715,7 +715,7 @@ public:
 
 			// so we need to add to index only those cards that have set - available for player
 			pair<MSUINT::iterator, bool> mi = Index.insert(PAIRMSUINT((char*)c.GetName(),c.GetId()));
-			if ((!mi.second) && bOverwrite)
+			if ((!mi.second) && (!CDB[mi.first->second].GetSet()))
 				mi.first->second = c.GetId();
 			return true;
 		}
@@ -736,16 +736,20 @@ public:
 				if (st != i)
 				{
 					// token
-					if (!cnt)
-						D.Commander = &GetCardSmart(&buffer[st]);
-					else
-						D.Deck.push_back(&GetCardSmart(&buffer[st]));
-					cnt++;
+					const Card *c = GetCardSmart(&buffer[st]);
+					if (c)
+					{
+						if (!cnt)
+							D.Commander = c;
+						else
+							D.Deck.push_back(c);
+						cnt++;
+					}
 				}
 				st = i+1;
 			}
 		}
-		return true;
+		return cnt > 0;
 	}
 	char *trim(char *str, char c=' ')
 	{
@@ -1002,7 +1006,7 @@ public:
 								mi->second.push_back(trim(buffer));
 							else
 							{
-								const Card * c = &GetCardSmart(trim(buffer));
+								const Card * c = GetCardSmart(trim(buffer));
 								if (c)
 								{
 									char itoabuffer[10];
@@ -1074,18 +1078,16 @@ public:
 		else
 			return 0;
 	}
-	const Card &GetCard(string Name) { return GetCard(Name.c_str()); }
-	const Card &GetCard(const char *Name)
+	const Card *GetCard(string Name) { return GetCard(Name.c_str()); }
+	const Card *GetCard(const char *Name)
 	{
 		MSUINT::iterator it=Index.find(Name);
 		if (it != Index.end())
-			return CDB[it->second];
+			return &CDB[it->second];
 		else
 		{
 			printf("Can't find %s in database\n",Name);
-			_ASSERT(it != Index.end());
-			it = Index.lower_bound(Name); // get lower bound instead
-			return CDB[it->second];
+			return 0;
 		}
 	}
 	const Card &GetCard(const UINT Id)
@@ -1095,7 +1097,7 @@ public:
 
 		return CDB[Id];
 	}
-	const Card &GetCardSmart(const char *Name)
+	const Card *GetCardSmart(const char *Name)
 	{
 		const char* i=strchr(Name,'[');
 		if (!i)
@@ -1106,7 +1108,7 @@ public:
 			char bu[10];
 			memcpy(bu,i+1,k-i-1);
 			bu[k-i-1] = 0;
-			return GetCard(atoi(bu));
+			return &GetCard(atoi(bu));
 		}
 		return GetCard(Name);			
 	}
@@ -1231,10 +1233,10 @@ public:
 					if (mi->second.empty())
 						return false;
 					VSTRINGS::iterator vi = mi->second.begin();
-					R.Commander = &GetCard(*vi);
+					R.Commander = GetCard(*vi);
 					R.Deck.clear();
 					for (vi++;vi != mi->second.end();vi++)
-						R.Add(&GetCard(*vi));
+						R.Add(GetCard(*vi));
 					return true;
 				}
 				Index--;
@@ -1252,9 +1254,9 @@ public:
 			printf("Deck %s has 0 cards\n",DeckName);
 		_ASSERT(!mi->second.empty());
 		VSTRINGS::iterator vi = mi->second.begin();
-		ActiveDeck r(&GetCard(*vi));
+		ActiveDeck r(GetCard(*vi));
 		for (vi++;vi != mi->second.end();vi++)
-			r.Add(&GetCard(*vi));
+			r.Add(GetCard(*vi));
 		return r;
 	}
 };
