@@ -423,8 +423,9 @@ public:
 	void Refresh()
 	{
 		fsHealed += (OriginalCard->GetHealth() - Health);
+		if (OriginalCard->GetHealth() != Health)
+			SkillProcBuffer[DEFENSIVE_REFRESH]++;
 		Health = OriginalCard->GetHealth();
-		SkillProcBuffer[DEFENSIVE_REFRESH]++;
 	}
 	void ClearEnfeeble()
 	{
@@ -1139,6 +1140,7 @@ public:
 				_ASSERT(tid < CARD_MAX_ID);
 				_ASSERT((tid >= 1000) && (tid < 2000)); // commander Id boundaries
 				Commander = PlayedCard(&pCDB[tid]);
+				Commander.SetCardSkillProcBuffer(SkillProcs);
 			}
 			else
 			{
@@ -1156,10 +1158,11 @@ public:
 			}
 		}
 	}
-	ActiveDeck(const Card *Cmd) { bOrderMatters = false; bDelayFirstCard = false; CSIndex = 0; CSResult = 0; DamageToCommander = 0; Commander = PlayedCard(Cmd); Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); memset(SkillProcs,0,MAX_SKILL_ID*sizeof(UCHAR)); };
+	ActiveDeck(const Card *Cmd) { bOrderMatters = false; bDelayFirstCard = false; CSIndex = 0; CSResult = 0; DamageToCommander = 0; Commander = PlayedCard(Cmd); Commander.SetCardSkillProcBuffer(SkillProcs); Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); memset(SkillProcs,0,MAX_SKILL_ID*sizeof(UCHAR)); };
 	ActiveDeck(const ActiveDeck &D) // need copy constructor
 	{
 		Commander = D.Commander;
+		Commander.SetCardSkillProcBuffer(SkillProcs);
 		Deck.reserve(D.Deck.size());
 		for (UCHAR i=0;i<D.Deck.size();i++)
 			Deck.push_back(D.Deck[i]);
