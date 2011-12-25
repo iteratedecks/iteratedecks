@@ -431,6 +431,10 @@ extern "C"
 			strcat_s(Buffer,MaxBufferSize,DB.GetSkill(i));
 		}
 	}
+	IDAPI UCHAR GetSkillID(const char *Skill)
+	{
+		return DB.GetSkillID(Skill);
+	}
 	IDAPI size_t GetCardSize()
 	{
 		return sizeof(Card);

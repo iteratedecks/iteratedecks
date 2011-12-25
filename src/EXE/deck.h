@@ -362,6 +362,8 @@ public:
 	UINT fsAvoided; // evade, armor, flying, protect - absorbed damage, this always IGNORES protect and ignores armor if it's a flying miss
 	UINT fsHealed; // supply, heal, leech, regenerate
 	UINT fsSpecial; // enfeeble, protect, weaken, rally, poison(when applied)
+	// skill proc counter
+	UCHAR *SkillProcBuffer;
 public:
 	void DecWait() { if (Wait) Wait--; }
 	void IncWait() { if (Wait) Wait++; }  // this is only for tournaments
@@ -389,6 +391,15 @@ public:
 				printf(" Chaosed");
 		}
 	}
+	void SetCardSkillProcBuffer(UCHAR *_SkillProcBuffer)
+	{
+		SkillProcBuffer = _SkillProcBuffer;
+	}
+	void CardSkillProc(UCHAR aid)
+	{
+		if (SkillProcBuffer)
+			SkillProcBuffer[aid]++;
+	}
 	const bool BeginTurn()
 	{
 		const bool bDoBegin = (Health && (!Effects[ACTIVATION_JAM]) && (!Effects[ACTIVATION_FREEZE]) && (!Wait));
@@ -413,6 +424,7 @@ public:
 	{
 		fsHealed += (OriginalCard->GetHealth() - Health);
 		Health = OriginalCard->GetHealth();
+		SkillProcBuffer[DEFENSIVE_REFRESH]++;
 	}
 	void ClearEnfeeble()
 	{
@@ -477,8 +489,9 @@ Valor: Removed after owner ends his turn.
 	{
 		//OriginalCard.Infuse(setfaction);
 		Faction = setfaction;
+		SkillProcBuffer[ACTIVATION_INFUSE]++;
 	}
-	const UCHAR SufferDmg(const UCHAR Dmg, const UCHAR Pierce = 0, UCHAR *actualdamagedealt = 0)
+	const UCHAR SufferDmg(const UCHAR Dmg, const UCHAR Pierce = 0, UCHAR *actualdamagedealt = 0, UCHAR *SkillProcBuffer = 0)
 	{
 		_ASSERT(OriginalCard);
 // Regeneration happens before the additional strikes from Flurry.
@@ -504,6 +517,7 @@ Valor: Removed after owner ends his turn.
 			{
 				Health = OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
 				fsHealed += OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
+				CardSkillProc(DEFENSIVE_REGENERATE);
 				if (bConsoleOutput)
 				{
 					PrintDesc();
@@ -547,10 +561,12 @@ Valor: Removed after owner ends his turn.
 		for (VCARDS::iterator vi = Structures.begin();vi!=Structures.end();vi++)
 			if (vi->GetAbility(DEFENSIVE_WALL) && vi->IsAlive())
 			{
+				vi->CardSkillProc(DEFENSIVE_WALL);
 				// walls can counter and regenerate
 				vi->SufferDmg(Dmg); // regenerate
 				if (vi->GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // counter, dmg from crush can't be countered
 				{
+					vi->CardSkillProc(DEFENSIVE_COUNTER);
 					vi->fsDmgDealt += vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
 					Src.SufferDmg(vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE)); // counter dmg is enhanced by enfeeble
 				}
@@ -559,7 +575,10 @@ Valor: Removed after owner ends his turn.
 		// no walls found then hit commander
 		// ugly - counter procs before commander takes dmg, but whatever
 		if (GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // commander can counter aswell
+		{
+			CardSkillProc(DEFENSIVE_COUNTER);
 			Src.SufferDmg(GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE)); // counter dmg is enhanced by enfeeble
+		}
 		return (SufferDmg(Dmg) > 0);
 	}
 	UCHAR StrikeDmg(const UCHAR Dmg) // returns dealt dmg
@@ -651,6 +670,7 @@ Valor: Removed after owner ends his turn.
 		fsAvoided = 0;
 		fsHealed = 0;
 		fsSpecial = 0;
+		SkillProcBuffer = 0;
 		return *this;
 	}
 	PlayedCard(const Card *card) 
@@ -669,6 +689,7 @@ Valor: Removed after owner ends his turn.
 		fsAvoided = 0;
 		fsHealed = 0;
 		fsSpecial = 0;
+		SkillProcBuffer = 0;
 	}
 	const UINT GetId() const { return OriginalCard->GetId(); }
 	const UCHAR GetAttack() const
@@ -764,9 +785,15 @@ Valor: Removed after owner ends his turn.
 		fsAvoided = 0;
 		fsHealed = 0;
 		fsSpecial = 0;
+		SkillProcBuffer = 0;
 	}
 };
-
+struct REQUIREMENT
+{
+	UCHAR SkillID;
+	UCHAR Procs;
+	REQUIREMENT() { SkillID = 0; };
+};
 typedef vector<PlayedCard> VCARDS;
 typedef vector<PlayedCard*> PVCARDS;
 typedef multiset<UINT> MSID;
@@ -819,19 +846,28 @@ private:
 			printf(" attacks\n");
 		}
 		UCHAR iflurry = (SRC.GetAbility(COMBAT_FLURRY) && PROC50) ? (SRC.GetAbility(COMBAT_FLURRY)+1) : 1; // coding like a boss :) don't like this style
+		if (iflurry)
+			SkillProcs[COMBAT_FLURRY]++;
 		if ((index >= (UCHAR)Def.Units.size()) || (!Def.Units[index].IsAlive()) || (SRC.GetAbility(COMBAT_FEAR)))
 		{
 			// Deal DMG To Commander BUT STILL PROC50 FLURRY and PROBABLY VALOR
 			UCHAR valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
 			for (UCHAR i=0;i<iflurry;i++)
 			{
+				if (valor)
+					SkillProcs[COMBAT_VALOR]++;
 				if (Def.Commander.IsAlive())
 					DamageToCommander += SRC.GetAttack()+valor;
+				if (SRC.GetAbility(COMBAT_FEAR))
+					SkillProcs[COMBAT_FEAR]++;
 				Def.Commander.HitCommander(SRC.GetAttack()+valor,SRC,Def.Structures);
 				SRC.fsDmgDealt += SRC.GetAttack()+valor;
 				// can go berserk after hitting commander too
 				if ((SRC.GetAttack()+valor > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
+				{
 					SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
+					SkillProcs[DMGDEPENDANT_BERSERK]++;
+				}
 			}
 			return; // and thats it!!!
 		}
@@ -860,6 +896,7 @@ private:
 			for (UCHAR iatk=0;iatk<iflurry;iatk++)
 			{
 				bool bGoBerserk = false;
+				UCHAR iSwiped = 0;
 				// swipe
 				for (UCHAR s=0;s<swipe;s++)
 				{
@@ -872,21 +909,29 @@ private:
 					if ((!targets[s]->IsAlive()) && ((swipe == 1) || (s == 1)))
 					{
 						UCHAR valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
+						if (valor > 0)
+							SkillProcs[COMBAT_VALOR]++;
 						if (Def.Commander.IsAlive())
 							DamageToCommander += SRC.GetAttack()+valor;
 						Def.Commander.HitCommander(SRC.GetAttack()+valor,SRC,Def.Structures);
 						SRC.fsDmgDealt += SRC.GetAttack()+valor;
 						// can go berserk after hitting commander too
 						if ((SRC.GetAttack()+valor > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
+						{
 							SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
+							SkillProcs[DMGDEPENDANT_BERSERK]++;
+						}
 						// might want to add here check:
 						// if (!Def.Commander.IsAlive()) return;
 						continue;
 					}
+					iSwiped++;
 					_ASSERT(targets[s]->IsAlive()); // must be alive here
 					// actual attack
 					// must check valor before every attack
 					UCHAR valor = (SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
+					if (valor > 0)
+						SkillProcs[COMBAT_VALOR]++;
 					// attacking flyer
 					UCHAR antiair = SRC.GetAbility(COMBAT_ANTIAIR);
 					if (targets[s]->GetAbility(DEFENSIVE_FLYING))
@@ -894,18 +939,25 @@ private:
 						if ((!antiair) && (!SRC.GetAbility(DEFENSIVE_FLYING)) && PROC50) // missed
 						{
 							targets[s]->fsAvoided += SRC.GetAttack() + valor + targets[s]->GetEffect(ACTIVATION_ENFEEBLE); // note that this IGNORES armor and protect
+							Def.SkillProcs[DEFENSIVE_FLYING]++;
 							continue;
 						}
 					}
 					else antiair = 0; // has no effect if target is not flying
+					if (antiair > 0)
+						SkillProcs[COMBAT_ANTIAIR]++;
 					// enfeeble is taken into account before armor
 					UCHAR enfeeble = targets[s]->GetEffect(ACTIVATION_ENFEEBLE);
 					// now armor & pierce
 					UCHAR dmg = SRC.GetAttack() + valor + antiair + enfeeble;
 					UCHAR armor = targets[s]->GetAbility(DEFENSIVE_ARMORED);
 					UCHAR pierce = SRC.GetAbility(COMBAT_PIERCE);
-					if (armor) 
+					bool bPierce = false;
+					if (armor)
 					{
+						SkillProcs[DEFENSIVE_ARMORED]++;
+						if (pierce > 0)
+							bPierce = true;
 						if (pierce >= armor)
 						{
 							armor = 0;
@@ -933,9 +985,12 @@ private:
 					if (dmg)
 					{
 						UCHAR actualdamagedealt = 0;
+						bPierce = bPierce || (targets[s]->GetShield() && pierce);
 						dmg = targets[s]->SufferDmg(dmg, pierce,&actualdamagedealt);
 						SRC.fsDmgDealt += actualdamagedealt;
 					}
+					if (bPierce)
+						SkillProcs[COMBAT_PIERCE]++;
 					// and now dmg dependant effects
 					if (!targets[s]->IsAlive()) // target just died
 					{
@@ -944,19 +999,22 @@ private:
 						{
 							Def.Commander.SufferDmg(targets[s]->GetAbility(SPECIAL_BACKFIRE));
 							DamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
+							Def.SkillProcs[SPECIAL_BACKFIRE]++;
 						}
 						// crush
 						if (SRC.GetAbility(DMGDEPENDANT_CRUSH))
 						{
 							if (Def.Commander.IsAlive())
-								DamageToCommander += SRC.GetAttack()+valor;
+								DamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
 							Def.Commander.HitCommander(SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def.Structures,false);
+							SkillProcs[DMGDEPENDANT_CRUSH]++;
 						}
 					}
 					// counter
 					if ((dmg > 0) && targets[s]->GetAbility(DEFENSIVE_COUNTER))
 					{
 						targets[s]->fsDmgDealt += SRC.SufferDmg(targets[s]->GetAbility(DEFENSIVE_COUNTER) + SRC.GetEffect(ACTIVATION_ENFEEBLE)); // counter dmg is enhanced by enfeeble
+						Def.SkillProcs[DEFENSIVE_COUNTER]++;
 					}
 					// berserk
 					if ((dmg > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
@@ -969,12 +1027,14 @@ private:
 						{
 							targets[s]->SetEffect(DMGDEPENDANT_IMMOBILIZE,SRC.GetAbility(DMGDEPENDANT_IMMOBILIZE));
 							SRC.fsSpecial++; // is it good?
+							SkillProcs[DMGDEPENDANT_IMMOBILIZE]++;
 						}
 						// disease
 						if (SRC.GetAbility(DMGDEPENDANT_DISEASE))
 						{
 							targets[s]->SetEffect(DMGDEPENDANT_DISEASE,SRC.GetAbility(DMGDEPENDANT_DISEASE));
 							SRC.fsSpecial++; // is it good?
+							SkillProcs[DMGDEPENDANT_DISEASE]++;
 						}
 						// poison
 						if (SRC.GetAbility(DMGDEPENDANT_POISON))
@@ -982,6 +1042,7 @@ private:
 							{
 								targets[s]->SetEffect(DMGDEPENDANT_POISON,SRC.GetAbility(DMGDEPENDANT_POISON));
 								SRC.fsSpecial += SRC.GetAbility(DMGDEPENDANT_POISON); 
+								SkillProcs[DMGDEPENDANT_POISON]++;
 							}
 					}
 					// leech
@@ -989,21 +1050,37 @@ private:
 					{
 						UCHAR leech = (SRC.GetAbility(DMGDEPENDANT_LEECH) < dmg) ? SRC.GetAbility(DMGDEPENDANT_LEECH) : dmg;
 						if (leech && (!SRC.IsDiseased()))
-							SRC.fsHealed += SRC.Heal(leech);
+						{
+							leech = SRC.Heal(leech);
+							SRC.fsHealed += leech;
+							if (leech > 0)
+								SkillProcs[DMGDEPENDANT_LEECH]++;
+						}
 					}
 					// siphon
 					if (SRC.GetAbility(DMGDEPENDANT_SIPHON))
 					{
 						UCHAR siphon = (SRC.GetAbility(DMGDEPENDANT_SIPHON) < dmg) ? SRC.GetAbility(DMGDEPENDANT_SIPHON) : dmg;
 						if (siphon)
-							SRC.fsHealed += Commander.Heal(siphon);
+						{
+							siphon = Commander.Heal(siphon);
+							SRC.fsHealed += siphon;
+							if (siphon > 0)
+								SkillProcs[DMGDEPENDANT_SIPHON]++;
+						}
 					}
 					if (bGoBerserk)
+					{
 						SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
+						if (SRC.GetAbility(DMGDEPENDANT_BERSERK))
+							SkillProcs[DMGDEPENDANT_BERSERK]++;
+					}
 
 					if (!SRC.IsAlive()) // died from counter? during swipe
 						break;
 				}
+				if (iSwiped > 1)
+					SkillProcs[COMBAT_SWIPE]++;
 				if (!SRC.IsAlive()) // died from counter? during flurry
 					break;
 			}
@@ -1014,6 +1091,15 @@ public:
 	ActiveDeck() { bOrderMatters = false; bDelayFirstCard = false; CSIndex = 0; CSResult = 0; DamageToCommander = 0; memset(SkillProcs,0,MAX_SKILL_ID*sizeof(UCHAR)); }
 	~ActiveDeck() { Deck.clear(); Units.clear(); Structures.clear(); Actions.clear(); }
 public:
+#define REQ_MAX_SIZE			5
+	bool CheckRequirements(const REQUIREMENT *Reqs)
+	{
+		if (!Reqs) return true;
+		for (UCHAR i=0;(i<REQ_MAX_SIZE) && (Reqs[i].SkillID);i++)
+			if (SkillProcs[Reqs[i].SkillID] < Reqs[i].Procs)
+				return false;
+		return true;
+	}
 	void SetFancyStatsBuffer(const UCHAR *resindex, RESULT_BY_CARD *res)
 	{
 		CSIndex = resindex;
@@ -1189,7 +1275,7 @@ public:
 	{
 		Deck.push_back(c);
 	}
-	void ApplyEffects(PlayedCard &Src,UINT Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false,PlayedCard *Mimicer=0)
+	void ApplyEffects(PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false,PlayedCard *Mimicer=0)
 	{
 		UCHAR destindex,aid,faction;
 		PVCARDS targets;
@@ -1434,7 +1520,7 @@ public:
 					if (Position)
 						targets.push_back(&Units[Position-1]);
 					targets.push_back(&Units[Position]);
-					if (Position+1 < Units.size())
+					if ((DWORD)Position+1 < Units.size())
 						targets.push_back(&Units[Position+1]);
 					if (targets.size())
 					{
@@ -2141,7 +2227,10 @@ public:
 		}
 		// split, finally, can't do it inside of the loop because it corrupts pointer to Src since vector can be moved
 		if (bSplit)
-			Units.push_back(PlayedCard(Src.GetOriginalCard()));
+		{
+			Units.push_back(Src.GetOriginalCard());
+			Units.back().SetCardSkillProcBuffer(SkillProcs);
+		}
 	}
 	void SweepFancyStats(PlayedCard &pc)
 	{
@@ -2244,11 +2333,20 @@ public:
 						bDelayFirstCard = false;
 					}
 					if (vi->GetType() == TYPE_ASSAULT)
+					{
 						Units.push_back(*vi);
+						Units.back().SetCardSkillProcBuffer(SkillProcs);
+					}
 					if (vi->GetType() == TYPE_STRUCTURE)
+					{
 						Structures.push_back(*vi);
+						Structures.back().SetCardSkillProcBuffer(SkillProcs);
+					}
 					if (vi->GetType() == TYPE_ACTION)
+					{
 						Actions.push_back(*vi);
+						Actions.back().SetCardSkillProcBuffer(SkillProcs);
+					}
 					vi = Deck.erase(vi);
 				}
 				return c;

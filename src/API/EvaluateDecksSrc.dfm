@@ -1943,10 +1943,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Caption = 'Visual'
       ImageIndex = 0
       OnShow = tsDecksShow
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object rPanel: TPanel
         Left = 434
         Top = 0
@@ -2859,9 +2855,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
         object tsEWildcard: TcxTabSheet
           Caption = 'Wildcard filters'
           ImageIndex = 1
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object gbGenericFilter: TcxGroupBox
             Left = 3
             Top = 30
@@ -3014,6 +3007,71 @@ object EvaluateDecksForm: TEvaluateDecksForm
             State = cbsChecked
             TabOrder = 4
             Width = 174
+          end
+        end
+        object tsRequrements: TcxTabSheet
+          Caption = 'Requrements'
+          ImageIndex = 2
+          object cbRequirements: TcxCheckBox
+            Left = 3
+            Top = 3
+            Caption = 'Enable requirements'
+            TabOrder = 0
+            Width = 121
+          end
+          object lReqNote: TcxLabel
+            Left = 272
+            Top = 3
+            AutoSize = False
+            Caption = 
+              'These requirements will only affect win and win ratio columns, a' +
+              'll games that were won, but requirements were not fulfilled, wil' +
+              'l be counted as stalls'
+            Properties.WordWrap = True
+            Height = 46
+            Width = 265
+          end
+          object gRequirements: TcxGrid
+            Left = 3
+            Top = 30
+            Width = 250
+            Height = 123
+            TabOrder = 2
+            object vReqs: TcxGridTableView
+              OnKeyDown = vReqsKeyDown
+              NavigatorButtons.ConfirmDelete = False
+              DataController.Summary.DefaultGroupSummaryItems = <>
+              DataController.Summary.FooterSummaryItems = <>
+              DataController.Summary.SummaryGroups = <>
+              OptionsData.Deleting = False
+              OptionsData.Inserting = False
+              OptionsView.ColumnAutoWidth = True
+              OptionsView.GroupByBox = False
+              object vReqsSKILL: TcxGridColumn
+                Caption = 'Skill'
+                PropertiesClassName = 'TcxComboBoxProperties'
+                Properties.DropDownListStyle = lsFixedList
+                Width = 100
+              end
+              object vReqsPROCS: TcxGridColumn
+                Caption = 'Minimum procs'
+                DataBinding.ValueType = 'Integer'
+              end
+            end
+            object gRequirementsLevel1: TcxGridLevel
+              GridView = vReqs
+            end
+          end
+          object cxLabel4: TcxLabel
+            Left = 272
+            Top = 55
+            AutoSize = False
+            Caption = 
+              'Didn'#39't have time to check all the skills, so feel free to report' +
+              ' if you think some of them are not working'
+            Properties.WordWrap = True
+            Height = 46
+            Width = 265
           end
         end
       end
@@ -3416,10 +3474,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsUpdate: TcxTabSheet
       Caption = 'Update DB'
       ImageIndex = 3
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object bCustom: TcxButton
         Left = 3
         Top = 205
@@ -3579,10 +3633,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsHelp: TcxTabSheet
       Caption = 'Tips'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         784
         646)
@@ -6280,10 +6330,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsSettings: TcxTabSheet
       Caption = 'Settings'
       ImageIndex = 5
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object rgEval: TcxRadioGroup
         Left = 3
         Top = 3

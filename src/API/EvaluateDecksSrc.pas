@@ -25,6 +25,7 @@ const
   CARD_NAME_MAX_LENGTH = 50;
   FILENAME_MAX_LENGTH = 50;
   MAX_FILTER_ID_COUNT = 50;
+  REQ_MAX_SIZE = 5;
   CARD_ABILITIES_MAX = 70;
   cMaxBuffer = 65535;
   NAME_VALUE_SEPARATOR = '%';  // just a character that goes before '[' for StringList.Sort
@@ -86,6 +87,12 @@ type
     ResultByCard: array[0..DEFAULT_DECK_SIZE] of RESULT_BY_CARD;
   end;
 
+type
+  REQUIREMENT = record
+    SkillID: byte;
+    ProcsCount: byte;
+  end;
+
 const
   MAX_DECKSTRING_SIZE = 1024;
 type
@@ -110,6 +117,7 @@ type
     MaxTurn: DWORD;
     State: integer;
     TournamentMode: byte;
+    Reqs: array[0..REQ_MAX_SIZE -1] of REQUIREMENT; 
   end;
 
 type
@@ -365,6 +373,15 @@ type
     cbTourney: TcxCheckBox;
     cbBTourney: TcxCheckBox;
     bBatchRunEval: TcxButton;
+    tsRequrements: TcxTabSheet;
+    cbRequirements: TcxCheckBox;
+    lReqNote: TcxLabel;
+    gRequirementsLevel1: TcxGridLevel;
+    gRequirements: TcxGrid;
+    vReqs: TcxGridTableView;
+    vReqsSKILL: TcxGridColumn;
+    vReqsPROCS: TcxGridColumn;
+    cxLabel4: TcxLabel;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -513,6 +530,7 @@ type
     procedure vBotNamePropertiesEditValueChanged(Sender: TObject);
     procedure bBatchRunEvalClick(Sender: TObject);
     procedure ResetBatchRunEval;
+    procedure vReqsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -615,6 +633,8 @@ procedure PrepareDecks(AtkDeck: string; DefDeck: string); cdecl; external
 procedure PrepareDeck(AtkDeck: string); cdecl; external DLLFILE;
 
 procedure GetSkillList(buffer: PChar; size: DWORD); cdecl; external DLLFILE;
+
+function GetSkillID(SkillName: PChar): byte; cdecl; external DLLFILE;
 
 procedure EvaluateOnce(var r: RESULTS; bSurge: boolean = false); cdecl; external
   DLLFILE;
@@ -750,7 +770,8 @@ var
   lpBaseAddress: PChar;
   pEP: ^TEvalParams;
   wait: DWORD;
-  i: integer;
+  i,k: integer;
+  s: string;
 begin
   hFileMapObj := CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0,
     256, 'Local\IterateDecksSharedMemory');
@@ -767,8 +788,33 @@ begin
     //ошибочка вышла
     ShowMessage('Can''t link FileMapping!');
 
+  //Reqs: array[0..REQ_MAX_SIZE -1] of REQUIREMENT;
   EvaluateDecksForm.EvaluateParams := Pointer(lpBaseAddress); // I hate pointers in delphi ...
   pEP := Pointer(lpBaseAddress);
+
+  // Load requirements
+  if EvaluateDecksForm.cbRequirements.Checked then
+  begin
+    k := 0;
+    with EvaluateDecksForm.vReqs.DataController do
+    for i := 0 to RecordCount-1 do
+      if (not VarIsNull(Values[i,0]) and
+        (Values[i,0] <> '')) then
+      begin
+        s := Values[i,0];
+        pEP.Reqs[k].SkillID := GetSkillID(PAnsiChar(s));
+        if not VarIsNull(Values[i,1]) then
+          pEP.Reqs[k].ProcsCount := Values[i,1]
+        else
+          pEP.Reqs[k].ProcsCount := 0;
+        inc(k);
+      end;
+    for i := k to REQ_MAX_SIZE do
+      pEP.Reqs[k].SkillID := 0;
+  end
+  else
+    for i := 0 to REQ_MAX_SIZE-1 do
+      pEP.Reqs[i].SkillID := 0;
 
   pEP.RaidID := RaidID;
   pEP.State := 0;
@@ -1518,6 +1564,11 @@ begin
     else if Pos('Surge',AViewInfo.GridRecord.Values[vcType.Index]) > 0 then
       ACanvas.Font.Color := clBlue;
   end;
+end;
+
+procedure TEvaluateDecksForm.vReqsKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
 end;
 
 {IF VarIsNull(ARecord.Values[Sender.Index]) then exit;
@@ -2942,6 +2993,8 @@ begin
         Values[rec, vcType.Index] := 'Fight';
       if cbOrderMatters.Checked then
         Values[rec, vcType.Index] := Values[rec, vcType.Index] + ', ordered';
+      if cbRequirements.Checked then
+        Values[rec, vcType.Index] := Values[rec, vcType.Index] + ', req';
 
       if seMaxTurn.Value <> cDefaultMaxTurn then
         Values[rec, vcType.Index] := Values[rec, vcType.Index] + ', '+IntToStr(seMaxTurn.Value) + ' turns';
@@ -3845,8 +3898,11 @@ begin
     if (slSkillList.Strings[i] <> '') then
     begin
       ccbSkill.Properties.Items.AddCheckItem(slSkillList.Strings[i]).Tag := i;
+      with (vReqsSKILL.Properties as TcxComboBoxProperties) do
+        Items.Add(slSkillList.Strings[i]);
       //cbSkill.Properties.Items.Append(slSkillList.Strings[i]);
     end;
+  vReqs.DataController.RecordCount := REQ_MAX_SIZE;
 
   fileDate := FileAge(sLocalDir + sCardsFile);
 
