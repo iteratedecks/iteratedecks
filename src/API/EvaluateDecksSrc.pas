@@ -456,7 +456,6 @@ type
     procedure vTopCustomDrawCell(Sender: TcxCustomGridTableView;
       ACanvas: TcxCanvas; AViewInfo: TcxGridTableDataCellViewInfo;
       var ADone: Boolean);
-    procedure cbUseHiddenClick(Sender: TObject);
     procedure vTopNamePropertiesValidate(Sender: TObject;
       var DisplayValue: Variant; var ErrorText: TCaption; var Error: Boolean);
     procedure cbmUseRaidClick(Sender: TObject);
@@ -3718,46 +3717,6 @@ begin
   gbGenericFilter.Enabled := cbUseGenericFilter.Checked;
 end;
 
-procedure TEvaluateDecksForm.cbUseHiddenClick(Sender: TObject);
-var
-  i, k: integer;
-  sl: TStringList;
-begin
-  k := 0;
-  sl := TStringList.Create;
-  sl.NameValueSeparator := NAME_VALUE_SEPARATOR;
-  (vTopName.Properties as TcxComboBoxProperties).Items.Clear;
-  for i := 0 to CardsLoaded - 1 do
-    if cbUseHidden.Checked or (Cards[i].CardSet > 0) then
-    begin
-      if Cards[i].CardSet = 0 then
-      begin
-        sl.Values[Cards[i].Name + '[' + IntToStr(Cards[i].Id) + ']'] := IntToStr(i);
-          {(vTopName.Properties as TcxComboBoxProperties).Items.Add(Cards[i].Name +
-            '[' + IntToStr(Cards[i].Id) + ']');
-          Items[Items.Count-1].Tag := i;}
-      end
-      else
-      begin
-        sl.Values[Cards[i].Name] := IntToStr(i);
-        //(vTopName.Properties as TcxComboBoxProperties).Items.Add(Cards[i].Name);
-      end;
-      {RemapMinID[k] := i;
-      RemapMinIDInversed[i] := k;
-      inc(k); }
-    end;
-  sl.Sort;
-  for k := 0 to sl.Count - 1 do
-  begin
-    (vTopName.Properties as TcxComboBoxProperties).Items.Add(sl.Names[k]);
-    i := StrToInt(sl.ValueFromIndex[k]);
-    RemapMinID[k] := i;
-    RemapMinIDInversed[i] := k;
-  end;
-
-  sl.Free;
-end;
-
 procedure TEvaluateDecksForm.cbUseProxyPropertiesChange(Sender: TObject);
 begin
   eServer.Enabled := cbUseProxy.Checked;
@@ -4428,7 +4387,8 @@ begin
   begin
     if cbUseHidden.Checked or (Cards[i].CardSet > 0) then
     begin
-      if Cards[i].CardSet = 0 then
+      if (Cards[i].CardSet = 0) OR
+        (sl.IndexOfName(Cards[i].Name) >= 0) then
         sl.Values[Cards[i].Name + '[' + IntToStr(Cards[i].Id) + ']'] := IntToStr(i)
        { (vTopName.Properties as TcxComboBoxProperties).Items.Add(Cards[i].Name +
           '[' + IntToStr(Cards[i].Id) + ']')               }

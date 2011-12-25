@@ -126,7 +126,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Enabled = False
         State = cbsChecked
         TabOrder = 1
-        OnClick = cbUseHiddenClick
         Width = 121
       end
       object cbOneLineSkills: TcxCheckBox
