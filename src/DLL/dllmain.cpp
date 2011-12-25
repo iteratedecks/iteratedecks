@@ -191,7 +191,7 @@ extern "C"
 	}
 	IDAPI const Card* GetCard(const char *Name) 
 	{		
-		return &DB.GetCard(Name);
+		return DB.GetCard(Name);
 	};
 	IDAPI const Card* GetCardByID(const UINT Id) 
 	{		
