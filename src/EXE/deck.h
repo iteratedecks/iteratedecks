@@ -859,7 +859,7 @@ private:
 					SkillProcs[COMBAT_VALOR]++;
 				if (Def.Commander.IsAlive())
 					DamageToCommander += SRC.GetAttack()+valor;
-				if (SRC.GetAbility(COMBAT_FEAR))
+				if (SRC.GetAbility(COMBAT_FEAR) && Def.Units[index].IsAlive())
 					SkillProcs[COMBAT_FEAR]++;
 				Def.Commander.HitCommander(SRC.GetAttack()+valor,SRC,Def.Structures);
 				SRC.fsDmgDealt += SRC.GetAttack()+valor;
