@@ -1,9 +1,39 @@
+// *****************************************
+// EvaluateDecks
+// Tyrant card game simulator
+//
+// My kongregate account:
+// http://www.kongregate.com/accounts/NETRAT
+// 
+// Project pages:
+// http://code.google.com/p/evaluatedecks
+// http://www.kongregate.com/forums/65-tyrant/topics/195043-yet-another-battlesim-evaluate-decks
+// *****************************************
+//
+// contains some threading evaluation routines
+
 #define MAX_FILTER_ID_COUNT		50
 
 CardDB DB; // just to make all easier ...
 UINT MaxTurn = MAX_TURN;
 
-void Simulate(ActiveDeck &tAtk, ActiveDeck &tDef, RESULTS &r, const UCHAR *CSIndex = 0, RESULT_BY_CARD *rbc = 0, bool bSurge = false, REQUIREMENT *Reqs = 0)
+// routines
+void MergeBuffers(UINT *Dest, const UINT *Src, UINT Size = CARD_ABILITIES_MAX)
+{
+	_ASSERT(Dest);
+	_ASSERT(Src);
+	for (UINT i=0;i<Size;i++)
+		Dest[i] += Src[i];
+}
+void MergeBuffers(UINT *Dest, const UCHAR *Src, UINT Size = CARD_ABILITIES_MAX)
+{
+	_ASSERT(Dest);
+	_ASSERT(Src);	
+	for (UINT i=0;i<Size;i++)
+		Dest[i] += Src[i];
+}
+
+void Simulate(ActiveDeck &tAtk, ActiveDeck &tDef, RESULTS &r, const UCHAR *CSIndex = 0, RESULT_BY_CARD *rbc = 0, bool bSurge = false, REQUIREMENT *Reqs = 0, UINT *SkillProcs = 0)
 {
 /*
 Should have given more credit to people that help improving...
@@ -129,7 +159,11 @@ In other words, it is the same as on auto, only the counters reset every time yo
 		if (!tDef.Commander.IsAlive())
 		{
 			if (tAtk.CheckRequirements(Reqs))
+			{
 				r.Win++;
+				if (SkillProcs)
+					MergeBuffers(SkillProcs,tAtk.SkillProcs);
+			}
 			r.Points+=10; // +10 points for winning 
 			r.AutoPoints+=10;
 			if (tAtk.DamageToCommander >= 10)   // + points for dealing damage to enemy commander
@@ -257,9 +291,10 @@ struct EVAL_THREAD_PARAMS
 	int *pState;
 	UCHAR TournamentMode;
 	REQUIREMENT Req[REQ_MAX_SIZE];
+	UINT SkillProcs[CARD_ABILITIES_MAX];
 };
 
-void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* = 0*/, RESULT_BY_CARD *rbc/* = 0*/, DWORD RaidID, REQUIREMENT *Reqs = 0)
+void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* = 0*/, RESULT_BY_CARD *rbc/* = 0*/, DWORD RaidID, REQUIREMENT *Reqs = 0, UINT *SkillProcs = 0)
 {
 	ActiveDeck tAtk(gAtk);
 	ActiveDeck tDef;
@@ -311,7 +346,11 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 		if (!tDef.Commander.IsAlive())
 		{
 			if (tAtk.CheckRequirements(Reqs))
+			{
 				r.Win++;
+				if (SkillProcs)
+					MergeBuffers(SkillProcs,tAtk.SkillProcs);
+			}
 			r.Points+=10; // +10 points for winning 
 			r.AutoPoints+=10;
 			if (tAtk.DamageToCommander >= 10)   // + points for dealing damage to enemy commander
@@ -392,10 +431,10 @@ static unsigned int __stdcall ThreadFunc(void *pvParam)
 					else
 						Atk.DelayFirstCard();
 				}
-				Simulate(Atk,Def,lr,p->CSIndex,rbc,p->bSurge,p->Req);
+				Simulate(Atk,Def,lr,p->CSIndex,rbc,p->bSurge,p->Req,p->SkillProcs);
 			}
 			else
-				EvaluateRaidOnce(*(p->Atk),lr,p->CSIndex,rbc,(DWORD)p->RaidID,p->Req);
+				EvaluateRaidOnce(*(p->Atk),lr,p->CSIndex,rbc,(DWORD)p->RaidID,p->Req,p->SkillProcs);
 		}
 	//_endthread();
 	p->r.Add(lr);
@@ -404,7 +443,7 @@ static unsigned int __stdcall ThreadFunc(void *pvParam)
 	return (UINT)p;
 }
 
-void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDef, int RaidID, RESULTS &ret, RESULT_BY_CARD *rbc, int &State, DWORD gamesperthread, DWORD threadscount = 1, bool bSurge = false, UCHAR TournamentMode = 0, REQUIREMENT *Req = 0)
+void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDef, int RaidID, RESULTS &ret, RESULT_BY_CARD *rbc, int &State, DWORD gamesperthread, DWORD threadscount = 1, bool bSurge = false, UCHAR TournamentMode = 0, REQUIREMENT *Req = 0, UINT *pSkillProcs = 0)
 {
 	// create Index
 	UCHAR CSIndex[CARD_MAX_ID];
@@ -457,10 +496,10 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 					}
 					tDef = customdeck;
 				}
-				Simulate(tAtk,tDef,ret,CSIndex,rbc,bSurge,Req);
+				Simulate(tAtk,tDef,ret,CSIndex,rbc,bSurge,Req,pSkillProcs);
 			}
 			else
-				EvaluateRaidOnce(gAtk,ret,CSIndex,rbc,(DWORD)RaidID,Req);
+				EvaluateRaidOnce(gAtk,ret,CSIndex,rbc,(DWORD)RaidID,Req,pSkillProcs);
 		}
 	}
 	else
@@ -482,6 +521,7 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 			parms[i].bSurge = bSurge;
 			parms[i].pState = &State;
 			parms[i].TournamentMode = TournamentMode;
+			memset(parms[i].SkillProcs,0,sizeof(parms[i].SkillProcs));
 			if (Req)
 				memcpy(parms[i].Req,Req,sizeof(REQUIREMENT)*REQ_MAX_SIZE);
 
@@ -501,6 +541,9 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 			ret.Add(parms[i].r);
 			for (UCHAR m=0;m<DEFAULT_DECK_SIZE+1;m++)
 				rbc[m].Add(parms[i].rbc[m]);
+
+			if (pSkillProcs)
+				MergeBuffers(pSkillProcs,parms[i].SkillProcs); // merge these
 		}
 	}
 }
@@ -537,4 +580,6 @@ struct EVAL_PARAMS
 	UCHAR TournamentMode; // 0 - no tourney
 	//
 	REQUIREMENT Req[REQ_MAX_SIZE];
+	//
+	UINT SkillProcs[CARD_ABILITIES_MAX];
 };

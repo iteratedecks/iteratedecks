@@ -114,8 +114,6 @@ char FACTIONS[6][CARD_NAME_MAX_LENGTH] = {0,"Imperial","Raider","Bloodthirsty","
 #define SPECIAL_MIST			64 // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
 #define SPECIAL_BLIZZARD		65 // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
 
-#define MAX_SKILL_ID			100
-
 #define UNDEFINED_NAME			"UNDEFINED"
 
 using namespace std;
@@ -815,7 +813,7 @@ public:
 	const UCHAR *CSIndex;
 	RESULT_BY_CARD *CSResult;
 	//
-	UCHAR SkillProcs[MAX_SKILL_ID];
+	UCHAR SkillProcs[CARD_ABILITIES_MAX];
 	//
 	UINT DamageToCommander; // for points calculation - damage dealt to ENEMY commander
 private:
@@ -1090,7 +1088,7 @@ private:
 #undef SRC
 	}
 public:
-	ActiveDeck() { bOrderMatters = false; bDelayFirstCard = false; CSIndex = 0; CSResult = 0; DamageToCommander = 0; memset(SkillProcs,0,MAX_SKILL_ID*sizeof(UCHAR)); }
+	ActiveDeck() { bOrderMatters = false; bDelayFirstCard = false; CSIndex = 0; CSResult = 0; DamageToCommander = 0; memset(SkillProcs,0,CARD_ABILITIES_MAX*sizeof(UCHAR)); }
 	~ActiveDeck() { Deck.clear(); Units.clear(); Structures.clear(); Actions.clear(); }
 public:
 #define REQ_MAX_SIZE			5
@@ -1128,7 +1126,7 @@ public:
 		bOrderMatters = false; 
 		bDelayFirstCard = false;
 		unsigned short tid = 0, lastid = 0;
-		memset(SkillProcs,0,MAX_SKILL_ID*sizeof(UCHAR));
+		memset(SkillProcs,0,CARD_ABILITIES_MAX*sizeof(UCHAR));
 		size_t len = strlen(HashBase64);
 		_ASSERT(!(len & 1)); // bytes should go in pairs
 		len = len >> 1; // div 2
@@ -1159,7 +1157,7 @@ public:
 			}
 		}
 	}
-	ActiveDeck(const Card *Cmd) { bOrderMatters = false; bDelayFirstCard = false; CSIndex = 0; CSResult = 0; DamageToCommander = 0; Commander = PlayedCard(Cmd); Commander.SetCardSkillProcBuffer(SkillProcs); Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); memset(SkillProcs,0,MAX_SKILL_ID*sizeof(UCHAR)); };
+	ActiveDeck(const Card *Cmd) { bOrderMatters = false; bDelayFirstCard = false; CSIndex = 0; CSResult = 0; DamageToCommander = 0; Commander = PlayedCard(Cmd); Commander.SetCardSkillProcBuffer(SkillProcs); Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); memset(SkillProcs,0,CARD_ABILITIES_MAX*sizeof(UCHAR)); };
 	ActiveDeck(const ActiveDeck &D) // need copy constructor
 	{
 		Commander = D.Commander;
@@ -1187,7 +1185,7 @@ public:
 		}
 		bOrderMatters = D.bOrderMatters;
 		bDelayFirstCard = D.bDelayFirstCard;
-		memcpy(SkillProcs,D.SkillProcs,MAX_SKILL_ID*sizeof(UCHAR));
+		memcpy(SkillProcs,D.SkillProcs,CARD_ABILITIES_MAX*sizeof(UCHAR));
 		CSIndex = D.CSIndex;
 		CSResult = D.CSResult;
 		DamageToCommander = D.DamageToCommander;
