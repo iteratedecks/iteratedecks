@@ -760,6 +760,7 @@ Valor: Removed after owner ends his turn.
 	UCHAR Heal(UCHAR amount)
 	{
 		_ASSERT(!IsDiseased()); // disallowed
+		if (IsDiseased()) return 0;
 		if (Health + amount >  OriginalCard->GetHealth())
 		{
 			amount = (OriginalCard->GetHealth() - Health);
@@ -847,7 +848,7 @@ private:
 			printf(" attacks\n");
 		}
 		UCHAR iflurry = (SRC.GetAbility(COMBAT_FLURRY) && PROC50) ? (SRC.GetAbility(COMBAT_FLURRY)+1) : 1; // coding like a boss :) don't like this style
-		if (iflurry)
+		if (iflurry > 1)
 			SkillProcs[COMBAT_FLURRY]++;
 		if ((index >= (UCHAR)Def.Units.size()) || (!Def.Units[index].IsAlive()) || (SRC.GetAbility(COMBAT_FEAR)))
 		{
@@ -1168,13 +1169,22 @@ public:
 			Deck.push_back(D.Deck[i]);
 		Actions.reserve(D.Actions.size());
 		for (UCHAR i=0;i<D.Actions.size();i++)
+		{
 			Actions.push_back(D.Actions[i]);
+			Actions.back().SetCardSkillProcBuffer(SkillProcs); // have to reassign buffers
+		}
 		Units.reserve(D.Units.size());
 		for (UCHAR i=0;i<D.Units.size();i++)
+		{
 			Units.push_back(D.Units[i]);
+			Units.back().SetCardSkillProcBuffer(SkillProcs); // have to reassign buffers
+		}
 		Structures.reserve(D.Structures.size());
 		for (UCHAR i=0;i<D.Structures.size();i++)
+		{
 			Structures.push_back(D.Structures[i]);
+			Structures.back().SetCardSkillProcBuffer(SkillProcs); // have to reassign buffers
+		}
 		bOrderMatters = D.bOrderMatters;
 		bDelayFirstCard = D.bDelayFirstCard;
 		memcpy(SkillProcs,D.SkillProcs,MAX_SKILL_ID*sizeof(UCHAR));
@@ -1278,6 +1288,13 @@ public:
 	{
 		Deck.push_back(c);
 	}
+	bool IsInTargets(PlayedCard *pc, PVCARDS *targets) // helper
+	{
+		for (PVCARDS::iterator vi=targets->begin();vi!=targets->end();vi++)
+			if (pc == (*vi))
+				return true;
+		return false;
+	}
 	void ApplyEffects(PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false,PlayedCard *Mimicer=0)
 	{
 		UCHAR destindex,aid,faction;
@@ -1337,6 +1354,7 @@ public:
 								vi = targets.erase(vi);
 							else vi++;
 						}
+						bool bTributable = (IsMimiced && IsInTargets(Mimicer,&targets)) || ((!IsMimiced) && IsInTargets(&Src,&targets));
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
 							destindex = rand() % targets.size();
@@ -1362,12 +1380,13 @@ public:
 								SkillProcs[aid]++;
 							else
 								Dest.SkillProcs[aid]++;
-							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
+							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && bTributable && PROC50)
 							{
 								if (IsMimiced)
 								{
 									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != (*vi)))
 									{
+										Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
 										Mimicer->Cleanse();
 										(*vi)->fsSpecial += effect;
 									}
@@ -1376,6 +1395,7 @@ public:
 								{
 									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
 									{
+										SkillProcs[DEFENSIVE_TRIBUTE]++;
 										Src.Cleanse();
 										(*vi)->fsSpecial += effect;
 									}
@@ -1464,6 +1484,7 @@ public:
 								vi = targets.erase(vi);
 							else vi++;
 						}
+						bool bTributable = (IsMimiced && IsInTargets(Mimicer,&targets)) || ((!IsMimiced) && IsInTargets(&Src,&targets));
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
 							destindex = rand() % targets.size();
@@ -1480,31 +1501,30 @@ public:
 								(*vi)->PrintDesc();
 								printf(" for %d\n",effect);
 							}
-							(*vi)->Heal(effect);
 							if (!IsMimiced)
-								Src.fsHealed += effect;
+								Src.fsHealed += (*vi)->Heal(effect);
 							else
-								Mimicer->fsHealed += effect;
+								Mimicer->fsHealed += (*vi)->Heal(effect);
 							if ((!IsMimiced) || bIsSelfMimic)
 								SkillProcs[aid]++;
 							else
 								Dest.SkillProcs[aid]++;
-							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
+							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && bTributable && PROC50)
 							{
 								if (IsMimiced)
 								{
-									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != (*vi)) && (!Mimicer->IsDiseased()))
+									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != (*vi)))
 									{
-										Mimicer->Heal(effect);
-										(*vi)->fsHealed += effect;
+										Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
+										(*vi)->fsHealed += Mimicer->Heal(effect);
 									}
 								}
 								else
 								{
-									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)) && (!Src.IsDiseased()))
+									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
 									{
-										Src.Heal(effect);
-										(*vi)->fsHealed += effect;
+										SkillProcs[DEFENSIVE_TRIBUTE]++;
+										(*vi)->fsHealed += Src.Heal(effect);
 									}
 								}
 							}
@@ -1534,6 +1554,7 @@ public:
 								vi = targets.erase(vi);
 							else vi++;
 						}
+						bool bTributable = (IsMimiced && IsInTargets(Mimicer,&targets)) || ((!IsMimiced) && IsInTargets(&Src,&targets));
 						for (vi = targets.begin();vi != targets.end();vi++)
 						{
 							if (bConsoleOutput)
@@ -1543,11 +1564,10 @@ public:
 								(*vi)->PrintDesc();
 								printf(" for %d\n",effect);
 							}
-							(*vi)->Heal(effect);
 							if (!IsMimiced)
-								Src.fsHealed += effect;
+								Src.fsHealed += (*vi)->Heal(effect);
 							else
-								Mimicer->fsHealed += effect;
+								Mimicer->fsHealed += (*vi)->Heal(effect);
 							if ((!IsMimiced) || bIsSelfMimic)
 								SkillProcs[aid]++;
 							else
@@ -1556,18 +1576,18 @@ public:
 							{
 								if (IsMimiced)
 								{
-									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != (*vi)) && (!Mimicer->IsDiseased()))
+									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != (*vi)))
 									{
-										Mimicer->Heal(effect);
-										(*vi)->fsHealed += effect;
+										Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
+										(*vi)->fsHealed += Mimicer->Heal(effect);
 									}
 								}
 								else
 								{
-									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)) && (!Src.IsDiseased()))
+									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
 									{
-										Src.Heal(effect);
-										(*vi)->fsHealed += effect;
+										SkillProcs[DEFENSIVE_TRIBUTE]++;
+										(*vi)->fsHealed += Src.Heal(effect);
 									}
 								}
 							}
@@ -1631,6 +1651,7 @@ public:
 									{
 										Mimicer->Protect(effect);
 										(*vi)->fsSpecial += effect;
+										Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
 									}
 								}
 								else
@@ -1639,6 +1660,7 @@ public:
 									{
 										Src.Protect(effect);
 										(*vi)->fsSpecial += effect;
+										SkillProcs[DEFENSIVE_TRIBUTE]++;
 									}
 								}
 							}
@@ -1857,6 +1879,7 @@ public:
 								vi = targets.erase(vi);
 							else vi++;
 						}
+						bool bTributable = (IsMimiced && IsInTargets(Mimicer,&targets)) || ((!IsMimiced) && IsInTargets(&Src,&targets));
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
 							destindex = rand() % targets.size();
@@ -1882,7 +1905,7 @@ public:
 								SkillProcs[aid]++;
 							else
 								Dest.SkillProcs[aid]++;
-							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
+							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && bTributable && PROC50)
 							{
 								if (IsMimiced)
 								{
@@ -1890,6 +1913,7 @@ public:
 									{
 										Mimicer->Rally(effect);
 										(*vi)->fsSpecial += effect;
+										Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
 									}
 								}
 								else
@@ -1898,6 +1922,7 @@ public:
 									{
 										Src.Rally(effect);
 										(*vi)->fsSpecial += effect;
+										Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;										
 									}
 								}
 							}
