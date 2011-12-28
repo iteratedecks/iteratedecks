@@ -431,6 +431,10 @@ extern "C"
 			strcat_s(Buffer,MaxBufferSize,DB.GetSkill(i));
 		}
 	}
+	IDAPI const char *GetSkillName(DWORD Id)
+	{
+		return DB.Skills[Id].SkillName;
+	}
 	IDAPI UCHAR GetSkillID(const char *Skill)
 	{
 		return DB.GetSkillID(Skill);
