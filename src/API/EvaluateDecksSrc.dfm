@@ -3009,7 +3009,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
           end
         end
         object tsRequrements: TcxTabSheet
-          Caption = 'Requirements'
+          Caption = 'Skill procs'
           ImageIndex = 2
           ExplicitLeft = 3
           DesignSize = (
