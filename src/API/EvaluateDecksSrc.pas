@@ -117,7 +117,8 @@ type
     MaxTurn: DWORD;
     State: integer;
     TournamentMode: byte;
-    Reqs: array[0..REQ_MAX_SIZE -1] of REQUIREMENT; 
+    Reqs: array[0..REQ_MAX_SIZE -1] of REQUIREMENT;
+    SkillProcs: array[0..CARD_ABILITIES_MAX-1] of DWORD;
   end;
 
 type
@@ -382,6 +383,14 @@ type
     vReqsSKILL: TcxGridColumn;
     vReqsPROCS: TcxGridColumn;
     cxLabel4: TcxLabel;
+    gProcsLevel1: TcxGridLevel;
+    gProcs: TcxGrid;
+    vProcs: TcxGridTableView;
+    vProcsSkill: TcxGridColumn;
+    vProcsProcs: TcxGridColumn;
+    vProcsAvg: TcxGridColumn;
+    cxLabel6: TcxLabel;
+    cxLabel7: TcxLabel;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -529,7 +538,12 @@ type
     procedure vBotNamePropertiesEditValueChanged(Sender: TObject);
     procedure bBatchRunEvalClick(Sender: TObject);
     procedure ResetBatchRunEval;
-    procedure vReqsKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure vProcsSkillCustomDrawCell(Sender: TcxCustomGridTableView;
+      ACanvas: TcxCanvas; AViewInfo: TcxGridTableDataCellViewInfo;
+      var ADone: Boolean);
+    procedure vReqsSKILLPropertiesEditValueChanged(Sender: TObject);
+    procedure vReqsDataControllerAfterPost(
+      ADataController: TcxCustomDataController);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -634,6 +648,8 @@ procedure PrepareDeck(AtkDeck: string); cdecl; external DLLFILE;
 procedure GetSkillList(buffer: PChar; size: DWORD); cdecl; external DLLFILE;
 
 function GetSkillID(SkillName: PChar): byte; cdecl; external DLLFILE;
+
+function GetSkillName(Id: DWORD): PChar; cdecl; external DLLFILE;
 
 procedure EvaluateOnce(var r: RESULTS; bSurge: boolean = false); cdecl; external
   DLLFILE;
@@ -883,10 +899,21 @@ begin
       CloseHandle(PI.hThread);
       CloseHandle(PI.hProcess);
     end;
+
+    EvaluateDecksForm.vProcs.DataController.RecordCount := 0;
+    for i := 0 to CARD_ABILITIES_MAX - 1 do
+      if pEP.SkillProcs[i] <> 0 then
+      with EvaluateDecksForm.vProcs.DataController do
+      begin
+        RecordCount := RecordCount + 1;
+        s := GetSkillName(i);
+        Values[RecordCount-1,EvaluateDecksForm.vProcsSkill.Index] := s;
+        Values[RecordCount-1,EvaluateDecksForm.vProcsProcs.Index] := pEP.SkillProcs[i];
+        Values[RecordCount-1,EvaluateDecksForm.vProcsAvg.Index] := pEP.SkillProcs[i] / pEP.Result.Win;
+      end;
   finally
     iWildCard := pEP.WildCardId;
     EvaluateDecksForm.lTimeTaken.Caption := IntToStr(pEP.Seconds) + ' sec.'; // well thats form ...
-
     result.Result := pEP.Result;
     CopyMemory(Addr(result.ResultByCard), Addr(pEP.ResultByCard), SizeOf(result.ResultByCard));
 
@@ -1565,9 +1592,33 @@ begin
   end;
 end;
 
-procedure TEvaluateDecksForm.vReqsKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TEvaluateDecksForm.vProcsSkillCustomDrawCell(
+  Sender: TcxCustomGridTableView; ACanvas: TcxCanvas;
+  AViewInfo: TcxGridTableDataCellViewInfo; var ADone: Boolean);
+var i: integer;
 begin
+  if not VarIsNull(AViewInfo.GridRecord.Values[vProcsSkill.Index]) then
+  begin
+    i := vReqs.DataController.FindRecordIndexByText(0,
+      vReqsSkill.Index,
+      AViewInfo.GridRecord.Values[vProcsSkill.Index],
+      false,true,true);
+    if i >= 0 then
+      ACanvas.Brush.Color := clSkyBlue;   
+      //ACanvas.Font.Color := clBlue;
+  end;
+end;
+
+procedure TEvaluateDecksForm.vReqsDataControllerAfterPost(
+  ADataController: TcxCustomDataController);
+begin
+  gProcs.Invalidate(true);
+end;
+
+procedure TEvaluateDecksForm.vReqsSKILLPropertiesEditValueChanged(
+  Sender: TObject);
+begin
+
 end;
 
 {IF VarIsNull(ARecord.Values[Sender.Index]) then exit;

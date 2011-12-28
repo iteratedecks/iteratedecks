@@ -3009,8 +3009,12 @@ object EvaluateDecksForm: TEvaluateDecksForm
           end
         end
         object tsRequrements: TcxTabSheet
-          Caption = 'Requrements'
+          Caption = 'Requirements'
           ImageIndex = 2
+          ExplicitLeft = 3
+          DesignSize = (
+            784
+            622)
           object cbRequirements: TcxCheckBox
             Left = 3
             Top = 3
@@ -3019,8 +3023,8 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Width = 121
           end
           object lReqNote: TcxLabel
-            Left = 272
-            Top = 3
+            Left = 288
+            Top = 30
             AutoSize = False
             Caption = 
               'These requirements will only affect win and win ratio columns, a' +
@@ -3033,15 +3037,15 @@ object EvaluateDecksForm: TEvaluateDecksForm
           object gRequirements: TcxGrid
             Left = 3
             Top = 30
-            Width = 250
+            Width = 263
             Height = 123
             TabOrder = 2
             object vReqs: TcxGridTableView
-              OnKeyDown = vReqsKeyDown
               NavigatorButtons.ConfirmDelete = False
               DataController.Summary.DefaultGroupSummaryItems = <>
               DataController.Summary.FooterSummaryItems = <>
               DataController.Summary.SummaryGroups = <>
+              DataController.OnAfterPost = vReqsDataControllerAfterPost
               OptionsData.Deleting = False
               OptionsData.Inserting = False
               OptionsView.ColumnAutoWidth = True
@@ -3050,6 +3054,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
                 Caption = 'Skill'
                 PropertiesClassName = 'TcxComboBoxProperties'
                 Properties.DropDownListStyle = lsFixedList
+                Properties.OnEditValueChanged = vReqsSKILLPropertiesEditValueChanged
                 Width = 100
               end
               object vReqsPROCS: TcxGridColumn
@@ -3062,12 +3067,72 @@ object EvaluateDecksForm: TEvaluateDecksForm
             end
           end
           object cxLabel4: TcxLabel
-            Left = 272
-            Top = 55
+            Left = 288
+            Top = 82
             AutoSize = False
             Caption = 
               'Didn'#39't have time to check all the skills, so feel free to report' +
               ' if you think some of them are not working'
+            Properties.WordWrap = True
+            Height = 46
+            Width = 265
+          end
+          object gProcs: TcxGrid
+            Left = 3
+            Top = 168
+            Width = 262
+            Height = 451
+            Anchors = [akLeft, akTop, akBottom]
+            TabOrder = 4
+            object vProcs: TcxGridTableView
+              NavigatorButtons.ConfirmDelete = False
+              DataController.Summary.DefaultGroupSummaryItems = <>
+              DataController.Summary.FooterSummaryItems = <>
+              DataController.Summary.SummaryGroups = <>
+              OptionsData.Deleting = False
+              OptionsData.Editing = False
+              OptionsData.Inserting = False
+              object vProcsSkill: TcxGridColumn
+                Caption = 'Skill'
+                OnCustomDrawCell = vProcsSkillCustomDrawCell
+                Width = 107
+              end
+              object vProcsProcs: TcxGridColumn
+                Caption = 'Procs'
+                DataBinding.ValueType = 'LargeInt'
+                Width = 68
+              end
+              object vProcsAvg: TcxGridColumn
+                Caption = 'Avg. procs'
+                DataBinding.ValueType = 'Float'
+                PropertiesClassName = 'TcxCurrencyEditProperties'
+                Properties.DisplayFormat = ',0.###;-,0.###'
+                Width = 63
+              end
+            end
+            object gProcsLevel1: TcxGridLevel
+              GridView = vProcs
+            end
+          end
+          object cxLabel6: TcxLabel
+            Left = 288
+            Top = 168
+            AutoSize = False
+            Caption = 
+              'This is the list of procs from last evaluation, this table only ' +
+              'includes skill procs from games that were counted as won for the' +
+              ' sake of being useful for achievements'
+            Properties.WordWrap = True
+            Height = 65
+            Width = 265
+          end
+          object cxLabel7: TcxLabel
+            Left = 288
+            Top = 239
+            AutoSize = False
+            Caption = 
+              'This list is build regardless of enabling requirements, however ' +
+              'it takes them into account'
             Properties.WordWrap = True
             Height = 46
             Width = 265
