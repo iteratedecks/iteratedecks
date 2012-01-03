@@ -691,6 +691,10 @@ Valor: Removed after owner ends his turn.
 		SkillProcBuffer = 0;
 	}
 	const UINT GetId() const { return OriginalCard->GetId(); }
+	const UCHAR GetNativeAttack() const
+	{
+		return Attack;
+	}
 	const UCHAR GetAttack() const
 	{
 		char atk = Attack - Effects[ACTIVATION_WEAKEN] + Effects[ACTIVATION_RALLY];
@@ -732,6 +736,7 @@ Valor: Removed after owner ends his turn.
 	const bool GetPlayed() const { return bPlayed; }
 	void Played() { bPlayed = true; }
 	void ResetPlayedFlag() { bPlayed = false; }
+	void SetAttack(const UCHAR attack) { Attack = attack; }
 	void SetHealth(const UCHAR health) { Health = health; }
 	void SetEffect(const UCHAR id, const UCHAR value) { Effects[id] = value; }
 	void Rally(const UCHAR amount)
@@ -2382,7 +2387,7 @@ public:
 		}
 		return 0; // no cards for u
 	}
-	void AttackDeck(ActiveDeck &Def)
+	void AttackDeck(ActiveDeck &Def, bool bSkipCardPicks = false)
 	{
 		// process poison
 		for (UCHAR i=0;i<Units.size();i++)
@@ -2391,7 +2396,8 @@ public:
 			Units[i].ProcessPoison();
 		}
 
-		PickNextCard();
+		if (!bSkipCardPicks)
+			PickNextCard();
 
 		PlayedCard Empty;
 		UCHAR iFusionCount = 0;
@@ -2422,7 +2428,7 @@ public:
 		// the bad thing about infuse is that we need faction as an attribute of card, we can't pull it out of
 		// library, I need to add PlayedCard.Faction, instead of using Card.Faction
 		// added
-		if (Commander.GetAbility(ACTIVATION_INFUSE) > 0)
+		if (Commander.IsDefined() && Commander.GetAbility(ACTIVATION_INFUSE) > 0)
 		{
 			// pick a card
 			PVCARDS targets;
@@ -2444,7 +2450,8 @@ public:
 			}
 		}
 		// apply actions same way 
-		ApplyEffects(Commander,-1,Def);
+		if (Commander.IsDefined())
+			ApplyEffects(Commander,-1,Def);
 		// structure cards
 		for (UCHAR i=0;i<Structures.size();i++)
 		{
@@ -2469,60 +2476,72 @@ public:
 			Units[i].EndTurn();
 		}
 		// refresh commander
-		if (Commander.GetAbility(DEFENSIVE_REFRESH)) // Bench told refresh procs at the end of player's turn
+		if (Commander.IsDefined() && Commander.GetAbility(DEFENSIVE_REFRESH)) // Bench told refresh procs at the end of player's turn
 			Commander.Refresh();
 		// clear dead units here yours and enemy
-		VCARDS::iterator vi = Units.begin();
-		while (vi != Units.end())
-			if (!vi->IsAlive())
-			{
-				SweepFancyStats(*vi);
-				vi = Units.erase(vi);
-			}
-			else
-			{
-				vi->ResetPlayedFlag();
-				vi->ClearEnfeeble(); // this is important for chaosed skills
-				if ((!vi->IsDiseased()) && (vi->GetAbility(DEFENSIVE_REFRESH))) // Bench told refresh procs at the end of player's turn
-					vi->Refresh();
-				vi->RemoveDebuffs(); // post-turn
-				vi++;
-			}
-		vi = Structures.begin();
-		while (vi != Structures.end())
-			if (!vi->IsAlive())
-			{
-				SweepFancyStats(*vi);
-				vi = Structures.erase(vi);
-			}
-			else
-			{
-				if ((!vi->IsDiseased()) && (vi->GetAbility(DEFENSIVE_REFRESH))) // Bench told refresh procs at the end of player's turn
-					vi->Refresh();
-				vi++;
-			}
+		if (!Units.empty())
+		{
+			VCARDS::iterator vi = Units.begin();
+			while (vi != Units.end())
+				if (!vi->IsAlive())
+				{
+					SweepFancyStats(*vi);
+					vi = Units.erase(vi);
+				}
+				else
+				{
+					vi->ResetPlayedFlag();
+					vi->ClearEnfeeble(); // this is important for chaosed skills
+					if ((!vi->IsDiseased()) && (vi->GetAbility(DEFENSIVE_REFRESH))) // Bench told refresh procs at the end of player's turn
+						vi->Refresh();
+					vi->RemoveDebuffs(); // post-turn
+					vi++;
+				}
+		}
+		if (!Structures.empty())
+		{
+			VCARDS::iterator vi = Structures.begin();
+			while (vi != Structures.end())
+				if (!vi->IsAlive())
+				{
+					SweepFancyStats(*vi);
+					vi = Structures.erase(vi);
+				}
+				else
+				{
+					if ((!vi->IsDiseased()) && (vi->GetAbility(DEFENSIVE_REFRESH))) // Bench told refresh procs at the end of player's turn
+						vi->Refresh();
+					vi++;
+				}
+		}
 		//
-		vi = Def.Units.begin();
-		while (vi != Def.Units.end())
-			if (!vi->IsAlive())
-			{
-				Def.SweepFancyStats(*vi);
-				vi = Def.Units.erase(vi);
-			}
-			else
-			{
-				vi->ClearEnfeeble(); // this is important for chaosed skills
-				vi++;
-			}
-		vi = Def.Structures.begin();
-		while (vi != Def.Structures.end())
-			if (!vi->IsAlive())
-			{
-				Def.SweepFancyStats(*vi);
-				vi = Def.Structures.erase(vi);
-			}
-			else
-				vi++;
+		if (!Def.Units.empty())
+		{
+			VCARDS::iterator vi = Def.Units.begin();
+			while (vi != Def.Units.end())
+				if (!vi->IsAlive())
+				{
+					Def.SweepFancyStats(*vi);
+					vi = Def.Units.erase(vi);
+				}
+				else
+				{
+					vi->ClearEnfeeble(); // this is important for chaosed skills
+					vi++;
+				}
+		}
+		if (!Def.Structures.empty())
+		{
+			VCARDS::iterator vi = Def.Structures.begin();
+			while (vi != Def.Structures.end())
+				if (!vi->IsAlive())
+				{
+					Def.SweepFancyStats(*vi);
+					vi = Def.Structures.erase(vi);
+				}
+				else
+					vi++;
+		}
 		// check if delete record from vector via iterator and then browse forward REALLY WORKS????
 		// shift cards
 	}
