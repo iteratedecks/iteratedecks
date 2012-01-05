@@ -223,21 +223,50 @@ int _tmain(int argc, char* argv[])
 	DB.LoadMissionXML("missions.xml");
 	DB.LoadRaidXML("raids.xml");
 	//DB.SaveMissionDecks("c:\\pun.txt");
-	ActiveDeck x("P+FYFY",DB.GetPointer());
-	ActiveDeck z("P+FYFY",DB.GetPointer());
+	ActiveDeck x("P9AXDd+jGqfk+ju8u8",DB.GetPointer());
+	ActiveDeck z("RLIO+kgN+kgOgf",DB.GetPointer());
 
+	printf("%d %d %d\n",sizeof(PICK_STATS),sizeof(RESULT_BY_CARD),sizeof(EVAL_PARAMS));
 	//DB.CreateDeck("Gaia, Utopia Beacon(3), Support Carrier(2), Flux Blaster, Radiant Dawnbringer, Acropolis, Adytum(2)",x);
 	//DB.CreateDeck("Krellus[1144],Abominable Raksha,Venorax,Beetle Bomber,Phantom,Azure Reaper,Xeno Mothership,Xeno Overlord,Cloaked Exarch,Kyrios,Revoker,Predator,Shaded Hollow,Vaporwing,Landing Pods,Chaos Wave",z);
 
 
 	RESULTS r;
+	RESULT_BY_CARD rbc[DEFAULT_DECK_SIZE+1];
+	UCHAR CSIndex[CARD_MAX_ID];
+	CSIndex[x.Commander.GetId()] = 0;
+	rbc[0].Id = x.Commander.GetId();
+	for (UCHAR i=0;i<x.Deck.size();i++)
+	{
+		UCHAR idx = 0;
+		for (idx=0;idx<DEFAULT_DECK_RESERVE_SIZE+1;idx++)
+			if (rbc[idx].Id == x.Deck[i].GetId())
+				break;
+			else
+				if (!rbc[idx].IsValid())
+				{
+					rbc[idx].Id = i;
+					break;
+				}
+		_ASSERT(idx);
+		CSIndex[x.Deck[i].GetId()] = idx;
+		rbc[idx].Id = x.Deck[i].GetId();
+	}
 	//EvaluateRaidOnce(x,r,0,0,12);
 	for (UINT k=0;k<1000;k++)
 	{
 		ActiveDeck a(x),b(z);
-		Simulate(a,b,r);
+		Simulate(a,b,r,CSIndex,rbc);
 	}
 	printf("%d\n",r.Win);
+	for (UCHAR i=0;i<DEFAULT_DECK_SIZE;i++)
+	{
+		if (!rbc[i].Id) continue;
+		printf("%s:\n",DB.GetCard(rbc[i].Id).GetName());
+		if (DB.GetCard(rbc[i].Id).GetType() == TYPE_COMMANDER) continue;
+		for (UCHAR k=0;k<DEFAULT_DECK_SIZE;k++)
+			printf("   %d \\ %d \\ %d -> %.2f\n",rbc[i].PickStats[k].Win,rbc[i].PickStats[k].Stall,rbc[i].PickStats[k].Loss,(float)rbc[i].PickStats[k].Win / (rbc[i].PickStats[k].Win+rbc[i].PickStats[k].Stall+rbc[i].PickStats[k].Loss));
+	}
 	return 0;
 	// parameter weights:
 	// attack

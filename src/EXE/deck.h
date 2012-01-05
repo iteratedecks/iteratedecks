@@ -15,24 +15,24 @@
 #include <vector>
 #include <set>
 
+#define DEFAULT_DECK_SIZE		10
+#define DEFAULT_DECK_RESERVE_SIZE	15 // up to 20? kinda deck max size for structures
+#define DEFAULT_HAND_SIZE		3
+
+typedef	unsigned char UCHAR;
+typedef	unsigned int UINT;
+
 #include "results.h"
 
 #define CARD_NAME_MAX_LENGTH	50 // must sync it with CARD_NAME_MAX_LENGTH in interface
 #define FILENAME_MAX_LENGTH		50 //
 #define CARD_ABILITIES_MAX		70 // must sync it with CARD_ABILITIES_MAX in interface
 
-#define DEFAULT_DECK_SIZE		10
-#define DEFAULT_DECK_RESERVE_SIZE	15 // up to 20? kinda deck max size for structures
-#define DEFAULT_HAND_SIZE		3
-
 #define FANCY_STATS_COUNT		5
 
 #define CARD_MAX_ID				4000 // size of storage array
 #define MISSION_MAX_ID			250  // size of storage array
 #define RAID_MAX_ID				20  // size of storage array
-
-typedef	unsigned char UCHAR;
-typedef	unsigned int UINT;
 
 #define RARITY_COMMON			0
 #define RARITY_UNCOMMON			1
@@ -820,6 +820,8 @@ public:
 	//
 	UCHAR SkillProcs[CARD_ABILITIES_MAX];
 	//
+	UINT CardPicks[DEFAULT_DECK_RESERVE_SIZE];
+	//
 	UINT DamageToCommander; // for points calculation - damage dealt to ENEMY commander
 private:
 	void Reserve()
@@ -1093,7 +1095,16 @@ private:
 #undef SRC
 	}
 public:
-	ActiveDeck() { bOrderMatters = false; bDelayFirstCard = false; CSIndex = 0; CSResult = 0; DamageToCommander = 0; memset(SkillProcs,0,CARD_ABILITIES_MAX*sizeof(UCHAR)); }
+	ActiveDeck() 
+	{
+		bOrderMatters = false; 
+		bDelayFirstCard = false; 
+		CSIndex = 0; 
+		CSResult = 0; 
+		DamageToCommander = 0; 
+		memset(SkillProcs,0,CARD_ABILITIES_MAX*sizeof(UCHAR)); 
+		memset(CardPicks,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
+	}
 	~ActiveDeck() { Deck.clear(); Units.clear(); Structures.clear(); Actions.clear(); }
 public:
 #define REQ_MAX_SIZE			5
@@ -1132,6 +1143,8 @@ public:
 		bDelayFirstCard = false;
 		unsigned short tid = 0, lastid = 0;
 		memset(SkillProcs,0,CARD_ABILITIES_MAX*sizeof(UCHAR));
+		memset(CardPicks,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
+		//
 		size_t len = strlen(HashBase64);
 		_ASSERT(!(len & 1)); // bytes should go in pairs
 		len = len >> 1; // div 2
@@ -1162,7 +1175,19 @@ public:
 			}
 		}
 	}
-	ActiveDeck(const Card *Cmd) { bOrderMatters = false; bDelayFirstCard = false; CSIndex = 0; CSResult = 0; DamageToCommander = 0; Commander = PlayedCard(Cmd); Commander.SetCardSkillProcBuffer(SkillProcs); Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); memset(SkillProcs,0,CARD_ABILITIES_MAX*sizeof(UCHAR)); };
+	ActiveDeck(const Card *Cmd) 
+	{ 
+		bOrderMatters = false; 
+		bDelayFirstCard = false; 
+		CSIndex = 0; 
+		CSResult = 0;
+		DamageToCommander = 0; 
+		Commander = PlayedCard(Cmd); 
+		Commander.SetCardSkillProcBuffer(SkillProcs); 
+		Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); 
+		memset(SkillProcs,0,CARD_ABILITIES_MAX*sizeof(UCHAR));
+		memset(CardPicks,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
+	};
 	ActiveDeck(const ActiveDeck &D) // need copy constructor
 	{
 		Commander = D.Commander;
@@ -1191,6 +1216,7 @@ public:
 		bOrderMatters = D.bOrderMatters;
 		bDelayFirstCard = D.bDelayFirstCard;
 		memcpy(SkillProcs,D.SkillProcs,CARD_ABILITIES_MAX*sizeof(UCHAR));
+		memcpy(CardPicks,D.CardPicks,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 		CSIndex = D.CSIndex;
 		CSResult = D.CSResult;
 		DamageToCommander = D.DamageToCommander;
@@ -2378,6 +2404,12 @@ public:
 						Actions.push_back(*vi);
 						Actions.back().SetCardSkillProcBuffer(SkillProcs);
 					}
+					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+						if (!CardPicks[i])
+						{
+							CardPicks[i] = vi->GetId();
+							break;
+						}
 					vi = Deck.erase(vi);
 				}
 				return c;

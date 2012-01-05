@@ -68,6 +68,13 @@ type
   end;
 
 type
+  PICK_STATS = record
+    Win: DWORD;
+    Stall: DWORD;
+    Loss: DWORD;
+  end;
+
+type
   RESULT_BY_CARD = record
     Id: DWORD;
     WLGames: DWORD;
@@ -79,6 +86,7 @@ type
 	FSDamage: DWORD;
 	FSHealing: DWORD;
 	FSSpecial: DWORD;
+    PickStats: array[0..DECK_MAX_SIZE-1] of PICK_STATS;
   end;
 
 type
@@ -391,6 +399,33 @@ type
     vProcsAvg: TcxGridColumn;
     cxLabel6: TcxLabel;
     cxLabel7: TcxLabel;
+    tsCardOrder: TcxTabSheet;
+    gCardOrder: TcxGrid;
+    vCardOrder: TcxGridTableView;
+    vcoCard: TcxGridColumn;
+    vcoR1: TcxGridColumn;
+    vcoW1: TcxGridColumn;
+    cxGridLevel5: TcxGridLevel;
+    vcoW2: TcxGridColumn;
+    vcoR2: TcxGridColumn;
+    vcoW3: TcxGridColumn;
+    vcoR3: TcxGridColumn;
+    vcoW4: TcxGridColumn;
+    vcoR4: TcxGridColumn;
+    vcoW5: TcxGridColumn;
+    vcoR5: TcxGridColumn;
+    vcoW6: TcxGridColumn;
+    vcoR6: TcxGridColumn;
+    vcoW7: TcxGridColumn;
+    vcoR7: TcxGridColumn;
+    vcoW8: TcxGridColumn;
+    vcoR8: TcxGridColumn;
+    vcoW9: TcxGridColumn;
+    vcoR9: TcxGridColumn;
+    vcoW10: TcxGridColumn;
+    vcoR10: TcxGridColumn;
+    pTopCO: TPanel;
+    cbShowWinsCO: TcxCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -544,6 +579,10 @@ type
     procedure vReqsSKILLPropertiesEditValueChanged(Sender: TObject);
     procedure vReqsDataControllerAfterPost(
       ADataController: TcxCustomDataController);
+    procedure vCardOrderCustomDrawCell(Sender: TcxCustomGridTableView;
+      ACanvas: TcxCanvas; AViewInfo: TcxGridTableDataCellViewInfo;
+      var ADone: Boolean);
+    procedure cbShowWinsCOClick(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -579,6 +618,8 @@ type
     bStopBatchRunEval: boolean;
     //
     EvaluateParams: ^TEvalParams;
+    //
+    fLastWinRatio: double;
   public
     { Public declarations }
   end;
@@ -789,7 +830,7 @@ var
   s: string;
 begin
   hFileMapObj := CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0,
-    256, 'Local\IterateDecksSharedMemory');
+    sizeof(TEvalParams), 'Local\IterateDecksSharedMemory');
   if (hFileMapObj = 0) then
     //ошибочка вышла
     ShowMessage('Can'' create FileMapping!')
@@ -1575,6 +1616,26 @@ begin
             break;
           end;
         end;
+    end;
+  end;
+end;
+
+procedure TEvaluateDecksForm.vCardOrderCustomDrawCell(
+  Sender: TcxCustomGridTableView; ACanvas: TcxCanvas;
+  AViewInfo: TcxGridTableDataCellViewInfo; var ADone: Boolean);
+var v: variant;
+ emul: double;
+begin
+  if (AViewInfo.Item.Index > 0) and (not VarIsNull(AViewInfo.DisplayValue)) then
+  begin
+    if VarIsFloat(AViewInfo.DisplayValue) then
+      v := AViewInfo.DisplayValue
+    else
+      v := AViewInfo.GridRecord.Values[TcxGridColumn(AViewInfo.Item).Index+1];
+    if v > fLastWinRatio then
+    begin
+      emul := (fLastWinRatio - v);
+      ACanvas.Brush.Color := RGB(round(180 - 120*emul),round(180 - 40*emul),round(180+50*emul))//round(clSkyBlue - (10 * 40 * (fLastWinRatio - v)));
     end;
   end;
 end;
@@ -3259,6 +3320,43 @@ begin
         vCardStats.EndUpdate;
       end;
 
+      // load card order
+      vCardOrder.BeginUpdate;
+      try
+        vCardOrder.DataController.RecordCount := 0;
+        zzz := (DECK_MAX_SIZE + 1);
+        for z := 0 to zzz do
+        begin
+          if z = 0 then // skip 1st card as it is always a commander
+            continue;
+          if r.ResultByCard[z].Id = 0 then // invalid card ID
+            break;
+
+          with vCardOrder.DataController do
+          try
+            i := GetIndexFromID(IntToStr(r.ResultByCard[z].Id));
+            if i < 0 then
+              continue;
+            lrec := AppendRecord;
+            s := Cards[i].Name;
+            Values[lrec, vcoCard.Index] := s;
+            for I := 0 to 10 do
+              if r.ResultByCard[z].PickStats[i].Win > 0 then
+              begin
+                Values[lrec, (vCardOrder.FindItemByName('vcoW'+inttostr(i+1)) as TcxGridColumn).Index] := r.ResultByCard[z].PickStats[i].Win;
+                Values[lrec, (vCardOrder.FindItemByName('vcoR'+inttostr(i+1)) as TcxGridColumn).Index] :=
+                  r.ResultByCard[z].PickStats[i].Win / (r.ResultByCard[z].PickStats[i].Win + r.ResultByCard[z].PickStats[i].Stall + r.ResultByCard[z].PickStats[i].Loss);
+              end;
+          except
+            ResetBatchRunEval;
+            ShowMessage(sIterateDecksCrashed);
+            Abort;
+          end;
+        end;
+      finally
+        vCardOrder.EndUpdate;
+      end;
+
       i := r.Result.games;
     end;
     //wins := Evaluate(sl1.CommaText,sl2.CommaText,games);
@@ -3268,7 +3366,8 @@ begin
       Values[rec, vcWins.Index] := r.Result.Win;
       Values[rec, vcStalled.Index] := i - r.Result.Win - r.Result.Loss;
       Values[rec, vcGames.Index] := i;
-      Values[rec, vcRatio.Index] := r.Result.Win / i;
+      fLastWinRatio := r.Result.Win / i;
+      Values[rec, vcRatio.Index] := fLastWinRatio;
       Values[rec, vcAvgD.Index] := r.Result.Points / i;
       Values[rec, vcAvgDA.Index] := r.Result.AutoPoints / i;
       Values[rec, vcAvgS.Index] := r.Result.LPoints / i;
@@ -3746,6 +3845,14 @@ begin
     seSeed.Style.Color := clWindow;
 end;
 
+procedure TEvaluateDecksForm.cbShowWinsCOClick(Sender: TObject);
+var i: integer;
+begin
+  for i := 0 to vCardOrder.ColumnCount-1 do
+    if (i mod 2) = 1 then
+      vCardOrder.Columns[i].Visible := cbShowWinsCO.Checked;
+end;
+
 procedure TEvaluateDecksForm.UpdateFilterEvent(Sender: TObject);
 begin
   if bFilterChanged or (Sender is TcxTextEdit) or (Sender = cbSkillTargetFaction) or
@@ -3927,6 +4034,9 @@ begin
 
   if not DirectoryExists(sLocalDir + sCardsDir) then
     CreateDir(sLocalDir + sCardsDir);
+
+  // hide win columns
+  cbShowWinsCO.OnClick(cbShowWinsCO);
 end;
 
 procedure TEvaluateDecksForm.FormDestroy(Sender: TObject);

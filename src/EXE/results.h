@@ -45,6 +45,18 @@ struct RESULTS
 	}
 };
 //
+struct PICK_STATS
+{
+	DWORD Win;
+	DWORD Stall;
+	DWORD Loss;
+	void Add(const PICK_STATS &a)
+	{
+		Win += a.Win;
+		Stall += a.Stall;
+		Loss += a.Loss;
+	}
+};
 struct RESULT_BY_CARD
 {
 	DWORD Id;
@@ -57,6 +69,7 @@ struct RESULT_BY_CARD
 	DWORD FSDamage;
 	DWORD FSHealing;
 	DWORD FSSpecial;
+	PICK_STATS PickStats[DEFAULT_DECK_RESERVE_SIZE];
 	RESULT_BY_CARD()
 	{
 		Id = 0;
@@ -69,6 +82,7 @@ struct RESULT_BY_CARD
 		FSDamage = 0;
 		FSHealing = 0;
 		FSSpecial = 0;
+		memset(PickStats,0,sizeof(PICK_STATS)*DEFAULT_DECK_RESERVE_SIZE);
 	};
 	bool IsValid()
 	{
@@ -90,7 +104,7 @@ struct RESULT_BY_CARD
 		printf("	Healed:		%5d	| %5.2f per card per game\n",FSHealing,(float)FSHealing / FSRecordCount);
 		printf("	Special:	%5d	| %5.2f per card per game\n",FSSpecial,(float)FSSpecial / FSRecordCount);
 	}
-	void Add(const RESULT_BY_CARD rAdd)
+	void Add(const RESULT_BY_CARD &rAdd)
 	{
 		_ASSERT(Id == rAdd.Id);
 		WLGames += rAdd.WLGames;
@@ -102,5 +116,7 @@ struct RESULT_BY_CARD
 		FSDamage += rAdd.FSDamage;
 		FSHealing += rAdd.FSHealing;
 		FSSpecial += rAdd.FSSpecial;
+		for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+			PickStats[i].Add(rAdd.PickStats[i]);
 	}
 };

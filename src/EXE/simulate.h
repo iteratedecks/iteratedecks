@@ -72,6 +72,11 @@ In other words, it is the same as on auto, only the counters reset every time yo
 			tDef.AttackDeck(tAtk);
 			if (!tAtk.Commander.IsAlive())
 			{
+				if (CSIndex && rbc)
+					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+						if (tAtk.CardPicks[i])
+							rbc[CSIndex[tAtk.CardPicks[i]]].PickStats[i].Loss++;
+
 				r.LPoints+=10; // for winning 
 				r.LAutoPoints+=10;
 				if (tAtk.DamageToCommander >= 10)   // + points for dealing damage to enemy commander
@@ -158,6 +163,11 @@ In other words, it is the same as on auto, only the counters reset every time yo
 		tAtk.AttackDeck(tDef);
 		if (!tDef.Commander.IsAlive())
 		{
+			if (CSIndex && rbc)
+				for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+					if (tAtk.CardPicks[i])
+						rbc[CSIndex[tAtk.CardPicks[i]]].PickStats[i].Win++;
+
 			if (tAtk.CheckRequirements(Reqs))
 			{
 				r.Win++;
@@ -201,6 +211,11 @@ In other words, it is the same as on auto, only the counters reset every time yo
 			tDef.AttackDeck(tAtk);
 			if (!tAtk.Commander.IsAlive())
 			{
+				if (CSIndex && rbc)
+					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+						if (tAtk.CardPicks[i])
+							rbc[CSIndex[tAtk.CardPicks[i]]].PickStats[i].Loss++;
+
 				r.LPoints+=10; // for winning 
 				r.LAutoPoints+=10;
 				if (tAtk.DamageToCommander >= 10)   // + points for dealing damage to enemy commander
@@ -252,6 +267,11 @@ In other words, it is the same as on auto, only the counters reset every time yo
 	if (tAtk.Commander.IsDefined() && tDef.Commander.IsDefined() && tAtk.Commander.IsAlive() && tDef.Commander.IsAlive())
 	{
 		// stall = loss
+		if (CSIndex && rbc)
+			for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+				if (tAtk.CardPicks[i])
+					rbc[CSIndex[tAtk.CardPicks[i]]].PickStats[i].Stall++;
+
 		r.LPoints+=10;
 		r.LAutoPoints+=10;
 		if (tAtk.DamageToCommander >= 10)   // + points for dealing damage to enemy commander
@@ -345,6 +365,11 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 		tAtk.AttackDeck(tDef);
 		if (!tDef.Commander.IsAlive())
 		{
+			if (CSIndex && rbc)
+				for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+					if (tAtk.CardPicks[i])
+						rbc[CSIndex[tAtk.CardPicks[i]]].PickStats[i].Win++;
+
 			if (tAtk.CheckRequirements(Reqs))
 			{
 				r.Win++;
@@ -376,6 +401,18 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 			break;
 		}
 		i++;
+	}
+	if (tDef.Commander.IsAlive())
+	{
+		if (CSIndex && rbc)
+			for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+				if (tAtk.CardPicks[i])
+				{
+					if (!tAtk.Commander.IsAlive())
+						rbc[CSIndex[tAtk.CardPicks[i]]].PickStats[i].Loss++;
+					else
+						rbc[CSIndex[tAtk.CardPicks[i]]].PickStats[i].Stall++;
+				}
 	}
 	// check if cards stayed in deck - we finished before they could be played, lol
 	if (CSIndex && rbc && (!tAtk.Deck.empty()))
