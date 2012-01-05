@@ -6962,7 +6962,7 @@
 		<commander>1130</commander>
 		<desc>This is one of the largest invasions by the Xeno in the Wasteland.</desc>
 		<speech>
-			<line commander='1042'>How can anyone follow Halcyon's after all the atrocities he has committed? Now he has gone too far.</line>
+			<line commander='1042'>How can anyone follow Halcyon after all the atrocities he has committed? Now he has gone too far.</line>
 		</speech>
 		<deck>
 			<card>78</card>
@@ -7572,7 +7572,7 @@
 		<x>60</x>
 		<y>120</y> 
 		<xp>72</xp>
-		<energy>15</energy> <!--15 for promo, 25 after-->
+		<energy>25</energy>
 		<money>1500</money>
 		<commander>1143</commander>
 		<desc>Bloodthirsty are the least organized but are still drawn to the power.</desc>
@@ -7609,7 +7609,7 @@
 		<x>160</x>
 		<y>160</y> 
 		<xp>72</xp>
-		<energy>15</energy> <!--15 for promo, 25 after-->
+		<energy>25</energy>
 		<money>1500</money>
 		<commander>1144</commander>
 		<desc>The Xeno have shifted their entire focus to this island.</desc>
@@ -7645,10 +7645,10 @@
 		<x>220</x>
 		<y>130</y> 
 		<xp>72</xp>
-		<energy>15</energy> <!--15 for promo, 25 after-->
+		<energy>25</energy>
 		<money>1500</money>
 		<commander>1145</commander>
-		<desc>Raiders have been searching this area a long time and they are well equipped to defend it.</desc>
+		<desc>Raiders have been searching this area for a long time and they are well equipped to defend it.</desc>
 		<speech>
 			<line commander='1042'>The ground is beginning to tremble. Can you feel the power surround you? We must be close.</line>
 		</speech>
@@ -7681,7 +7681,7 @@
 		<x>300</x>
 		<y>90</y> 
 		<xp>72</xp>
-		<energy>15</energy> <!--15 for promo, 25 after-->
+		<energy>25</energy>
 		<money>1500</money>
 		<commander>1146</commander>
 		<desc>Imperials were able to track the location of the power and it is within their grasp.</desc>
@@ -7723,7 +7723,7 @@
 		<x>440</x>
 		<y>150</y> 
 		<xp>75</xp>
-		<energy>15</energy> <!--15 for promo, 25 after-->
+		<energy>25</energy>
 		<money>1600</money>
 		<commander>1146</commander>
 		<desc>Imperials will try to destroy you quickly and let your remains become trampled by the Jotun.</desc>
@@ -7760,7 +7760,7 @@
 		<x>370</x>
 		<y>220</y> 
 		<xp>75</xp>
-		<energy>15</energy> <!--15 for promo, 25 after-->
+		<energy>25</energy>
 		<money>1600</money>
 		<commander>1145</commander>
 		<desc>The Raiders tried to build their forces to withstand the Jotun.</desc>
@@ -7796,7 +7796,7 @@
 		<x>270</x>
 		<y>210</y> 
 		<xp>75</xp>
-		<energy>15</energy> <!--15 for promo, 25 after-->
+		<energy>25</energy>
 		<money>1600</money>
 		<commander>1144</commander>
 		<desc>Elite Xeno have flown in to assist their forces.</desc>
@@ -7833,7 +7833,7 @@
 		<x>200</x>
 		<y>280</y> 
 		<xp>75</xp>
-		<energy>15</energy> <!--15 for promo, 25 after-->
+		<energy>25</energy>
 		<money>1600</money>
 		<commander>1143</commander>
 		<desc>Most of the Bloodthirsty have been destroyed but powerful foes remain.</desc>

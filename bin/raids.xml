@@ -1854,7 +1854,7 @@
 			<layer start='-10' end='10'>santacolossusback.jpg</layer>
 		</layers>
 		<energy>10</energy>
-		<health>25000</health> <!-- Not Sure Yet -->
+		<health>25000</health>
 		<commander>1142</commander>
 		<deck>
 			<always_include>
@@ -1935,83 +1935,83 @@
 		</honor_reward>
 		<honor_reward>
 			<req>25</req>
-			<honor>4</honor> <!-- 2 -->
+			<honor>2</honor>
 		</honor_reward>
 		<honor_reward>
 			<req>50</req>
-			<honor>10</honor> <!-- 5 -->
+			<honor>5</honor>
 		</honor_reward>
 		<honor_reward>
 			<req>75</req>
-			<honor>16</honor> <!-- 8 -->
+			<honor>8</honor>
 		</honor_reward>
 		<honor_reward>
 			<req>100</req>
-			<honor>20</honor> <!-- 10 -->
+			<honor>10</honor>
 		</honor_reward>
 		<honor_reward>
 			<req>150</req>
-			<honor>30</honor> <!-- 15 -->
+			<honor>15</honor>
 		</honor_reward>
 		<honor_reward>
 			<req>200</req>
-			<honor>40</honor> <!-- 20 -->
+			<honor>20</honor>
 		</honor_reward>
 		<honor_reward>
 			<req>250</req>
-			<honor>50</honor> <!-- 25 -->
+			<honor>25</honor>
 		</honor_reward>
 		<honor_reward>
 			<req>300</req>
-			<honor>60</honor> <!-- 30 -->
+			<honor>30</honor>
 		</honor_reward>
 		<honor_reward>
 			<req>400</req>
-			<honor>80</honor> <!-- 40 -->
+			<honor>40</honor>
 		</honor_reward>
 		<honor_reward>
 			<req>500</req>
-			<honor>110</honor> <!-- 55 -->
+			<honor>55</honor>
 		</honor_reward>
 		<honor_reward>
 			<req>600</req>
-			<honor>130</honor> <!-- 60 -->
+			<honor>65</honor>
 		</honor_reward>
 		<honor_reward>
 			<req>700</req>
-			<honor>150</honor> <!-- 75 -->
+			<honor>75</honor>
 		</honor_reward>
 		<honor_reward>
 			<req>800</req>
-			<honor>170</honor> <!-- 85 -->
+			<honor>85</honor>
 		</honor_reward>
 		<honor_reward>
 			<req>900</req>
-			<honor>190</honor> <!-- 95 -->
+			<honor>95</honor>
 		</honor_reward>
 		<honor_reward>
 			<req>1000</req>
-			<honor>220</honor> <!-- 110 -->
+			<honor>110</honor>
 		</honor_reward>
-		<honor_reward> <!-- Limited -->
+		<honor_reward>
 			<req>1100</req>
-			<honor>240</honor> <!-- 120 -->
+			<honor>120</honor>
 		</honor_reward>
 		<honor_reward>
 			<req>1200</req>
-			<honor>260</honor> <!-- 130 -->
+			<honor>130</honor>
 		</honor_reward>
 		<honor_reward>
 			<req>1300</req>
-			<honor>280</honor> <!-- 140 -->
+			<honor>140</honor>
 		</honor_reward>
 		<honor_reward>
 			<req>1400</req>
-			<honor>300</honor> <!-- 150 -->
+			<honor>150</honor>
 		</honor_reward>
-		<honor_reward> <!-- END Limited -->
+		<honor_reward>
 			<req>1500</req>
-			<honor>350</honor> <!-- 160 -->
+			<honor>175</honor>
 		</honor_reward>
 		<reward>
 			<id>1</id>
@@ -2029,7 +2029,7 @@
 			<id>3</id>
 			<honor_cost>1000</honor_cost>
 			<gold_cost>100000</gold_cost>
-			<card>535</card> <!-- Limited Time -->
+			<card>539</card>
 		</reward>
 	</raid>
 </root>
