@@ -962,7 +962,7 @@ private:
 					bool bPierce = false;
 					if (armor)
 					{
-						SkillProcs[DEFENSIVE_ARMORED]++;
+						Def.SkillProcs[DEFENSIVE_ARMORED]++;
 						if (pierce > 0)
 							bPierce = true;
 						if (pierce >= armor)
