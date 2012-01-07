@@ -2522,7 +2522,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
                 DataController.Summary.FooterSummaryItems = <>
                 DataController.Summary.SummaryGroups = <>
                 OptionsData.Deleting = False
-                OptionsData.Editing = False
                 OptionsData.Inserting = False
                 OptionsView.CellAutoHeight = True
                 OptionsView.ColumnAutoWidth = True
@@ -2537,6 +2536,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                   Width = 40
                 end
                 object vcsWinrate: TcxGridColumn
@@ -2544,21 +2544,25 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                   Width = 40
                 end
                 object vcsWon: TcxGridColumn
                   Caption = 'Won w/o this card'
                   DataBinding.ValueType = 'Integer'
+                  Options.Editing = False
                   Width = 40
                 end
                 object vcsStalled: TcxGridColumn
                   Caption = 'Stalled w/o this card'
                   DataBinding.ValueType = 'Integer'
+                  Options.Editing = False
                   Width = 40
                 end
                 object vcsGames: TcxGridColumn
                   Caption = 'Games w/o this card'
                   DataBinding.ValueType = 'Integer'
+                  Options.Editing = False
                   Width = 40
                 end
                 object vcsAvgDealt: TcxGridColumn
@@ -2566,6 +2570,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                   Width = 40
                 end
                 object vcsAvgMitigated: TcxGridColumn
@@ -2573,6 +2578,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                   Width = 40
                 end
                 object vcsAvgAvoided: TcxGridColumn
@@ -2580,6 +2586,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                   Width = 40
                 end
                 object vcsAvgHealing: TcxGridColumn
@@ -2587,6 +2594,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                   Width = 40
                 end
                 object vcsAvgSpecial: TcxGridColumn
@@ -2594,6 +2602,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                   Width = 40
                 end
                 object vcsAvgOverkill: TcxGridColumn
@@ -2601,6 +2610,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                   Width = 40
                 end
                 object vcsAvgDeaths: TcxGridColumn
@@ -2608,6 +2618,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                   Width = 40
                 end
               end
@@ -2786,13 +2797,13 @@ object EvaluateDecksForm: TEvaluateDecksForm
                 DataController.Summary.FooterSummaryItems = <>
                 DataController.Summary.SummaryGroups = <>
                 OptionsData.Deleting = False
-                OptionsData.Editing = False
                 OptionsData.Inserting = False
                 OptionsView.CellAutoHeight = True
                 OptionsView.ColumnAutoWidth = True
                 object vcType: TcxGridColumn
                   Caption = 'Type'
                   OnCustomDrawCell = vcTypeCustomDrawCell
+                  Options.Editing = False
                 end
                 object vcAtk: TcxGridColumn
                   Caption = 'Your deck'
@@ -2805,26 +2816,31 @@ object EvaluateDecksForm: TEvaluateDecksForm
                 object vcWins: TcxGridColumn
                   Caption = 'Won'
                   DataBinding.ValueType = 'Integer'
+                  Options.Editing = False
                 end
                 object vcStalled: TcxGridColumn
                   Caption = 'Stalled'
                   DataBinding.ValueType = 'Integer'
+                  Options.Editing = False
                 end
                 object vcGames: TcxGridColumn
                   Caption = 'Games'
                   DataBinding.ValueType = 'Integer'
+                  Options.Editing = False
                 end
                 object vcRatio: TcxGridColumn
                   Caption = 'Ratio'
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                 end
                 object vcAvgD: TcxGridColumn
                   Caption = 'Avg. Dmg Dealt'
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',#.##;-,#.##'
+                  Options.Editing = False
                   Width = 64
                 end
                 object vcAvgDA: TcxGridColumn
@@ -2832,6 +2848,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',#.##;-,#.##'
+                  Options.Editing = False
                   Width = 64
                 end
                 object vcAvgS: TcxGridColumn
@@ -2839,6 +2856,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',#.##;-,#.##'
+                  Options.Editing = False
                   Width = 90
                 end
                 object vcAvgSA: TcxGridColumn
@@ -2846,6 +2864,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',#.##;-,#.##'
+                  Options.Editing = False
                   Width = 90
                 end
                 object vcNet: TcxGridColumn
@@ -2853,6 +2872,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',#.##;-,#.##'
+                  Options.Editing = False
                 end
               end
               object cxGridLevel1: TcxGridLevel
@@ -3231,7 +3251,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
                 DataController.Summary.SummaryGroups = <>
                 OptionsCustomize.ColumnMoving = False
                 OptionsData.Deleting = False
-                OptionsData.Editing = False
                 OptionsData.Inserting = False
                 OptionsView.CellAutoHeight = True
                 OptionsView.ColumnAutoWidth = True
@@ -3242,6 +3261,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                   Width = 50
                 end
                 object vFCOHash: TcxGridColumn
@@ -3255,16 +3275,19 @@ object EvaluateDecksForm: TEvaluateDecksForm
                 object vFCOWin: TcxGridColumn
                   Caption = 'Win'
                   DataBinding.ValueType = 'Integer'
+                  Options.Editing = False
                   Width = 50
                 end
                 object vFCOStall: TcxGridColumn
                   Caption = 'Stall'
                   DataBinding.ValueType = 'Integer'
+                  Options.Editing = False
                   Width = 50
                 end
                 object vFCOLoss: TcxGridColumn
                   Caption = 'Loss'
                   DataBinding.ValueType = 'Integer'
+                  Options.Editing = False
                   Width = 50
                 end
               end
@@ -3308,7 +3331,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
                 DataController.Summary.SummaryGroups = <>
                 OptionsCustomize.ColumnMoving = False
                 OptionsData.Deleting = False
-                OptionsData.Editing = False
                 OptionsData.Inserting = False
                 OptionsView.CellAutoHeight = True
                 OptionsView.ColumnAutoWidth = True
@@ -3322,6 +3344,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   Caption = 'Won as #1'
                   DataBinding.ValueType = 'Integer'
                   Visible = False
+                  Options.Editing = False
                   Width = 64
                 end
                 object vcoR1: TcxGridColumn
@@ -3329,106 +3352,125 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                   Width = 64
                 end
                 object vcoW2: TcxGridColumn
                   Caption = 'Won as #2'
                   DataBinding.ValueType = 'Integer'
                   Visible = False
+                  Options.Editing = False
                 end
                 object vcoR2: TcxGridColumn
                   Caption = 'Ratio as #2'
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                 end
                 object vcoW3: TcxGridColumn
                   Caption = 'Won as #3'
                   DataBinding.ValueType = 'Integer'
                   Visible = False
+                  Options.Editing = False
                 end
                 object vcoR3: TcxGridColumn
                   Caption = 'Ratio as #3'
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                 end
                 object vcoW4: TcxGridColumn
                   Caption = 'Won as #4'
                   DataBinding.ValueType = 'Integer'
                   Visible = False
+                  Options.Editing = False
                 end
                 object vcoR4: TcxGridColumn
                   Caption = 'Ratio as #4'
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                 end
                 object vcoW5: TcxGridColumn
                   Caption = 'Won as #5'
                   DataBinding.ValueType = 'Integer'
                   Visible = False
+                  Options.Editing = False
                 end
                 object vcoR5: TcxGridColumn
                   Caption = 'Ratio as #5'
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                 end
                 object vcoW6: TcxGridColumn
                   Caption = 'Won as #6'
                   DataBinding.ValueType = 'Integer'
                   Visible = False
+                  Options.Editing = False
                 end
                 object vcoR6: TcxGridColumn
                   Caption = 'Ratio as #6'
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                 end
                 object vcoW7: TcxGridColumn
                   Caption = 'Won as #7'
                   DataBinding.ValueType = 'Integer'
                   Visible = False
+                  Options.Editing = False
                 end
                 object vcoR7: TcxGridColumn
                   Caption = 'Ratio as #7'
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                 end
                 object vcoW8: TcxGridColumn
                   Caption = 'Won as #8'
                   DataBinding.ValueType = 'Integer'
                   Visible = False
+                  Options.Editing = False
                 end
                 object vcoR8: TcxGridColumn
                   Caption = 'Ratio as #8'
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                 end
                 object vcoW9: TcxGridColumn
                   Caption = 'Won as #9'
                   DataBinding.ValueType = 'Integer'
                   Visible = False
+                  Options.Editing = False
                 end
                 object vcoR9: TcxGridColumn
                   Caption = 'Ratio as #9'
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                 end
                 object vcoW10: TcxGridColumn
                   Caption = 'Won as #10'
                   DataBinding.ValueType = 'Integer'
                   Visible = False
+                  Options.Editing = False
                 end
                 object vcoR10: TcxGridColumn
                   Caption = 'Ratio as #10'
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
+                  Options.Editing = False
                 end
               end
               object cxGridLevel5: TcxGridLevel
