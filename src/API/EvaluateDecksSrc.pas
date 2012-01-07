@@ -1044,6 +1044,7 @@ var
   i, k: integer;
   s: string;
 begin
+  CardName := StringReplace(CardName, ',','',[]);
   i := Pos('[', CardName);
   k := Pos(']', CardName);
   if (i > 0) and (k > 0) then

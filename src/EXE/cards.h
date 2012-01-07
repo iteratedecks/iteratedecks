@@ -261,6 +261,21 @@ struct SKILL
 		SkillName[0] = 0;
 	}
 };
+#define CARD_NAME_SYNTAX_EXCLUSION	"Kapak, the Deceiver"
+char *FormatCardName(char *Name)
+{
+	UCHAR cut = 0;
+	for (UCHAR i=0;i<250;i++)
+		if (!Name[i]) break;
+		else
+		{
+			if (Name[i] == ',')
+				cut++;
+			if (cut > 0)
+				Name[i] = Name[i+cut];
+		}
+	return Name;
+}
 class CardDB
 {	
 	Card CDB[CARD_MAX_ID]; // this can cause stack overflow, but should work fastest
@@ -392,7 +407,9 @@ public:
 			}
 			if (!_strcmpi(it->name(),"unit"))
 			{
-				const char *Name = it->child("name").child_value();
+				char Name[250];
+				strcpy(Name,it->child("name").child_value());
+				FormatCardName(Name);
 				UINT Id = atoi(it->child("id").child_value());
 				const char *Pic = it->child("picture").child_value();
 				UCHAR Attack = atoi(it->child("attack").child_value());
@@ -731,11 +748,14 @@ public:
 		{
 			if ((buffer[i] == '"') || (buffer[i] == ',') || (!buffer[i]))
 			{
+				if ((buffer[i] == ',') && (!strnicmp(&buffer[st],CARD_NAME_SYNTAX_EXCLUSION,sizeof(CARD_NAME_SYNTAX_EXCLUSION))))
+					continue;
 				// tokenize
 				buffer[i] = 0;
 				if (st != i)
 				{
 					// token
+					FormatCardName(&buffer[st]);
 					const Card *c = GetCardSmart(&buffer[st]);
 					if (c)
 					{
@@ -871,6 +891,8 @@ public:
 			for (size_t i=0;i<len+1;i++)
 				if ((List[i] == ',') || ((List[i] == ':') && (!p)) || (!List[i]))
 				{
+					if ((List[i] == ',') && (!strnicmp(List+p,CARD_NAME_SYNTAX_EXCLUSION,sizeof(CARD_NAME_SYNTAX_EXCLUSION))))
+						continue;
 					if (!p)
 					{
 						if (List[i] == ':')
@@ -883,6 +905,7 @@ public:
 							{
 								memcpy(buffer,List,decknameend);
 								buffer[decknameend] = 0; // finalize string
+								FormatCardName(buffer);
 								if (output_id_buffer)
 								{
 									// we dont need deck name here
@@ -1000,6 +1023,7 @@ public:
 						for (UCHAR z=0;buffer[z];z++)
 							if (buffer[z] == '’') // this char is so decieving ;(
 								buffer[z] = '\'';
+						FormatCardName(buffer);
 						do
 						{
 							if (!output_id_buffer)
