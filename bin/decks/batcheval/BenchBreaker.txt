@@ -1,51 +1,55 @@
 // Source: http://www.kongregate.com/forums/65-tyrant/topics/220972-sim-batch-eval-decks
 // ================================
-// Raider
-// ================================
-Raider Mixbag	:Duncan,Command Center,Mobile Base,Salvager,Heli-Duster,Havoc,Teslatank,Micromech,Zero,Lionheart,Dozer Tank
-Salvagers	:Duncan,Command Center(3),Salvager(4),Cannon Walker(2),Dozer Tank
-Micromechs	:Duncan,Command Center(3),Micromech(6),Dozer Tank
-Mobile Bases	:Duncan,Mobile Base(3),Heli-Duster(3),Solitary Mech(2),Salvager(2)
-Raider Muscle	:Dracorex,Command Center,Waypoint,Mobile Base,Bulldozer,Juggernaut,Darkon Destroyer,Deadblow,Rotted Mortar,Salvager(2)
-// ================================
-// Righteous
-// ================================
-Righteous Rally	:Empress,Benediction,Guerilla Leader,Reclaimer,Vigil(2),Angelwing(2),Equalizer(3)
-Avatars		:Empress,Avatar(4),Adytum(4),Bridge of Destiny,Pantheon
-Beacons		:Gaia,Utopia Beacon(3),Avatar(2),Pantheon Progeny,Adytum(2),Bridge of Destiny,Holy Beacon
-// ================================
 // Imperial
 // ================================
-Imp Mixbag	:Thadius,Rox Chainblade,Tiamat,Diminisher,Sharpshooter,Trident,Wasteland Skimmer,Psycho,Fighter Jet,Elite Diver,T-46 Leonidas
-II Rush		:Thadius,Mortar Bunker,Irradiated Infantry(8),Tiamat
-Imp Rush	:Thadius,Irradiated Infantry(2),Trident(2),Sharpshooter(2),Tiamat,Fighter Jet,Rox Chainblade,Mortar Bunker
-Enforcer Mechs	:Freddie,Enforcer Mech(4),Helios,Titan,Poseidon,Metalhead,Psycho,T-46 Leonidas
-Imp Fattys	:Dracorex,Helios,Savior,Rumbler,Mech Aid,Titan,Enforcer Mech,Lance Rider,T-46 Leonidas,Patrol Cruiser,Arms Depot
-Mr Clean	:Dracorex,Taloc,Titan,Lance Rider(3),Elite Diver(5)
-Skimmers	:Dracorex,Wasteland Skimmer(9),Apollo
-Revolution	:Dracorex,Wasteland Skimmer(4),Revolution(4),Fighter Jet,Rox Chainblade
-Lance Riders	:Dracorex,Lance Rider(6),Signal Towers(2),Arms Depot,Harbor Command
+Imp Rush		:Tabitha,Irradiated Infantry(7),Rox Chainblade,Tiamat,Mortar Bunker
+Imp Roll		:Dracorex,Hephatat,Savior,Rumbler,Mech Aid,Titan,Enforcer Mech,Lance Rider,T-46 Leonidas,Patrol Cruiser,Arms Depot
+Imp Mix		:Tabitha,Rox Chainblade,Tiamat,Diminisher,Sharpshooter,Trident,Wasteland Skimmer,Psycho,Fighter Jet,Elite Diver,T-46 Leonidas
+Skimmers I	:Dracorex,Wasteland Skimmer(9),Apollo
+Skimmers II	:Tabitha,Wasteland Skimmer(7),Rox Chainblade,Tiamat,Executioner
+Skimmers III	:Tabitha,Wasteland Skimmer(7),Hellion(2),Hephatat
+Lance Riders	:Dracorex,Lance Rider(6),Hephatat,Signal Towers(2),Arms Depot
+// ================================
+// Raider
+// ================================
+Raider Rush	:Lucina the Wicked,Hunter,Omega,Pathfinder,Mech Walker,Teslatank,Tiamat,Predator,Salvager(3)
+Raider Roll	:Dracorex,Hephatat,Pathfinder,Teslatank,Buzz Slicer,Demolition Bot(3),Support Carrier(2),Noxious Den
+Raider Mix	:Duncan,Salvager,Heli-Duster,Pathfinder,Teslatank,Havoc,Micromech,Zero,Lionheart,Dozer Tank,Bulldozer
+Sidewinders	:Dracorex,Hephatat,Sidewinder(4),Prism,Command Center(2),Waypoint(2)
+Salvagers		:Duncan,Command Center(3),Salvager(4),Cannon Walker(2),Dozer Tank
+Micromechs	:Duncan,Command Center(3),Micromech(6),Dozer Tank
 // ================================
 // Bloodthirsty
 // ================================
-BT Mixbag	:Lord of Tartarus,Microgen,Ravenous Dredge,Shapeshifter,Brawler,Razogoth's Heir,Demon,Boundless Blight,Fenrir,Gorivore,Lich
-Hatchets	:Lord of Tartarus,Hatchet(5),Ravenous Dredge,Asylum(4)
-Brawlers	:Lord of Tartarus,Necrogeddon,Brawler(9)
-Sentries	:Lord of Tartarus,Asylum(5),Sulfuris Sentry(3),Hovering Pest(2)
-PumPool		:Dracorex,Pummeller(4),Gorivore,Valefar,Volatile Wrecker,Blood Pool(2),Asylum
-PumPool II	:Dracorex,Pummeller(3),Gorivore,Necrogeddon,Destructive Ram,Blood Pool(3),Engulfing Chasm
+BT Rush		:Lord of Tartarus,Ravenous Dredge,Microgen(3),Hatchet(3),Asylum(3)
+BT Roll		:Dracorex,Valefar,Pummeller,Draconian Queen,Abominable Horror,Recurring Darkness,Destructive Ram,Gorivore,Blight Devourer,Infected Trooper,Blood Spout
+BT Mix		:Lord of Tartarus,Ravenous Dredge,Microgen,Shapeshifter,Brawler,Razogoth's Heir,Bulging Mantis,Boundless Blight,Fenrir,Gorivore,Lich
+Pumpool		:Dracorex,Pummeller(4),Blood Pool(3),Gorivore,Necrogeddon,Volatile Wrecker
+Ogres		:Dracorex,Sundering Ogre(8),Noxious Den,Necrogeddon
+Ogres II		:Dracorex,Sundering Ogre(7),Asylum(3)
+Mantis		:Lord of Tartarus,Bulging Mantis(8),Ravenous Dredge,Necrogeddon
+Brawlers		:Lord of Tartarus,Brawler(8),Ravenous Dredge,Necrogeddon
+Sentries		:Lord of Tartarus,Asylum(5),Sulfuris Sentry(3),Hovering Pest(2)
 Regen Troll	:Dracorex,Recurring Darkness(8),Hades,Rifter
-Ogres		:Dracorex,Sundering Ogre(8),Ravenous Dredge,Necrogeddon
-Ogres II	:Dracorex,Sundering Ogre(7),Asylum(3)
 // ================================
 // Xeno
 // ================================
-Xeno Mixbag	:Invasion Coordinator,Predator,Revoker,Nemesis,Stealthy Niaq,Beetle Bomber,Apex,Cloaked Exarch,Rifter,Azure Reaper,Kyrios
+Xeno Rush	:Invasion Coordinator,Blitz Precursor(2),Enclave Signal(2),Nemesis,Predator,Chaos Swarm,Stealthy Niaq,Loki's Scion,Monsoon X
+Xeno Roll		:Dracorex,Hephatat,Xeno Mothership,Xeno Overlord,Xanadu,Abominable Raksha,Elemental,Rifter,Azure Reaper,Daemon,Shaded Hollow
+Xeno Mix		:Invasion Coordinator,Predator,Revoker,Stealthy Niaq,Beetle Bomber,Apex,Cloaked Exarch,Rifter,Azure Reaper,Kyrios,Abominable Raksha
+Xeno Tribute	:Dracorex,Hephatat,Xeno Mothership,Ozeous,Xanadu,Cloaked Exarch(2),Mesa Trekker(2),Stealthy Niaq,Rifter
 Daemon Reaper	:Dracorex,Daemon(4),Azure Reaper(4),Rifter,Stealthy Niaq
 Interceptors	:Invasion Coordinator,Xeno Interceptor(4),Revoker(2),Azure Reaper,Stealthy Niaq,Rifter,Predator
-Xeno Muscle	:Vyander,Ragnarok,Rifter,Azure Reaper(2),Daemon(2),Beetle Bomber(2),Dominated Hatchlings,Elemental
-Xeno Blitz	:Invasion Coordinator,Blitz Precursor(2),Enclave Signal(2),Nemesis(2),Predator,Chaos Swarm,Stealthy Niaq,Loki's Scion
-Anti Skimmer	:Daizon,Shapeshifter,Predator,Stealthy Niaq,Loki's Scion,Beetle Bomber,Rifter,Cloaked Exarch(2),Azure Reaper(2)
+Anti Skimmer	:Daizon,Shapeshifter,Chaos Swarm,Predator,Stealthy Niaq,Loki's Scion,Sustainer Xolan,Monsoon X,Rifter,Azure Reaper(2)
+// ================================
+// Righteous
+// ================================
+Righteous Mix	:Empress,Radiant Dawnbringer,Equalizer,Angelwing,Hierophant,Avatar,Pantheon Progeny,Indebted Veteran,Vigil,Guerilla Leader,Utopia Beacon
+Righteous Rush	:Empress,Radiant Dawnbringer,Equalizer(3),Angelwing(6)
+Righteous Roll	:Empress,Benediction,Solar Powerhouse,Guerilla Leader,Reclaimer,Vigil(2),Angelwing(2),Equalizer(2)
+Avatars		:Empress,Avatar(4),Adytum(4),Bridge of Destiny,Pantheon
+Rhinos		:Attalia,Rhino(6),Solar Powerhouse,Radiant Dawnbringer,Bridge of Destiny,Noxious Den
+Beacons		:Gaia,Utopia Beacon(4),Holy Beacon(2),Pantheon Progeny,Bridge of Destiny,Acropolis,Earthquake Generator
 // ================================
 // Dracorex Rainbow
 // ================================
@@ -54,13 +58,13 @@ Draco Evade I	:Dracorex,Hierophant(2),Beetle Bomber,Apollo,Azure Reaper(3),Steal
 Draco Multi I	:Dracorex,Bolide Walker,Poseidon,Aegis,Apollo,Pummeller,Azure Reaper,Metalhead,Rifter,Titan,Dozer Tank
 Draco Multi II	:Dracorex,Hierophant(2),Bulldozer,Apollo,Pummeller,Azure Reaper(2),Stealthy Niaq,Sharpshooter,Dozer Tank
 Draco Multi III	:Dracorex,Abominable Horror,Apollo,Bolide Walker,Pummeller,Azure Reaper,Rifter,Titan,Dozer Tank,Recurring Darkness,Poseidon
-Fattest Fat	:Dracorex,Apollo,Kraken,Rumbler,Mech Aid,Titan,Xanadu,Bulldozer,Destructive Ram,Elemental,Solar Powerhouse
+Fattest Fat		:Dracorex,Apollo,Kraken,Rumbler,Mech Aid,Titan,Xanadu,Bulldozer,Destructive Ram,Elemental,Solar Powerhouse
 Retro slowbow	:Dracorex,Aegis(2),Bolide Walker(2),Pummeller(2),Rifter,Nimbus,Poseidon,Titan
 Toxic Dodger	:Dracorex,Toxic Cannon,Sharpshooter,Hierophant,Azure Reaper(2),Rifter,Stealthy Niaq,Ravenous Dredge,Warehouse(2)
 // ================================
 // Strike Rainbow
 // ================================
-Neo Strike	:Atlas,Electromagnetic Pulse,Tiamat,Predator,Ravenous Dredge,Microgen,Stealthy Niaq,Sharpshooter,Radiant Dawnbringer,Dozer tank,Elite Diver
+Neo Strike		:Atlas,Electromagnetic Pulse,Tiamat,Predator,Ravenous Dredge,Microgen,Stealthy Niaq,Sharpshooter,Radiant Dawnbringer,Dozer tank,Elite Diver
 Atlas Multi I	:Atlas,Azure Reaper,Electromagnetic Pulse,Titan,Stealthy Niaq,Dozer Tank,Predator,Rifter,Fighter Jet,Omega,Tiamat
 Atlas Multi II	:Atlas,Dozer Tank,Apollo,Azure Reaper(2),Stealthy Niaq,Beetle Bomber,Predator,Bulldozer,Electromagnetic Pulse,Tiamat
 Balanced Strike	:Atlas,Tiamat,Predator,Omega,Ravenous Dredge,Stealthy Niaq,Azure Reaper,Hierophant,Elusive Panzer,Sharpshooter,T-46 Leonidas
@@ -78,22 +82,22 @@ Refresh Wall	:Dracorex,Utopia Beacon(3),Pantheon Progeny,Gatling Tower(2),Earthq
 // ================================
 // Counter
 // ================================
-Colossus	:Yurich,Colossus(5),Bulldozer,Command Center(2),Missile Silo,Dozer Tank
+Colossus		:Yurich,Colossus(5),Bulldozer,Command Center(2),Missile Silo,Dozer Tank
 Counter Strike	:Atlas,Trident(5),Tiamat,Predator,Rifter,Dozer Tank,Electromagnetic Pulse
 Rainbow Counter	:Atlas,Mind Controller(3),Trident(3),Colossus(2),Dozer Tank,Electromagnetic Pulse
-Tridents I	:Freddie,Trident(7),Mortar Bunker,Tiamat,Exodrone
-Tridents II	:Atlas,Trident(6),Rox Chainblade,Tiamat,Exodrone,Electromagnetic Pulse
+Tridents I		:Freddie,Trident(7),Mortar Bunker,Tiamat,Exodrone
+Tridents II		:Atlas,Trident(6),Rox Chainblade,Tiamat,Exodrone,Electromagnetic Pulse
 // ================================
 // Fear
 // ================================
-Intruder Rush	:Lord of Tartarus,Intruder(2),Asylum(2),Beholder
+Intruder Alert	:Lord of Tartarus,Intruder(2),Asylum(2),Beholder,Subterfuge
 GHouse		:Dracorex,Grim Specter(4),Warehouse(2)
 Pathrazers	:Dalia,Pathrazer(10)
-Tac Infs	:Dalia,Tactical Infiltrator(10)
+Tac Infs		:Dalia,Tactical Infiltrator(10)
 // ================================
 // Support Carriers
 // ================================
-Carriers	:Dracorex,Support Carrier(4),Apollo,Gorivore,Elemental,Destructive Ram,Stealthy Niaq,Bridge of Destiny
+Carriers		:Dracorex,Support Carrier(4),Apollo,Gorivore,Elemental,Destructive Ram,Stealthy Niaq,Bridge of Destiny
 AZR Carrier	:Dracorex,Support Carrier(3),Azure Reaper(6),Rifter
 Berserk Carrier	:Dracorex,Support Carrier(5),Apollo,Gorivore,Elemental,Abominable Horror(2)
 Swipe Carrier	:Dracorex,Support Carrier(3),Necrogeddon,Rifter,Xeno Overlord,Lance Rider(2),Recurring Darkness(2)
