@@ -2610,12 +2610,21 @@ public:
 	}
 	string GetHash64() const
 	{
+#define HASH_SAVES_ORDER	1
 		if (Deck.empty())
 			return string();
+#if HASH_SAVES_ORDER
+		typedef vector<UINT> MSID; 
+#else
 		typedef multiset<UINT> MSID; // I <3 sets, they keep stuff sorted ;)
+#endif
 		MSID ids;
 		for (UCHAR i=0;i<Deck.size();i++)
+#if HASH_SAVES_ORDER
+			ids.push_back(Deck[i].GetId());
+#else
 			ids.insert(Deck[i].GetId());
+#endif
 		string s;
 		UINT tmp = 0, t;
 		unsigned short lastid = 0, cnt = 1;
