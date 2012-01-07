@@ -1942,6 +1942,10 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Caption = 'Visual'
       ImageIndex = 0
       OnShow = tsDecksShow
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object rPanel: TPanel
         Left = 434
         Top = 0
@@ -2860,6 +2864,9 @@ object EvaluateDecksForm: TEvaluateDecksForm
         object tsEWildcard: TcxTabSheet
           Caption = 'Wildcard filters'
           ImageIndex = 1
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object gbGenericFilter: TcxGroupBox
             Left = 3
             Top = 30
@@ -3146,150 +3153,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
         object tsCardOrder: TcxTabSheet
           Caption = 'Card order'
           ImageIndex = 3
-          object gCardOrder: TcxGrid
-            AlignWithMargins = True
-            Left = 3
-            Top = 25
-            Width = 778
-            Height = 594
-            Align = alClient
-            PopupMenu = pmGrid
-            TabOrder = 0
-            object vCardOrder: TcxGridTableView
-              NavigatorButtons.ConfirmDelete = False
-              OnCustomDrawCell = vCardOrderCustomDrawCell
-              DataController.Summary.DefaultGroupSummaryItems = <>
-              DataController.Summary.FooterSummaryItems = <>
-              DataController.Summary.SummaryGroups = <>
-              OptionsCustomize.ColumnMoving = False
-              OptionsData.Deleting = False
-              OptionsData.Editing = False
-              OptionsData.Inserting = False
-              OptionsView.CellAutoHeight = True
-              OptionsView.ColumnAutoWidth = True
-              OptionsView.GroupByBox = False
-              OptionsView.HeaderAutoHeight = True
-              object vcoCard: TcxGridColumn
-                Caption = 'Card'
-                Width = 200
-              end
-              object vcoW1: TcxGridColumn
-                Caption = 'Won as #1'
-                DataBinding.ValueType = 'Integer'
-                Visible = False
-                Width = 64
-              end
-              object vcoR1: TcxGridColumn
-                Caption = 'Ratio as #1'
-                DataBinding.ValueType = 'Float'
-                PropertiesClassName = 'TcxCurrencyEditProperties'
-                Properties.DisplayFormat = ',0.###;-,0.###'
-                Width = 64
-              end
-              object vcoW2: TcxGridColumn
-                Caption = 'Won as #2'
-                DataBinding.ValueType = 'Integer'
-                Visible = False
-              end
-              object vcoR2: TcxGridColumn
-                Caption = 'Ratio as #2'
-                DataBinding.ValueType = 'Float'
-                PropertiesClassName = 'TcxCurrencyEditProperties'
-                Properties.DisplayFormat = ',0.###;-,0.###'
-              end
-              object vcoW3: TcxGridColumn
-                Caption = 'Won as #3'
-                DataBinding.ValueType = 'Integer'
-                Visible = False
-              end
-              object vcoR3: TcxGridColumn
-                Caption = 'Ratio as #3'
-                DataBinding.ValueType = 'Float'
-                PropertiesClassName = 'TcxCurrencyEditProperties'
-                Properties.DisplayFormat = ',0.###;-,0.###'
-              end
-              object vcoW4: TcxGridColumn
-                Caption = 'Won as #4'
-                DataBinding.ValueType = 'Integer'
-                Visible = False
-              end
-              object vcoR4: TcxGridColumn
-                Caption = 'Ratio as #4'
-                DataBinding.ValueType = 'Float'
-                PropertiesClassName = 'TcxCurrencyEditProperties'
-                Properties.DisplayFormat = ',0.###;-,0.###'
-              end
-              object vcoW5: TcxGridColumn
-                Caption = 'Won as #5'
-                DataBinding.ValueType = 'Integer'
-                Visible = False
-              end
-              object vcoR5: TcxGridColumn
-                Caption = 'Ratio as #5'
-                DataBinding.ValueType = 'Float'
-                PropertiesClassName = 'TcxCurrencyEditProperties'
-                Properties.DisplayFormat = ',0.###;-,0.###'
-              end
-              object vcoW6: TcxGridColumn
-                Caption = 'Won as #6'
-                DataBinding.ValueType = 'Integer'
-                Visible = False
-              end
-              object vcoR6: TcxGridColumn
-                Caption = 'Ratio as #6'
-                DataBinding.ValueType = 'Float'
-                PropertiesClassName = 'TcxCurrencyEditProperties'
-                Properties.DisplayFormat = ',0.###;-,0.###'
-              end
-              object vcoW7: TcxGridColumn
-                Caption = 'Won as #7'
-                DataBinding.ValueType = 'Integer'
-                Visible = False
-              end
-              object vcoR7: TcxGridColumn
-                Caption = 'Ratio as #7'
-                DataBinding.ValueType = 'Float'
-                PropertiesClassName = 'TcxCurrencyEditProperties'
-                Properties.DisplayFormat = ',0.###;-,0.###'
-              end
-              object vcoW8: TcxGridColumn
-                Caption = 'Won as #8'
-                DataBinding.ValueType = 'Integer'
-                Visible = False
-              end
-              object vcoR8: TcxGridColumn
-                Caption = 'Ratio as #8'
-                DataBinding.ValueType = 'Float'
-                PropertiesClassName = 'TcxCurrencyEditProperties'
-                Properties.DisplayFormat = ',0.###;-,0.###'
-              end
-              object vcoW9: TcxGridColumn
-                Caption = 'Won as #9'
-                DataBinding.ValueType = 'Integer'
-                Visible = False
-              end
-              object vcoR9: TcxGridColumn
-                Caption = 'Ratio as #9'
-                DataBinding.ValueType = 'Float'
-                PropertiesClassName = 'TcxCurrencyEditProperties'
-                Properties.DisplayFormat = ',0.###;-,0.###'
-              end
-              object vcoW10: TcxGridColumn
-                Caption = 'Won as #10'
-                DataBinding.ValueType = 'Integer'
-                Visible = False
-              end
-              object vcoR10: TcxGridColumn
-                Caption = 'Ratio as #10'
-                DataBinding.ValueType = 'Float'
-                PropertiesClassName = 'TcxCurrencyEditProperties'
-                Properties.DisplayFormat = ',0.###;-,0.###'
-              end
-            end
-            object cxGridLevel5: TcxGridLevel
-              GridView = vCardOrder
-            end
-          end
           object pTopCO: TPanel
             Left = 0
             Top = 0
@@ -3297,7 +3160,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Height = 22
             Align = alTop
             BevelOuter = bvNone
-            TabOrder = 1
+            TabOrder = 0
             object cbShowWinsCO: TcxCheckBox
               Left = 3
               Top = 0
@@ -3305,6 +3168,267 @@ object EvaluateDecksForm: TEvaluateDecksForm
               TabOrder = 0
               OnClick = cbShowWinsCOClick
               Width = 121
+            end
+          end
+          object pBotCO: TPanel
+            Left = 0
+            Top = 303
+            Width = 784
+            Height = 319
+            Align = alClient
+            BevelOuter = bvNone
+            TabOrder = 1
+            object pBotHeaderCO: TPanel
+              Left = 0
+              Top = 0
+              Width = 784
+              Height = 33
+              Align = alTop
+              BevelOuter = bvNone
+              TabOrder = 0
+              object cbCalculateOrder: TcxCheckBox
+                Left = 3
+                Top = 6
+                Caption = 'Calculate best order'
+                TabOrder = 0
+                Width = 134
+              end
+              object lMaxHeapSize: TcxLabel
+                Left = 145
+                Top = 6
+                Caption = 'Maximum heap size:'
+              end
+              object seHeapSize: TcxSpinEdit
+                Left = 251
+                Top = 6
+                Properties.Increment = 25.000000000000000000
+                Properties.LargeIncrement = 1000.000000000000000000
+                TabOrder = 2
+                Value = 125
+                Width = 62
+              end
+            end
+            object gFullCardOrder: TcxGrid
+              AlignWithMargins = True
+              Left = 3
+              Top = 36
+              Width = 778
+              Height = 280
+              Align = alClient
+              PopupMenu = pmGrid
+              TabOrder = 1
+              object vFullCardOrder: TcxGridTableView
+                NavigatorButtons.ConfirmDelete = False
+                DataController.Summary.DefaultGroupSummaryItems = <>
+                DataController.Summary.FooterSummaryItems = <>
+                DataController.Summary.SummaryGroups = <>
+                OptionsCustomize.ColumnMoving = False
+                OptionsData.Deleting = False
+                OptionsData.Editing = False
+                OptionsData.Inserting = False
+                OptionsView.CellAutoHeight = True
+                OptionsView.ColumnAutoWidth = True
+                OptionsView.GroupByBox = False
+                OptionsView.HeaderAutoHeight = True
+                object vFCORatio: TcxGridColumn
+                  Caption = 'Win ratio'
+                  DataBinding.ValueType = 'Float'
+                  PropertiesClassName = 'TcxCurrencyEditProperties'
+                  Properties.DisplayFormat = ',0.###;-,0.###'
+                  Width = 50
+                end
+                object vFCOHash: TcxGridColumn
+                  Caption = 'Ordered deck part (hash)'
+                  Width = 100
+                end
+                object vFCODeck: TcxGridColumn
+                  Caption = 'Ordered deck part (card names)'
+                  Width = 200
+                end
+                object vFCOWin: TcxGridColumn
+                  Caption = 'Win'
+                  DataBinding.ValueType = 'Integer'
+                  Width = 50
+                end
+                object vFCOStall: TcxGridColumn
+                  Caption = 'Stall'
+                  DataBinding.ValueType = 'Integer'
+                  Width = 50
+                end
+                object vFCOLoss: TcxGridColumn
+                  Caption = 'Loss'
+                  DataBinding.ValueType = 'Integer'
+                  Width = 50
+                end
+              end
+              object cxGridLevel6: TcxGridLevel
+                GridView = vFullCardOrder
+              end
+            end
+          end
+          object cxSplitter1: TcxSplitter
+            Left = 0
+            Top = 297
+            Width = 784
+            Height = 6
+            AlignSplitter = salTop
+            Control = pMidCO
+            Color = clGradientActiveCaption
+            ParentColor = False
+            ExplicitLeft = -3
+            ExplicitTop = 299
+          end
+          object pMidCO: TPanel
+            Left = 0
+            Top = 22
+            Width = 784
+            Height = 275
+            Align = alTop
+            BevelOuter = bvNone
+            TabOrder = 3
+            object gCardOrder: TcxGrid
+              AlignWithMargins = True
+              Left = 3
+              Top = 3
+              Width = 778
+              Height = 269
+              Align = alClient
+              PopupMenu = pmGrid
+              TabOrder = 0
+              object vCardOrder: TcxGridTableView
+                NavigatorButtons.ConfirmDelete = False
+                OnCustomDrawCell = vCardOrderCustomDrawCell
+                DataController.Summary.DefaultGroupSummaryItems = <>
+                DataController.Summary.FooterSummaryItems = <>
+                DataController.Summary.SummaryGroups = <>
+                OptionsCustomize.ColumnMoving = False
+                OptionsData.Deleting = False
+                OptionsData.Editing = False
+                OptionsData.Inserting = False
+                OptionsView.CellAutoHeight = True
+                OptionsView.ColumnAutoWidth = True
+                OptionsView.GroupByBox = False
+                OptionsView.HeaderAutoHeight = True
+                object vcoCard: TcxGridColumn
+                  Caption = 'Card'
+                  Width = 200
+                end
+                object vcoW1: TcxGridColumn
+                  Caption = 'Won as #1'
+                  DataBinding.ValueType = 'Integer'
+                  Visible = False
+                  Width = 64
+                end
+                object vcoR1: TcxGridColumn
+                  Caption = 'Ratio as #1'
+                  DataBinding.ValueType = 'Float'
+                  PropertiesClassName = 'TcxCurrencyEditProperties'
+                  Properties.DisplayFormat = ',0.###;-,0.###'
+                  Width = 64
+                end
+                object vcoW2: TcxGridColumn
+                  Caption = 'Won as #2'
+                  DataBinding.ValueType = 'Integer'
+                  Visible = False
+                end
+                object vcoR2: TcxGridColumn
+                  Caption = 'Ratio as #2'
+                  DataBinding.ValueType = 'Float'
+                  PropertiesClassName = 'TcxCurrencyEditProperties'
+                  Properties.DisplayFormat = ',0.###;-,0.###'
+                end
+                object vcoW3: TcxGridColumn
+                  Caption = 'Won as #3'
+                  DataBinding.ValueType = 'Integer'
+                  Visible = False
+                end
+                object vcoR3: TcxGridColumn
+                  Caption = 'Ratio as #3'
+                  DataBinding.ValueType = 'Float'
+                  PropertiesClassName = 'TcxCurrencyEditProperties'
+                  Properties.DisplayFormat = ',0.###;-,0.###'
+                end
+                object vcoW4: TcxGridColumn
+                  Caption = 'Won as #4'
+                  DataBinding.ValueType = 'Integer'
+                  Visible = False
+                end
+                object vcoR4: TcxGridColumn
+                  Caption = 'Ratio as #4'
+                  DataBinding.ValueType = 'Float'
+                  PropertiesClassName = 'TcxCurrencyEditProperties'
+                  Properties.DisplayFormat = ',0.###;-,0.###'
+                end
+                object vcoW5: TcxGridColumn
+                  Caption = 'Won as #5'
+                  DataBinding.ValueType = 'Integer'
+                  Visible = False
+                end
+                object vcoR5: TcxGridColumn
+                  Caption = 'Ratio as #5'
+                  DataBinding.ValueType = 'Float'
+                  PropertiesClassName = 'TcxCurrencyEditProperties'
+                  Properties.DisplayFormat = ',0.###;-,0.###'
+                end
+                object vcoW6: TcxGridColumn
+                  Caption = 'Won as #6'
+                  DataBinding.ValueType = 'Integer'
+                  Visible = False
+                end
+                object vcoR6: TcxGridColumn
+                  Caption = 'Ratio as #6'
+                  DataBinding.ValueType = 'Float'
+                  PropertiesClassName = 'TcxCurrencyEditProperties'
+                  Properties.DisplayFormat = ',0.###;-,0.###'
+                end
+                object vcoW7: TcxGridColumn
+                  Caption = 'Won as #7'
+                  DataBinding.ValueType = 'Integer'
+                  Visible = False
+                end
+                object vcoR7: TcxGridColumn
+                  Caption = 'Ratio as #7'
+                  DataBinding.ValueType = 'Float'
+                  PropertiesClassName = 'TcxCurrencyEditProperties'
+                  Properties.DisplayFormat = ',0.###;-,0.###'
+                end
+                object vcoW8: TcxGridColumn
+                  Caption = 'Won as #8'
+                  DataBinding.ValueType = 'Integer'
+                  Visible = False
+                end
+                object vcoR8: TcxGridColumn
+                  Caption = 'Ratio as #8'
+                  DataBinding.ValueType = 'Float'
+                  PropertiesClassName = 'TcxCurrencyEditProperties'
+                  Properties.DisplayFormat = ',0.###;-,0.###'
+                end
+                object vcoW9: TcxGridColumn
+                  Caption = 'Won as #9'
+                  DataBinding.ValueType = 'Integer'
+                  Visible = False
+                end
+                object vcoR9: TcxGridColumn
+                  Caption = 'Ratio as #9'
+                  DataBinding.ValueType = 'Float'
+                  PropertiesClassName = 'TcxCurrencyEditProperties'
+                  Properties.DisplayFormat = ',0.###;-,0.###'
+                end
+                object vcoW10: TcxGridColumn
+                  Caption = 'Won as #10'
+                  DataBinding.ValueType = 'Integer'
+                  Visible = False
+                end
+                object vcoR10: TcxGridColumn
+                  Caption = 'Ratio as #10'
+                  DataBinding.ValueType = 'Float'
+                  PropertiesClassName = 'TcxCurrencyEditProperties'
+                  Properties.DisplayFormat = ',0.###;-,0.###'
+                end
+              end
+              object cxGridLevel5: TcxGridLevel
+                GridView = vCardOrder
+              end
             end
           end
         end
@@ -3708,6 +3832,10 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsUpdate: TcxTabSheet
       Caption = 'Update DB'
       ImageIndex = 3
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object bCustom: TcxButton
         Left = 3
         Top = 205
@@ -3867,6 +3995,10 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsHelp: TcxTabSheet
       Caption = 'Tips'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         784
         646)
@@ -3887,11 +4019,8 @@ object EvaluateDecksForm: TEvaluateDecksForm
           'You will probably do just fine without my tips ;)'
           ''
           
-            'Deck hashes are actually card IDs, sorted and encoded to BASE64 ' +
-            'with RLE (IDs 4000-4095 used for RLE).'
-          
-            'Cards are sorted, so hashes are unique to deck (except for RLE a' +
-            'nd no-RLE variations).'
+            'Deck hashes are actually card IDs, encoded to BASE64 with RLE (I' +
+            'Ds 4000-4095 used for RLE).'
           ''
           'My kongregate account:'
           'http://www.kongregate.com/accounts/NETRAT'
@@ -6564,6 +6693,10 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsSettings: TcxTabSheet
       Caption = 'Settings'
       ImageIndex = 5
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object rgEval: TcxRadioGroup
         Left = 3
         Top = 3
@@ -6682,15 +6815,15 @@ object EvaluateDecksForm: TEvaluateDecksForm
   object tLoad: TTimer
     Interval = 100
     OnTimer = tLoadTimer
-    Left = 224
-    Top = 304
+    Left = 648
+    Top = 216
   end
   object tCancelHover: TTimer
     Enabled = False
     Interval = 100
     OnTimer = tCancelHoverTimer
-    Left = 224
-    Top = 352
+    Left = 648
+    Top = 264
   end
   object IdHTTP: TIdHTTP
     OnWork = IdHTTPWork
@@ -6709,15 +6842,15 @@ object EvaluateDecksForm: TEvaluateDecksForm
     Request.Ranges.Units = 'bytes'
     Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
-    Left = 120
-    Top = 304
+    Left = 544
+    Top = 216
   end
   object IL: TcxImageList
     DrawingStyle = dsTransparent
     Height = 220
     Width = 160
     FormatVersion = 1
-    DesignInfo = 19923112
+    DesignInfo = 14156368
     ImageInfo = <
       item
         Image.Data = {
@@ -33154,11 +33287,11 @@ object EvaluateDecksForm: TEvaluateDecksForm
     Height = 105
     Width = 75
     FormatVersion = 1
-    DesignInfo = 23068840
+    DesignInfo = 17302096
   end
   object pmGrid: TPopupMenu
-    Left = 160
-    Top = 248
+    Left = 584
+    Top = 160
     object bDeleteSelected: TMenuItem
       Caption = 'Delete selected'
       OnClick = bDeleteSelectedClick
@@ -33169,8 +33302,8 @@ object EvaluateDecksForm: TEvaluateDecksForm
     end
   end
   object pmBatchEval: TPopupMenu
-    Left = 160
-    Top = 192
+    Left = 584
+    Top = 104
     object MenuItem1: TMenuItem
       Caption = 'Select All'
       OnClick = MenuItem1Click
@@ -33193,7 +33326,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
     Height = 24
     Width = 24
     FormatVersion = 1
-    DesignInfo = 16777432
+    DesignInfo = 11010688
     ImageInfo = <
       item
         Image.Data = {

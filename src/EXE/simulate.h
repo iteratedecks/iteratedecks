@@ -13,9 +13,58 @@
 // contains some threading evaluation routines
 
 #define MAX_FILTER_ID_COUNT		50
+#define TOP10					10
 
 CardDB DB; // just to make all easier ...
 UINT MaxTurn = MAX_TURN;
+
+// Block
+typedef map<string, PICK_STATS> MSPS;
+typedef pair<string, PICK_STATS> PAIRSPS;
+MSPS StatsByOrder;
+#include <windows.h>
+static CRITICAL_SECTION cs;
+int OrderLength = DEFAULT_DECK_SIZE;
+UINT MaxOrderHeapSize = 700;
+void InsertOrder(string Order, int State)
+{
+	if (OrderLength <= 0)
+		return;
+
+	EnterCriticalSection(&cs);
+	if (OrderLength > 0)
+		Order = Order.substr(0,(OrderLength + 1)*2); // 2 extra chars for commander
+	pair <MSPS::iterator, bool> pi = StatsByOrder.insert(PAIRSPS(Order,PICK_STATS()));
+
+	if (pi.first == StatsByOrder.end())
+		return;
+	if (State > 0)
+		pi.first->second.Win++;
+	else
+		if (State < 0)
+			pi.first->second.Loss++;
+		else
+			pi.first->second.Stall++;
+
+	// cleanup
+	if (StatsByOrder.size() > MaxOrderHeapSize)
+	{
+		OrderLength--; // decrease max order len
+
+		MSPS tempmap;
+		for (MSPS::iterator mi = StatsByOrder.begin(); mi != StatsByOrder.end(); mi++)
+		{
+			Order = mi->first;
+			Order = Order.substr(0,(OrderLength + 1)*2);
+			pi = tempmap.insert(PAIRSPS(Order,mi->second));
+			if (!pi.second)
+				pi.first->second.Add(mi->second); // add-merge
+		}
+		StatsByOrder.swap(tempmap);	
+		tempmap.clear();
+	}
+	LeaveCriticalSection(&cs);
+}
 
 // routines
 void MergeBuffers(UINT *Dest, const UINT *Src, UINT Size = CARD_ABILITIES_MAX)
@@ -76,6 +125,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
 						if (tAtk.CardPicks[i])
 							rbc[CSIndex[tAtk.CardPicks[i]]].PickStats[i].Loss++;
+				InsertOrder(tAtk.GetHash64(true),-1);
 
 				r.LPoints+=10; // for winning 
 				r.LAutoPoints+=10;
@@ -167,7 +217,8 @@ In other words, it is the same as on auto, only the counters reset every time yo
 				for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
 					if (tAtk.CardPicks[i])
 						rbc[CSIndex[tAtk.CardPicks[i]]].PickStats[i].Win++;
-
+			
+			InsertOrder(tAtk.GetHash64(true),1);
 			if (tAtk.CheckRequirements(Reqs))
 			{
 				r.Win++;
@@ -216,6 +267,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 						if (tAtk.CardPicks[i])
 							rbc[CSIndex[tAtk.CardPicks[i]]].PickStats[i].Loss++;
 
+				InsertOrder(tAtk.GetHash64(true),-1);
 				r.LPoints+=10; // for winning 
 				r.LAutoPoints+=10;
 				if (tAtk.DamageToCommander >= 10)   // + points for dealing damage to enemy commander
@@ -272,6 +324,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 				if (tAtk.CardPicks[i])
 					rbc[CSIndex[tAtk.CardPicks[i]]].PickStats[i].Stall++;
 
+		InsertOrder(tAtk.GetHash64(true),0);
 		r.LPoints+=10;
 		r.LAutoPoints+=10;
 		if (tAtk.DamageToCommander >= 10)   // + points for dealing damage to enemy commander
@@ -370,6 +423,7 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 					if (tAtk.CardPicks[i])
 						rbc[CSIndex[tAtk.CardPicks[i]]].PickStats[i].Win++;
 
+			InsertOrder(tAtk.GetHash64(true),1);
 			if (tAtk.CheckRequirements(Reqs))
 			{
 				r.Win++;
@@ -397,6 +451,7 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 		tDef.AttackDeck(tAtk);
 		if (!tAtk.Commander.IsAlive())
 		{
+			InsertOrder(tAtk.GetHash64(true),-1);
 			r.Loss++;
 			break;
 		}
@@ -541,6 +596,8 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 	}
 	else
 	{
+		if (OrderLength >= 0)
+			InitializeCriticalSection(&cs); // this critical section is used to manage shared object calculating best card order
 	#define MAX_THREADS	50
 		unsigned int  m_uiThreadID[MAX_THREADS];
 		unsigned long m_ulThreadHandle[MAX_THREADS];
@@ -582,6 +639,8 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 			if (pSkillProcs)
 				MergeBuffers(pSkillProcs,parms[i].SkillProcs); // merge these
 		}
+		if (OrderLength >= 0)
+			DeleteCriticalSection(&cs);
 	}
 }
 
@@ -616,7 +675,11 @@ struct EVAL_PARAMS
 	// tournament mode
 	UCHAR TournamentMode; // 0 - no tourney
 	//
+	UINT OrderHeapSize; // 0 - don't calculate order
+	//
 	REQUIREMENT Req[REQ_MAX_SIZE];
 	//
 	UINT SkillProcs[CARD_ABILITIES_MAX];
+	//
+	RESULT_BY_ORDER ResultByOrder[TOP10];
 };

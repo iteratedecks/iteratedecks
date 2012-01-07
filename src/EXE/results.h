@@ -56,6 +56,32 @@ struct PICK_STATS
 		Stall += a.Stall;
 		Loss += a.Loss;
 	}
+	const float Ratio() const
+	{
+		return (float)Win / (Win + Stall + Loss);
+	}
+	bool operator<(const PICK_STATS &ps) const
+	{
+		if (Ratio() < ps.Ratio())
+			return true;
+		else
+			if (Ratio() > ps.Ratio())
+				return false;
+			else
+				if (Win < ps.Win)
+					return true;
+				else
+					if (Win > ps.Win)
+						return false;
+					else
+						return (Stall < ps.Stall);
+	}
+};
+struct RESULT_BY_ORDER
+{
+	char CardOrder[DEFAULT_DECK_RESERVE_SIZE * 2];
+	UINT CardIDs[DEFAULT_DECK_RESERVE_SIZE];
+	PICK_STATS result;
 };
 struct RESULT_BY_CARD
 {

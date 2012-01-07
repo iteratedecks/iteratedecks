@@ -18,10 +18,10 @@ uses
 
 const
   MAX_CARD_COUNT = 850;
-  MAX_DECK_SIZE = 20;
+  MAX_DECK_SIZE = 20;   // this is only for API
   MAX_SETS_COUNT = 20;
   DEFAULT_DECK_SIZE = 10;
-  DECK_MAX_SIZE = 15;
+  DECK_MAX_SIZE = 15;   // this is for actual cards and decks and data exchange
   CARD_NAME_MAX_LENGTH = 50;
   FILENAME_MAX_LENGTH = 50;
   MAX_FILTER_ID_COUNT = 50;
@@ -30,6 +30,7 @@ const
   cMaxBuffer = 65535;
   NAME_VALUE_SEPARATOR = '%';  // just a character that goes before '[' for StringList.Sort
   cDefaultMaxTurn = 50;
+  cTop10 = 10;
   
 type
   TCard = record
@@ -90,6 +91,13 @@ type
   end;
 
 type
+  RESULT_BY_ORDER = record
+	CardOrder: array[0..((DECK_MAX_SIZE * 2)-1)] of Char;
+	CardIDs: array[0..DECK_MAX_SIZE-1] of DWORD;
+    result: PICK_STATS;
+  end;
+
+type
   FULLRESULT = record
     Result: RESULTS;
     ResultByCard: array[0..DEFAULT_DECK_SIZE] of RESULT_BY_CARD;
@@ -125,8 +133,10 @@ type
     MaxTurn: DWORD;
     State: integer;
     TournamentMode: byte;
+    OrderHeapSize: DWORD;
     Reqs: array[0..REQ_MAX_SIZE -1] of REQUIREMENT;
     SkillProcs: array[0..CARD_ABILITIES_MAX-1] of DWORD;
+    ResultByOrder: array[0..cTop10-1] of RESULT_BY_ORDER;
   end;
 
 type
@@ -400,12 +410,16 @@ type
     cxLabel6: TcxLabel;
     cxLabel7: TcxLabel;
     tsCardOrder: TcxTabSheet;
+    pTopCO: TPanel;
+    cbShowWinsCO: TcxCheckBox;
+    pBotCO: TPanel;
+    cxSplitter1: TcxSplitter;
+    pMidCO: TPanel;
     gCardOrder: TcxGrid;
     vCardOrder: TcxGridTableView;
     vcoCard: TcxGridColumn;
-    vcoR1: TcxGridColumn;
     vcoW1: TcxGridColumn;
-    cxGridLevel5: TcxGridLevel;
+    vcoR1: TcxGridColumn;
     vcoW2: TcxGridColumn;
     vcoR2: TcxGridColumn;
     vcoW3: TcxGridColumn;
@@ -424,8 +438,20 @@ type
     vcoR9: TcxGridColumn;
     vcoW10: TcxGridColumn;
     vcoR10: TcxGridColumn;
-    pTopCO: TPanel;
-    cbShowWinsCO: TcxCheckBox;
+    cxGridLevel5: TcxGridLevel;
+    pBotHeaderCO: TPanel;
+    cbCalculateOrder: TcxCheckBox;
+    lMaxHeapSize: TcxLabel;
+    seHeapSize: TcxSpinEdit;
+    gFullCardOrder: TcxGrid;
+    vFullCardOrder: TcxGridTableView;
+    cxGridLevel6: TcxGridLevel;
+    vFCOHash: TcxGridColumn;
+    vFCODeck: TcxGridColumn;
+    vFCOWin: TcxGridColumn;
+    vFCOStall: TcxGridColumn;
+    vFCOLoss: TcxGridColumn;
+    vFCORatio: TcxGridColumn;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -908,6 +934,12 @@ begin
   else
     pEP.WildCardId := 0;
 
+  // orders
+  if EvaluateDecksForm.cbCalculateOrder.Checked then
+    pEP.OrderHeapSize := EvaluateDecksForm.seHeapSize.Value
+  else
+    pEP.OrderHeapSize := 0;
+
   try
     with SI do
     begin
@@ -951,6 +983,36 @@ begin
         Values[RecordCount-1,EvaluateDecksForm.vProcsSkill.Index] := s;
         Values[RecordCount-1,EvaluateDecksForm.vProcsProcs.Index] := pEP.SkillProcs[i];
         Values[RecordCount-1,EvaluateDecksForm.vProcsAvg.Index] := pEP.SkillProcs[i] / pEP.Result.Win;
+      end;
+
+    EvaluateDecksForm.vFullCardOrder.DataController.RecordCount := 0;
+    if pEP.OrderHeapSize > 0 then
+    begin
+      for i := 0 to cTOP10 - 1 do
+        if pEP.ResultByOrder[i].CardIDs[0] <> 0 then
+        with EvaluateDecksForm.vFullCardOrder.DataController do
+        begin
+          RecordCount := RecordCount + 1;
+          s := pEP.ResultByOrder[i].CardOrder;
+          Values[RecordCount-1,EvaluateDecksForm.vFCORatio.Index] := pEP.ResultByOrder[i].result.Win /
+            (pEP.ResultByOrder[i].result.Win + pEP.ResultByOrder[i].result.Stall + pEP.ResultByOrder[i].result.Loss);
+          Values[RecordCount-1,EvaluateDecksForm.vFCOHash.Index] := s;
+          Values[RecordCount-1,EvaluateDecksForm.vFCOWin.Index] := pEP.ResultByOrder[i].result.Win;
+          Values[RecordCount-1,EvaluateDecksForm.vFCOStall.Index] := pEP.ResultByOrder[i].result.Stall;
+          Values[RecordCount-1,EvaluateDecksForm.vFCOLoss.Index] := pEP.ResultByOrder[i].result.Loss;
+
+          s := '';
+          for k := 0 to DECK_MAX_SIZE - 1 do
+            if pEP.ResultByOrder[i].CardIDs[k] = 0 then
+              break
+            else
+            begin
+              if s <> '' then
+                s := s + ', ';
+              s := s + EvaluateDecksForm.Cards[StrToInt(EvaluateDecksForm.slIDIndex.Values[IntToStr(pEP.ResultByOrder[i].CardIDs[k])])].Name;
+            end;
+          Values[RecordCount-1,EvaluateDecksForm.vFCODeck.Index] := s;          
+        end;
       end;
   finally
     iWildCard := pEP.WildCardId;

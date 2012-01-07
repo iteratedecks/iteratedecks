@@ -75,12 +75,20 @@ int _tmain(int argc, char* argv[])
 		DB.CreateDeck(pEvalParams->DefDeck,Y);
 	X.SetOrderMatters(pEvalParams->OrderMatters);
 
+	if (pEvalParams->OrderHeapSize > 0)
+	{
+		MaxOrderHeapSize = pEvalParams->OrderHeapSize;
+		OrderLength = DEFAULT_DECK_SIZE;
+	}
+	else
+		OrderLength = -1;
+
 	memset(&pEvalParams->Result,0,sizeof(RESULTS));
 	memset(&pEvalParams->ResultByCard,0,sizeof(RESULT_BY_CARD) * (DEFAULT_DECK_RESERVE_SIZE + 1));	
 	memset(&pEvalParams->SkillProcs,0,sizeof(UINT)*CARD_ABILITIES_MAX);
+	memset(&pEvalParams->ResultByOrder,0,sizeof(RESULT_BY_ORDER)*TOP10);
 
 	time_t t;
-
 	time(&t);
 	if (pEvalParams->WildcardId)
 	{
@@ -208,6 +216,37 @@ int _tmain(int argc, char* argv[])
 	}
 	else // simple eval
 		EvaluateInThreads(pEvalParams->Seed,X,Y,pEvalParams->RaidID,pEvalParams->Result,pEvalParams->ResultByCard,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode,pEvalParams->Req,pEvalParams->SkillProcs);
+	if (OrderLength > 0)
+	{
+		// reorder
+		typedef map<PICK_STATS, string> MPSS;
+		typedef pair<PICK_STATS, string> PAIRPSS;
+		MPSS OrderByStats;
+		for (MSPS::iterator mi = StatsByOrder.begin(); mi != StatsByOrder.end(); mi++)
+			OrderByStats.insert(PAIRPSS(mi->second,mi->first));
+		UCHAR k=0;
+		for (MPSS::iterator mi = OrderByStats.end();;mi--)
+		{
+			if (mi != OrderByStats.end())
+			{
+				strcpy(pEvalParams->ResultByOrder[k].CardOrder,mi->second.c_str());
+				pEvalParams->ResultByOrder[k].result = mi->first;
+
+				ActiveDeck x(mi->second.c_str(),DB.GetPointer());
+				for (UCHAR i=0;i<x.Deck.size();i++)
+					pEvalParams->ResultByOrder[k].CardIDs[i] = x.Deck[i].GetId(); 
+				//printf("%3d: %s	%.3f	%d \\ %d \\ %d\n",k,mi->second.c_str(),mi->first.Ratio(),mi->first.Win,mi->first.Stall,mi->first.Loss);
+			}
+			else
+				if (k)
+					break;
+			k++;
+			if (k > 10)
+				break;
+		}
+		OrderByStats.clear();
+		StatsByOrder.clear();
+	}
 	time_t t1;
 	time(&t1);
 	pEvalParams->Seconds = (DWORD)t1-t;
@@ -225,8 +264,8 @@ int _tmain(int argc, char* argv[])
 	//DB.SaveMissionDecks("c:\\pun.txt");
 	ActiveDeck x("P9AXDd+jGqfk+ju8u8",DB.GetPointer());
 	ActiveDeck z("RLIO+kgN+kgOgf",DB.GetPointer());
-
-	printf("%d %d %d\n",sizeof(PICK_STATS),sizeof(RESULT_BY_CARD),sizeof(EVAL_PARAMS));
+	
+	//printf("%d %d %d\n",sizeof(PICK_STATS),sizeof(RESULT_BY_CARD),sizeof(EVAL_PARAMS));
 	//DB.CreateDeck("Gaia, Utopia Beacon(3), Support Carrier(2), Flux Blaster, Radiant Dawnbringer, Acropolis, Adytum(2)",x);
 	//DB.CreateDeck("Krellus[1144],Abominable Raksha,Venorax,Beetle Bomber,Phantom,Azure Reaper,Xeno Mothership,Xeno Overlord,Cloaked Exarch,Kyrios,Revoker,Predator,Shaded Hollow,Vaporwing,Landing Pods,Chaos Wave",z);
 
@@ -266,6 +305,20 @@ int _tmain(int argc, char* argv[])
 		if (DB.GetCard(rbc[i].Id).GetType() == TYPE_COMMANDER) continue;
 		for (UCHAR k=0;k<DEFAULT_DECK_SIZE;k++)
 			printf("   %d \\ %d \\ %d -> %.2f\n",rbc[i].PickStats[k].Win,rbc[i].PickStats[k].Stall,rbc[i].PickStats[k].Loss,(float)rbc[i].PickStats[k].Win / (rbc[i].PickStats[k].Win+rbc[i].PickStats[k].Stall+rbc[i].PickStats[k].Loss));
+	}
+
+	int c = 0;
+	float bestratio = 0.0;
+	printf("Heap size: %d Ratio: %.3f\n",StatsByOrder.size(),(float)r.Win/r.Games);
+	for (map <string, PICK_STATS> :: iterator mi = StatsByOrder.begin(); mi != StatsByOrder.end(); mi++)
+	{
+		float ratio = (float)mi->second.Win / (mi->second.Win + mi->second.Stall + mi->second.Loss);
+		if (((float)r.Win/r.Games <= ratio) && (bestratio <= ratio))
+		{
+			printf("%3d: %s	%.3f	%d \\ %d \\ %d\n",c,mi->first.c_str(),ratio,mi->second.Win,mi->second.Stall,mi->second.Loss);
+			bestratio = ratio;
+			c++;
+		}
 	}
 	return 0;
 	// parameter weights:

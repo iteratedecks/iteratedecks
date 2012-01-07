@@ -2608,10 +2608,10 @@ public:
 		}
 		return s;
 	}
-	string GetHash64() const
+	string GetHash64(bool bCardPicks = false) const
 	{
 #define HASH_SAVES_ORDER	1
-		if (Deck.empty())
+		if (Deck.empty() && ((!bCardPicks) || (!CardPicks[0])))
 			return string();
 #if HASH_SAVES_ORDER
 		typedef vector<UINT> MSID; 
@@ -2619,12 +2619,18 @@ public:
 		typedef multiset<UINT> MSID; // I <3 sets, they keep stuff sorted ;)
 #endif
 		MSID ids;
+		if (!bCardPicks)
+		{
 		for (UCHAR i=0;i<Deck.size();i++)
 #if HASH_SAVES_ORDER
 			ids.push_back(Deck[i].GetId());
 #else
 			ids.insert(Deck[i].GetId());
 #endif
+		}
+		else
+			for (UCHAR i=0;(i<DEFAULT_DECK_RESERVE_SIZE) && (CardPicks[i]);i++)
+				ids.push_back(CardPicks[i]); // multiset is disallowed!
 		string s;
 		UINT tmp = 0, t;
 		unsigned short lastid = 0, cnt = 1;
