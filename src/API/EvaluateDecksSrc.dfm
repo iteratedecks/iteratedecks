@@ -1942,10 +1942,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Caption = 'Visual'
       ImageIndex = 0
       OnShow = tsDecksShow
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object rPanel: TPanel
         Left = 434
         Top = 0
@@ -2600,6 +2596,20 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   Properties.DisplayFormat = ',0.###;-,0.###'
                   Width = 40
                 end
+                object vcsAvgOverkill: TcxGridColumn
+                  Caption = 'Average Damage overkill'
+                  DataBinding.ValueType = 'Float'
+                  PropertiesClassName = 'TcxCurrencyEditProperties'
+                  Properties.DisplayFormat = ',0.###;-,0.###'
+                  Width = 40
+                end
+                object vcsAvgDeaths: TcxGridColumn
+                  Caption = 'Average deaths'
+                  DataBinding.ValueType = 'Float'
+                  PropertiesClassName = 'TcxCurrencyEditProperties'
+                  Properties.DisplayFormat = ',0.###;-,0.###'
+                  Width = 40
+                end
               end
               object cxGridLevel4: TcxGridLevel
                 GridView = vCardStats
@@ -2864,9 +2874,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
         object tsEWildcard: TcxTabSheet
           Caption = 'Wildcard filters'
           ImageIndex = 1
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object gbGenericFilter: TcxGroupBox
             Left = 3
             Top = 30
@@ -3275,8 +3282,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Control = pMidCO
             Color = clGradientActiveCaption
             ParentColor = False
-            ExplicitLeft = -3
-            ExplicitTop = 299
           end
           object pMidCO: TPanel
             Left = 0
@@ -3832,10 +3837,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsUpdate: TcxTabSheet
       Caption = 'Update DB'
       ImageIndex = 3
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object bCustom: TcxButton
         Left = 3
         Top = 205
@@ -3995,10 +3996,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsHelp: TcxTabSheet
       Caption = 'Tips'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         784
         646)
@@ -6693,10 +6690,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsSettings: TcxTabSheet
       Caption = 'Settings'
       ImageIndex = 5
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object rgEval: TcxRadioGroup
         Left = 3
         Top = 3

@@ -95,6 +95,8 @@ struct RESULT_BY_CARD
 	DWORD FSDamage;
 	DWORD FSHealing;
 	DWORD FSSpecial;
+	DWORD FSOverkill;
+	DWORD FSDeaths;
 	PICK_STATS PickStats[DEFAULT_DECK_RESERVE_SIZE];
 	RESULT_BY_CARD()
 	{
@@ -108,6 +110,8 @@ struct RESULT_BY_CARD
 		FSDamage = 0;
 		FSHealing = 0;
 		FSSpecial = 0;
+		FSOverkill = 0;
+		FSDeaths = 0;
 		memset(PickStats,0,sizeof(PICK_STATS)*DEFAULT_DECK_RESERVE_SIZE);
 	};
 	bool IsValid()
@@ -142,6 +146,8 @@ struct RESULT_BY_CARD
 		FSDamage += rAdd.FSDamage;
 		FSHealing += rAdd.FSHealing;
 		FSSpecial += rAdd.FSSpecial;
+		FSOverkill += rAdd.FSOverkill;
+		FSDeaths += rAdd.FSDeaths;
 		for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
 			PickStats[i].Add(rAdd.PickStats[i]);
 	}

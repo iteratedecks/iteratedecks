@@ -87,6 +87,8 @@ type
 	FSDamage: DWORD;
 	FSHealing: DWORD;
 	FSSpecial: DWORD;
+    FSOverkill: DWORD;
+    FSDeaths: DWORD;
     PickStats: array[0..DECK_MAX_SIZE-1] of PICK_STATS;
   end;
 
@@ -452,6 +454,8 @@ type
     vFCOStall: TcxGridColumn;
     vFCOLoss: TcxGridColumn;
     vFCORatio: TcxGridColumn;
+    vcsAvgOverkill: TcxGridColumn;
+    vcsAvgDeaths: TcxGridColumn;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -3372,6 +3376,8 @@ begin
               Values[lrec, vcsAvgDealt.Index] := r.ResultByCard[z].FSDamage / r.ResultByCard[z].FSRecordCount;
               Values[lrec, vcsAvgHealing.Index] := r.ResultByCard[z].FSHealing / r.ResultByCard[z].FSRecordCount;
               Values[lrec, vcsAvgSpecial.Index] := r.ResultByCard[z].FSSpecial / r.ResultByCard[z].FSRecordCount;
+              Values[lrec, vcsAvgOverkill.Index] := r.ResultByCard[z].FSOverkill / r.ResultByCard[z].FSRecordCount;
+              Values[lrec, vcsAvgDeaths.Index] := r.ResultByCard[z].FSDeaths / r.ResultByCard[z].FSRecordCount;
             end;
           except
             ResetBatchRunEval;

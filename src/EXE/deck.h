@@ -360,6 +360,8 @@ public:
 	UINT fsAvoided; // evade, armor, flying, protect - absorbed damage, this always IGNORES protect and ignores armor if it's a flying miss
 	UINT fsHealed; // supply, heal, leech, regenerate
 	UINT fsSpecial; // enfeeble, protect, weaken, rally, poison(when applied)
+	UINT fsOverkill; // overkill damage
+	UINT fsDeaths;
 	// skill proc counter
 	UCHAR *SkillProcBuffer;
 public:
@@ -490,7 +492,7 @@ Valor: Removed after owner ends his turn.
 		Faction = setfaction;
 		SkillProcBuffer[ACTIVATION_INFUSE]++;
 	}
-	const UCHAR SufferDmg(const UCHAR Dmg, const UCHAR Pierce = 0, UCHAR *actualdamagedealt = 0, UCHAR *SkillProcBuffer = 0)
+	const UCHAR SufferDmg(const UCHAR Dmg, const UCHAR Pierce = 0, UCHAR *actualdamagedealt = 0, UCHAR *SkillProcBuffer = 0, UCHAR *OverkillDamage = 0)
 	{
 		_ASSERT(OriginalCard);
 // Regeneration happens before the additional strikes from Flurry.
@@ -511,6 +513,8 @@ Valor: Removed after owner ends his turn.
 		}
 		if (dmg >= Health)
 		{
+			if (OverkillDamage)
+				*OverkillDamage += (dmg - Health);
 			UCHAR dealt = Health;
 			if ((!IsDiseased()) && (OriginalCard->GetAbility(DEFENSIVE_REGENERATE))&&(PROC50))
 			{
@@ -525,6 +529,8 @@ Valor: Removed after owner ends his turn.
 			}
 			else
 			{
+				if (IsAlive()) // shouldn't die twice ;)
+					fsDeaths++;
 				Health = 0;
 				if (bConsoleOutput)
 				{
@@ -543,6 +549,8 @@ Valor: Removed after owner ends his turn.
 		else
 		{
 			Health -= dmg;
+			if (actualdamagedealt)
+				*actualdamagedealt = dmg;
 			if (bConsoleOutput)
 			{
 				PrintDesc();
@@ -552,7 +560,7 @@ Valor: Removed after owner ends his turn.
 		fsDmgMitigated += dmg;
 		return dmg;
 	}
-	bool HitCommander(const UCHAR Dmg, PlayedCard &Src, VCARDS &Structures, bool bCanBeCountered = true)
+	bool HitCommander(const UCHAR Dmg, PlayedCard &Src, VCARDS &Structures, bool bCanBeCountered = true, UCHAR *overkill = 0)
 	{
 		_ASSERT(GetType() == TYPE_COMMANDER); // double check for debug
 		_ASSERT(Dmg); // 0 dmg is pointless and indicates an error
@@ -562,12 +570,14 @@ Valor: Removed after owner ends his turn.
 			{
 				vi->CardSkillProc(DEFENSIVE_WALL);
 				// walls can counter and regenerate
-				vi->SufferDmg(Dmg); // regenerate
+				vi->SufferDmg(Dmg,0,0,0,overkill); // regenerate
 				if (vi->GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // counter, dmg from crush can't be countered
 				{
 					vi->CardSkillProc(DEFENSIVE_COUNTER);
 					vi->fsDmgDealt += vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
-					Src.SufferDmg(vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE)); // counter dmg is enhanced by enfeeble
+					UCHAR loverkill = 0;
+					Src.SufferDmg(vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE),0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
+					vi->fsOverkill += loverkill;
 				}
 				return false;
 			}
@@ -576,15 +586,17 @@ Valor: Removed after owner ends his turn.
 		if (GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // commander can counter aswell
 		{
 			CardSkillProc(DEFENSIVE_COUNTER);
-			Src.SufferDmg(GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE)); // counter dmg is enhanced by enfeeble
+			UCHAR loverkill = 0;
+			Src.SufferDmg(GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE),0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
+			fsOverkill += loverkill;
 		}
-		return (SufferDmg(Dmg) > 0);
+		return (SufferDmg(Dmg,0,0,0,overkill) > 0);
 	}
-	UCHAR StrikeDmg(const UCHAR Dmg) // returns dealt dmg
+	UCHAR StrikeDmg(const UCHAR Dmg, UCHAR *overkill = 0) // returns dealt dmg
 	{
 		_ASSERT(Dmg); // 0 dmg is pointless and indicates an error
 		//printf("%s %d <- %d\n",GetName(),GetHealth(),Dmg);
-		return SufferDmg(Dmg + Effects[ACTIVATION_ENFEEBLE]);
+		return SufferDmg(Dmg + Effects[ACTIVATION_ENFEEBLE],0,0,0,overkill);
 	}
 	const bool IsAlive() const
 	{
@@ -669,6 +681,8 @@ Valor: Removed after owner ends his turn.
 		fsAvoided = 0;
 		fsHealed = 0;
 		fsSpecial = 0;
+		fsOverkill = 0;
+		fsDeaths = 0;
 		SkillProcBuffer = 0;
 		return *this;
 	}
@@ -688,6 +702,8 @@ Valor: Removed after owner ends his turn.
 		fsAvoided = 0;
 		fsHealed = 0;
 		fsSpecial = 0;
+		fsOverkill = 0;
+		fsDeaths = 0;
 		SkillProcBuffer = 0;
 	}
 	const UINT GetId() const { return OriginalCard->GetId(); }
@@ -790,6 +806,8 @@ Valor: Removed after owner ends his turn.
 		fsAvoided = 0;
 		fsHealed = 0;
 		fsSpecial = 0;
+		fsOverkill = 0;
+		fsDeaths = 0;
 		SkillProcBuffer = 0;
 	}
 };
@@ -867,7 +885,9 @@ private:
 					DamageToCommander += SRC.GetAttack()+valor;
 				if (SRC.GetAbility(COMBAT_FEAR) && (Def.Units.size() > index) && Def.Units[index].IsAlive())
 					SkillProcs[COMBAT_FEAR]++;
-				Def.Commander.HitCommander(SRC.GetAttack()+valor,SRC,Def.Structures);
+				UCHAR overkill = 0;
+				Def.Commander.HitCommander(SRC.GetAttack()+valor,SRC,Def.Structures,true,&overkill);
+				SRC.fsOverkill += overkill;
 				SRC.fsDmgDealt += SRC.GetAttack()+valor;
 				// can go berserk after hitting commander too
 				if ((SRC.GetAttack()+valor > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
@@ -920,8 +940,10 @@ private:
 							SkillProcs[COMBAT_VALOR]++;
 						if (Def.Commander.IsAlive())
 							DamageToCommander += SRC.GetAttack()+valor;
-						Def.Commander.HitCommander(SRC.GetAttack()+valor,SRC,Def.Structures);
+						UCHAR overkill = 0;
+						Def.Commander.HitCommander(SRC.GetAttack()+valor,SRC,Def.Structures,true,&overkill);
 						SRC.fsDmgDealt += SRC.GetAttack()+valor;
+						SRC.fsOverkill += overkill;
 						// can go berserk after hitting commander too
 						if ((SRC.GetAttack()+valor > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
 						{
@@ -993,8 +1015,10 @@ private:
 					{
 						UCHAR actualdamagedealt = 0;
 						bPierce = bPierce || (targets[s]->GetShield() && pierce);
-						dmg = targets[s]->SufferDmg(dmg, pierce,&actualdamagedealt);
+						UCHAR overkill = 0;
+						dmg = targets[s]->SufferDmg(dmg, pierce,&actualdamagedealt,0,&overkill);
 						SRC.fsDmgDealt += actualdamagedealt;
+						SRC.fsOverkill += overkill;
 					}
 					if (bPierce)
 						SkillProcs[COMBAT_PIERCE]++;
@@ -1013,14 +1037,18 @@ private:
 						{
 							if (Def.Commander.IsAlive())
 								DamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
-							Def.Commander.HitCommander(SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def.Structures,false);
+							UCHAR overkill = 0;
+							Def.Commander.HitCommander(SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def.Structures,false,&overkill);
+							SRC.fsOverkill += overkill;
 							SkillProcs[DMGDEPENDANT_CRUSH]++;
 						}
 					}
 					// counter
 					if ((dmg > 0) && targets[s]->GetAbility(DEFENSIVE_COUNTER))
 					{
-						targets[s]->fsDmgDealt += SRC.SufferDmg(targets[s]->GetAbility(DEFENSIVE_COUNTER) + SRC.GetEffect(ACTIVATION_ENFEEBLE)); // counter dmg is enhanced by enfeeble
+						UCHAR overkill = 0;
+						targets[s]->fsDmgDealt += SRC.SufferDmg(targets[s]->GetAbility(DEFENSIVE_COUNTER) + SRC.GetEffect(ACTIVATION_ENFEEBLE),0,0,0,&overkill); // counter dmg is enhanced by enfeeble
+						targets[s]->fsOverkill += overkill;
 						Def.SkillProcs[DEFENSIVE_COUNTER]++;
 					}
 					// berserk
@@ -2053,11 +2081,18 @@ public:
 							}
 							else
 							{
-								UCHAR sdmg = (*vi)->SufferDmg(effect);
+								UCHAR overkill = 0;
+								UCHAR sdmg = (*vi)->SufferDmg(effect,0,0,0,&overkill);
 								if (!IsMimiced)
+								{
 									Src.fsDmgDealt += sdmg;
+									Src.fsOverkill += overkill;
+								}
 								else
+								{
 									Mimicer->fsDmgDealt += sdmg;
+									Mimicer->fsOverkill += overkill;
+								}
 								if ((!IsMimiced) || bIsSelfMimic)
 									SkillProcs[aid]++;
 								else
@@ -2119,18 +2154,27 @@ public:
 									(*vi)->PrintDesc();
 									printf(" for %d\n",effect);
 								}
-								UCHAR sdmg = (*vi)->StrikeDmg(effect);
+								UCHAR overkill = 0;
+								UCHAR sdmg = (*vi)->StrikeDmg(effect,&overkill);
 								if (!IsMimiced)
+								{
 									Src.fsDmgDealt += sdmg;
+									Src.fsOverkill += overkill;
+								}
 								else
+								{
 									Mimicer->fsDmgDealt += sdmg;
+									Mimicer->fsOverkill += overkill;
+								}
 								if ((!IsMimiced) || bIsSelfMimic)
 									SkillProcs[aid]++;
 								else
 									Dest.SkillProcs[aid]++;
 								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback
 								{
-									(*vi)->fsDmgDealt += Src.StrikeDmg(effect);
+									UCHAR overkill = 0;
+									(*vi)->fsDmgDealt += Src.StrikeDmg(effect,&overkill);
+									(*vi)->fsOverkill += overkill;
 									Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
 								}
 							}			
@@ -2299,6 +2343,8 @@ public:
 		CSResult[CSIndex[pc.GetId()]].FSMitigated += pc.fsDmgMitigated;
 		CSResult[CSIndex[pc.GetId()]].FSHealing += pc.fsHealed;
 		CSResult[CSIndex[pc.GetId()]].FSSpecial += pc.fsSpecial;
+		CSResult[CSIndex[pc.GetId()]].FSOverkill += pc.fsOverkill;
+		CSResult[CSIndex[pc.GetId()]].FSDeaths += pc.fsDeaths;
 	}
 	void SweepFancyStatsRemaining()
 	{
