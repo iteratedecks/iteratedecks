@@ -492,7 +492,7 @@ Valor: Removed after owner ends his turn.
 		Faction = setfaction;
 		SkillProcBuffer[ACTIVATION_INFUSE]++;
 	}
-	const UCHAR SufferDmg(const UCHAR Dmg, const UCHAR Pierce = 0, UCHAR *actualdamagedealt = 0, UCHAR *SkillProcBuffer = 0, UCHAR *OverkillDamage = 0)
+	const UCHAR SufferDmg(const UCHAR Dmg, const UCHAR Pierce = 0, UCHAR *actualdamagedealt = 0, UCHAR *SkillProcBuffer = 0, UCHAR *OverkillDamage = 0, bool bCanRegenerate = true)
 	{
 		_ASSERT(OriginalCard);
 // Regeneration happens before the additional strikes from Flurry.
@@ -516,7 +516,7 @@ Valor: Removed after owner ends his turn.
 			if (OverkillDamage)
 				*OverkillDamage += (dmg - Health);
 			UCHAR dealt = Health;
-			if ((!IsDiseased()) && (OriginalCard->GetAbility(DEFENSIVE_REGENERATE))&&(PROC50))
+			if ((!IsDiseased()) && (bCanRegenerate) && (OriginalCard->GetAbility(DEFENSIVE_REGENERATE))&&(PROC50))
 			{
 				Health = OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
 				fsHealed += OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
@@ -1016,7 +1016,7 @@ private:
 						UCHAR actualdamagedealt = 0;
 						bPierce = bPierce || (targets[s]->GetShield() && pierce);
 						UCHAR overkill = 0;
-						dmg = targets[s]->SufferDmg(dmg, pierce,&actualdamagedealt,0,&overkill);
+						dmg = targets[s]->SufferDmg(dmg, pierce,&actualdamagedealt,0,&overkill,(!SRC.GetAbility(DMGDEPENDANT_DISEASE)));
 						SRC.fsDmgDealt += actualdamagedealt;
 						SRC.fsOverkill += overkill;
 					}
