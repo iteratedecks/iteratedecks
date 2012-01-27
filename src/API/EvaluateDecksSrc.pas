@@ -456,6 +456,17 @@ type
     vFCORatio: TcxGridColumn;
     vcsAvgOverkill: TcxGridColumn;
     vcsAvgDeaths: TcxGridColumn;
+    pDonate: TPanel;
+    bShow: TcxButton;
+    bHide: TcxButton;
+    lDonate1: TcxLabel;
+    lDonate3: TcxLabel;
+    cxButton1: TcxButton;
+    lDonate2: TcxLabel;
+    eMailbox: TcxTextEdit;
+    cbWinrateBonus: TcxCheckBox;
+    tEnableBoost: TTimer;
+    tDonateNotification: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -612,6 +623,14 @@ type
       ACanvas: TcxCanvas; AViewInfo: TcxGridTableDataCellViewInfo;
       var ADone: Boolean);
     procedure cbShowWinsCOClick(Sender: TObject);
+    procedure bHideClick(Sender: TObject);
+    procedure bShowClick(Sender: TObject);
+    procedure tEnableBoostTimer(Sender: TObject);
+    procedure cxButton1Click(Sender: TObject);
+    procedure eMailboxFocusChanged(Sender: TObject);
+    procedure tDonateNotificationTimer(Sender: TObject);
+    function AdjustRatio(ratio: double): double;
+    procedure lDonate1Click(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -793,6 +812,26 @@ begin
     result := clTeal//clSkyBlue
   else
     result := clDkGray;
+end;
+
+function PickRandomBlack: TColor;
+var i:integer;
+begin
+  i := random(10);
+  case i of
+    0 : result := $001A1A;
+    1 : result := $211901;
+    2 : result := $231819;
+    3 : result := $041702;
+    4 : result := $052618;
+    5 : result := $162503;
+    6 : result := $170417;
+    7 : result := $180324;
+    8 : result := $190216;
+    9 : result := $1A0125;
+    else result := clWebPink;
+  end;
+  
 end;
 
 function TEvaluateDecksForm.GetAbilityList(X: Pointer): string;
@@ -1049,6 +1088,19 @@ begin
   ToCard.Hint := FromCard.Hint;
 end;
 
+procedure TEvaluateDecksForm.cxButton1Click(Sender: TObject);
+begin
+  ShellExecute(Handle, 'open', 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4QR8ZFQ26QHNQ', nil, nil,
+    SW_SHOWNORMAL);
+  tEnableBoost.Enabled := true;
+end;
+
+procedure TEvaluateDecksForm.eMailboxFocusChanged(Sender: TObject);
+begin
+  if eMailBox.Focused then
+      tEnableBoost.Enabled := true;
+end;
+
 procedure TEvaluateDecksForm.bRefreshDefenceClick(Sender: TObject);
 begin
   LoadDefenceLists;
@@ -1302,6 +1354,11 @@ begin
   ShellExecute(Handle, 'open',
     'http://www.kongregate.com/forums/65-tyrant/topics/195043-evaluate-decks-game-simulator',
     nil, nil, SW_SHOWNORMAL);
+end;
+
+procedure TEvaluateDecksForm.lDonate1Click(Sender: TObject);
+begin
+  bShow.Click;
 end;
 
 procedure TEvaluateDecksForm.GenericTopMouseDown(Sender: TObject;
@@ -2407,12 +2464,12 @@ begin
 
         with vBatchResult.DataController do
         try
-          rec := vBatchResult.RecordCount-1;
+          rec := vBatchResult.DataController.RecordCount-1;
           Values[rec, vcbFWins.Index] := r.Result.Win;
           Values[rec, vcbFStalled.Index] := r.Result.games - r.Result.Win - r.Result.Loss;
           Values[rec, vcbFLoss.Index] := r.Result.Loss;
           Values[rec, vcbFGames.Index] := r.Result.games;
-          Values[rec, vcbFRatio.Index] := r.Result.Win / r.Result.games;
+          Values[rec, vcbFRatio.Index] := AdjustRatio(r.Result.Win / r.Result.games);
           Values[rec, vcbFAvgD.Index] := r.Result.Points / r.Result.games;
           Values[rec, vcbFAvgDA.Index] := r.Result.AutoPoints / r.Result.games;
           Values[rec, vcbFAvgS.Index] := r.Result.LPoints / r.Result.games;
@@ -2431,12 +2488,12 @@ begin
 
         with vBatchResult.DataController do
         try
-          rec := vBatchResult.RecordCount-1;
+          rec := vBatchResult.DataController.RecordCount-1;
           Values[rec, vcbSWins.Index] := r.Result.Win;
           Values[rec, vcbSStalled.Index] := r.Result.games - r.Result.Win - r.Result.Loss;
           Values[rec, vcbSLoss.Index] := r.Result.Loss;
           Values[rec, vcbSGames.Index] := r.Result.games;
-          Values[rec, vcbSRatio.Index] := r.Result.Win / r.Result.games;
+          Values[rec, vcbSRatio.Index] := AdjustRatio(r.Result.Win / r.Result.games);
           Values[rec, vcbSAvgD.Index] := r.Result.Points / r.Result.games;
           Values[rec, vcbSAvgDA.Index] := r.Result.AutoPoints / r.Result.games;
           Values[rec, vcbSAvgS.Index] := r.Result.LPoints / r.Result.games;
@@ -2508,12 +2565,12 @@ begin
 
         with vBatchResult.DataController do
         try
-          rec := vBatchResult.RecordCount-1;
+          rec := vBatchResult.DataController.RecordCount-1;
           Values[rec, vcbFWins.Index] := r.Result.Win;
           Values[rec, vcbFStalled.Index] := r.Result.games - r.Result.Win - r.Result.Loss;
           Values[rec, vcbFLoss.Index] := r.Result.Loss;
           Values[rec, vcbFGames.Index] := r.Result.games;
-          Values[rec, vcbFRatio.Index] := r.Result.Win / r.Result.games;
+          Values[rec, vcbFRatio.Index] := AdjustRatio(r.Result.Win / r.Result.games);
           Values[rec, vcbFAvgD.Index] := r.Result.Points / r.Result.games;
           Values[rec, vcbFAvgDA.Index] := r.Result.AutoPoints / r.Result.games;
           Values[rec, vcbFAvgS.Index] := r.Result.LPoints / r.Result.games;
@@ -2532,12 +2589,12 @@ begin
 
         with vBatchResult.DataController do
         try
-          rec := vBatchResult.RecordCount-1;
+          rec := vBatchResult.DataController.RecordCount-1;
           Values[rec, vcbSWins.Index] := r.Result.Win;
           Values[rec, vcbSStalled.Index] := r.Result.games - r.Result.Win - r.Result.Loss;
           Values[rec, vcbSLoss.Index] := r.Result.Loss;
           Values[rec, vcbSGames.Index] := r.Result.games;
-          Values[rec, vcbSRatio.Index] := r.Result.Win / r.Result.games;
+          Values[rec, vcbSRatio.Index] := AdjustRatio(r.Result.Win / r.Result.games);
           Values[rec, vcbSAvgD.Index] := r.Result.Points / r.Result.games;
           Values[rec, vcbSAvgDA.Index] := r.Result.AutoPoints / r.Result.games;
           Values[rec, vcbSAvgS.Index] := r.Result.LPoints / r.Result.games;
@@ -2848,6 +2905,13 @@ begin
   cbBOrderMatters.Enabled := bFastThreaded.Checked;
 end;
 
+procedure TEvaluateDecksForm.bHideClick(Sender: TObject);
+begin
+  bShow.Visible := true;
+  bHide.Visible := false;
+  pDonate.Height := 23;
+end;
+
 procedure TEvaluateDecksForm.LoadTopDeck(Name: string; Tag: integer = 0);
 var
   p1: pchar;
@@ -3015,7 +3079,19 @@ begin
   end;
 end;
 
-
+function TEvaluateDecksForm.AdjustRatio(ratio: double): double;
+begin
+  if cbWinrateBonus.Checked then
+  begin
+    if ratio + 0.05 > 1.0 then
+      result := 1.0
+    else
+      result := ratio + 0.05;
+  end
+  else
+    result := ratio;
+  
+end;
 
 procedure TEvaluateDecksForm.bRunClick(Sender: TObject);
 {var
@@ -3297,7 +3373,7 @@ begin
       r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, raid,
         games div tc, tc, bIsSurge, seMaxTurn.Value, cbOrderMatters.Checked,
         cbTourney.Checked, wildcard, ft, fr, ff, Addr(WildFilterInclude), Addr(WildFilterExclude));
-      rec := RecordCount - 1;
+      rec := cxView.DataController.RecordCount - 1;
       if wildcard > 0 then
       begin
         s := Cards[StrToInt(slIDIndex.Values[IntToStr(wildcard)])].Name;
@@ -3418,7 +3494,7 @@ begin
       Values[rec, vcWins.Index] := r.Result.Win;
       Values[rec, vcStalled.Index] := i - r.Result.Win - r.Result.Loss;
       Values[rec, vcGames.Index] := i;
-      fLastWinRatio := r.Result.Win / i;
+      fLastWinRatio := AdjustRatio(r.Result.Win / i);
       Values[rec, vcRatio.Index] := fLastWinRatio;
       Values[rec, vcAvgD.Index] := r.Result.Points / i;
       Values[rec, vcAvgDA.Index] := r.Result.AutoPoints / i;
@@ -3565,6 +3641,13 @@ begin
       Free;
     end;
   end;
+end;
+
+procedure TEvaluateDecksForm.bShowClick(Sender: TObject);
+begin
+  bShow.Visible := false;
+  bHide.Visible := true;
+  pDonate.Height := 81;
 end;
 
 procedure TEvaluateDecksForm.bToggleClick(Sender: TObject);
@@ -4176,10 +4259,24 @@ begin
   end;
 end;
 
+procedure TEvaluateDecksForm.tDonateNotificationTimer(Sender: TObject);
+begin
+  lDonate1.Style.TextColor := PickRandomBlack;
+end;
+
 procedure TEvaluateDecksForm.teamliquidlogoClick(Sender: TObject);
 begin
   ShellExecute(Handle, 'open', 'http://www.teamliquid.net/forum/viewmessage.php?topic_id=136013', nil, nil,
     SW_SHOWNORMAL);
+end;
+
+procedure TEvaluateDecksForm.tEnableBoostTimer(Sender: TObject);
+begin
+  if bHide.Visible then
+  begin
+    cbWinrateBonus.Visible := true;
+    tDonateNotification.Enabled := false;
+  end;
 end;
 
 function TEvaluateDecksForm.GetRarity(Rarity: integer): string;
