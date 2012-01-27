@@ -23,6 +23,7 @@ typedef	unsigned char UCHAR;
 typedef	unsigned int UINT;
 
 #include "results.h"
+#include "log.h"
 
 #define CARD_NAME_MAX_LENGTH	50 // must sync it with CARD_NAME_MAX_LENGTH in interface
 #define FILENAME_MAX_LENGTH		50 //
@@ -74,12 +75,13 @@ char FACTIONS[6][CARD_NAME_MAX_LENGTH] = {0,"Imperial","Raider","Bloodthirsty","
 #define ACTIVATION_RALLY		20
 #define ACTIVATION_RECHARGE		21
 #define ACTIVATION_REPAIR		22
-#define ACTIVATION_SHOCK		23
-#define ACTIVATION_SIEGE		24
-#define ACTIVATION_SPLIT		25
-#define ACTIVATION_STRIKE		26
-#define ACTIVATION_SUPPLY		27
-#define ACTIVATION_WEAKEN		28
+#define ACTIVATION_RUSH			23
+#define ACTIVATION_SHOCK		24
+#define ACTIVATION_SIEGE		25
+#define ACTIVATION_SPLIT		26
+#define ACTIVATION_STRIKE		27
+#define ACTIVATION_SUPPLY		28
+#define ACTIVATION_WEAKEN		29
 
 #define DEFENSIVE_ARMORED		31
 #define DEFENSIVE_COUNTER		32
@@ -120,6 +122,7 @@ using namespace std;
 
 bool bConsoleOutput = false; // this is global just for convinience, should be DEFINE instead, to cleanup the code
 
+typedef vector<LOG_RECORD> VLOG;
 
 #define PROC50	Proc()
 const bool PROC50
@@ -423,7 +426,7 @@ public:
 	void Refresh()
 	{
 		fsHealed += (OriginalCard->GetHealth() - Health);
-		if (OriginalCard->GetHealth() != Health)
+		if (SkillProcBuffer && (OriginalCard->GetHealth() != Health))
 			SkillProcBuffer[DEFENSIVE_REFRESH]++;
 		Health = OriginalCard->GetHealth();
 	}
@@ -492,7 +495,7 @@ Valor: Removed after owner ends his turn.
 		Faction = setfaction;
 		SkillProcBuffer[ACTIVATION_INFUSE]++;
 	}
-	const UCHAR SufferDmg(const UCHAR Dmg, const UCHAR Pierce = 0, UCHAR *actualdamagedealt = 0, UCHAR *SkillProcBuffer = 0, UCHAR *OverkillDamage = 0, bool bCanRegenerate = true)
+	const UCHAR SufferDmg(const UCHAR Dmg, const UCHAR Pierce = 0, UCHAR *actualdamagedealt = 0, UCHAR *SkillProcBuffer = 0, UCHAR *OverkillDamage = 0, bool bCanRegenerate = true, VLOG *log = 0, LOG_RECORD *lr=0)
 	{
 		_ASSERT(OriginalCard);
 // Regeneration happens before the additional strikes from Flurry.
@@ -511,6 +514,8 @@ Valor: Removed after owner ends his turn.
 					dmg = 0;
 			}
 		}
+		if (lr)
+			lr->Effect = dmg;
 		if (dmg >= Health)
 		{
 			if (OverkillDamage)
@@ -521,6 +526,8 @@ Valor: Removed after owner ends his turn.
 				Health = OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
 				fsHealed += OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
 				CardSkillProc(DEFENSIVE_REGENERATE);
+				if (lr && log)
+					log->push_back(LOG_RECORD(lr->Target,DEFENSIVE_REGENERATE,Health));
 				if (bConsoleOutput)
 				{
 					PrintDesc();
@@ -532,6 +539,8 @@ Valor: Removed after owner ends his turn.
 				if (IsAlive()) // shouldn't die twice ;)
 					fsDeaths++;
 				Health = 0;
+				if (lr && log)
+					log->push_back(LOG_RECORD(lr->Target,0,0)); // death
 				if (bConsoleOutput)
 				{
 					PrintDesc();
@@ -560,34 +569,49 @@ Valor: Removed after owner ends his turn.
 		fsDmgMitigated += dmg;
 		return dmg;
 	}
-	bool HitCommander(const UCHAR Dmg, PlayedCard &Src, VCARDS &Structures, bool bCanBeCountered = true, UCHAR *overkill = 0)
+	bool HitCommander(const UCHAR Dmg, PlayedCard &Src, VCARDS &Structures, bool bCanBeCountered = true, UCHAR *overkill = 0, VLOG *log = 0, LOG_RECORD *lr = 0)
 	{
 		_ASSERT(GetType() == TYPE_COMMANDER); // double check for debug
 		_ASSERT(Dmg); // 0 dmg is pointless and indicates an error
 		// find a wall to break it ;)
+		UCHAR index = 0;
 		for (VCARDS::iterator vi = Structures.begin();vi!=Structures.end();vi++)
+		{
 			if (vi->GetAbility(DEFENSIVE_WALL) && vi->IsAlive())
 			{
 				vi->CardSkillProc(DEFENSIVE_WALL);
+				if (lr)
+				{
+					lr->Target.CardID = index;
+					lr->Target.RowID = TYPE_STRUCTURE;
+				}
 				// walls can counter and regenerate
 				vi->SufferDmg(Dmg,0,0,0,overkill); // regenerate
 				if (vi->GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // counter, dmg from crush can't be countered
 				{
 					vi->CardSkillProc(DEFENSIVE_COUNTER);
-					vi->fsDmgDealt += vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
+					UCHAR cdmg = vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
+					vi->fsDmgDealt += cdmg;
 					UCHAR loverkill = 0;
-					Src.SufferDmg(vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE),0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
+					if (lr && log)
+						log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
+					Src.SufferDmg(cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
 					vi->fsOverkill += loverkill;
 				}
 				return false;
 			}
+			index++;
+		}
 		// no walls found then hit commander
 		// ugly - counter procs before commander takes dmg, but whatever
 		if (GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // commander can counter aswell
 		{
 			CardSkillProc(DEFENSIVE_COUNTER);
 			UCHAR loverkill = 0;
-			Src.SufferDmg(GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE),0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
+			UCHAR cdmg = GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
+			if (lr && log)
+				log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
+			Src.SufferDmg(cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
 			fsOverkill += loverkill;
 		}
 		return (SufferDmg(Dmg,0,0,0,overkill) > 0);
@@ -775,6 +799,19 @@ Valor: Removed after owner ends his turn.
 		//if (amount > Effects[ACTIVATION_PROTECT])
 		Effects[ACTIVATION_PROTECT] += amount;
 	}
+	bool Rush(const UCHAR amount)
+	{
+		if (Wait > 0)
+		{
+			if (amount >= Wait)
+				Wait = 0;
+			else
+				Wait -= amount;
+			return true;
+		}
+		else
+			return false;
+	}
 	const bool IsDiseased() const	{	return Effects[DMGDEPENDANT_DISEASE] > 0; }
 	UCHAR Heal(UCHAR amount)
 	{
@@ -819,6 +856,8 @@ struct REQUIREMENT
 };
 typedef vector<PlayedCard> VCARDS;
 typedef vector<PlayedCard*> PVCARDS;
+typedef pair<PlayedCard*,UCHAR> PPCARDINDEX;
+typedef vector<PPCARDINDEX> PPCIV;
 typedef multiset<UINT> MSID;
 class ActiveDeck
 {
@@ -841,6 +880,9 @@ public:
 	UINT CardPicks[DEFAULT_DECK_RESERVE_SIZE];
 	//
 	UINT DamageToCommander; // for points calculation - damage dealt to ENEMY commander
+	// logging related stuff
+	UCHAR LogDeckID;
+	VLOG *Log;
 private:
 	void Reserve()
 	{
@@ -848,6 +890,22 @@ private:
 		Units.reserve(DEFAULT_DECK_RESERVE_SIZE);
 		Structures.reserve(DEFAULT_DECK_RESERVE_SIZE);
 		Actions.reserve(DEFAULT_DECK_RESERVE_SIZE);
+	}
+	LOG_RECORD* LogAdd(LOG_CARD &src, UCHAR AbilityID, UCHAR Effect = ABILITY_ENABLED)
+	{
+		if (!Log) return 0;
+		Log->push_back(LOG_RECORD(src,LOG_CARD(),AbilityID,Effect));
+		//
+		//printf("%d: %d[%d] - %d - = %d\n",src.DeckID,src.DeckID,src.RowID,AbilityID,Effect);
+		return &(Log->back());
+	}
+	LOG_RECORD* LogAdd(LOG_CARD &src, LOG_CARD &dest, UCHAR AbilityID, UCHAR Effect = ABILITY_ENABLED)
+	{
+		if (!Log) return 0;
+		Log->push_back(LOG_RECORD(src,dest,AbilityID,Effect));
+		//
+		//printf("%d: %d[%d] - %d -> %d: %d[%d] = %d\n",src.DeckID,src.DeckID,src.RowID,dest.DeckID,dest.DeckID,dest.RowID,AbilityID,Effect);
+		return &(Log->back());
 	}
 	UCHAR GetAliveUnitsCount()
 	{
@@ -872,7 +930,10 @@ private:
 		}
 		UCHAR iflurry = (SRC.GetAbility(COMBAT_FLURRY) && PROC50) ? (SRC.GetAbility(COMBAT_FLURRY)+1) : 1; // coding like a boss :) don't like this style
 		if (iflurry > 1)
+		{
 			SkillProcs[COMBAT_FLURRY]++;
+			LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_FLURRY,iflurry);
+		}
 		if ((index >= (UCHAR)Def.Units.size()) || (!Def.Units[index].IsAlive()) || (SRC.GetAbility(COMBAT_FEAR)))
 		{
 			// Deal DMG To Commander BUT STILL PROC50 FLURRY and PROBABLY VALOR
@@ -880,20 +941,28 @@ private:
 			for (UCHAR i=0;i<iflurry;i++)
 			{
 				if (valor)
+				{
 					SkillProcs[COMBAT_VALOR]++;
-				if (Def.Commander.IsAlive())
-					DamageToCommander += SRC.GetAttack()+valor;
+					LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_VALOR,valor);
+				}
 				if (SRC.GetAbility(COMBAT_FEAR) && (Def.Units.size() > index) && Def.Units[index].IsAlive())
+				{
 					SkillProcs[COMBAT_FEAR]++;
+					LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_FEAR);
+				}
 				UCHAR overkill = 0;
-				Def.Commander.HitCommander(SRC.GetAttack()+valor,SRC,Def.Structures,true,&overkill);
+				UCHAR cdmg = SRC.GetAttack()+valor;
+				if (Def.Commander.HitCommander(cdmg,SRC,Def.Structures,true,&overkill,
+					Log, LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),0,cdmg)))
+					DamageToCommander += cdmg;
 				SRC.fsOverkill += overkill;
-				SRC.fsDmgDealt += SRC.GetAttack()+valor;
+				SRC.fsDmgDealt += cdmg;
 				// can go berserk after hitting commander too
 				if ((SRC.GetAttack()+valor > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
 				{
 					SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
 					SkillProcs[DMGDEPENDANT_BERSERK]++;
+					LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_BERSERK,SRC.GetAbility(DMGDEPENDANT_BERSERK));
 				}
 			}
 			return; // and thats it!!!
@@ -916,6 +985,7 @@ private:
 					targets[2] = &Def.Units[index+1];
 				else
 					targets[2] = 0;
+				LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_SWIPE);
 			}
 			else
 				targets[0] = &Def.Units[index];
@@ -932,25 +1002,36 @@ private:
 						((!targets[s]) || ( (!targets[s]->IsAlive()) && ((s != 1) && (swipe != 1)) ))
 						) // empty slot to the left or right, swipe doesnt proc, if swipe == 1 then targets[0] can't be null
 						continue;
+					UCHAR targetindex = index;
+					if (swipe > 1)
+					{
+						targetindex += s;
+						targetindex--;
+					}
 					// if target dies during flurry and slot(s == 1) is aligned to SRC, we deal dmg to commander
 					if ((!targets[s]->IsAlive()) && ((swipe == 1) || (s == 1)))
 					{
 						UCHAR valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
 						if (valor > 0)
+						{
 							SkillProcs[COMBAT_VALOR]++;
-						if (Def.Commander.IsAlive())
-							DamageToCommander += SRC.GetAttack()+valor;
+							LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_VALOR,valor);
+						}
+						UCHAR cdmg = SRC.GetAttack()+valor;							
 						UCHAR overkill = 0;
-						Def.Commander.HitCommander(SRC.GetAttack()+valor,SRC,Def.Structures,true,&overkill);
-						SRC.fsDmgDealt += SRC.GetAttack()+valor;
+						if (Def.Commander.HitCommander(cdmg,SRC,Def.Structures,true,&overkill,
+							Log, LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),0,cdmg)))
+							DamageToCommander += cdmg;
+						SRC.fsDmgDealt += cdmg;
 						SRC.fsOverkill += overkill;
 						// can go berserk after hitting commander too
 						if ((SRC.GetAttack()+valor > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
 						{
 							SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
+							LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_BERSERK,SRC.GetAbility(DMGDEPENDANT_BERSERK));
 							SkillProcs[DMGDEPENDANT_BERSERK]++;
 						}
-						// might want to add here check:
+						// might want to add here check: 
 						// if (!Def.Commander.IsAlive()) return;
 						continue;
 					}
@@ -960,7 +1041,10 @@ private:
 					// must check valor before every attack
 					UCHAR valor = (SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
 					if (valor > 0)
+					{
 						SkillProcs[COMBAT_VALOR]++;
+						LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_VALOR,valor);
+					}
 					// attacking flyer
 					UCHAR antiair = SRC.GetAbility(COMBAT_ANTIAIR);
 					if (targets[s]->GetAbility(DEFENSIVE_FLYING))
@@ -969,12 +1053,16 @@ private:
 						{
 							targets[s]->fsAvoided += SRC.GetAttack() + valor + targets[s]->GetEffect(ACTIVATION_ENFEEBLE); // note that this IGNORES armor and protect
 							Def.SkillProcs[DEFENSIVE_FLYING]++;
+							LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DEFENSIVE_FLYING);
 							continue;
 						}
 					}
 					else antiair = 0; // has no effect if target is not flying
 					if (antiair > 0)
+					{
 						SkillProcs[COMBAT_ANTIAIR]++;
+						LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_ANTIAIR,antiair);
+					}
 					// enfeeble is taken into account before armor
 					UCHAR enfeeble = targets[s]->GetEffect(ACTIVATION_ENFEEBLE);
 					// now armor & pierce
@@ -985,6 +1073,7 @@ private:
 					if (armor)
 					{
 						Def.SkillProcs[DEFENSIVE_ARMORED]++;
+						LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DEFENSIVE_ARMORED,armor);
 						if (pierce > 0)
 							bPierce = true;
 						if (pierce >= armor)
@@ -1016,7 +1105,10 @@ private:
 						UCHAR actualdamagedealt = 0;
 						bPierce = bPierce || (targets[s]->GetShield() && pierce);
 						UCHAR overkill = 0;
-						dmg = targets[s]->SufferDmg(dmg, pierce,&actualdamagedealt,0,&overkill,(!SRC.GetAbility(DMGDEPENDANT_DISEASE)));
+						if (bPierce)
+							LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),COMBAT_PIERCE,pierce);
+						dmg = targets[s]->SufferDmg(dmg, pierce,&actualdamagedealt,0,&overkill,(!SRC.GetAbility(DMGDEPENDANT_DISEASE)),
+							Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),0,dmg));
 						SRC.fsDmgDealt += actualdamagedealt;
 						SRC.fsOverkill += overkill;
 					}
@@ -1029,16 +1121,17 @@ private:
 						if (targets[s]->GetAbility(SPECIAL_BACKFIRE))
 						{
 							Def.Commander.SufferDmg(targets[s]->GetAbility(SPECIAL_BACKFIRE));
-							DamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
+							DamageToCommander += SRC.GetAbility(SPECIAL_BACKFIRE);
 							Def.SkillProcs[SPECIAL_BACKFIRE]++;
+							LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),SPECIAL_BACKFIRE,SRC.GetAbility(SPECIAL_BACKFIRE));
 						}
 						// crush
 						if (SRC.GetAbility(DMGDEPENDANT_CRUSH))
-						{
-							if (Def.Commander.IsAlive())
-								DamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
+						{								
 							UCHAR overkill = 0;
-							Def.Commander.HitCommander(SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def.Structures,false,&overkill);
+							if (Def.Commander.HitCommander(SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def.Structures,false,&overkill,
+								Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),DMGDEPENDANT_CRUSH,SRC.GetAbility(DMGDEPENDANT_CRUSH))))
+								DamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
 							SRC.fsOverkill += overkill;
 							SkillProcs[DMGDEPENDANT_CRUSH]++;
 						}
@@ -1047,7 +1140,9 @@ private:
 					if ((dmg > 0) && targets[s]->GetAbility(DEFENSIVE_COUNTER))
 					{
 						UCHAR overkill = 0;
-						targets[s]->fsDmgDealt += SRC.SufferDmg(targets[s]->GetAbility(DEFENSIVE_COUNTER) + SRC.GetEffect(ACTIVATION_ENFEEBLE),0,0,0,&overkill); // counter dmg is enhanced by enfeeble
+						UCHAR cdmg = targets[s]->GetAbility(DEFENSIVE_COUNTER) + SRC.GetEffect(ACTIVATION_ENFEEBLE);
+						targets[s]->fsDmgDealt += SRC.SufferDmg(cdmg,0,0,0,&overkill); // counter dmg is enhanced by enfeeble
+						LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DEFENSIVE_COUNTER,cdmg);
 						targets[s]->fsOverkill += overkill;
 						Def.SkillProcs[DEFENSIVE_COUNTER]++;
 					}
@@ -1063,6 +1158,7 @@ private:
 							targets[s]->SetEffect(DMGDEPENDANT_IMMOBILIZE,SRC.GetAbility(DMGDEPENDANT_IMMOBILIZE));
 							SRC.fsSpecial++; // is it good?
 							SkillProcs[DMGDEPENDANT_IMMOBILIZE]++;
+							LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DMGDEPENDANT_IMMOBILIZE);
 						}
 						// disease
 						if (SRC.GetAbility(DMGDEPENDANT_DISEASE))
@@ -1070,6 +1166,7 @@ private:
 							targets[s]->SetEffect(DMGDEPENDANT_DISEASE,SRC.GetAbility(DMGDEPENDANT_DISEASE));
 							SRC.fsSpecial++; // is it good?
 							SkillProcs[DMGDEPENDANT_DISEASE]++;
+							LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DMGDEPENDANT_DISEASE);
 						}
 						// poison
 						if (SRC.GetAbility(DMGDEPENDANT_POISON))
@@ -1078,6 +1175,7 @@ private:
 								targets[s]->SetEffect(DMGDEPENDANT_POISON,SRC.GetAbility(DMGDEPENDANT_POISON));
 								SRC.fsSpecial += SRC.GetAbility(DMGDEPENDANT_POISON); 
 								SkillProcs[DMGDEPENDANT_POISON]++;
+								LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DMGDEPENDANT_POISON,SRC.GetAbility(DMGDEPENDANT_POISON));
 							}
 					}
 					// leech
@@ -1089,7 +1187,10 @@ private:
 							leech = SRC.Heal(leech);
 							SRC.fsHealed += leech;
 							if (leech > 0)
+							{
 								SkillProcs[DMGDEPENDANT_LEECH]++;
+								LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_LEECH,leech);
+							}
 						}
 					}
 					// siphon
@@ -1101,14 +1202,20 @@ private:
 							siphon = Commander.Heal(siphon);
 							SRC.fsHealed += siphon;
 							if (siphon > 0)
+							{
 								SkillProcs[DMGDEPENDANT_SIPHON]++;
+								LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_SIPHON,siphon);
+							}
 						}
 					}
 					if (bGoBerserk)
 					{
 						SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
 						if (SRC.GetAbility(DMGDEPENDANT_BERSERK))
+						{
 							SkillProcs[DMGDEPENDANT_BERSERK]++;
+							LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_BERSERK,SRC.GetAbility(DMGDEPENDANT_BERSERK));
+						}
 					}
 
 					if (!SRC.IsAlive()) // died from counter? during swipe
@@ -1125,6 +1232,7 @@ private:
 public:
 	ActiveDeck() 
 	{
+		Log = 0;
 		bOrderMatters = false; 
 		bDelayFirstCard = false; 
 		CSIndex = 0; 
@@ -1164,6 +1272,7 @@ public:
 	{
 		_ASSERT(pCDB);
 		_ASSERT(HashBase64);
+		Log = 0;
 		CSIndex = 0;
 		CSResult = 0;
 		DamageToCommander = 0;
@@ -1205,6 +1314,7 @@ public:
 	}
 	ActiveDeck(const Card *Cmd) 
 	{ 
+		Log = 0;
 		bOrderMatters = false; 
 		bDelayFirstCard = false; 
 		CSIndex = 0; 
@@ -1218,6 +1328,7 @@ public:
 	};
 	ActiveDeck(const ActiveDeck &D) // need copy constructor
 	{
+		Log = 0;
 		Commander = D.Commander;
 		Commander.SetCardSkillProcBuffer(SkillProcs);
 		Deck.reserve(D.Deck.size());
@@ -1345,25 +1456,29 @@ public:
 	{
 		Deck.push_back(c);
 	}
-	bool IsInTargets(PlayedCard *pc, PVCARDS *targets) // helper
+	bool IsInTargets(PlayedCard *pc, PPCIV *targets) // helper
 	{
-		for (PVCARDS::iterator vi=targets->begin();vi!=targets->end();vi++)
-			if (pc == (*vi))
+		for (PPCIV::iterator vi=targets->begin();vi!=targets->end();vi++)
+			if (pc == vi->first)
 				return true;
 		return false;
 	}
-	void ApplyEffects(PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false,PlayedCard *Mimicer=0)
+	void ApplyEffects(PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false,PlayedCard *Mimicer=0,UCHAR StructureIndex = 0)
 	{
 		UCHAR destindex,aid,faction;
-		PVCARDS targets;
+		PPCIV targets;
 		targets.reserve(DEFAULT_DECK_RESERVE_SIZE);
-		PlayedCard *tmp;
+		PPCARDINDEX tmp;
 		UCHAR effect;
 		UCHAR FusionMultiplier = 1;
 		if (IsFusioned)
 			FusionMultiplier = 2;
 
 		bool bSplit = false;
+
+		UCHAR SrcPos = StructureIndex;
+		if (Position > 0)
+			SrcPos = (UCHAR)Position;
 
 		bool bIsSelfMimic = false; // Chaosed Mimic indicator
 		if (IsMimiced && Mimicer && (!Units.empty()))
@@ -1402,12 +1517,13 @@ public:
 					else
 						faction = Src.GetTargetFaction(aid);
 					GetTargets(Units,faction,targets);
+					LOG_CARD lc(LogDeckID,TYPE_ASSAULT,100);
 					if (targets.size())
 					{
-						PVCARDS::iterator vi = targets.begin();
+						PPCIV::iterator vi = targets.begin();
 						while (vi != targets.end())
 						{
-							if (!(*vi)->IsCleanseTarget())
+							if (!vi->first->IsCleanseTarget())
 								vi = targets.erase(vi);
 							else vi++;
 						}
@@ -1425,36 +1541,47 @@ public:
 							{
 								Src.PrintDesc();
 								printf(" cleanse ");
-								(*vi)->PrintDesc();
+								vi->first->PrintDesc();
 								printf("\n");
 							}
-							(*vi)->Cleanse();
+							lc.CardID = vi->second;
+							vi->first->Cleanse();
 							if (!IsMimiced)
+							{
 								Src.fsSpecial += effect;
+								LogAdd(LOG_CARD(LogDeckID,Src.GetType(),SrcPos),lc,aid);
+							}
 							else
+							{
 								Mimicer->fsSpecial += effect;
+								LogAdd(LOG_CARD(LogDeckID,Mimicer->GetType(),SrcPos),lc,aid);
+							}
 							if ((!IsMimiced) || bIsSelfMimic)
 								SkillProcs[aid]++;
 							else
 								Dest.SkillProcs[aid]++;
-							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && bTributable && PROC50)
+							if (vi->first->GetAbility(DEFENSIVE_TRIBUTE) && bTributable)
 							{
 								if (IsMimiced)
 								{
-									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != (*vi)))
+									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != vi->first) && PROC50)
 									{
 										Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
 										Mimicer->Cleanse();
-										(*vi)->fsSpecial += effect;
+										LogAdd(lc,DEFENSIVE_TRIBUTE);
+										LogAdd(lc,LOG_CARD(LogDeckID,Mimicer->GetType(),SrcPos),aid);
+										vi->first->fsSpecial += effect;
 									}
 								}
 								else
 								{
-									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
+									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != vi->first) && PROC50)
 									{
 										SkillProcs[DEFENSIVE_TRIBUTE]++;
 										Src.Cleanse();
-										(*vi)->fsSpecial += effect;
+										LogAdd(lc,DEFENSIVE_TRIBUTE);
+										LogAdd(lc,LOG_CARD(LogDeckID,Src.GetType(),SrcPos),aid);
+										vi->first->fsSpecial += effect;
 									}
 								}
 							}
@@ -1473,10 +1600,17 @@ public:
 						faction = FACTION_NONE;
 					else
 						faction = Src.GetTargetFaction(aid);
+					LOG_CARD lc(LogDeckID,TYPE_ASSAULT,100);
 					if (chaos > 0)
+					{
 						GetTargets(Units,faction,targets);
+						lc.DeckID = LogDeckID;
+					}
 					else
+					{
 						GetTargets(Dest.Units,faction,targets);
+						lc.DeckID = Dest.LogDeckID;
+					}
 					if (targets.size())
 					{
 						if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL)
@@ -1486,34 +1620,42 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
-						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
-							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
+						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (!chaos) && (PROC50))
 							{
 								// evaded
 								Dest.SkillProcs[DEFENSIVE_EVADE]++;
+								LogAdd(LOG_CARD(Dest.LogDeckID,vi->first->GetType(),vi->second),lc,aid);
 							}
 							else
 							{
-								(*vi)->SetEffect(aid,(*vi)->GetEffect(aid) + effect);
+								lc.CardID = vi->second;
+								vi->first->SetEffect(aid,vi->first->GetEffect(aid) + effect);
 								if (!IsMimiced)
+								{
 									Src.fsSpecial += effect;
+									LogAdd(LOG_CARD(LogDeckID,Src.GetType(),SrcPos),lc,aid,effect);
+								}
 								else
+								{
 									Mimicer->fsSpecial += effect;
+									LogAdd(LOG_CARD(Dest.LogDeckID,Mimicer->GetType(),SrcPos),lc,aid,effect);
+								}
 								if ((!IsMimiced) || bIsSelfMimic)
 									SkillProcs[aid]++;
 								else
 									Dest.SkillProcs[aid]++;
-								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback
+								if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback
 								{
 									Src.SetEffect(aid,Src.GetEffect(aid) + effect);
-									(*vi)->fsSpecial += effect;
+									vi->first->fsSpecial += effect;
 									Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
 								}
 								if (bConsoleOutput)
 								{
 									Src.PrintDesc();
 									printf(" enfeeble ");
-									(*vi)->PrintDesc();
+									vi->first->PrintDesc();
 									printf(" for %d\n",effect);
 								}
 							}
@@ -1534,10 +1676,10 @@ public:
 					GetTargets(Units,faction,targets);
 					if (targets.size())
 					{
-						PVCARDS::iterator vi = targets.begin();
+						PPCIV::iterator vi = targets.begin();
 						while (vi != targets.end())
 						{
-							if (((*vi)->GetHealth() == (*vi)->GetMaxHealth()) || ((*vi)->IsDiseased()))
+							if ((vi->first->GetHealth() == vi->first->GetMaxHealth()) || (vi->first->IsDiseased()))
 								vi = targets.erase(vi);
 							else vi++;
 						}
@@ -1555,33 +1697,33 @@ public:
 							{
 								Src.PrintDesc();
 								printf(" heals ");
-								(*vi)->PrintDesc();
+								vi->first->PrintDesc();
 								printf(" for %d\n",effect);
 							}
 							if (!IsMimiced)
-								Src.fsHealed += (*vi)->Heal(effect);
+								Src.fsHealed += vi->first->Heal(effect);
 							else
-								Mimicer->fsHealed += (*vi)->Heal(effect);
+								Mimicer->fsHealed += vi->first->Heal(effect);
 							if ((!IsMimiced) || bIsSelfMimic)
 								SkillProcs[aid]++;
 							else
 								Dest.SkillProcs[aid]++;
-							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && bTributable && PROC50)
+							if (vi->first->GetAbility(DEFENSIVE_TRIBUTE) && bTributable && PROC50)
 							{
 								if (IsMimiced)
 								{
-									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != (*vi)))
+									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != vi->first))
 									{
 										Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
-										(*vi)->fsHealed += Mimicer->Heal(effect);
+										vi->first->fsHealed += Mimicer->Heal(effect);
 									}
 								}
 								else
 								{
-									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
+									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != vi->first))
 									{
 										SkillProcs[DEFENSIVE_TRIBUTE]++;
-										(*vi)->fsHealed += Src.Heal(effect);
+										vi->first->fsHealed += Src.Heal(effect);
 									}
 								}
 							}
@@ -1598,18 +1740,25 @@ public:
 				{
 					targets.clear();
 					if (Position)
-						targets.push_back(&Units[Position-1]);
-					targets.push_back(&Units[Position]);
+						targets.push_back(PPCARDINDEX(&Units[Position-1],Position-1));
+					targets.push_back(PPCARDINDEX(&Units[Position],Position));
 					if ((DWORD)Position+1 < Units.size())
-						targets.push_back(&Units[Position+1]);
+						targets.push_back(PPCARDINDEX(&Units[Position+1],Position+1));
 					if (targets.size())
 					{
-						PVCARDS::iterator vi = targets.begin();
+						PPCIV::iterator vi = targets.begin();
 						while (vi != targets.end())
 						{
-							if (((*vi)->GetHealth() == (*vi)->GetMaxHealth()) || (*vi)->IsDiseased())
+							if ((vi->first->GetHealth() == vi->first->GetMaxHealth()) || vi->first->IsDiseased())
 								vi = targets.erase(vi);
 							else vi++;
+						}
+						if (!targets.empty())
+						{
+							if ((!IsMimiced) || bIsSelfMimic)
+								SkillProcs[aid]++;
+							else
+								Dest.SkillProcs[aid]++;
 						}
 						bool bTributable = (IsMimiced && IsInTargets(Mimicer,&targets)) || ((!IsMimiced) && IsInTargets(&Src,&targets));
 						for (vi = targets.begin();vi != targets.end();vi++)
@@ -1618,33 +1767,29 @@ public:
 							{
 								Src.PrintDesc();
 								printf(" supply ");
-								(*vi)->PrintDesc();
+								vi->first->PrintDesc();
 								printf(" for %d\n",effect);
 							}
 							if (!IsMimiced)
-								Src.fsHealed += (*vi)->Heal(effect);
+								Src.fsHealed += vi->first->Heal(effect);
 							else
-								Mimicer->fsHealed += (*vi)->Heal(effect);
-							if ((!IsMimiced) || bIsSelfMimic)
-								SkillProcs[aid]++;
-							else
-								Dest.SkillProcs[aid]++;
-							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
+								Mimicer->fsHealed += vi->first->Heal(effect);
+							if (vi->first->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
 							{
 								if (IsMimiced)
 								{
-									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != (*vi)))
+									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != vi->first))
 									{
 										Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
-										(*vi)->fsHealed += Mimicer->Heal(effect);
+										vi->first->fsHealed += Mimicer->Heal(effect);
 									}
 								}
 								else
 								{
-									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
+									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != vi->first))
 									{
 										SkillProcs[DEFENSIVE_TRIBUTE]++;
-										(*vi)->fsHealed += Src.Heal(effect);
+										vi->first->fsHealed += Src.Heal(effect);
 									}
 								}
 							}
@@ -1667,7 +1812,7 @@ public:
 					GetTargets(Units,faction,targets);
 					if (targets.size())
 					{
-						PVCARDS::iterator vi = targets.begin();
+						PPCIV::iterator vi = targets.begin();
 						/*if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) // if it is not PROTECT ALL then remove from targets already shielded cards
 							while (vi != targets.end())
 							{
@@ -1688,10 +1833,10 @@ public:
 							{
 								Src.PrintDesc();
 								printf(" protects ");
-								(*vi)->PrintDesc();
+								vi->first->PrintDesc();
 								printf(" for %d\n",effect);
 							}
-							(*vi)->Protect(effect);
+							vi->first->Protect(effect);
 							if (!IsMimiced)
 								Src.fsSpecial += effect;
 							else
@@ -1700,23 +1845,23 @@ public:
 								SkillProcs[aid]++;
 							else
 								Dest.SkillProcs[aid]++;
-							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
+							if (vi->first->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
 							{
 								if (IsMimiced)
 								{
-									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != (*vi)))
+									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != vi->first))
 									{
 										Mimicer->Protect(effect);
-										(*vi)->fsSpecial += effect;
+										vi->first->fsSpecial += effect;
 										Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
 									}
 								}
 								else
 								{
-									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
+									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != vi->first))
 									{
 										Src.Protect(effect);
-										(*vi)->fsSpecial += effect;
+										vi->first->fsSpecial += effect;
 										SkillProcs[DEFENSIVE_TRIBUTE]++;
 									}
 								}
@@ -1744,10 +1889,10 @@ public:
 						GetTargets(Dest.Units,faction,targets);
 					if (targets.size())
 					{
-						PVCARDS::iterator vi = targets.begin();
+						PPCIV::iterator vi = targets.begin();
 						while (vi != targets.end())
 						{
-							if (((*vi)->GetEffect(aid)) || ((*vi)->GetWait()))
+							if ((vi->first->GetEffect(aid)) || (vi->first->GetWait()))
 								vi = targets.erase(vi);
 							else vi++;
 						}
@@ -1758,9 +1903,9 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
-						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
+						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
 							if (PROC50)
-								if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
+								if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
 								{
 									// evaded
 									// no fancy stats here?!
@@ -1768,7 +1913,7 @@ public:
 								}
 								else
 								{
-									(*vi)->SetEffect(aid,effect);
+									vi->first->SetEffect(aid,effect);
 									if (!IsMimiced)
 										Src.fsSpecial += effect;
 									else
@@ -1777,17 +1922,17 @@ public:
 										SkillProcs[aid]++;
 									else
 										Dest.SkillProcs[aid]++;
-		/*  ?  */					if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback is it 1/2 or 1/4 chance to return jam with payback????
+		/*  ?  */					if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback is it 1/2 or 1/4 chance to return jam with payback????
 									{
 										Src.SetEffect(aid,effect);
-										(*vi)->fsSpecial += effect;
+										vi->first->fsSpecial += effect;
 										Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
 									}
 									if (bConsoleOutput)
 									{
 										Src.PrintDesc();
 										printf(" jam ");
-										(*vi)->PrintDesc();
+										vi->first->PrintDesc();
 										printf("\n");
 									}
 								}
@@ -1811,10 +1956,10 @@ public:
 						GetTargets(Dest.Units,faction,targets);
 					if (targets.size())
 					{
-						PVCARDS::iterator vi = targets.begin();
+						PPCIV::iterator vi = targets.begin();
 						while (vi != targets.end())
 						{
-							if (((*vi)->GetEffect(aid)))
+							if ((vi->first->GetEffect(aid)))
 								vi = targets.erase(vi);
 							else vi++;
 						}
@@ -1825,8 +1970,8 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
-						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
-							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
+						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
 							{
 								// evaded
 								// no fancy stats here?!
@@ -1834,7 +1979,7 @@ public:
 							}
 							else
 							{
-								(*vi)->SetEffect(aid,effect);
+								vi->first->SetEffect(aid,effect);
 								if (!IsMimiced)
 									Src.fsSpecial += effect;
 								else
@@ -1843,17 +1988,17 @@ public:
 									SkillProcs[aid]++;
 								else
 									Dest.SkillProcs[aid]++;
-								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos)) 
+								if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos)) 
 								{
 									Src.SetEffect(aid,effect);
-									(*vi)->fsSpecial += effect;
+									vi->first->fsSpecial += effect;
 									Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
 								}
 								if (bConsoleOutput)
 								{
 									Src.PrintDesc();
 									printf(" freeze ");
-									(*vi)->PrintDesc();
+									vi->first->PrintDesc();
 									printf("\n");
 								}
 							}
@@ -1884,8 +2029,8 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
-						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
-							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
+						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
 							{
 								// evaded
 								Dest.SkillProcs[DEFENSIVE_EVADE]++;
@@ -1896,14 +2041,14 @@ public:
 								{
 									Src.PrintDesc();
 									printf(" mimic ");
-									(*vi)->PrintDesc();
+									vi->first->PrintDesc();
 									printf("\n");
 								}
 								SkillProcs[aid]++;
 								if (chaos > 0)
-									ApplyEffects(*(*vi),Position,*this,true,false,&Src);
+									ApplyEffects(*vi->first,Position,*this,true,false,&Src);
 								else
-									ApplyEffects(*(*vi),Position,Dest,true,false,&Src);	
+									ApplyEffects(*vi->first,Position,Dest,true,false,&Src);	
 							}
 					}
 					targets.clear();
@@ -1924,14 +2069,14 @@ public:
 					GetTargets(Units,faction,targets);
 					if (targets.size())
 					{
-						PVCARDS::iterator vi = targets.begin();
+						PPCIV::iterator vi = targets.begin();
 						while (vi != targets.end())
 						{
-							if (((*vi)->GetWait()) ||
-								 (*vi)->GetPlayed() ||
-								((*vi)->GetEffect(ACTIVATION_JAM)) || // Jammed
-								((*vi)->GetEffect(ACTIVATION_FREEZE)) || // Frozen
-								((*vi)->GetEffect(DMGDEPENDANT_IMMOBILIZE))   // Immobilized
+							if ((vi->first->GetWait()) ||
+								 vi->first->GetPlayed() ||
+								(vi->first->GetEffect(ACTIVATION_JAM)) || // Jammed
+								(vi->first->GetEffect(ACTIVATION_FREEZE)) || // Frozen
+								(vi->first->GetEffect(DMGDEPENDANT_IMMOBILIZE))   // Immobilized
 								)
 								vi = targets.erase(vi);
 							else vi++;
@@ -1944,16 +2089,16 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
-						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
+						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
 						{
 							if (bConsoleOutput)
 							{
 								Src.PrintDesc();
 								printf(" rally ");
-								(*vi)->PrintDesc();
+								vi->first->PrintDesc();
 								printf(" for %d\n",effect);
 							}
-							(*vi)->Rally(effect);		
+							vi->first->Rally(effect);		
 							if (!IsMimiced)
 								Src.fsSpecial += effect;
 							else
@@ -1962,23 +2107,23 @@ public:
 								SkillProcs[aid]++;
 							else
 								Dest.SkillProcs[aid]++;
-							if ((*vi)->GetAbility(DEFENSIVE_TRIBUTE) && bTributable && PROC50)
+							if (vi->first->GetAbility(DEFENSIVE_TRIBUTE) && bTributable && PROC50)
 							{
 								if (IsMimiced)
 								{
-									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != (*vi)))
+									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != vi->first))
 									{
 										Mimicer->Rally(effect);
-										(*vi)->fsSpecial += effect;
+										vi->first->fsSpecial += effect;
 										Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
 									}
 								}
 								else
 								{
-									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != (*vi)))
+									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != vi->first))
 									{
 										Src.Rally(effect);
-										(*vi)->fsSpecial += effect;
+										vi->first->fsSpecial += effect;
 										Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;										
 									}
 								}
@@ -2008,10 +2153,10 @@ public:
 					GetTargets(Structures,faction,targets);
 					if (targets.size())
 					{
-						PVCARDS::iterator vi = targets.begin();
+						PPCIV::iterator vi = targets.begin();
 						while (vi != targets.end())
 						{
-							if ((*vi)->GetHealth() == (*vi)->GetMaxHealth())
+							if (vi->first->GetHealth() == vi->first->GetMaxHealth())
 								vi = targets.erase(vi);
 							else vi++;
 						}
@@ -2022,9 +2167,9 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
-						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
+						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
 						{
-							(*vi)->Heal(effect);
+							vi->first->Heal(effect);
 							if (!IsMimiced)
 								Src.fsHealed += effect;
 							else
@@ -2071,18 +2216,18 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
-						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
+						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
 					
-							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
+							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
 							{
 								// evaded
-								(*vi)->fsAvoided += effect;
+								vi->first->fsAvoided += effect;
 								Dest.SkillProcs[DEFENSIVE_EVADE]++;
 							}
 							else
 							{
 								UCHAR overkill = 0;
-								UCHAR sdmg = (*vi)->SufferDmg(effect,0,0,0,&overkill);
+								UCHAR sdmg = vi->first->SufferDmg(effect,0,0,0,&overkill);
 								if (!IsMimiced)
 								{
 									Src.fsDmgDealt += sdmg;
@@ -2138,11 +2283,11 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
-						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
-							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
+						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
 							{
 								// evaded
-								(*vi)->fsAvoided += effect;
+								vi->first->fsAvoided += effect;
 								Dest.SkillProcs[DEFENSIVE_EVADE]++;
 							}
 							else
@@ -2151,11 +2296,11 @@ public:
 								{
 									Src.PrintDesc();
 									printf(" strike ");
-									(*vi)->PrintDesc();
+									vi->first->PrintDesc();
 									printf(" for %d\n",effect);
 								}
 								UCHAR overkill = 0;
-								UCHAR sdmg = (*vi)->StrikeDmg(effect,&overkill);
+								UCHAR sdmg = vi->first->StrikeDmg(effect,&overkill);
 								if (!IsMimiced)
 								{
 									Src.fsDmgDealt += sdmg;
@@ -2170,11 +2315,11 @@ public:
 									SkillProcs[aid]++;
 								else
 									Dest.SkillProcs[aid]++;
-								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback
+								if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback
 								{
 									UCHAR overkill = 0;
-									(*vi)->fsDmgDealt += Src.StrikeDmg(effect,&overkill);
-									(*vi)->fsOverkill += overkill;
+									vi->first->fsDmgDealt += Src.StrikeDmg(effect,&overkill);
+									vi->first->fsOverkill += overkill;
 									Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
 								}
 							}			
@@ -2204,15 +2349,15 @@ public:
 						GetTargets(Dest.Units,faction,targets);
 					if (targets.size())
 					{
-						PVCARDS::iterator vi = targets.begin();
+						PPCIV::iterator vi = targets.begin();
 						while (vi != targets.end())
 						{
-							if (((*vi)->GetWait() == 0) && 
-								((*vi)->GetAttack() >= 1) && // at least 1 Attack OR it is WEAKEN ALL, that can lower ur attack down to -100500
-								(!(*vi)->GetEffect(ACTIVATION_JAM)) && // neither Jammed
-								(!(*vi)->GetEffect(ACTIVATION_FREEZE)) && // neither Frozen
-								(!(*vi)->GetEffect(DMGDEPENDANT_IMMOBILIZE)) &&   // nor Immobilized
-								((!(*vi)->GetPlayed()) || (!chaos)) // if it is chaosed - only target cards that didn't play yet
+							if ((vi->first->GetWait() == 0) && 
+								(vi->first->GetAttack() >= 1) && // at least 1 Attack OR it is WEAKEN ALL, that can lower ur attack down to -100500
+								(!vi->first->GetEffect(ACTIVATION_JAM)) && // neither Jammed
+								(!vi->first->GetEffect(ACTIVATION_FREEZE)) && // neither Frozen
+								(!vi->first->GetEffect(DMGDEPENDANT_IMMOBILIZE)) &&   // nor Immobilized
+								((!vi->first->GetPlayed()) || (!chaos)) // if it is chaosed - only target cards that didn't play yet
 								)
 								vi++; // skip
 							else
@@ -2225,8 +2370,8 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
-						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
-							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
+						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
 							{
 								// evaded
 								Dest.SkillProcs[DEFENSIVE_EVADE]++;
@@ -2237,10 +2382,10 @@ public:
 								{
 									Src.PrintDesc();
 									printf(" weaken ");
-									(*vi)->PrintDesc();
+									vi->first->PrintDesc();
 									printf(" for %d\n",effect);
 								}
-								UCHAR we = (*vi)->Weaken(effect);
+								UCHAR we = vi->first->Weaken(effect);
 								if (!IsMimiced)
 									Src.fsSpecial += we;
 								else
@@ -2249,13 +2394,56 @@ public:
 									SkillProcs[aid]++;
 								else
 									Dest.SkillProcs[aid]++;
-								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50 && (!chaos))  // payback
+								if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50 && (!chaos))  // payback
 								{
-									(*vi)->fsSpecial += Src.Weaken(effect);
+									vi->first->fsSpecial += Src.Weaken(effect);
 									Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
 								}
 							}
 					}
+				}
+			}
+			// rush - not sure yet whether this skill is activation or not
+			// can it be mimiced? it only presents on structures and commanders atm
+			// it shouldn't be tributable
+			if (aid == ACTIVATION_RUSH)
+			{
+				effect = Src.GetAbility(aid);
+				if (effect > 0)
+				{
+					faction = Src.GetTargetFaction(aid);
+					GetTargets(Units,faction,targets);
+					if (targets.size())
+					{
+						PPCIV::iterator vi = targets.begin();
+						while (vi != targets.end())
+						{
+							if (!vi->first->GetWait())
+								vi = targets.erase(vi);
+							else vi++;
+						}
+						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+						{
+							destindex = rand() % targets.size();
+							tmp = targets[destindex];
+							targets.clear();
+							targets.push_back(tmp);
+						}
+						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+						{
+							if (bConsoleOutput)
+							{
+								Src.PrintDesc();
+								printf(" rush ");
+								vi->first->PrintDesc();
+								printf(" for %d\n",effect);
+							}
+							vi->first->Rush(effect);		
+							Src.fsSpecial += effect;
+							SkillProcs[aid]++;
+						}
+					}
+					targets.clear();
 				}
 			}
 			// Chaos		
@@ -2271,13 +2459,13 @@ public:
 					GetTargets(Dest.Units,faction,targets);
 					if (targets.size())
 					{
-						PVCARDS::iterator vi = targets.begin();
+						PPCIV::iterator vi = targets.begin();
 						while (vi != targets.end())
 						{
-							if (((*vi)->GetWait() == 0) && 
-								(!(*vi)->GetEffect(ACTIVATION_JAM)) && // not Jammed
-								(!(*vi)->GetEffect(ACTIVATION_FREEZE)) && // not Frozen
-								(!(*vi)->GetEffect(ACTIVATION_CHAOS))    // not Chaosed
+							if ((vi->first->GetWait() == 0) && 
+								(!vi->first->GetEffect(ACTIVATION_JAM)) && // not Jammed
+								(!vi->first->GetEffect(ACTIVATION_FREEZE)) && // not Frozen
+								(!vi->first->GetEffect(ACTIVATION_CHAOS))    // not Chaosed
 								)
 								vi++; // skip
 							else
@@ -2290,8 +2478,8 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
-						for (PVCARDS::iterator vi = targets.begin();vi != targets.end();vi++)
-							if (((*vi)->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
+						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
 							{
 								// evaded
 								Dest.SkillProcs[DEFENSIVE_EVADE]++;
@@ -2302,10 +2490,10 @@ public:
 								{
 									Src.PrintDesc();
 									printf(" chaos ");
-									(*vi)->PrintDesc();
+									vi->first->PrintDesc();
 									printf("\n");
 								}
-								(*vi)->SetEffect(ACTIVATION_CHAOS,effect);
+								vi->first->SetEffect(ACTIVATION_CHAOS,effect);
 								UCHAR we = effect;
 								if (!IsMimiced)
 									Src.fsSpecial += we;
@@ -2315,10 +2503,10 @@ public:
 									SkillProcs[aid]++;
 								else
 									Dest.SkillProcs[aid]++;
-								if ((*vi)->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50)  // payback
+								if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50)  // payback
 								{
 									Src.SetEffect(ACTIVATION_CHAOS,effect);
-									(*vi)->fsSpecial += effect;
+									vi->first->fsSpecial += effect;
 									Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
 								}
 							}
@@ -2509,7 +2697,7 @@ public:
 		if (Commander.IsDefined() && Commander.GetAbility(ACTIVATION_INFUSE) > 0)
 		{
 			// pick a card
-			PVCARDS targets;
+			PPCIV targets;
 			targets.reserve(DEFAULT_DECK_RESERVE_SIZE);
 			GetTargets(Def.Units,FACTION_BLOODTHIRSTY,targets,true);
 			UCHAR defcount = targets.size();
@@ -2517,7 +2705,7 @@ public:
 			if (!targets.empty())
 			{
 				UCHAR i = rand() % targets.size(); 
-				PlayedCard *t = targets[i];
+				PlayedCard *t = targets[i].first;
 				if ((i < defcount) && (t->GetAbility(DEFENSIVE_EVADE)) && PROC50) // we check evade only on our cards, enemy cards don't seem to actually evade infuse since it's rather helpful to them then harmful
 				{
 					// evaded infuse
@@ -2535,7 +2723,7 @@ public:
 		{
 			// apply actions somehow ...
 			if (Structures[i].BeginTurn())
-				ApplyEffects(Structures[i],-1,Def,false,(iFusionCount >= 3));
+				ApplyEffects(Structures[i],-1,Def,false,(iFusionCount >= 3),0,i);
 			Structures[i].EndTurn();
 		}
 		// assault cards
@@ -2736,12 +2924,16 @@ public:
 		return s;
 	}
 protected:
-	void GetTargets(VCARDS &From, UCHAR TargetFaction, PVCARDS &GetTo, bool bForInfuse = false)
+	void GetTargets(VCARDS &From, UCHAR TargetFaction, PPCIV &GetTo, bool bForInfuse = false)
 	{
 		if (!bForInfuse)
 			GetTo.clear();
+		UCHAR pos = 0;
 		for (VCARDS::iterator vi = From.begin();vi != From.end();vi++)
+		{
 			if ((vi->IsAlive()) && (((vi->GetFaction() == TargetFaction) && (!bForInfuse)) || (TargetFaction == FACTION_NONE) || ((vi->GetFaction() != TargetFaction) && (bForInfuse))))
-				GetTo.push_back(&(*vi));
+				GetTo.push_back(PPCARDINDEX(&(*vi),pos));
+			pos++;
+		}
 	}
 };

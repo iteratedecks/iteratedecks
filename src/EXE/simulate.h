@@ -24,7 +24,7 @@ typedef pair<string, PICK_STATS> PAIRSPS;
 MSPS StatsByOrder;
 #include <windows.h>
 static CRITICAL_SECTION cs;
-int OrderLength = DEFAULT_DECK_SIZE;
+int OrderLength = 0;// 0 to disable //DEFAULT_DECK_SIZE;
 UINT MaxOrderHeapSize = 700;
 void InsertOrder(string Order, int State)
 {
@@ -150,7 +150,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 				r.Loss++;
 				if (i < 10)
 					r.LAutoPoints+=5; // +5 points for losing by turn 10 on auto
-				if ((!iLastManualTurn) || (i < iLastManualTurn + 10))
+				if (i < iLastManualTurn + 10)
 					r.LPoints+=5; // +5 points for losing by turn T+10 
 				break;
 			}
@@ -208,7 +208,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 			tAtk.DamageToCommander = 0; // reset
 			tDef.DamageToCommander = 0; // reset
 		}
-		if (tAtk.Deck.size() == 2)
+		if (tAtk.Deck.size() >= 2)
 			iLastManualTurn = i;
 		tAtk.AttackDeck(tDef);
 		if (!tDef.Commander.IsAlive())
@@ -252,7 +252,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 			}
 			if (i < 10)
 				r.AutoPoints+=5; // +5 points for winning by turn 10 on auto
-			if ((!iLastManualTurn) || (i < iLastManualTurn + 10))
+			if (i < iLastManualTurn + 10)
 				r.Points+=5; // +5 points for winning by turn T+10
 			break;
 		}
@@ -291,7 +291,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 				r.Loss++;
 				if (i < 10)
 					r.LAutoPoints+=5; // +5 points for losing by turn 10 on auto
-				if ((!iLastManualTurn) || (i < iLastManualTurn + 10))
+				if (i < iLastManualTurn + 10)
 					r.LPoints+=5; // +5 points for losing by turn T+10
 				break;
 			}
@@ -413,7 +413,7 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 			iAutoAtkDmg += tAtk.DamageToCommander;
 			tAtk.DamageToCommander = 0; // reset
 		}
-		if (tAtk.Deck.size() == 2)
+		if (tAtk.Deck.size() >= 2)
 			iLastManualTurn = i;
 		tAtk.AttackDeck(tDef);
 		if (!tDef.Commander.IsAlive())
@@ -443,7 +443,7 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 				r.AutoPoints+=iAutoAtkDmg;
 			if (i < 10)
 				r.AutoPoints+=5; // +5 points for winning by turn 10 on auto
-			if ((!iLastManualTurn) || (i < iLastManualTurn + 10))
+			if (i < iLastManualTurn + 10)
 				r.Points+=5; // +5 points for winning by turn T+10
 			break;
 		}

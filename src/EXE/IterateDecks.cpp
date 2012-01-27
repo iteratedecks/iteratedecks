@@ -264,11 +264,24 @@ int _tmain(int argc, char* argv[])
 	//DB.SaveMissionDecks("c:\\pun.txt");
 	ActiveDeck x("P9AXDd+jGqfk+ju8u8",DB.GetPointer());
 	ActiveDeck z("RLIO+kgN+kgOgf",DB.GetPointer());
+
+	{
+	RESULTS r;
+	ActiveDeck Y;
+	ActiveDeck X("QefWBD",DB.GetPointer());
+	Y.SetOrderMatters(true);
+	DB.GenRaidDeck(Y,1);
+	//DB.LoadDecks("C:\\Users\\NT\\Documents\\Visual Studio 2008\\Projects\\EvaluateDecks\\bin\\decks\\_defence\\crash.txt");
+	//DB.GetCustomDeck(0,Y);
+	Simulate(X,Y,r);
+	}
 	
 	//printf("%d %d %d\n",sizeof(PICK_STATS),sizeof(RESULT_BY_CARD),sizeof(EVAL_PARAMS));
 	//DB.CreateDeck("Gaia, Utopia Beacon(3), Support Carrier(2), Flux Blaster, Radiant Dawnbringer, Acropolis, Adytum(2)",x);
 	//DB.CreateDeck("Krellus[1144],Abominable Raksha,Venorax,Beetle Bomber,Phantom,Azure Reaper,Xeno Mothership,Xeno Overlord,Cloaked Exarch,Kyrios,Revoker,Predator,Shaded Hollow,Vaporwing,Landing Pods,Chaos Wave",z);
 
+	VLOG log;
+	log.reserve(10000);
 
 	RESULTS r;
 	RESULT_BY_CARD rbc[DEFAULT_DECK_SIZE+1];
@@ -295,7 +308,38 @@ int _tmain(int argc, char* argv[])
 	for (UINT k=0;k<1000;k++)
 	{
 		ActiveDeck a(x),b(z);
+		a.Log = &log;
+		a.LogDeckID = 0;
+		b.Log = &log;
+		b.LogDeckID = 1;
 		Simulate(a,b,r,CSIndex,rbc);
+		//
+		// print log
+		char death[] = "dies";
+		char attack[] = "attacks";
+		for (UINT i=0;i<log.size();i++)
+		{
+			char *aname;
+			if (!log[i].AbilityID)
+				if (!log[i].Target.IsValid())
+					aname = death;
+				else
+					aname = attack;
+			else
+				aname = DB.Skills[log[i].AbilityID].SkillName;
+			if (log[i].Target.IsValid())
+				printf("%d: %2d,%2d - %s -> %d : %2d,%2d = %d\n",
+					log[i].Src.DeckID,log[i].Src.CardID,log[i].Src.RowID,
+					aname,
+					log[i].Target.DeckID,log[i].Target.CardID,log[i].Target.RowID,
+					log[i].Effect);
+			else
+				printf("%d: %2d,%2d - %s -> = %d\n",
+					log[i].Src.DeckID,log[i].Src.CardID,log[i].Src.RowID,
+					aname,
+					log[i].Effect);
+		}
+		printf("---------------------------------\n");
 	}
 	printf("%d\n",r.Win);
 	for (UCHAR i=0;i<DEFAULT_DECK_SIZE;i++)

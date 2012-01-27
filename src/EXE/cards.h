@@ -648,6 +648,7 @@ public:
 		AddSkill(ACTIVATION_RALLY,"Rally");
 		AddSkill(ACTIVATION_RECHARGE,"Recharge");
 		AddSkill(ACTIVATION_REPAIR,"Repair");
+		AddSkill(ACTIVATION_RUSH,"Rush");		
 		AddSkill(ACTIVATION_SHOCK,"Shock");
 		AddSkill(ACTIVATION_SIEGE,"Siege");
 		AddSkill(ACTIVATION_SPLIT,"Split");
