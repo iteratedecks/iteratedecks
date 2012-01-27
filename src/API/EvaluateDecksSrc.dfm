@@ -2485,6 +2485,10 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Caption = 'Evaluate'
       ImageIndex = 2
       OnShow = tsEvalShow
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object pcEval: TcxPageControl
         Left = 0
         Top = 0
@@ -2514,7 +2518,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
               Width = 778
               Height = 141
               Align = alClient
-              PopupMenu = pmGrid
               TabOrder = 0
               object vCardStats: TcxGridTableView
                 NavigatorButtons.ConfirmDelete = False
@@ -3093,7 +3096,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
                 Caption = 'Skill'
                 PropertiesClassName = 'TcxComboBoxProperties'
                 Properties.DropDownListStyle = lsFixedList
-                Properties.OnEditValueChanged = vReqsSKILLPropertiesEditValueChanged
                 Width = 100
               end
               object vReqsPROCS: TcxGridColumn
@@ -3180,6 +3182,9 @@ object EvaluateDecksForm: TEvaluateDecksForm
         object tsCardOrder: TcxTabSheet
           Caption = 'Card order'
           ImageIndex = 3
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
           object pTopCO: TPanel
             Left = 0
             Top = 0
@@ -3231,7 +3236,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
                 Properties.Increment = 25.000000000000000000
                 Properties.LargeIncrement = 1000.000000000000000000
                 TabOrder = 2
-                Value = 125
+                Value = 700
                 Width = 62
               end
             end
@@ -3242,7 +3247,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
               Width = 778
               Height = 280
               Align = alClient
-              PopupMenu = pmGrid
               TabOrder = 1
               object vFullCardOrder: TcxGridTableView
                 NavigatorButtons.ConfirmDelete = False
@@ -3321,7 +3325,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
               Width = 778
               Height = 269
               Align = alClient
-              PopupMenu = pmGrid
               TabOrder = 0
               object vCardOrder: TcxGridTableView
                 NavigatorButtons.ConfirmDelete = False
@@ -3485,6 +3488,10 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Caption = 'Batch Eval'
       ImageIndex = 6
       OnShow = tsBatchShow
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         784
         646)
@@ -4038,6 +4045,10 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsHelp: TcxTabSheet
       Caption = 'Tips'
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       DesignSize = (
         784
         646)

@@ -102,7 +102,7 @@ type
 type
   FULLRESULT = record
     Result: RESULTS;
-    ResultByCard: array[0..DEFAULT_DECK_SIZE] of RESULT_BY_CARD;
+    ResultByCard: array[0..DECK_MAX_SIZE] of RESULT_BY_CARD;
   end;
 
 type
@@ -606,7 +606,6 @@ type
     procedure vProcsSkillCustomDrawCell(Sender: TcxCustomGridTableView;
       ACanvas: TcxCanvas; AViewInfo: TcxGridTableDataCellViewInfo;
       var ADone: Boolean);
-    procedure vReqsSKILLPropertiesEditValueChanged(Sender: TObject);
     procedure vReqsDataControllerAfterPost(
       ADataController: TcxCustomDataController);
     procedure vCardOrderCustomDrawCell(Sender: TcxCustomGridTableView;
@@ -1743,28 +1742,6 @@ begin
   gProcs.Invalidate(true);
 end;
 
-procedure TEvaluateDecksForm.vReqsSKILLPropertiesEditValueChanged(
-  Sender: TObject);
-begin
-
-end;
-
-{IF VarIsNull(ARecord.Values[Sender.Index]) then exit;
-IF ARecord.Values[Sender.Index]=0 then
- Begin
-   AText:='';
-   exit;
- End;
-case ARecord.Values[0] of
- 0 : AText := FormatFloat('#', ARecord.Values[Sender.Index]);
- 1 : AText := FormatFloat('#.0', ARecord.Values[Sender.Index]);
- 2 : AText := FormatFloat('#.00', ARecord.Values[Sender.Index]);
-End;  }
-{  if (ARecord.Index = LastCardIndex) then
-    AText := inttostr(LastRecordIndex)
-  else
-    exit; // dont change  }
-
 procedure TEvaluateDecksForm.vTopCustomDrawCell(Sender: TcxCustomGridTableView;
   ACanvas: TcxCanvas; AViewInfo: TcxGridTableDataCellViewInfo;
   var ADone: Boolean);
@@ -2430,6 +2407,7 @@ begin
 
         with vBatchResult.DataController do
         try
+          rec := vBatchResult.RecordCount-1;
           Values[rec, vcbFWins.Index] := r.Result.Win;
           Values[rec, vcbFStalled.Index] := r.Result.games - r.Result.Win - r.Result.Loss;
           Values[rec, vcbFLoss.Index] := r.Result.Loss;
@@ -2453,6 +2431,7 @@ begin
 
         with vBatchResult.DataController do
         try
+          rec := vBatchResult.RecordCount-1;
           Values[rec, vcbSWins.Index] := r.Result.Win;
           Values[rec, vcbSStalled.Index] := r.Result.games - r.Result.Win - r.Result.Loss;
           Values[rec, vcbSLoss.Index] := r.Result.Loss;
@@ -2529,6 +2508,7 @@ begin
 
         with vBatchResult.DataController do
         try
+          rec := vBatchResult.RecordCount-1;
           Values[rec, vcbFWins.Index] := r.Result.Win;
           Values[rec, vcbFStalled.Index] := r.Result.games - r.Result.Win - r.Result.Loss;
           Values[rec, vcbFLoss.Index] := r.Result.Loss;
@@ -2552,6 +2532,7 @@ begin
 
         with vBatchResult.DataController do
         try
+          rec := vBatchResult.RecordCount-1;
           Values[rec, vcbSWins.Index] := r.Result.Win;
           Values[rec, vcbSStalled.Index] := r.Result.games - r.Result.Win - r.Result.Loss;
           Values[rec, vcbSLoss.Index] := r.Result.Loss;
@@ -3316,6 +3297,7 @@ begin
       r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, raid,
         games div tc, tc, bIsSurge, seMaxTurn.Value, cbOrderMatters.Checked,
         cbTourney.Checked, wildcard, ft, fr, ff, Addr(WildFilterInclude), Addr(WildFilterExclude));
+      rec := RecordCount - 1;
       if wildcard > 0 then
       begin
         s := Cards[StrToInt(slIDIndex.Values[IntToStr(wildcard)])].Name;
@@ -3345,7 +3327,7 @@ begin
       vCardStats.BeginUpdate;
       try
         vCardStats.DataController.RecordCount := 0;
-        zzz := (DECK_MAX_SIZE + 1);
+        zzz := DECK_MAX_SIZE;
         for z := 0 to zzz do
         begin
           if r.ResultByCard[z].Id = 0 then // invalid card ID
@@ -3393,7 +3375,7 @@ begin
       vCardOrder.BeginUpdate;
       try
         vCardOrder.DataController.RecordCount := 0;
-        zzz := (DECK_MAX_SIZE + 1);
+        zzz := DECK_MAX_SIZE;
         for z := 0 to zzz do
         begin
           if z = 0 then // skip 1st card as it is always a commander
@@ -3432,6 +3414,7 @@ begin
 
     with cxView.DataController do
     try
+      rec := RecordCount - 1;
       Values[rec, vcWins.Index] := r.Result.Win;
       Values[rec, vcStalled.Index] := i - r.Result.Win - r.Result.Loss;
       Values[rec, vcGames.Index] := i;
