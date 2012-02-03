@@ -467,6 +467,7 @@ type
     cbWinrateBonus: TcxCheckBox;
     tEnableBoost: TTimer;
     tDonateNotification: TTimer;
+    lDonate4: TcxLabel;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);

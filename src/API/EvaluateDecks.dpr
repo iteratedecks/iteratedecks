@@ -5,7 +5,8 @@ uses
   Windows,
   SysUtils,
   EvaluateDecksSrc in 'EvaluateDecksSrc.pas' {EvaluateDecksForm},
-  LoadingSrc in 'LoadingSrc.pas' {LoadingForm};
+  LoadingSrc in 'LoadingSrc.pas' {LoadingForm},
+  Extended in 'Extended.pas';
 
 {$R *.res}
 

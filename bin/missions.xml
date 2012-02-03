@@ -6474,7 +6474,7 @@
 		<money>775</money>
 		<rep faction='13' amount='15' /> 
 		<commander>1127</commander>
-		<desc>They will grind you down let the Disease destroy you.</desc>
+		<desc>They will grind you down and let the Disease destroy you.</desc>
 		<speech>
 			<line commander='1042'>So what is the plan exactly Emanuel?</line>
 			<line commander='1125'>Find the Nexus, kill the Bloodthirsty, then wait for Halcyon's orders. Was that not clear before?</line>
@@ -6753,7 +6753,7 @@
 			<card>485</card>
 			<card>452</card>
 			<card>441</card>
-			<card>469</card>
+			<card>397</card>
 			<card>156</card>
 			<card>3043</card>
 		</deck>
@@ -7874,7 +7874,8 @@
 		<id>1</id>
 		<name>Ashrock</name>
 		<picture>AshrockMap</picture>
-		<picture_file>ashrockmap.jpg</picture_file>
+		<picture_file>ashrockHD.jpg</picture_file>
+		<effect_file>ashrockHDFX.swf</effect_file>
 		<effect x='292' y='220'>ashrockeffects.swf</effect>
 		<battlefield>ashrock.png</battlefield>
 		<nav>Nav1</nav>
@@ -7884,7 +7885,8 @@
 		<id>2</id>
 		<name>Arctis</name>
 		<picture>ArctisMap2</picture>
-		<picture_file>arctismap.jpg</picture_file>
+		<picture_file>arctisHD.jpg</picture_file>
+		<effect_file>arctisHDFX.swf</effect_file>
 		<battlefield>arctis.png</battlefield>
 		<effect x='292' y='220'>arctissnow.swf</effect>
 		<extraEffect req='8'>arctisfire.swf</extraEffect>
@@ -7896,7 +7898,8 @@
 		<id>3</id>
 		<name>Cyprion</name>
 		<picture>TyrolMap</picture>
-		<picture_file>cyprionmap.png</picture_file>
+		<picture_file>tyrolHD.jpg</picture_file>
+		<effect_file>tyrolHDFX.swf</effect_file>
 		<battlefield>tyrol.png</battlefield>
 		<effect x='292' y='220'>cyprioneffects.swf</effect>
 		<nav>Nav3</nav>
@@ -7907,7 +7910,8 @@
 		<id>4</id>
 		<name>Blackmarsh</name>
 		<picture>BlackMarshMap</picture>
-		<picture_file>blackmarsh.png</picture_file>
+		<picture_file>blackmarshHD.jpg</picture_file>
+		<effect_file>blackmarshHDFX.swf</effect_file>
 		<battlefield>blackmarshbattleground.png</battlefield>
 		<effect x='292' y='220'>blackmarsheffects.swf</effect>
 		<nav>Nav5</nav>
@@ -7918,7 +7922,8 @@
 		<id>5</id>
 		<name>Swamps of Andar</name>
 		<picture>SwampsofAndarMap</picture>
-		<picture_file>swampsofandarmap.jpg</picture_file>
+		<picture_file>swampsofandarHD.jpg</picture_file>
+		<effect_file>swampsofandarHDFX.swf</effect_file>
 		<battlefield>swampsofandar.png</battlefield>
 		<effect x='292' y='220'>swampeffects.swf</effect>
 		<nav>Nav4</nav>
@@ -7929,7 +7934,8 @@
 		<id>6</id>
 		<name>The Red Sands</name>
 		<picture>RedSandsMap</picture>
-		<picture_file>redsandsmap.jpg</picture_file>
+		<picture_file>redsandsHD.jpg</picture_file>
+		<effect_file>redsandsHDFX.swf</effect_file>
 		<battlefield>battlefield2.jpg</battlefield>
 		<effect x='292' y='220'>redsandseffects.swf</effect>
 		<nav>Nav6</nav>
@@ -7940,7 +7946,8 @@
 		<id>7</id>
 		<name>Wasteland</name>
 		<picture>WastelandMap</picture>
-		<picture_file>wastelandmap.png</picture_file>
+		<picture_file>wastelandHD.jpg</picture_file>
+		<effect_file>wastelandHDFX.swf</effect_file>
 		<battlefield>wasteland.png</battlefield>
 		<effect x='292' y='220'>wastelandeffects.swf</effect>
 		<extraEffect req='172'>wastelandblight1.swf</extraEffect>
@@ -7954,6 +7961,8 @@
 		<id>8</id>
 		<name>Kor Encampment</name>
 		<picture>RaiderMap</picture>
+		<picture_file>korencampmentHD.jpg</picture_file>
+		<effect_file>korencampmentHDFX.swf</effect_file>
 		<effect x='292' y='220'>raidermap.swf</effect>
 		<nav>Nav8</nav>
 		<req>41</req>
@@ -7962,6 +7971,8 @@
 	<location>
 		<id>9</id>
 		<name>Sulfuris</name>
+		<picture_file>sulfurisHD.jpg</picture_file>
+		<effect_file>sulfurisHDFX.swf</effect_file>
 		<picture>SulfurSwampMap</picture>
 		<effect x='292' y='220'>sulfurswamps.swf</effect>
 		<nav>Nav9</nav>
@@ -7972,6 +7983,8 @@
 		<id>10</id>
 		<name>Odeus Mines</name>
 		<picture>CaveMap</picture>
+		<picture_file>odeusminesHD.jpg</picture_file>
+		<effect_file>odeusminesHDFX.swf</effect_file>
 		<nav>Nav10</nav>
 		<req>65</req>
 	</location>
@@ -7980,6 +7993,8 @@
 		<id>11</id>
 		<name>Blightlands</name>
 		<picture>BlightlandsMap</picture>
+		<picture_file>blightlandsHD.jpg</picture_file>
+		<effect_file>blightlandsHDFX.swf</effect_file>
 		<effect x='292' y='220'>blightlandsFX.swf</effect>
 		<nav>Nav11</nav>
 		<req>71</req>
@@ -7989,6 +8004,8 @@
 		<id>12</id>
 		<name>Tartarus Cliffs</name>
 		<picture>Tartarus1Map</picture>
+		<picture_file>tartaruscliffsHD.jpg</picture_file>
+		<effect_file>tartaruscliffsHDFX.swf</effect_file>
 		<effect x='292' y='220'>Tartarus1FX.swf</effect>
 		<nav>Nav12</nav>
 		<req>78</req>
@@ -7998,6 +8015,8 @@
 		<id>13</id>
 		<name>Razogoth's Grave</name>
 		<picture>Tartarus2Map</picture>
+		<picture_file>razogothsgraveHD.jpg</picture_file>
+		<effect_file>razogothsgraveHDFX.swf</effect_file>
 		<effect x='292' y='220'>Tartarus2FX.swf</effect>
 		<nav>Nav13</nav>
 		<req>96</req>
@@ -8007,6 +8026,8 @@
 		<id>14</id>
 		<name>Breeding Pits</name>
 		<picture>Tartarus3Map</picture>
+		<picture_file>breedingpitsHD.jpg</picture_file>
+		<effect_file>breedingpitsHDFX.swf</effect_file>
 		<effect x='292' y='220'>Tartarus3FX.swf</effect>
 		<nav>Nav14</nav>
 		<req>103</req>
@@ -8016,6 +8037,8 @@
 		<id>15</id>
 		<name>Tartarus Core</name>
 		<picture>Tartarus4Map</picture>
+		<picture_file>tartaruscoreHD.jpg</picture_file>
+		<effect_file>tartaruscoreHDFX.swf</effect_file>
 		<effect x='292' y='220'>Tartarus4FX.swf</effect>
 		<nav>Nav15</nav>
 		<req>109</req>
@@ -8025,6 +8048,8 @@
 		<id>16</id>
 		<name>Triton Isle</name>
 		<picture>PurityRing1Map</picture>
+		<picture_file>tritonisleHD.jpg</picture_file>
+		<effect_file>tritonisleHDFX.swf</effect_file>
 		<effect x='292' y='220'>purityring1FX.swf</effect>
 		<nav>Nav16</nav>
 		<req>129</req>
@@ -8034,6 +8059,8 @@
 		<id>17</id>
 		<name>Mount Pristine</name>
 		<picture>PurityRing2Map</picture>
+		<picture_file>mounthprestineHD.jpg</picture_file>
+		<effect_file>mounthprestineHDFX.swf</effect_file>
 		<effect x='292' y='220'>purityring2FX.swf</effect>
 		<nav>Nav17</nav>
 		<req>137</req>
@@ -8043,6 +8070,8 @@
 		<id>18</id>
 		<name>Protectors' Cradle</name>
 		<picture>PurityRing3Map</picture>
+		<picture_file>protectorscradleHD.jpg</picture_file>
+		<effect_file>protectorscradleHDFX.swf</effect_file>
 		<effect x='292' y='220'>purityring3FX.swf</effect>
 		<nav>Nav18</nav>
 		<req>143</req>
@@ -8052,6 +8081,8 @@
 		<id>19</id>
 		<name>Valhalla</name>
 		<picture>PurityRing4Map</picture>
+		<picture_file>valhallaHD.jpg</picture_file>
+		<effect_file>valhallaHDFX.swf</effect_file>
 		<effect x='292' y='220'>purityring4FX.swf</effect>
 		<nav>Nav19</nav>
 		<req>149</req>
@@ -8061,7 +8092,8 @@
 		<id>20</id>
 		<name>Wasteland</name>
 		<picture>WastelandMap</picture>
-		<picture_file>wastelandmap.png</picture_file>
+		<picture_file>wastelandHD.jpg</picture_file>
+		<effect_file>wastelandHDFX.swf</effect_file>
 		<battlefield>wasteland.png</battlefield>
 		<effect x='292' y='220'>wastelandeffects.swf</effect>
 		<extraEffect req='189'>wastelandblight2.swf</extraEffect>
@@ -8074,6 +8106,8 @@
 		<id>21</id>
 		<name>Vistik Island</name>
 		<picture>MapHomeworld</picture>
+		<picture_file>vistikHD.jpg</picture_file>
+		<effect_file>vistikHDFX.swf</effect_file>
 		<effect x='292' y='220'>HWislandFX.swf</effect>
 		<nav>Nav21</nav>
 		<req>176</req>
@@ -8083,7 +8117,8 @@
 		<id>22</id>
 		<name>The Red Sands</name>
 		<picture>RedSandsMap</picture>
-		<picture_file>redsandsmap.jpg</picture_file>
+		<picture_file>redsandsHD.jpg</picture_file>
+		<effect_file>redsandsblightHDFX.swf</effect_file>
 		<battlefield>battlefield2.jpg</battlefield>
 		<effect x='292' y='220'>redsandseffects.swf</effect>
 		<extraEffect req='187'>redsandsblight3.swf</extraEffect>
@@ -8097,7 +8132,8 @@
 		<id>23</id>
 		<name>Wasteland</name>
 		<picture>WastelandMap</picture>
-		<picture_file>wastelandmap.png</picture_file>
+		<picture_file>wastelandHD.jpg</picture_file>
+		<effect_file>wastelandblightHDFX.swf</effect_file>
 		<battlefield>wasteland.png</battlefield>
 		<effect x='292' y='220'>wastelandeffects.swf</effect>
 		<extraEffect req='189'>wastelandblight3.swf</extraEffect>
@@ -8109,6 +8145,8 @@
 		<id>24</id>
 		<name>Arctis Prime</name>
 		<picture>NorthPoleMap</picture>
+		<picture_file>arctisprimeHD.jpg</picture_file>
+		<effect_file>arctisprimeHDFX.swf</effect_file>
 		<effect x='292' y='220'>northpolemapFX.swf</effect>
 		<nav>Nav24</nav>
 		<req>129</req>
