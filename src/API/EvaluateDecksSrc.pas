@@ -2065,6 +2065,12 @@ end;
 procedure TEvaluateDecksForm.bBatchRunEvalClick(Sender: TObject);
 var i: integer;
 begin
+  if (imgTop.Hint <> '') and (imgBot.Hint <> '') then
+  begin
+    ShowMessage('Sorry, this works only for minimalistic mode.');
+    exit;
+  end;
+
   if bBatchRunEval.Caption = 'Stop' then
   begin
     bStopBatchRunEval := true;
