@@ -3512,7 +3512,7 @@
 			<card>200</card>
 			<card>231</card>
 			<card>3026</card>
-			<card>2025</card>
+			<card>2012</card>
 		</deck>
 		<rewards>
 			<card>275</card>
@@ -6058,7 +6058,7 @@
 			<card>2055</card>
 			<card>3026</card>
 		</deck>
-		<req>96</req>
+		<req>103</req>
 	</mission>
 
 	<mission>
