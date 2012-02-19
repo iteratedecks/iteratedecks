@@ -10,8 +10,7 @@ uses
   cxCustomData, cxFilter, cxData, cxDataStorage, DB, cxDBData,
   cxGridCustomTableView, cxGridTableView, cxGridDBTableView, cxGridLevel,
   cxClasses, cxGridCustomView, cxGrid, cxCalendar, IdBaseComponent, IdComponent,
-  IdTCPConnection, IdTCPClient, IdHTTP, OleCtrls, SHDocVw_EWB, EwbCore,
-  EmbeddedWB, WinInet, ComCtrls, cxListView, Jpeg, cxCheckComboBox,
+  IdTCPConnection, IdTCPClient, IdHTTP, OleCtrls, WinInet, ComCtrls, cxListView, Jpeg, cxCheckComboBox,
   cxCurrencyEdit, ActiveX, cxSpinEdit, cxRadioGroup, cxGroupBox, DBClient,
   GIFImg, ShellApi, cxCheckListBox, cxGridBandedTableView, cxGridExportLink, ClipBrd,
   cxSplitter, Extended;
