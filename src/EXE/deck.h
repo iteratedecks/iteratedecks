@@ -55,6 +55,10 @@ char FACTIONS[6][CARD_NAME_MAX_LENGTH] = {0,"Imperial","Raider","Bloodthirsty","
 #define TARGETSCOUNT_ONE		0				
 #define TARGETSCOUNT_ALL		10	
 
+#define EVENT_EMPTY				0
+#define EVENT_DIED				1
+#define EVENT_PLAYED			2
+
 #define TYPE_NONE				0
 #define TYPE_COMMANDER			1
 #define TYPE_ASSAULT			2
@@ -87,18 +91,20 @@ char FACTIONS[6][CARD_NAME_MAX_LENGTH] = {0,"Imperial","Raider","Bloodthirsty","
 #define DEFENSIVE_COUNTER		32
 #define DEFENSIVE_EVADE			33
 #define DEFENSIVE_FLYING		34
-#define DEFENSIVE_PAYBACK		35
-#define DEFENSIVE_REFRESH		36
-#define DEFENSIVE_REGENERATE	37
-#define DEFENSIVE_TRIBUTE		38
-#define DEFENSIVE_WALL			39
+#define DEFENSIVE_INTERCEPT		35
+#define DEFENSIVE_PAYBACK		36
+#define DEFENSIVE_REFRESH		37
+#define DEFENSIVE_REGENERATE	38
+#define DEFENSIVE_TRIBUTE		39
+#define DEFENSIVE_WALL			40
 
 #define COMBAT_ANTIAIR			41
-#define COMBAT_FEAR				42
-#define COMBAT_FLURRY			43
-#define COMBAT_PIERCE			44
-#define COMBAT_SWIPE			45
-#define COMBAT_VALOR			46
+#define COMBAT_BURST			42
+#define COMBAT_FEAR				43
+#define COMBAT_FLURRY			44
+#define COMBAT_PIERCE			45
+#define COMBAT_SWIPE			46
+#define COMBAT_VALOR			47
 
 #define DMGDEPENDANT_BERSERK	51
 #define DMGDEPENDANT_CRUSH		52
@@ -162,6 +168,7 @@ private:
 	UCHAR Effects[CARD_ABILITIES_MAX];
 	UCHAR TargetCounts[CARD_ABILITIES_MAX];
 	UCHAR TargetFactions[CARD_ABILITIES_MAX]; // reserved negative values for faction
+	UCHAR AbilityEvent[CARD_ABILITIES_MAX];
 #define RESERVE_ABILITIES_COUNT	3
 	vector<UCHAR> AbilitiesOrdered;
 protected:
@@ -195,6 +202,7 @@ public:
 		memset(Effects,0,CARD_ABILITIES_MAX);
 		memset(TargetCounts,0,CARD_ABILITIES_MAX);
 		memset(TargetFactions,0,CARD_ABILITIES_MAX);
+		memset(AbilityEvent,0,CARD_ABILITIES_MAX);		
 		//AbilitiesOrdered.reserve(RESERVE_ABILITIES_COUNT);
 	}
 	Card(const UINT id, const char* name, const char* pic, const UCHAR rarity, const UCHAR type, const UCHAR faction, const UCHAR attack, const UCHAR health, const UCHAR wait, const UINT set)
@@ -215,6 +223,7 @@ public:
 		memset(Effects,0,CARD_ABILITIES_MAX);
 		memset(TargetCounts,0,CARD_ABILITIES_MAX);
 		memset(TargetFactions,0,CARD_ABILITIES_MAX);
+		memset(AbilityEvent,0,CARD_ABILITIES_MAX);	
 		AbilitiesOrdered.reserve(RESERVE_ABILITIES_COUNT);
 	}
 	Card(const Card &card)
@@ -232,6 +241,7 @@ public:
 		memcpy(Effects,card.Effects,CARD_ABILITIES_MAX);
 		memcpy(TargetCounts,card.TargetCounts,CARD_ABILITIES_MAX);
 		memcpy(TargetFactions,card.TargetFactions,CARD_ABILITIES_MAX);
+		memcpy(AbilityEvent,card.AbilityEvent,CARD_ABILITIES_MAX);	
 		AbilitiesOrdered.reserve(RESERVE_ABILITIES_COUNT);
 		if (!card.AbilitiesOrdered.empty())
 			for (UCHAR i=0;i<card.AbilitiesOrdered.size();i++)
@@ -252,17 +262,19 @@ public:
 		memcpy(Effects,card.Effects,CARD_ABILITIES_MAX);
 		memcpy(TargetCounts,card.TargetCounts,CARD_ABILITIES_MAX);
 		memcpy(TargetFactions,card.TargetFactions,CARD_ABILITIES_MAX);
+		memcpy(AbilityEvent,card.AbilityEvent,CARD_ABILITIES_MAX);
 		AbilitiesOrdered.reserve(RESERVE_ABILITIES_COUNT);
 		if (!card.AbilitiesOrdered.empty())
 			for (UCHAR i=0;i<card.AbilitiesOrdered.size();i++)
 				AbilitiesOrdered.push_back(card.AbilitiesOrdered[i]);
 		return *this;
 	}
-	void AddAbility(const UCHAR id, const UCHAR effect, const UCHAR targetcount, const UCHAR targetfaction)
+	void AddAbility(const UCHAR id, const UCHAR effect, const UCHAR targetcount, const UCHAR targetfaction, const UCHAR skillevent = EVENT_EMPTY)
 	{
 		Effects[id] = effect;
 		TargetCounts[id] = targetcount;
 		TargetFactions[id] = targetfaction;
+		AbilityEvent[id] = skillevent;
 		AbilitiesOrdered.push_back(id);
 	}
 	void AddAbility(const UCHAR id, const UCHAR targetcount, const UCHAR targetfaction)
@@ -270,16 +282,19 @@ public:
 		Effects[id] = ABILITY_ENABLED;
 		TargetCounts[id] = targetcount;
 		TargetFactions[id] = targetfaction;
+		AbilityEvent[id] = EVENT_EMPTY;
 		AbilitiesOrdered.push_back(id);
 	}
 	void AddAbility(const UCHAR id, const UCHAR effect)
 	{
 		Effects[id] = effect;
+		AbilityEvent[id] = EVENT_EMPTY;
 		AbilitiesOrdered.push_back(id);
 	}
 	void AddAbility(const UCHAR id)
 	{
 		Effects[id] = ABILITY_ENABLED;
+		AbilityEvent[id] = EVENT_EMPTY;
 		AbilitiesOrdered.push_back(id);
 	}
 	void PrintAbilities()
@@ -338,6 +353,7 @@ public:
 	}
 	const UCHAR GetTargetCount(const UCHAR id) const { return TargetCounts[id]; }
 	const UCHAR GetTargetFaction(const UCHAR id) const { return TargetFactions[id]; }
+	const UCHAR GetAbilityEvent(const UCHAR id) const { return AbilityEvent[id]; }
 	const char *GetName() const { return Name; }
 	const char *GetPicture() const { return Picture; }
 };
@@ -356,6 +372,7 @@ private:
 	UCHAR Effects[CARD_ABILITIES_MAX];
 	bool bPlayed;
 	bool bActivated;
+	UCHAR DeathEvents;
 public:
 	// fancy stats
 	UINT fsDmgDealt; // attack, counter, strike, poison is not here(hard to track the source of poison)
@@ -552,6 +569,7 @@ Valor: Removed after owner ends his turn.
 				*actualdamagedealt = dealt;
 				return dmg;
 			}
+			DeathEvents++;
 			// crush damage will be dealt even if the defending unit Regenerates
 			return dealt;// note that CRUSH & BACKFIRE are processed elsewhere
 		}
@@ -586,7 +604,7 @@ Valor: Removed after owner ends his turn.
 					lr->Target.RowID = TYPE_STRUCTURE;
 				}
 				// walls can counter and regenerate
-				vi->SufferDmg(Dmg,0,0,0,overkill); // regenerate
+				vi->SufferDmg(Dmg,0,0,0,overkill);
 				if (vi->GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // counter, dmg from crush can't be countered
 				{
 					vi->CardSkillProc(DEFENSIVE_COUNTER);
@@ -629,6 +647,15 @@ Valor: Removed after owner ends his turn.
 	const bool IsDefined() const
 	{
 		return (OriginalCard && (Attack||Health||Wait||(GetType() == TYPE_COMMANDER)||(GetType() == TYPE_ACTION)));
+	}
+	bool OnDeathEvent()
+	{
+		if (DeathEvents > 0)
+		{
+			DeathEvents--;
+			return true;
+		}
+		return false;
 	}
 	const UCHAR GetRarity() const
 	{
@@ -708,6 +735,7 @@ Valor: Removed after owner ends his turn.
 		fsOverkill = 0;
 		fsDeaths = 0;
 		SkillProcBuffer = 0;
+		DeathEvents = 0;
 		return *this;
 	}
 	PlayedCard(const Card *card) 
@@ -729,6 +757,7 @@ Valor: Removed after owner ends his turn.
 		fsOverkill = 0;
 		fsDeaths = 0;
 		SkillProcBuffer = 0;
+		DeathEvents = 0;
 	}
 	const UINT GetId() const { return OriginalCard->GetId(); }
 	const UCHAR GetNativeAttack() const
@@ -773,6 +802,7 @@ Valor: Removed after owner ends his turn.
 		else
 			return OriginalCard->GetTargetFaction(id);
 	}
+	const UCHAR GetAbilityEvent(const UCHAR id) const { return OriginalCard->GetAbilityEvent(id); }
 	const bool GetPlayed() const { return bPlayed; }
 	void Played() { bPlayed = true; }
 	void ResetPlayedFlag() { bPlayed = false; }
@@ -846,6 +876,7 @@ Valor: Removed after owner ends his turn.
 		fsOverkill = 0;
 		fsDeaths = 0;
 		SkillProcBuffer = 0;
+		DeathEvents = 0;
 	}
 };
 struct REQUIREMENT
@@ -955,6 +986,12 @@ private:
 				if (Def.Commander.HitCommander(cdmg,SRC,Def.Structures,true,&overkill,
 					Log, LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),0,cdmg)))
 					DamageToCommander += cdmg;
+
+				// gotta check walls & source onDeath here
+				for (UCHAR z=0;z<Def.Structures.size();z++)
+					CheckDeathEvents(Def.Structures[z],*this);
+				CheckDeathEvents(SRC,Def);
+
 				SRC.fsOverkill += overkill;
 				SRC.fsDmgDealt += cdmg;
 				// can go berserk after hitting commander too
@@ -1008,6 +1045,14 @@ private:
 						targetindex += s;
 						targetindex--;
 					}
+					UCHAR burst = 0;
+					if ((SRC.GetAbility(COMBAT_BURST)) && (targets[s]->GetHealth() == targets[s]->GetOriginalCard()->GetHealth()))
+						burst = SRC.GetAbility(COMBAT_BURST);
+					if (burst > 0)
+					{
+						SkillProcs[COMBAT_BURST]++;
+						LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_BURST,burst);
+					}
 					// if target dies during flurry and slot(s == 1) is aligned to SRC, we deal dmg to commander
 					if ((!targets[s]->IsAlive()) && ((swipe == 1) || (s == 1)))
 					{
@@ -1017,11 +1062,17 @@ private:
 							SkillProcs[COMBAT_VALOR]++;
 							LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_VALOR,valor);
 						}
-						UCHAR cdmg = SRC.GetAttack()+valor;							
+						UCHAR cdmg = SRC.GetAttack()+valor;		
 						UCHAR overkill = 0;
 						if (Def.Commander.HitCommander(cdmg,SRC,Def.Structures,true,&overkill,
 							Log, LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),0,cdmg)))
 							DamageToCommander += cdmg;
+
+						// gotta check walls & source onDeath here
+						for (UCHAR z=0;z<Def.Structures.size();z++)
+							CheckDeathEvents(Def.Structures[z],*this);
+						CheckDeathEvents(SRC,Def);
+
 						SRC.fsDmgDealt += cdmg;
 						SRC.fsOverkill += overkill;
 						// can go berserk after hitting commander too
@@ -1051,7 +1102,7 @@ private:
 					{
 						if ((!antiair) && (!SRC.GetAbility(DEFENSIVE_FLYING)) && PROC50) // missed
 						{
-							targets[s]->fsAvoided += SRC.GetAttack() + valor + targets[s]->GetEffect(ACTIVATION_ENFEEBLE); // note that this IGNORES armor and protect
+							targets[s]->fsAvoided += SRC.GetAttack() + valor + burst + targets[s]->GetEffect(ACTIVATION_ENFEEBLE); // note that this IGNORES armor and protect
 							Def.SkillProcs[DEFENSIVE_FLYING]++;
 							LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DEFENSIVE_FLYING);
 							continue;
@@ -1066,7 +1117,7 @@ private:
 					// enfeeble is taken into account before armor
 					UCHAR enfeeble = targets[s]->GetEffect(ACTIVATION_ENFEEBLE);
 					// now armor & pierce
-					UCHAR dmg = SRC.GetAttack() + valor + antiair + enfeeble;
+					UCHAR dmg = SRC.GetAttack() + valor + antiair + enfeeble + burst;
 					UCHAR armor = targets[s]->GetAbility(DEFENSIVE_ARMORED);
 					UCHAR pierce = SRC.GetAbility(COMBAT_PIERCE);
 					bool bPierce = false;
@@ -1111,6 +1162,7 @@ private:
 							Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),0,dmg));
 						SRC.fsDmgDealt += actualdamagedealt;
 						SRC.fsOverkill += overkill;
+						CheckDeathEvents(*targets[s],*this);
 					}
 					if (bPierce)
 						SkillProcs[COMBAT_PIERCE]++;
@@ -1132,6 +1184,11 @@ private:
 							if (Def.Commander.HitCommander(SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def.Structures,false,&overkill,
 								Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),DMGDEPENDANT_CRUSH,SRC.GetAbility(DMGDEPENDANT_CRUSH))))
 								DamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
+
+							// gotta check walls onDeath here
+							for (UCHAR z=0;z<Def.Structures.size();z++)
+								CheckDeathEvents(Def.Structures[z],*this);
+
 							SRC.fsOverkill += overkill;
 							SkillProcs[DMGDEPENDANT_CRUSH]++;
 						}
@@ -1145,6 +1202,7 @@ private:
 						LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DEFENSIVE_COUNTER,cdmg);
 						targets[s]->fsOverkill += overkill;
 						Def.SkillProcs[DEFENSIVE_COUNTER]++;
+						CheckDeathEvents(SRC,Def);
 					}
 					// berserk
 					if ((dmg > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
@@ -1463,7 +1521,29 @@ public:
 				return true;
 		return false;
 	}
-	void ApplyEffects(PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false,PlayedCard *Mimicer=0,UCHAR StructureIndex = 0)
+	UCHAR Intercept(PPCIV &targets, UCHAR destindex)
+	{
+		// modify a target by intercept here
+		if ((destindex > 0) &&
+			(targets[destindex-1].second = targets[destindex].second - 1) && 
+			(targets[destindex-1].first->GetAbility(DEFENSIVE_INTERCEPT) > 0))
+		{
+			destindex = destindex-1;
+			SkillProcs[DEFENSIVE_INTERCEPT]++;
+			LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,destindex),DEFENSIVE_INTERCEPT);
+		}
+		else
+			if ((destindex < targets.size() - 1) &&
+				(targets[destindex+1].second = targets[destindex].second + 1) && 
+				(targets[destindex+1].first->GetAbility(DEFENSIVE_INTERCEPT) > 0))
+			{
+				destindex = destindex+1;
+				SkillProcs[DEFENSIVE_INTERCEPT]++;
+				LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,destindex),DEFENSIVE_INTERCEPT);
+			}
+		return destindex;
+	}
+	void ApplyEffects(UCHAR EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false,PlayedCard *Mimicer=0,UCHAR StructureIndex = 0)
 	{
 		UCHAR destindex,aid,faction;
 		PPCIV targets;
@@ -1506,6 +1586,10 @@ public:
 			UCHAR chaos = Src.GetEffect(ACTIVATION_CHAOS); // I need to check this every time card uses skill because it could be paybacked chaos - such as Pulsifier with payback, chaos and mimic
 
 			aid = Src.GetAbilityInOrder(aindex);
+
+			// filter certain types of skills
+			if (EffectType != Src.GetAbilityEvent(aid)) continue;
+
 			// cleanse
 			if (aid == ACTIVATION_CLEANSE)
 			{
@@ -1616,7 +1700,9 @@ public:
 						if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL)
 						{
 							destindex = rand() % targets.size();
-							tmp = targets[destindex];
+							if (!chaos)
+								destindex = Intercept(targets, destindex);
+							tmp = targets[destindex];							
 							targets.clear();
 							targets.push_back(tmp);
 						}
@@ -1645,12 +1731,13 @@ public:
 									SkillProcs[aid]++;
 								else
 									Dest.SkillProcs[aid]++;
-								if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback
-								{
-									Src.SetEffect(aid,Src.GetEffect(aid) + effect);
-									vi->first->fsSpecial += effect;
-									Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
-								}
+								if (Src.IsAlive())
+									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback
+									{
+										Src.SetEffect(aid,Src.GetEffect(aid) + effect);
+										vi->first->fsSpecial += effect;
+										Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+									}
 								if (bConsoleOutput)
 								{
 									Src.PrintDesc();
@@ -1899,6 +1986,8 @@ public:
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
 							destindex = rand() % targets.size();
+							if (!chaos)
+								destindex = Intercept(targets, destindex);
 							tmp = targets[destindex];
 							targets.clear();
 							targets.push_back(tmp);
@@ -1922,12 +2011,13 @@ public:
 										SkillProcs[aid]++;
 									else
 										Dest.SkillProcs[aid]++;
-		/*  ?  */					if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback is it 1/2 or 1/4 chance to return jam with payback????
-									{
-										Src.SetEffect(aid,effect);
-										vi->first->fsSpecial += effect;
-										Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
-									}
+									if (Src.IsAlive())
+			/*  ?  */					if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback is it 1/2 or 1/4 chance to return jam with payback????
+										{
+											Src.SetEffect(aid,effect);
+											vi->first->fsSpecial += effect;
+											Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+										}
 									if (bConsoleOutput)
 									{
 										Src.PrintDesc();
@@ -1966,6 +2056,8 @@ public:
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
 							destindex = rand() % targets.size();
+							if (!chaos)
+								destindex = Intercept(targets, destindex);
 							tmp = targets[destindex];
 							targets.clear();
 							targets.push_back(tmp);
@@ -1988,12 +2080,13 @@ public:
 									SkillProcs[aid]++;
 								else
 									Dest.SkillProcs[aid]++;
-								if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos)) 
-								{
-									Src.SetEffect(aid,effect);
-									vi->first->fsSpecial += effect;
-									Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
-								}
+								if (Src.IsAlive())
+									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos)) 
+									{
+										Src.SetEffect(aid,effect);
+										vi->first->fsSpecial += effect;
+										Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+									}
 								if (bConsoleOutput)
 								{
 									Src.PrintDesc();
@@ -2025,6 +2118,9 @@ public:
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL))
 						{
 							destindex = rand() % targets.size();
+							// can Mimic be intercepted?
+							if (!chaos)
+								destindex = Intercept(targets, destindex);
 							tmp = targets[destindex];
 							targets.clear();
 							targets.push_back(tmp);
@@ -2046,9 +2142,9 @@ public:
 								}
 								SkillProcs[aid]++;
 								if (chaos > 0)
-									ApplyEffects(*vi->first,Position,*this,true,false,&Src);
+									ApplyEffects(EVENT_EMPTY,*vi->first,Position,*this,true,false,&Src);
 								else
-									ApplyEffects(*vi->first,Position,Dest,true,false,&Src);	
+									ApplyEffects(EVENT_EMPTY,*vi->first,Position,Dest,true,false,&Src);	
 							}
 					}
 					targets.clear();
@@ -2228,6 +2324,7 @@ public:
 							{
 								UCHAR overkill = 0;
 								UCHAR sdmg = vi->first->SufferDmg(effect,0,0,0,&overkill);
+								CheckDeathEvents(*vi->first,Dest);
 								if (!IsMimiced)
 								{
 									Src.fsDmgDealt += sdmg;
@@ -2279,6 +2376,8 @@ public:
 						if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL)
 						{
 							destindex = rand() % targets.size();
+							if (!chaos)
+								destindex = Intercept(targets, destindex);
 							tmp = targets[destindex];
 							targets.clear();
 							targets.push_back(tmp);
@@ -2301,6 +2400,7 @@ public:
 								}
 								UCHAR overkill = 0;
 								UCHAR sdmg = vi->first->StrikeDmg(effect,&overkill);
+								CheckDeathEvents(*vi->first,Dest);
 								if (!IsMimiced)
 								{
 									Src.fsDmgDealt += sdmg;
@@ -2315,13 +2415,15 @@ public:
 									SkillProcs[aid]++;
 								else
 									Dest.SkillProcs[aid]++;
-								if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback
-								{
-									UCHAR overkill = 0;
-									vi->first->fsDmgDealt += Src.StrikeDmg(effect,&overkill);
-									vi->first->fsOverkill += overkill;
-									Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
-								}
+								if (Src.IsAlive())
+									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback
+									{
+										UCHAR overkill = 0;
+										vi->first->fsDmgDealt += Src.StrikeDmg(effect,&overkill);
+										CheckDeathEvents(Src,*this);
+										vi->first->fsOverkill += overkill;
+										Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+									}
 							}			
 					}
 				}
@@ -2366,6 +2468,8 @@ public:
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
 							destindex = rand() % targets.size();
+							if (!chaos)
+								destindex = Intercept(targets, destindex);
 							tmp = targets[destindex];
 							targets.clear();
 							targets.push_back(tmp);
@@ -2394,11 +2498,12 @@ public:
 									SkillProcs[aid]++;
 								else
 									Dest.SkillProcs[aid]++;
-								if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50 && (!chaos))  // payback
-								{
-									vi->first->fsSpecial += Src.Weaken(effect);
-									Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
-								}
+								if (Src.IsAlive())
+									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50 && (!chaos))  // payback
+									{
+										vi->first->fsSpecial += Src.Weaken(effect);
+										Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+									}
 							}
 					}
 				}
@@ -2474,6 +2579,8 @@ public:
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
 							destindex = rand() % targets.size();
+							if (!chaos)
+								destindex = Intercept(targets, destindex);
 							tmp = targets[destindex];
 							targets.clear();
 							targets.push_back(tmp);
@@ -2503,12 +2610,13 @@ public:
 									SkillProcs[aid]++;
 								else
 									Dest.SkillProcs[aid]++;
-								if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50)  // payback
-								{
-									Src.SetEffect(ACTIVATION_CHAOS,effect);
-									vi->first->fsSpecial += effect;
-									Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
-								}
+								if (Src.IsAlive())
+									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50)  // payback
+									{
+										Src.SetEffect(ACTIVATION_CHAOS,effect);
+										vi->first->fsSpecial += effect;
+										Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+									}
 							}
 					}
 				}
@@ -2653,6 +2761,11 @@ public:
 		}
 		return 0; // no cards for u
 	}
+	void CheckDeathEvents(PlayedCard &src, ActiveDeck &Def)
+	{
+		if (src.OnDeathEvent())
+			ApplyEffects(EVENT_DIED,src,-1,Def);
+	}
 	void AttackDeck(ActiveDeck &Def, bool bSkipCardPicks = false)
 	{
 		// process poison
@@ -2661,9 +2774,26 @@ public:
 			Units[i].ResetShield(); // according to wiki, shield doesn't affect poison, it wears off before poison procs I believe
 			Units[i].ProcessPoison();
 		}
+		//  Moraku: If “Heal on Death” triggers from poison damage, it will NOT be able to heal another unit dying from poison damage on the same turn. (All poison damage takes place before “On Death” skills trigger)
+		for (UCHAR i=0;i<Units.size();i++)
+			if (Units[i].OnDeathEvent())
+				ApplyEffects(EVENT_DIED,Units[i],-1,Def);
 
 		if (!bSkipCardPicks)
-			PickNextCard();
+		{
+			const Card *c = PickNextCard();
+			if (c)
+			{
+				if (c->GetType() == TYPE_ACTION)
+					ApplyEffects(EVENT_PLAYED,Actions[0],-1,Def);
+				else
+				if (c->GetType() == TYPE_STRUCTURE)
+					ApplyEffects(EVENT_PLAYED,Structures[Structures.size() - 1],-1,Def);			
+				else
+				if (c->GetType() == TYPE_ASSAULT)
+					ApplyEffects(EVENT_PLAYED,Units[Units.size() - 1],-1,Def);
+			}
+		}
 
 		PlayedCard Empty;
 		UCHAR iFusionCount = 0;
@@ -2676,7 +2806,7 @@ public:
 		for (UCHAR i=0;i<Actions.size();i++)
 		{
 			// apply actions somehow ...
-			ApplyEffects(Actions[i],-1,Def);
+			ApplyEffects(EVENT_EMPTY,Actions[i],-1,Def);
 		}
 		for (VCARDS::iterator vi = Actions.begin();vi != Actions.end();vi++)
 			SweepFancyStats(*vi);
@@ -2704,7 +2834,8 @@ public:
 			GetTargets(Units,FACTION_BLOODTHIRSTY,targets,true);
 			if (!targets.empty())
 			{
-				UCHAR i = rand() % targets.size(); 
+				UCHAR i = rand() % targets.size();
+				i = Intercept(targets, i); // we don't know anything about Infuse being interceptable :( I assume, it is
 				PlayedCard *t = targets[i].first;
 				if ((i < defcount) && (t->GetAbility(DEFENSIVE_EVADE)) && PROC50) // we check evade only on our cards, enemy cards don't seem to actually evade infuse since it's rather helpful to them then harmful
 				{
@@ -2717,13 +2848,13 @@ public:
 		}
 		// apply actions same way 
 		if (Commander.IsDefined())
-			ApplyEffects(Commander,-1,Def);
+			ApplyEffects(EVENT_EMPTY,Commander,-1,Def);
 		// structure cards
 		for (UCHAR i=0;i<Structures.size();i++)
 		{
 			// apply actions somehow ...
 			if (Structures[i].BeginTurn())
-				ApplyEffects(Structures[i],-1,Def,false,(iFusionCount >= 3),0,i);
+				ApplyEffects(EVENT_EMPTY,Structures[i],-1,Def,false,(iFusionCount >= 3),0,i);
 			Structures[i].EndTurn();
 		}
 		// assault cards
@@ -2732,7 +2863,7 @@ public:
 			if (Units[i].BeginTurn())
 			{
 				//if (!Units[i].GetEffect(ACTIVATION_JAM)) // jammed - checked in beginturn
-				ApplyEffects(Units[i],i,Def);
+				ApplyEffects(EVENT_EMPTY,Units[i],i,Def);
 				if ((!Units[i].GetEffect(DMGDEPENDANT_IMMOBILIZE)) && (!Units[i].GetEffect(ACTIVATION_JAM)) && (!Units[i].GetEffect(ACTIVATION_FREEZE))) // tis funny but I need to check Jam for second time in case it was just paybacked
 				{
 					if (Units[i].IsAlive() && Units[i].GetAttack()) // can't attack with dead unit ;) also if attack = 0 then dont attack at all

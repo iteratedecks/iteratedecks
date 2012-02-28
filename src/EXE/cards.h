@@ -259,7 +259,7 @@ struct SKILL
 	SKILL()
 	{
 		SkillName[0] = 0;
-	}
+	}	
 };
 #define CARD_NAME_SYNTAX_EXCLUSION	"Kapak, the Deceiver"
 char *FormatCardName(char *Name)
@@ -458,7 +458,12 @@ public:
 						else
 							TC = TARGETSCOUNT_ALL;
 						UCHAR TF = RemapFaction(child.attribute("y").as_uint());
-						c.AddAbility(Id,Effect,TC,TF);
+						UCHAR skillevent = EVENT_EMPTY;
+						if (child.attribute("died").as_uint() > 0)
+							skillevent = EVENT_DIED;
+						if (child.attribute("played").as_uint() > 0)
+							skillevent = EVENT_PLAYED;
+						c.AddAbility(Id,Effect,TC,TF,skillevent);
 						//for (pugi::xml_attribute attr = child.first_attribute(); attr; attr = attr.next_attribute())
 							//printf("    %s = %s\n",attr.name(),attr.value());
 					}
@@ -660,6 +665,7 @@ public:
 		AddSkill(DEFENSIVE_COUNTER,"Counter");
 		AddSkill(DEFENSIVE_EVADE,"Evade");
 		AddSkill(DEFENSIVE_FLYING,"Flying");
+		AddSkill(DEFENSIVE_INTERCEPT,"Intercept");
 		AddSkill(DEFENSIVE_PAYBACK,"Payback");
 		AddSkill(DEFENSIVE_REFRESH,"Refresh");
 		AddSkill(DEFENSIVE_REGENERATE,"Regenerate");
@@ -667,6 +673,7 @@ public:
 		AddSkill(DEFENSIVE_WALL,"Wall");
 
 		AddSkill(COMBAT_ANTIAIR,"AntiAir");
+		AddSkill(COMBAT_BURST,"Burst");
 		AddSkill(COMBAT_FEAR,"Fear");
 		AddSkill(COMBAT_FLURRY,"Flurry");
 		AddSkill(COMBAT_PIERCE,"Pierce");

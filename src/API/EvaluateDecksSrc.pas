@@ -16,7 +16,7 @@ uses
   cxSplitter, Extended;
 
 const
-  MAX_CARD_COUNT = 850;
+  MAX_CARD_COUNT = 1200;
   MAX_DECK_SIZE = 20;   // this is only for API
   MAX_SETS_COUNT = 20;
   DEFAULT_DECK_SIZE = 10;
@@ -46,7 +46,8 @@ type
     Effects: array[0..CARD_ABILITIES_MAX - 1] of byte;
     TargetCounts: array[0..CARD_ABILITIES_MAX - 1] of byte;
     TargetFactions: array[0..CARD_ABILITIES_MAX - 1] of byte;
-    ChunkData: array[0..16] of byte;
+    AbilityEvent: array[0..CARD_ABILITIES_MAX - 1] of byte;
+    ChunkData: array[0..12] of byte; // it was 16
   end;
 
 type
@@ -860,6 +861,19 @@ var
     else
       result := ' All';
   end;
+  function GetAbilityEvent(Id: Byte): string;
+  begin
+    if Id = 0 then
+      result := ''
+    else
+    if Id = 2 then
+      result := ' on play'
+    else
+      result := ' on death'; {
+  #define EVENT_EMPTY				0
+#define EVENT_DIED				1
+#define EVENT_PLAYED			2   }
+  end;
   function AddLine(Name: string; Id: Byte; bPower: boolean): string;
   begin
     result := '';
@@ -869,6 +883,7 @@ var
         GetFactionString(C.TargetFactions[Id]);
       if (bPower) then
         result := result + ' ' + IntToStr(C.Effects[Id]);
+      result := result + GetAbilityEvent(C.AbilityEvent[Id]);
       result := result + #13;
     end;
   end;
@@ -4120,6 +4135,8 @@ begin
   sLocalDir := ExtractFilePath(ParamStr(0));
   Caption := Application.Title;
 
+  bHide.Click;
+
 {$IFDEF DEVELOPMENT}
   LoadDefenceLists;
   Caption := Caption + ' DEV';
@@ -4130,7 +4147,7 @@ begin
   if SizeOf(TCard) <> GetCardSize() then
   begin
     tLoad.Enabled := false;
-    ShowMessage('Interface is incompatible with dll.');
+    ShowMessage('Interface is incompatible with dll.'#13 + 'API structure size: '+Inttostr(SizeOf(TCard)) + #13'DLL structure size: ' + Inttostr(GetCardSize()));
     Application.Terminate;
     Halt;
   end;

@@ -246,6 +246,7 @@ extern "C"
 			(AbilityID == DEFENSIVE_COUNTER) ||
 			(AbilityID == DEFENSIVE_REGENERATE) ||
 			(AbilityID == COMBAT_ANTIAIR) ||
+			(AbilityID == COMBAT_BURST) ||
 			(AbilityID == COMBAT_FLURRY) ||
 			(AbilityID == COMBAT_PIERCE) ||
 			(AbilityID == COMBAT_VALOR) ||
