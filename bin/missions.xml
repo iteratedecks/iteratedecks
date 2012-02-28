@@ -2272,8 +2272,8 @@
 		<picture>mission66.jpg</picture>
 		<location_id>10</location_id>
 		<num_to_complete>6</num_to_complete>
-		<x>60</x>
-		<y>340</y>
+		<x>120</x>
+		<y>280</y>
 		<xp>33</xp>
 		<energy>15</energy> <!-- 15 -->
 		<money>650</money>
@@ -6236,8 +6236,8 @@
 		<picture>mission173.jpg</picture>
 		<location_id>20</location_id>
 		<num_to_complete>6</num_to_complete>
-		<x>490</x>
-		<y>340</y>
+		<x>480</x>
+		<y>300</y>
 		<xp>29</xp>
 		<energy>12</energy>
 		<money>600</money>
@@ -6272,8 +6272,8 @@
 		<picture>mission174.jpg</picture>
 		<location_id>20</location_id>
 		<num_to_complete>6</num_to_complete>
-		<x>430</x>
-		<y>310</y>
+		<x>410</x>
+		<y>270</y>
 		<xp>32</xp>
 		<energy>13</energy>
 		<money>650</money>
@@ -6281,7 +6281,7 @@
 		<commander>1133</commander>
 		<desc>The Raiders are trying to cause as much destruction and panic as quickly as possible before they move on.</desc>
 		<speech>
-			<line commander='1042'>There is mass panic everywhere. The Imperials are distracted trying to control the madness to do anything about the spread of the Blight.</line>
+			<line commander='1042'>There is mass panic everywhere. The Imperials are too distracted trying to control the madness to do anything about the spread of the Blight.</line>
 			<line commander='1042'>The Raiders have taken advantage of this opportunity to invade the Wasteland. Maybe if we take them out we can lure Halcyon out of hiding.</line>
 		</speech>
 		<deck>
@@ -7561,7 +7561,7 @@
 
 <!-- END Homeworld Side Missions -->
 
-<!-- Some New Missions -->
+<!-- Winter Solstice Missions -->
 
 	<mission>
 		<id>209</id>
@@ -7866,9 +7866,975 @@
 		</rewards>
 	</mission>
 
-<!-- END Some New Missions -->
+<!-- END Winter Solstice Missions -->
+
+<!-- Phobos Missions -->
+
+	<!-- Location 1  -->
+
+<mission>
+		<id>217</id>
+		<name>Mission 145</name>
+		<picture>mission217.jpg</picture>
+		<location_id>25</location_id>
+		<num_to_complete>5</num_to_complete>
+		<x>520</x>
+		<y>180</y> 
+		<xp>31</xp> <!-- 2.6 -->
+		<energy>12</energy>
+		<money>675</money> <!-- 14.0 -->
+		<rep faction='16' amount='5' />
+		<commander>1158</commander>
+		<desc>It has been awhile since you have faced the Bloodthirsty and they are more ferocious then ever.</desc>
+		<speech>
+			<line commander='1042'>Months have passed since the Blight have taken over our planet. Food is scarce and the Bloodthirsty roam freely like they own everything.</line>
+			<line commander='1042'>And you come to the one place we have been able to find solitude and ask us to accompany you on a suicide mission?</line>
+			<line commander='1153'>Doing nothing is even more suicidal. The Sovereign Imperials are short on capable soldiers, and this is the most important mission in all Imperial history.</line>
+			<line commander='1026'>Katana! The Blight has made it to the island. We are being swarmed by Bloodthirsty. </line>
+			<line commander='1042'>If you can help us fight it off Daedalus, we will discuss the mission further.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1042'>There is too many! We must retreat. Daedalus, we will follow your lead.</line>
+		</speechComplete>
+
+		<deck>
+			<card>604</card>
+			<card>604</card>
+			<card>602</card>
+			<card>620</card>
+			<card>583</card>
+			<card>419</card>
+			<card>534</card>
+			<card>378</card>
+			<card>440</card>
+			<card>2052</card>
+		</deck>
+		<rewards>
+			<card>604</card>
+		</rewards>
+		<req>196</req>
+	</mission>
+
+	<mission>
+		<id>218</id>
+		<name>Mission 146</name>
+		<picture>mission218.jpg</picture>
+		<location_id>25</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>470</x>
+		<y>220</y> 
+		<xp>34</xp>
+		<energy>13</energy>
+		<money>750</money>
+		<rep faction='16' amount='6' />
+		<commander>1158</commander>
+		<desc>You are being swarmed by the Bloodthirsty as they claim more of the island for the Blight.</desc>
+		<speech>
+			<line commander='1042'>Alright Daedalus, what is the mission briefing?</line>
+			<line commander='1153'>As I mentioned before, we plan to take over the abandoned space station Phobos. Although most of the station is useless. An Ion Cannon remains with more than enough power to get one shot off.</line>
+			<line commander='1153'>The station’s orbit passes right over the Nexus in the Wasteland, we have a small window of opportunity to fire the cannon directly at the Nexus and destroy it once and for all.</line>
+		</speech>
+		<deck>
+			<card>604</card>
+			<card>601</card>
+			<card>583</card>
+			<card>603</card>
+			<card>579</card>
+			<card>409</card>
+			<card>111</card>
+			<card>242</card>
+			<card>540</card>
+			<card>2083</card>
+		</deck>
+		<rewards>
+			<card>602</card>
+		</rewards>
+		<req>217</req>
+	</mission>
+
+	<mission>
+		<id>219</id>
+		<name>Mission 147</name>
+		<picture>mission219.jpg</picture>
+		<location_id>25</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>380</x>
+		<y>240</y> 
+		<xp>37</xp>
+		<energy>14</energy>
+		<money>800</money>
+		<rep faction='16' amount='6' />
+		<commander>1158</commander>
+		<desc>The stronger you are, The stronger the Bloodthirsty become.</desc>
+		<speech>
+			<line commander='1026'>How exactly do you plan to board a space station surrounded by the Xeno that attacked and caused its abandonment?</line>
+			<line commander='1153'>On this island there is a Xeno transport with minimal security. We have a Commander more than capable of piloting it. With it, we can sneak past the Xeno until we board the station.</line>
+			<line commander='1153'>It was merely luck that we also found you on this island.</line>
+		</speech>
+		<deck>
+			<card>604</card>
+			<card>604</card>
+			<card>625</card>
+			<card>593</card>
+			<card>620</card>
+			<card>378</card>
+			<card>621</card>
+			<card>289</card>
+			<card>262</card>
+			<card>2099</card>
+		</deck>
+		<rewards>
+			<card>590</card>
+		</rewards>
+		<req>218</req>
+	</mission>
+
+	<mission>
+		<id>220</id>
+		<name>Mission 148</name>
+		<picture>mission220.jpg</picture>
+		<location_id>25</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>300</x>
+		<y>210</y> 
+		<xp>41</xp>
+		<energy>15</energy>
+		<money>875</money>
+		<rep faction='16' amount='7' />
+		<commander>1158</commander>
+		<desc>This island now belongs to the Bloodthirsty. You must fight to escape.</desc>
+		<speech>
+			<line commander='1042'>Any news of Halcyon?</line>
+			<line commander='1153'>He is holed up in a base in Ashrock with his remaining supporters. It is under constant attack from Raiders, but they have miraculously been able to hold their position.</line>
+			<line commander='1153'>We don’t know much more than that. The Sovereign Imperials defected shortly after Halcyon&apos;s unsuccessful attempt at destroying the Nexus.</line>
+			<line commander='1153'>His Tyranny has cost too many lives. We actually recognize you as the earliest Sovereigns rather than traitors.</line>
+		</speech>
+		<deck>
+			<card>621</card>
+			<card>601</card>
+			<card>620</card>
+			<card>603</card>
+			<card>583</card>
+			<card>593</card>
+			<card>519</card>
+			<card>569</card>
+			<card>515</card>
+			<card>2031</card>
+		</deck>
+		<rewards>
+			<card>2101</card>
+		</rewards>
+		<req>219</req>
+	</mission>
+
+	<mission>
+		<id>221</id>
+		<name>Mission 149</name>
+		<picture>mission221.jpg</picture>
+		<location_id>25</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>210</x>
+		<y>140</y> 
+		<xp>44</xp>
+		<energy>16</energy>
+		<money>950</money>
+		<rep faction='16' amount='8' />
+		<commander>1159</commander>
+		<desc>The distraction should help, but the Xeno are still a challenging opponent.</desc>
+		<speech>
+			<line commander='1153'>There is the transport. The Xeno are packing up to escape the Blight.</line>
+			<line commander='1042'>There is too many to fight head on. We will create a distraction to separate them while you go for the transport. We will rejoin after our battle.</line>
+		</speech>
+		<deck>
+			<card>588</card>
+			<card>611</card>
+			<card>582</card>
+			<card>587</card>
+			<card>616</card>
+			<card>571</card>
+			<card>310</card>
+			<card>30</card>
+			<card>2103</card>
+			<card>3048</card>
+		</deck>
+		<rewards>
+			<card>588</card>
+		</rewards>
+		<req>220</req>
+	</mission>
+
+	<mission>
+		<id>222</id>
+		<name>Mission 150</name>
+		<picture>mission222.jpg</picture>
+		<location_id>25</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>170</x>
+		<y>210</y> 
+		<xp>48</xp>
+		<energy>17</energy>
+		<money>1025</money>
+		<rep faction='16' amount='9' />
+		<commander>1159</commander>
+		<desc>The Xeno will attempt to divert our tactics.</desc>
+		<speech>
+			<line commander='1042'>Hurry Commander, Daedalus needs backup to seize the transport!</line>
+		</speech>
+		<deck>
+			<card>595</card>
+			<card>613</card>
+			<card>612</card>
+			<card>616</card>
+			<card>605</card>
+			<card>599</card>
+			<card>261</card>
+			<card>493</card>
+			<card>528</card>
+			<card>537</card>
+			<card>2060</card>
+		</deck>
+		<rewards>
+			<card>612</card>
+		</rewards>
+		<req>221</req>
+	</mission>
+
+	<mission>
+		<id>223</id>
+		<name>Mission 151</name>
+		<picture>mission223.jpg</picture>
+		<location_id>25</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>110</x>
+		<y>290</y> 
+		<xp>51</xp> <!-- 2.85 -->
+		<energy>18</energy>
+		<money>1125</money> <!-- 15.5 -->
+		<rep faction='16' amount='9' />
+		<commander>1160</commander>
+		<desc>You are not leaving without dispatching the Raiders.</desc>
+		<speech>
+			<line commander='1152'>We may not know what you are planning, but I doubt Lord Silus would take kindly to you leaving. Especially you, Yurich.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1153'>They are retreating. We must take off before they have time to bring reinforcements. They could shoot us out of the sky.</line>
+		</speechComplete>
+		<deck>
+			<card>600</card>
+			<card>584</card>
+			<card>589</card>
+			<card>591</card>
+			<card>585</card>
+			<card>215</card>
+			<card>536</card>
+			<card>516</card>
+			<card>627</card>
+			<card>314</card>
+			<card>2100</card>
+			<card>3046</card>
+		</deck>
+		<rewards>
+			<card>584</card>
+		</rewards>
+		<req>222</req>
+	</mission>
+
+<!-- Location 2 -->
+
+	<mission>
+		<id>224</id>
+		<name>Mission 152</name>
+		<picture>mission224.jpg</picture>
+		<location_id>26</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>130</x>
+		<y>90</y> 
+		<xp>34</xp> <!-- 2.6 -->
+		<energy>13</energy>
+		<money>725</money> <!-- 14.0 -->
+		<rep faction='17' amount='5' />
+		<commander>1159</commander>
+		<desc>The Xeno have inhabitated the islands long enough to be stronger than scouts.</desc>
+		<speech>
+			<line commander='1097'>Vicar, your presence is requested among the Council. I have been advised to inform you the matter is urgent. Follow me.</line>
+			<line commander='1097'>The Council is assembling at the Sanctuary on the other end of the Island. Time is precious but we must remain cautious. Bloodthirsty and Xeno still roam the island. Choose your battles wisely.</line>
+		</speech>
+		<deck>
+			<card>611</card>
+			<card>612</card>
+			<card>587</card>
+			<card>616</card>
+			<card>126</card>
+			<card>99</card>
+			<card>490</card>
+			<card>531</card>
+			<card>432</card>
+			<card>3024</card>
+		</deck>
+		<rewards>
+			<card>595</card>
+		</rewards>
+		<req>223</req>
+	</mission>
+
+	<mission>
+		<id>225</id>
+		<name>Mission 153</name>
+		<picture>mission225.jpg</picture>
+		<location_id>26</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>170</x>
+		<y>150</y> 
+		<xp>37</xp>
+		<energy>14</energy>
+		<money>800</money>
+		<rep faction='17' amount='6' />
+		<commander>1158</commander>
+		<desc>Your power is no longer unmatched by the Bloodthirsty.</desc>
+		<speech>
+			<line commander='1097'>Details on the mission are few. What is known is the spread of the Blight is now complete and the Nexus are preparing for the Return.</line>
+			<line commander='1097'>This has made them vulnerable so the Council may have a plan for destroying them and saving the Pantheons.</line>
+		</speech>
+		<deck>
+			<card>602</card>
+			<card>620</card>
+			<card>621</card>
+			<card>603</card>
+			<card>378</card>
+			<card>263</card>
+			<card>540</card>
+			<card>512</card>
+			<card>345</card>
+			<card>2099</card>
+		</deck>
+		<rewards>
+			<card>622</card>
+		</rewards>
+		<req>224</req>
+	</mission>
+
+	<mission>
+		<id>226</id>
+		<name>Mission 154</name>
+		<picture>mission226.jpg</picture>
+		<location_id>26</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>250</x>
+		<y>200</y> 
+		<xp>41</xp> <!-- 2.71 -->
+		<energy>15</energy>
+		<money>875</money> <!-- 14.7 -->
+		<rep faction='17' amount='7' />
+		<commander>1158</commander>
+		<desc>Now that they have your scent, the Bloodthirsty will not rest until you are destroyed.</desc>
+		<speech>
+			<line commander='1097'>This is not right. The Bloodthirsty have become way too aggressive. I fear the Pantheons have lost even more of their power. We must make haste.</line>
+		</speech>
+		<deck>
+			<card>579</card>
+			<card>593</card>
+			<card>603</card>
+			<card>601</card>
+			<card>225</card>
+			<card>406</card>
+			<card>500</card>
+			<card>524</card>
+			<card>570</card>
+			<card>2099</card>
+		</deck>
+		<rewards>
+			<card>608</card>
+		</rewards>
+		<req>225</req>
+	</mission>
+
+	<mission>
+		<id>227</id>
+		<name>Mission 155</name>
+		<picture>mission227.jpg</picture>
+		<location_id>26</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>280</x>
+		<y>160</y> 
+		<xp>41</xp> <!-- 2.76 -->
+		<energy>16</energy>
+		<money>875</money> <!-- 15.0 -->
+		<rep faction='17' amount='7' />
+		<commander>1160</commander>
+		<desc>The Raiders have regrouped since the Blight takeover and are stronger than ever.</desc>
+		<speech>
+			<line commander='1097'>Raiders have invaded the island. We must advance past them and protect the Council.</line>
+		</speech>
+		<deck>
+			<card>627</card>
+			<card>624</card>
+			<card>617</card>
+			<card>618</card>
+			<card>495</card>
+			<card>529</card>
+			<card>327</card>
+			<card>105</card>
+			<card>2100</card>
+			<card>3047</card>
+		</deck>
+		<rewards>
+			<card>2100</card>
+		</rewards>
+		<req>226</req>
+	</mission>
+
+	<mission>
+		<id>228</id>
+		<name>Mission 156</name>
+		<picture>mission228.jpg</picture>
+		<location_id>26</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>320</x>
+		<y>260</y> 
+		<xp>48</xp> <!-- 2.8 -->
+		<energy>17</energy>
+		<money>1050</money> <!-- 15.3 -->
+		<rep faction='17' amount='7' />
+		<commander>1160</commander>
+		<desc>Even with the spread of the Blight, the Raiders want to claim the territory as their own.</desc>
+		<speech>
+			<line commander='1097'>Smoke is coming from the Sanctuary, we must find the members of the Council and assure their safety.</line>
+			<line commander='1097'>There is a room hidden under the Sanctuary that is perfect for hiding during an attack. Clear out the remaining Raiders and evacuate any Council members that are residing there.</line>
+		</speech>
+		<deck>
+			<card>584</card>
+			<card>594</card>
+			<card>589</card>
+			<card>509</card>
+			<card>428</card>
+			<card>442</card>
+			<card>394</card>
+			<card>260</card>
+			<card>585</card>
+			<card>2021</card>
+			<card>2102</card>
+		</deck>
+		<rewards>
+			<card>617</card>
+		</rewards>
+		<req>227</req>
+	</mission>
+
+	<mission>
+		<id>229</id>
+		<name>Mission 157</name>
+		<picture>mission229.jpg</picture>
+		<location_id>26</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>360</x>
+		<y>100</y> 
+		<xp>51</xp> <!-- 2.85 -->
+		<energy>18</energy>
+		<money>1125</money> <!-- 15.5 -->
+		<rep faction='17' amount='8' />
+		<commander>1159</commander>
+		<desc>The Xeno realize you were weakened by the Raiders and are taking advantage to attack you.</desc>
+		<speech>
+			<line commander='1154'>The Council gives you infinite thanks. You have been commendable Vicar.</line>
+			<line commander='1154'>Xeno have joined the attack. We request that you escort us off the island. Then we will inform you of your assignment.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1154'>Excellent work Vicar, we seem to have lost our invaders.</line>
+			<line commander='1154'>Now then, are you familiar with the Purity Ritual?</line>
+		</speechComplete>
+		<deck>
+			<card>612</card>
+			<card>599</card>
+			<card>616</card>
+			<card>587</card>
+			<card>613</card>
+			<card>173</card>
+			<card>132</card>
+			<card>514</card>
+			<card>441</card>
+			<card>545</card>
+			<card>3023</card>
+			<card>2092</card>
+		</deck>
+		<rewards>
+			<card>3048</card>
+			<card>1154</card>
+		</rewards>
+		<req>228</req>
+	</mission>
+
+<!-- Location 3 -->
+
+	<mission>
+		<id>230</id>
+		<name>Mission 158</name>
+		<picture>mission230.jpg</picture>
+		<location_id>27</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>450</x>
+		<y>240</y> 
+		<xp>50</xp> <!-- 2.8 -->
+		<energy>18</energy>
+		<money>1075</money> <!-- 15.0 -->
+		<rep faction='17' amount='10' />
+		<commander>1163</commander>
+		<desc>The Bloodthirsty do not take kindly to your trespassing.</desc>
+		<speech>
+			<line commander='1154'>We are approaching the Nexus. Remember Vicar, you must protect us as we are performing the ritual.</line>
+			<line commander='1154'>If the Council is unable to transfer enough of our energy through the Nexus it will have been useless.</line>
+		</speech>
+		<deck>
+			<card>602</card>
+			<card>603</card>
+			<card>603</card>
+			<card>583</card>
+			<card>289</card>
+			<card>135</card>
+			<card>499</card>
+			<card>467</card>
+			<card>303</card>
+			<card>2049</card>
+		</deck>
+		<rewards>
+			<card>623</card>
+		</rewards>
+		<req>229</req>
+	</mission>
+
+	<mission>
+		<id>231</id>
+		<name>Mission 159</name>
+		<picture>mission231.jpg</picture>
+		<location_id>27</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>360</x>
+		<y>180</y> 
+		<xp>54</xp> <!-- 2.86 -->
+		<energy>19</energy>
+		<money>1175</money> <!-- 15.4 -->
+		<rep faction='17' amount='11' />
+		<commander>1162</commander>
+		<desc>It is just the scout team, but these Raiders are still a serious threat.</desc>
+		<speech>
+			<line commander='1097'>Raiders followed us. They cannot know we are here for the Nexus, else we will lose our opportunity to perform the ritual.</line>
+		</speech>
+		<deck>
+			<card>591</card>
+			<card>591</card>
+			<card>589</card>
+			<card>617</card>
+			<card>247</card>
+			<card>523</card>
+			<card>574</card>
+			<card>270</card>
+			<card>2024</card>
+			<card>2102</card>
+		</deck>
+		<rewards>
+			<card>600</card>
+		</rewards>
+		<req>230</req>
+	</mission>
+
+	<mission>
+		<id>232</id>
+		<name>Mission 160</name>
+		<picture>mission232.jpg</picture>
+		<location_id>27</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>310</x>
+		<y>120</y> 
+		<xp>58</xp> <!-- 2.92 -->
+		<energy>20</energy>
+		<money>1250</money> <!-- 15.8 -->
+		<rep faction='17' amount='12' />
+		<commander>1162</commander>
+		<desc>The Raiders will attempt to destroy you regardless of your intention.</desc>
+		<speech>
+			<line commander='1154'>Vicar, there are some things you should know that I haven’t had time to tell you.</line>
+			<line commander='1154'>The members of the Council may have to give our lives to complete the ritual.</line>
+			<line commander='1154'>The Righteous are powered by the Pantheons through us; as such our people will become weak. You will be responsible for restoring power and order.</line>
+			<line commander='1154'>Else I fear the worst may happen and our people lower themselves to savages. The power of the Pantheons will be lost.</line>
+		</speech>
+		<deck>
+			<card>585</card>
+			<card>618</card>
+			<card>591</card>
+			<card>394</card>
+			<card>321</card>
+			<card>245</card>
+			<card>23</card>
+			<card>92</card>
+			<card>121</card>
+			<card>3000</card>
+		</deck>
+		<rewards>
+			<card>2098</card>
+		</rewards>
+		<req>231</req>
+	</mission>
+
+	<mission>
+		<id>233</id>
+		<name>Mission 161</name>
+		<picture>mission233.jpg</picture>
+		<location_id>27</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>270</x>
+		<y>50</y> 
+		<xp>63</xp> <!-- 2.98 -->
+		<energy>21</energy>
+		<money>1350</money> <!-- 16.2 -->
+		<rep faction='17' amount='13' />
+		<commander>1164</commander>
+		<desc>You may have an advantage, but these Imperials are not to be taken lightly.</desc>
+		<speech>
+			<line commander='1097'>There is a band of rogue Imperials up ahead, but we can probably sneak past them.</line>
+			<line commander='1154'>No, we are too close to the Nexus. There is too much risk if they spot us while we are performing the ritual.</line>
+			<line commander='1097'>Understood Councilman. At least now we have the advantage of surprise.</line>
+		</speech>
+		<deck>
+			<card>578</card>
+			<card>577</card>
+			<card>615</card>
+			<card>598</card>
+			<card>610</card>
+			<card>103</card>
+			<card>259</card>
+			<card>468</card>
+			<card>631</card>
+			<card>2101</card>
+			<card>2077</card>
+		</deck>
+		<rewards>
+			<card>609</card>
+		</rewards>
+		<req>232</req>
+	</mission>
+
+	<mission>
+		<id>234</id>
+		<name>Mission 162</name>
+		<picture>mission234.jpg</picture>
+		<location_id>27</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>240</x>
+		<y>100</y> 
+		<xp>67</xp> <!-- 3.04 -->
+		<energy>22</energy>
+		<money>1450</money> <!-- 16.6 -->
+		<rep faction='17' amount='14' />
+		<commander>1163</commander>
+		<desc>The Nexus seems to be calling to the Bloodthirsty, they will swarm you endlessly.</desc>
+		<speech>
+			<line commander='1154'>It is time. Bloodthirsty will be attracted to the Nexus while we perform the ritual. You must prevent them from attacking us at all costs. The council is depending on you.</line>
+		</speech>
+		<deck>
+			<card>621</card>
+			<card>583</card>
+			<card>583</card>
+			<card>593</card>
+			<card>69</card>
+			<card>111</card>
+			<card>346</card>
+			<card>484</card>
+			<card>496</card>
+			<card>527</card>
+			<card>2031</card>
+			<card>2055</card>
+		</deck>
+		<rewards>
+			<card>2095</card>
+		</rewards>
+		<req>233</req>
+	</mission>
+
+	<mission>
+		<id>235</id>
+		<name>Mission 163</name>
+		<picture>mission235.jpg</picture>
+		<location_id>27</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>190</x>
+		<y>140</y> 
+		<xp>71</xp> <!-- 3.1 -->
+		<energy>23</energy>
+		<money>1550</money> <!-- 17.0 -->
+		<rep faction='17' amount='15' />
+		<commander>1163</commander>
+		<desc>You must hold off the Bloodthirsty longer, or else all will be lost.</desc>
+		<speech>
+			<line commander='1097'>Keep fighting Vicar. The ritual is almost complete, but more Bloodthirsty are swarming us.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1154'>It... is... done...</line>
+			<line commander='1097'>They are unconscious, but not dead. They require medical attention. Good work Vicar, now lets hurry and get out of here.</line>
+		</speechComplete>
+		<deck>
+			<card>583</card>
+			<card>579</card>
+			<card>625</card>
+			<card>506</card>
+			<card>629</card>
+			<card>540</card>
+			<card>225</card>
+			<card>296</card>
+			<card>345</card>
+			<card>481</card>
+			<card>431</card>
+			<card>166</card>
+			<card>3024</card>
+		</deck>
+		<rewards>
+			<card>597</card>
+		</rewards>
+		<req>234</req>
+	</mission>
+
+<!-- Location 4 -->
+
+	<mission>
+		<id>236</id>
+		<name>Mission 164</name>
+		<picture>mission236.jpg</picture>
+		<location_id>28</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>130</x>
+		<y>200</y> 
+		<xp>48</xp> <!-- 2.8 -->
+		<energy>17</energy>
+		<money>1025</money> <!-- 15.0 -->
+		<rep faction='16' amount='10' />
+		<commander>1161</commander>
+		<desc>The Xeno guards are not well equipped for invaders but still need to be dealt with.</desc>
+		<speech>
+			<line commander='1153'>We are approaching the station, the Xenos will be more suspicious of us.</line>
+			<line commander='1042'>It is a miracle we have made it this far. By the way Yurich, who is Silus that Svetlana mentioned?</line>
+			<line commander='1026'>Silus Tamril? He is the reason I was forced into exile and joined you. In times of chaos people look to a strong leader and follow him no matter what.</line>
+			<line commander='1026'>He united all the Raiders under the ideal that Typhon is doing what is best for the Raiders and his impending return will bring glory to us all. He revealed that I was a traitor, but I was able to escape before being apprehended.</line>
+			<line commander='1153'>We have a situation. A Xeno security ship is trying to communicate with us.</line>
+			<line commander='1042'>Can you send some kind of message back so that it will leave us alone?</line>
+			<line commander='1153'>I’m trying but I’m not sure it will ac... it is going to fire! Evasive maneuvers! Brace yourselves!</line>
+			<line commander='1153'>We have been hit, but we may be able to crash land inside the station, when we do we will be swarmed with Xeno Infantry, prepare yourselves!</line>
+		</speech>
+		<deck>
+			<card>599</card>
+			<card>605</card>
+			<card>611</card>
+			<card>616</card>
+			<card>99</card>
+			<card>319</card>
+			<card>545</card>
+			<card>571</card>
+			<card>452</card>
+			<card>2096</card>
+		</deck>
+		<rewards>
+			<card>611</card>
+		</rewards>
+		<req>235</req>
+	</mission>
+
+	<mission>
+		<id>237</id>
+		<name>Mission 165</name>
+		<picture>mission237.jpg</picture>
+		<location_id>28</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>180</x>
+		<y>180</y> 
+		<xp>51</xp> <!-- 2.86 -->
+		<energy>18</energy>
+		<money>1100</money> <!-- 15.4 -->
+		<rep faction='16' amount='11' />
+		<commander>1161</commander>
+		<desc>Xeno ships are docking to assist in fighting you off.</desc>
+		<speech>
+			<line commander='1153'>Alright we made it, but the worst is far from over. From here we need to split up.</line>
+			<line commander='1153'>Katana and Yurich, we need to you to secure the control room and revert all power to the Ion Cannon, we will secure the cannon and fire when ready.</line>
+			<line commander='1042'>This way Commander, the station will be overrun with Xeno so we need to make quick work of any that get in our way.</line>
+		</speech>
+		<deck>
+			<card>588</card>
+			<card>582</card>
+			<card>587</card>
+			<card>613</card>
+			<card>249</card>
+			<card>493</card>
+			<card>256</card>
+			<card>171</card>
+			<card>2096</card>
+			<card>3047</card>
+		</deck>
+		<rewards>
+			<card>586</card>
+			<card>1155</card>
+		</rewards>
+		<req>236</req>
+	</mission>
+
+	<mission>
+		<id>238</id>
+		<name>Mission 166</name>
+		<picture>mission238.jpg</picture>
+		<location_id>28</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>240</x>
+		<y>180</y> 
+		<xp>55</xp> <!-- 2.92 -->
+		<energy>19</energy>
+		<money>1100</money> <!-- 15.8 -->
+		<rep faction='16' amount='12' />
+		<commander>1161</commander>
+		<desc>Xeno defenses get tougher as you advance further into the station.</desc>
+		<speech>
+			<line commander='1153'>Katana, Raiders have followed us and boarded the station, be careful.</line>
+			<line commander='1042'>Thanks, but our hands are already plenty full with Xeno, we can handle anything that comes at us. Stay off the Comm lines until you reach the cannon.</line>
+		</speech>
+		<deck>
+			<card>161</card>
+			<card>605</card>
+			<card>572</card>
+			<card>587</card>
+			<card>626</card>
+			<card>552</card>
+			<card>546</card>
+			<card>528</card>
+			<card>310</card>
+			<card>3009</card>
+		</deck>
+		<rewards>
+			<card>582</card>
+		</rewards>
+		<req>237</req>
+	</mission>
+
+	<mission>
+		<id>239</id>
+		<name>Mission 167</name>
+		<picture>mission239.jpg</picture>
+		<location_id>28</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>290</x>
+		<y>150</y> 
+		<xp>55</xp> <!-- 2.98 -->
+		<energy>19</energy>
+		<money>1225</money> <!-- 16.2 -->
+		<rep faction='16' amount='13' />
+		<commander>1162</commander>
+		<desc>The Raiders must have put a lot of focus into destroying you if they followed you into orbit.</desc>
+		<speech>
+			<line commander='1152'>Did you really think you could give us the slip that easily?</line>
+			<line commander='1026'>Don’t be foolish Svetlana, Silus is as insane and tyrannical as Typhon. He will only lead you to death and despair.</line>
+			<line commander='1152'>Hold your tongue traitor! Silus is a visionary that wishes to see the return of Typhon so that the Raiders may bask in the glory we deserve!</line>
+		</speech>
+		<deck>
+			<card>624</card>
+			<card>585</card>
+			<card>618</card>
+			<card>591</card>
+			<card>617</card>
+			<card>215</card>
+			<card>460</card>
+			<card>373</card>
+			<card>339</card>
+			<card>536</card>
+			<card>3041</card>
+		</deck>
+		<rewards>
+			<card>578</card>
+		</rewards>
+		<req>238</req>
+	</mission>
+
+	<mission>
+		<id>240</id>
+		<name>Mission 168</name>
+		<picture>mission240.jpg</picture>
+		<location_id>28</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>340</x>
+		<y>200</y> 
+		<xp>61</xp> <!-- 3.04 -->
+		<energy>20</energy>
+		<money>1325</money> <!-- 16.6 -->
+		<rep faction='16' amount='14' />
+		<commander>1162</commander>
+		<desc>The Raiders will not let you give them the slip as easily this time.</desc>
+		<speech>
+			<line commander='1042'>We are wasting too much time. The station will orbit over the Wasteland soon.</line>
+			<line commander='1026'>Go! I can hold off Svetlana, according to Daedalus the control room should be close. Breakthrough any that are in your way and leave the rest to me.</line>
+		</speech>
+		<deck>
+			<card>589</card>
+			<card>591</card>
+			<card>618</card>
+			<card>600</card>
+			<card>566</card>
+			<card>568</card>
+			<card>383</card>
+			<card>198</card>
+			<card>143</card>
+			<card>105</card>
+			<card>449</card>
+			<card>3017</card>
+		</deck>
+		<rewards>
+			<card>3047</card>
+		</rewards>
+		<req>239</req>
+	</mission>
+
+	<mission>
+		<id>241</id>
+		<name>Mission 169</name>
+		<picture>mission241.jpg</picture>
+		<location_id>28</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>370</x>
+		<y>160</y> 
+		<xp>68</xp> <!-- 3.1 -->
+		<energy>22</energy>
+		<money>1500</money> <!-- 17.0 -->
+		<rep faction='16' amount='15' />
+		<commander>1161</commander>
+		<desc>You are surrounded by Xeno but you cannot let them stop you now!</desc>
+		<speech>
+			<line commander='1153'>Katana, we have secured the Cannon controls. Have you reverted power yet?</line>
+			<line commander='1042'>Entering the control room now, but it is swarmed with Xenos...</line>
+			<line commander='1153'>You don’t have much time, the station’s orbit is about to pass over the Wasteland, if we don’t fire all of this will have been pointless.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1042'>We made it! Daedalus, converting power to main Ion Cannon. Fire when ready.</line>
+			<line commander='1153'>Just in time, cannon firing!</line>
+			<line commander='1153'>The cannon used all the power it could, the station is running on reserves. We need to evacuate on Xeno transports before the life support system dies out.</line>
+			<line commander='1042'>And the Nexus…?</line>
+			<line commander='1153'>We won’t know until we land back on Acheron, meet me in the Wasteland. I have ordered a unit to assess the area after they saw the cannon fire.</line>
+		</speechComplete>
+		<deck>
+			<card>605</card>
+			<card>605</card>
+			<card>616</card>
+			<card>587</card>
+			<card>599</card>
+			<card>626</card>
+			<card>240</card>
+			<card>159</card>
+			<card>30</card>
+			<card>353</card>
+			<card>139</card>
+			<card>3046</card>
+			<card>2096</card>
+		</deck>
+		<rewards>
+			<card>587</card>
+		</rewards>
+		<req>240</req>
+	</mission>
+
+<!-- END Phobos Missions -->
 	
-	<!-- END MISSIONS -->
+<!-- END MISSIONS -->
 	
 	<location>
 		<id>1</id>
@@ -7914,7 +8880,7 @@
 		<effect_file>blackmarshHDFX.swf</effect_file>
 		<battlefield>blackmarshbattleground.png</battlefield>
 		<effect x='292' y='220'>blackmarsheffects.swf</effect>
-		<nav>Nav5</nav>
+		<nav>Nav4</nav>
 		<req>17</req>
 	</location>
 	
@@ -7923,10 +8889,10 @@
 		<name>Swamps of Andar</name>
 		<picture>SwampsofAndarMap</picture>
 		<picture_file>swampsofandarHD.jpg</picture_file>
-		<effect_file>swampsofandarHDFX.swf</effect_file>
+		<effect_file>swampsandarHDFX.swf</effect_file>
 		<battlefield>swampsofandar.png</battlefield>
 		<effect x='292' y='220'>swampeffects.swf</effect>
-		<nav>Nav4</nav>
+		<nav>Nav5</nav>
 		<req>23</req>
 	</location>
 	
@@ -7950,9 +8916,6 @@
 		<effect_file>wastelandHDFX.swf</effect_file>
 		<battlefield>wasteland.png</battlefield>
 		<effect x='292' y='220'>wastelandeffects.swf</effect>
-		<extraEffect req='172'>wastelandblight1.swf</extraEffect>
-		<extraEffect req='189'>wastelandblight2.swf</extraEffect>
-		<extraEffect req='193'>wastelandblight3.swf</extraEffect>
 		<nav>Nav7</nav>
 		<req>35</req>
 	</location>
@@ -7985,6 +8948,7 @@
 		<picture>CaveMap</picture>
 		<picture_file>odeusminesHD.jpg</picture_file>
 		<effect_file>odeusminesHDFX.swf</effect_file>
+		<effect x='292' y='220'>sulfurswamps.swf</effect>
 		<nav>Nav10</nav>
 		<req>65</req>
 	</location>
@@ -8059,8 +9023,8 @@
 		<id>17</id>
 		<name>Mount Pristine</name>
 		<picture>PurityRing2Map</picture>
-		<picture_file>mounthprestineHD.jpg</picture_file>
-		<effect_file>mounthprestineHDFX.swf</effect_file>
+		<picture_file>mountprestineHD.jpg</picture_file>
+		<effect_file>mountprestineHDFX.swf</effect_file>
 		<effect x='292' y='220'>purityring2FX.swf</effect>
 		<nav>Nav17</nav>
 		<req>137</req>
@@ -8150,6 +9114,50 @@
 		<effect x='292' y='220'>northpolemapFX.swf</effect>
 		<nav>Nav24</nav>
 		<req>129</req>
+	</location>
+	
+	<location>
+		<id>25</id>
+		<name>Artemis</name>
+		<picture>NorthPoleMap</picture>
+		<picture_file>artemismap.jpg</picture_file>
+		<effect_file>artemisHDFX.swf</effect_file>
+		<effect x='292' y='220'>northpolemapFX.swf</effect>
+		<nav>Nav25</nav>
+		<req>196</req>
+	</location>
+	
+	<location>
+		<id>26</id>
+		<name>Valhalla</name>
+		<picture>PurityRing4Map</picture>
+		<picture_file>valhallaHD.jpg</picture_file>
+		<effect_file>valhallaHDFX.swf</effect_file>
+		<effect x='292' y='220'>purityring4FX.swf</effect>
+		<nav>Nav19</nav>
+		<req>223</req>
+	</location>
+	
+	<location>
+		<id>27</id>
+		<name>Vistik Island</name>
+		<picture>MapHomeworld</picture>
+		<picture_file>vistikHD.jpg</picture_file>
+		<effect_file>vistikHDFX.swf</effect_file>
+		<effect x='292' y='220'>HWislandFX.swf</effect>
+		<nav>Nav21</nav>
+		<req>229</req>
+	</location>
+	
+	<location>
+		<id>28</id>
+		<name>Phobos Station</name>
+		<picture>NorthPoleMap</picture>
+		<picture_file>phobosmap.jpg</picture_file>
+		<effect_file>phobosHDFX.swf</effect_file>
+		<effect x='292' y='220'>northpolemapFX.swf</effect>
+		<nav>Nav26</nav>
+		<req>235</req>
 	</location>
 	
 	<faction>
@@ -8555,6 +9563,60 @@
 			<rep_req>2000</rep_req>
 			<cost>20000</cost>
 			<card>532</card>
+		</reward>
+	</faction>
+	
+	<faction>
+		<id>16</id>
+		<location_id>25</location_id>
+		<location_id>28</location_id>
+		<name>Sovereign Supporters</name>
+		<icon>FactionIconResistance</icon>
+		<repbase>1000</repbase>
+		<reward id='1'>
+			<rep_level>1</rep_level>
+			<rep_req>200</rep_req>
+			<cost>500</cost>
+			<card>613</card>
+		</reward>
+		<reward id='2'>
+			<rep_level>2</rep_level>
+			<rep_req>800</rep_req>
+			<cost>5000</cost>
+			<card>2102</card>
+		</reward>
+		<reward id='3'>
+			<rep_level>3</rep_level>
+			<rep_req>2000</rep_req> 
+			<cost>20000</cost>
+			<card>631</card>
+		</reward>
+	</faction>
+	
+	<faction>
+		<id>17</id>
+		<location_id>26</location_id>
+		<location_id>27</location_id>
+		<name>League of Vicars</name>
+		<icon>PhobosFactionIcon</icon>
+		<repbase>1000</repbase>
+		<reward id='1'>
+			<rep_level>1</rep_level>
+			<rep_req>200</rep_req>
+			<cost>500</cost>
+			<card>627</card>
+		</reward>
+		<reward id='2'>
+			<rep_level>2</rep_level>
+			<rep_req>800</rep_req>
+			<cost>5000</cost>
+			<card>628</card>
+		</reward>
+		<reward id='3'>
+			<rep_level>3</rep_level>
+			<rep_req>2000</rep_req>
+			<cost>20000</cost>
+			<card>625</card>
 		</reward>
 	</faction>
 	
