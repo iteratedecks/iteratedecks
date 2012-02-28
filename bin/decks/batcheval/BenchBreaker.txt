@@ -8,13 +8,13 @@ Atlas III	:Atlas,Hephatat,Tiamat,Predator,Ravenous Dredge,Fighter Jet,Monsoon X,
 Atlas IV	:Atlas,Radiant Dawnbringer,Wasteland Skimmer(3),Bulging Mantis(3),Hover Pod(3)
 Lucy I		:Lucina the Wicked,Fenrir,Tiamat,Predator,Ravenous Dredge,Hunter,Sabre,Sharpshooter,Pathfinder,Rifter,Electromagnetic Pulse
 Lucy II		:Lucina the Wicked,Templar,Tiamat,Predator,Ravenous Dredge,Pathfinder,Teslatank,Mech Walker,Pitbull,T-46 Leonidas,G-60 Thunder
-Lucy II		:Lucina the Wicked,Rox Chainblade,Tiamat,Predator,Ravenous Dredge,Sabre,Wasteland Skimmer,Stealthy Niaq,Dozer Tank,Razogoth's Heir,Electromagnetic Pulse
+Lucy III	:Lucina the Wicked,Rox Chainblade,Tiamat,Predator,Ravenous Dredge,Sabre,Wasteland Skimmer,Stealthy Niaq,Dozer Tank,Razogoth's Heir,Electromagnetic Pulse
 // ================================
 // Dracorex
 // ================================
-Draco I		:Dracorex,Apollo,Kraken,Rumbler,Mech Aid,Titan,Xanadu,Bulldozer,Destructive Ram,Elemental,Solar Powerhouse
-Draco II	:Dracorex,Hades,Solar Powerhouse,Utopia Beacon,Scepter,Abominable Horror,Abominable Raksha,Lurking Carrier,Boreback,Bolide Walker,Sundering Ogre
-Draco III	:Dracorex,Elite Diver(2),Elusive Panzer(2),Boreback(2),Azure Reaper(2),Gorivore,Razogoth's Heir
+Draco I		:Dracorex,Hades,Solar Powerhouse,Utopia Beacon,Scepter,Abominable Horror,Abominable Raksha,Lurking Carrier,Boreback,Bolide Walker,Sundering Ogre
+Draco II	:Dracorex,Stealthy Niaq,Beetle Bomber,Acidic Burst,Boreback(2),Azure Reaper(2),Rifter,Abominable Raksha,Noxious Den
+Draco III	:Dracorex,Apollo,Kraken,Rumbler,Mech Aid,Titan,Xanadu,Bulldozer,Destructive Ram,Elemental,Solar Powerhouse
 Draco IV	:Dracorex,Aegis(2),Bolide Walker(2),Pummeller(2),Rifter,Nimbus,Poseidon,Titan
 Draco Armor I	:Dracorex,Orbo the Wrathful,Solar Powerhouse,Metalhead,Rhino(3),G-60 Thunder(3),Noxious Den
 Draco Armor II	:Dracorex,Hephatat,Solar Powerhouse,Rhino,Vigil,Metalhead,G-60 Thunder,Fortifier,T-46 Leonidas,Bolster Xeno,Toxic Cannon
@@ -57,7 +57,7 @@ BT Mix		:Lord of Tartarus,Ravenous Dredge,Microgen,Shapeshifter,Brawler,Razogoth
 Pumpool		:Dracorex,Pummeller(4),Blood Pool(3),Gorivore,Necrogeddon,Volatile Wrecker
 Ogres		:Dracorex,Necrogeddon,Sundering Ogre(8),Noxious Den
 Ogres II	:Dracorex,Sundering Ogre(7),Asylum(3)
-Mantis I	:Lord of Tartarus,Bulging Mantis(9), Asylum
+Mantis I	:Lord of Tartarus,Bulging Mantis(9),Asylum
 Mantis II	:Lord of Tartarus,Necrogeddon,Bulging Mantis(7),Ravenous Dredge,Shapeshifter
 Brawlers	:Lord of Tartarus,Necrogeddon,Brawler(8),Ravenous Dredge
 Sentries	:Lord of Tartarus,Asylum(5),Sulfuris Sentry(3),Hovering Pest(2)
@@ -71,14 +71,14 @@ Xeno Mix	:Invasion Coordinator,Predator,Revoker,Stealthy Niaq,Beetle Bomber,Apex
 Xeno Tribute	:Dracorex,Hephatat,Xeno Mothership,Ozeous,Xanadu,Cloaked Exarch(2),Mesa Trekker(2),Stealthy Niaq,Rifter
 Daemon Reaper	:Dracorex,Daemon(4),Azure Reaper(4),Rifter,Stealthy Niaq
 Interceptors	:Invasion Coordinator,Xeno Interceptor(4),Revoker(2),Azure Reaper,Stealthy Niaq,Rifter,Predator
-Anti Skimmer	:Daizon,Shapeshifter,Chaos Swarm,Predator,Stealthy Niaq,Loki's Scion,Sustainer Xolan,Monsoon X,Rifter,Azure Reaper(2)
+Anti Skimmer	:Daizon,Venorax,Shapeshifter,Chaos Swarm,Predator,Stealthy Niaq,Blitz Buzzers,Monsoon X,Rifter,Azure Reaper(2)
 // ================================
 // Righteous
 // ================================
 Righteous Mix	:Empress,Radiant Dawnbringer,Equalizer,Angelwing,Hierophant,Avatar,Pantheon Progeny,Indebted Veteran,Vigil,Guerilla Leader,Utopia Beacon
 Righteous Rush	:Empress,Radiant Dawnbringer,Equalizer(3),Angelwing(6)
 Righteous Roll	:Empress,Benediction,Solar Powerhouse,Guerilla Leader,Reclaimer,Vigil(2),Angelwing(2),Equalizer(2)
-Avatars		:Empress,Avatar(4),Adytum(4),Bridge of Destiny,Pantheon
+Avatars		:Empress,Avatar(4),Adytum(3),Pantheon Progeny,Bridge of Destiny,Pantheon
 Beacons		:Gaia,Utopia Beacon(4),Holy Beacon(2),Pantheon Progeny,Bridge of Destiny,Acropolis,Earthquake Generator
 Rhinos I	:Attalia,Rhino(6),Solar Powerhouse,Radiant Dawnbringer,Bridge of Destiny,Noxious Den
 Rhinos II	:Gaia,Rhino(5),Solar Powerhouse,Scepter,Bridge of Destiny,Noxious Den(2)
