@@ -23,6 +23,7 @@ typedef pair<string, UINT> PAIRMSUINT;
 typedef vector<string> VSTRINGS;
 typedef map<string, UCHAR> MSKILLS;
 typedef pair<string, UCHAR> PAIRMSKILLS;
+typedef set <UINT>		SCID;
 #define TAG_ANY			-100500
 #define TAG_BATCHEVAL	100500
 #define TAG_CUSTOM		0
@@ -795,15 +796,16 @@ public:
 		if (!fopen_s(&f,FileName,"w"))
 		{
 			for (UINT i=0;i<MISSION_MAX_ID;i++)
-			{				
-				fprintf_s(f,"%s:",MDB[i].GetName());
-				fprintf_s(f,"%s",CDB[MDB[i].GetCommander()].GetName());
-				for (UINT k=0;k<MDB[i].GetCardCount();k++)
-				{
-					fprintf_s(f,",%s",CDB[MDB[i].GetCardID(k)].GetName());
+				if (MDB[i].GetCardCount())
+				{				
+					fprintf_s(f,"%s:",MDB[i].GetName());
+					fprintf_s(f,"%s",CDB[MDB[i].GetCommander()].GetName());
+					for (UINT k=0;k<MDB[i].GetCardCount();k++)
+					{
+						fprintf_s(f,",%s",CDB[MDB[i].GetCardID(k)].GetName());
+					}
+					fprintf_s(f,"\n");
 				}
-				fprintf_s(f,"\n");
-			}
 			return (fclose(f) == 0);
 		}
 		return false;
@@ -876,6 +878,43 @@ public:
 						errline = cline;
 						break;					
 					}
+				cline++;
+			}
+			fclose(f);
+			return errline;
+		}
+		return -2; // fnf
+	}
+	int LoadCardList(const char *FileName, SCID &CardPool)
+	{
+		FILE *f;
+		int errline = -1, cline = 0; // no errors
+		if (!fopen_s(&f,FileName,"r"))
+		{
+#define MAX_BUFFER_SIZE	65535
+			char buffer[MAX_BUFFER_SIZE];
+			while (!feof(f))
+			{
+				bool bReadLine = false;
+				fgets(buffer,MAX_BUFFER_SIZE,f);
+				for (UINT i=0;(i<MAX_BUFFER_SIZE)&&(buffer[i]);i++)
+					if (buffer[i] == '\n')
+					{
+						buffer[i] = 0;
+						break;
+					}
+					else
+						if (!isspace(buffer[i]))
+							bReadLine = true;
+				trim(buffer);
+				if ((buffer[0] != '/') && (buffer[1] != '/') && bReadLine) 
+				{
+					const Card *c = GetCard(buffer);
+					if ((!c) || (!c->IsCard()))
+						errline = cline;
+					else
+						CardPool.insert(c->GetId());
+				}
 				cline++;
 			}
 			fclose(f);

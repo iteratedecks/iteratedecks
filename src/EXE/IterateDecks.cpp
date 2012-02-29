@@ -33,6 +33,182 @@
 
 int _tmain(int argc, char* argv[])
 {
+/*	DB.LoadCardXML("cards.xml");
+	DB.LoadMissionXML("missions.xml");
+	DB.SaveMissionDecks("missions.txt");
+	return 1;*/
+/*
+	ActiveDeck m154("SGJDJRJbJZDhGWH0IMI6gz",DB.GetPointer());
+	for (UINT i=0;i<1000;i++)
+	{
+		const Card *c = &DB.GetCard(i);
+		if (c->IsCard() && (c->GetSet() > 0))
+		{
+#define GAMES_COUNT	100
+#define GAMES_EMUL	10
+			RESULTS res;
+			for (UINT t=0;t<10;t++)
+			{
+				for (UINT k=0;k<GAMES_COUNT;k++)
+				{
+					ActiveDeck tm(m154);
+					ActiveDeck a(DB.CARD("Lord of Tartarus"));		
+					for (UCHAR l=0;l<GAMES_EMUL;l++)
+						a.Add(c);
+
+					Simulate(a,tm,res);
+				}
+				if (res.Win < (GAMES_COUNT / 2))
+					break; // chance is lower then half, drop this
+			}
+			if (res.Win > GAMES_COUNT * GAMES_EMUL / 2)
+			{
+				printf("%.3f	%s\n",(float)res.Win / GAMES_COUNT,c->GetName());
+			}
+		}
+	}
+	return 1;*/
+/*
+	bConsoleOutput = false;
+	DB.LoadCardXML("cards.xml");
+	DB.LoadRaidXML("raids.xml");
+	
+	ActiveDeck br4;//mm119("RfBUDWD9E4FNFRFYFdFrFsGnG0frvOvT",DB.GetPointer()); // 
+	// base deck:
+	ActiveDeck basedeck;
+	typedef vector <UINT>	VID;
+	typedef set <UINT>		SID;
+	VID Commanders;
+	VID Cards;
+	SID Exclude;
+	Commanders.push_back(DB.CARD("Dracorex")->GetId());
+	// Pantheon Perfect
+	Cards.push_back(DB.CARD("Utopia Beacon")->GetId());
+	Cards.push_back(DB.CARD("Noxious Den")->GetId());
+	Cards.push_back(DB.CARD("Earthquake Generator")->GetId());
+	Cards.push_back(DB.CARD("Bridge of Destiny")->GetId());
+	Cards.push_back(DB.CARD("Engulfing Chasm")->GetId());
+	//Cards.push_back(DB.CARD("Abominable Horror")->GetId());
+	//Cards.push_back(DB.CARD("Hephatat")->GetId());
+	Cards.push_back(DB.CARD("Support Carrier")->GetId());
+	//Cards.push_back(DB.CARD("Deadblow")->GetId());
+	Cards.push_back(DB.CARD("Apollo")->GetId());
+	//Cards.push_back(DB.CARD("Bolide Walker")->GetId());
+	//Cards.push_back(DB.CARD("Abominable Raksha")->GetId());
+	//Cards.push_back(DB.CARD("Elemental")->GetId());
+	//Cards.push_back(DB.CARD("Lance Rider")->GetId());
+	//Cards.push_back(DB.CARD("Arms Depot")->GetId());
+	Cards.push_back(DB.CARD("Scepter")->GetId());
+	//Cards.push_back(DB.CARD("Lurking Carrier")->GetId());	
+
+	//Exclude.insert(289); // DEBUG - EXCLUDE VALEFAR
+	if (basedeck.Commander.IsDefined())
+		Commanders.push_back(basedeck.Commander.GetId());
+
+	printf("%d : %d\n",Commanders.size(),Cards.size());
+	UINT CardsSize = Cards.size();
+#define PICK_DECK_SIZE	10
+	UINT Picks[PICK_DECK_SIZE];
+
+#define GAMES_COUNT	100
+#define GAMES_EMUL	1000
+	float cchance = 0.75; // dont need that crappy decks
+	ActiveDeck bestdeck;
+	// start
+	for (UINT ci=0;ci<Commanders.size();ci++)
+	{
+		printf("Commader: %d\n",Commanders[ci]);
+		memset(Picks,0,sizeof(UINT) * PICK_DECK_SIZE);
+		UINT cardcount = 1;
+		for (;;Picks[0]++)
+		{
+			if (Picks[0] > CardsSize)
+				for (UINT i=1;i<PICK_DECK_SIZE;i++)
+					if (Picks[i] < CardsSize)
+					{
+						Picks[i]++;
+						UINT ioffset = 0;
+						// we can seed out some multiple Legendaries or Uniques here:
+						if (((Picks[i]-1) < CardsSize) && (DB.GetCard(Cards[Picks[i]-1]).GetRarity() >= RARITY_UNIQUE))
+							ioffset = 1; // skip em
+						for (UINT k=0;k<i;k++)
+							Picks[k] = Picks[i] + ioffset; // reset
+						if (i > cardcount)
+							cardcount = i;
+						break;
+					}
+			if (Picks[0] > CardsSize)
+				break; // end
+
+			// check if picks are valid deck
+			// we should have seeded out all multiple unique and multiple legendaries(clones) before
+			// so now seed out decks that have multiple legendaries(deck can't have more than one)
+			UINT iLegendaries = 0;
+			for (UINT i=0;i<PICK_DECK_SIZE;i++)
+				if ((Picks[i]) && (DB.GetCard(Cards[Picks[i]-1]).GetRarity() == RARITY_LEGENDARY))
+				{
+					iLegendaries++;
+					if (iLegendaries > 1)
+						break;					
+				}
+			if (iLegendaries > 1)
+				continue; // skip this deck completely
+
+			if (cardcount < 9) // check only full decks
+				continue;
+
+			// current deck
+			ActiveDeck cd(&DB.GetCard(Commanders[ci]));
+			for (UINT i=0;i<PICK_DECK_SIZE;i++)
+				if (Picks[i])
+					cd.Add(&DB.GetCard(Cards[Picks[i]-1]));
+				else
+				{
+					if (i < basedeck.Deck.size())
+						cd.Add(basedeck.Deck[i].GetOriginalCard());
+				}
+
+			if (!basedeck.Deck.empty())
+			{
+				// need an extra check for unique and legendaries
+				if (!cd.IsValid())
+					continue;
+			}
+			//printf("%s\n",cd.GetHash64().c_str());
+			//for (UINT i=0;i<PICK_DECK_SIZE;i++)
+			//	printf("%d ",Picks[i]);
+			//printf("\n");
+
+			RESULTS res;
+			for (UINT t=0;t<GAMES_EMUL;t++)
+			{
+				for (UINT k=0;k<GAMES_COUNT;k++)
+				{
+					//ActiveDeck tm(br4);
+					ActiveDeck tm;
+					DB.GenRaidDeck(tm,13);
+					ActiveDeck a(cd);
+
+					Simulate(a,tm,res,false);
+				}
+				if (res.Win < (2 * GAMES_COUNT * cchance / 3))
+					break; // chance is lower than 2/3 of current best, drop this
+			}
+			float newchance = (float)res.Win / (GAMES_COUNT * GAMES_EMUL);
+			if (newchance >= cchance * 0.999) // they are close
+			{
+				if (newchance > cchance)
+					cchance = newchance;
+				bestdeck = ActiveDeck(cd);
+				printf("[%d] %.3f	%s\n",cardcount,cchance,bestdeck.GetHash64().c_str());
+			}
+		}
+		//printf("%d variations overall\n",cnt);
+	}
+	printf("Finished");
+	scanf("%c");*/
+
+
 #if !_DEBUG
 	// executable uses shared memory to recieve parameters from API
 	HANDLE hFileMapping = CreateFileMapping(
@@ -87,24 +263,35 @@ int _tmain(int argc, char* argv[])
 	memset(&pEvalParams->ResultByCard,0,sizeof(RESULT_BY_CARD) * (DEFAULT_DECK_RESERVE_SIZE + 1));	
 	memset(&pEvalParams->SkillProcs,0,sizeof(UINT)*CARD_ABILITIES_MAX);
 	memset(&pEvalParams->ResultByOrder,0,sizeof(RESULT_BY_ORDER)*TOP10);
+	memset(&pEvalParams->WildCardIds,0,sizeof(UCHAR)*TOP10);
+	memset(&pEvalParams->WildCardWins,0,sizeof(UINT)*TOP10);
+	pEvalParams->FullAmountOfGames = 0;
 
 	time_t t;
 	time(&t);
 	if (pEvalParams->WildcardId)
 	{
-		typedef set <UINT>		SID;
-		SID CardPool;
-		for (UINT k=0;k<MAX_FILTER_ID_COUNT;k++)
+		SCID CardPool;
+		SCID xCardPool;
+		struct more
 		{
-			if (pEvalParams->WildFilterInclude[k])
-				CardPool.insert(pEvalParams->WildFilterInclude[k]);
-			else
-				break;
+		  bool operator()(const UINT a, const UINT b) const
+		  {
+			return a > b;
+		  }
+		};
+		typedef map<UINT,UINT, more> MRID;
+		typedef pair<UINT,UINT> PRID;
+		MRID RID;
+		if (pEvalParams->WildFilterSpecific)
+		{
+			DB.LoadCardList("wildcard\\include.txt",CardPool);
+			DB.LoadCardList("wildcard\\exclude.txt",xCardPool);
 		}
 		if (pEvalParams->WildcardId < 0)
 		{
 			// remove all non-commander cards from pool
-			for (SID::iterator si = CardPool.begin(); si != CardPool.end(); si++)
+			for (SCID::iterator si = CardPool.begin(); si != CardPool.end(); si++)
 				while ((si != CardPool.end()) && (DB.GetCard(*si).GetType() != TYPE_COMMANDER))
 					si = CardPool.erase(si);
 			// commander
@@ -133,8 +320,9 @@ int _tmain(int argc, char* argv[])
 		}
 		else
 		{
+			CardPool.insert(pEvalParams->WildcardId); // include original card
 			// remove all commander cards from pool
-			for (SID::iterator si = CardPool.begin(); si != CardPool.end(); si++)
+			for (SCID::iterator si = CardPool.begin(); si != CardPool.end(); si++)
 				while ((si != CardPool.end()) && (DB.GetCard(*si).GetType() == TYPE_COMMANDER))
 					si = CardPool.erase(si);
 			// card in deck
@@ -177,22 +365,17 @@ int _tmain(int argc, char* argv[])
 			}
 		}
 		// apply exclude filter
-		for (UINT k=0;k<MAX_FILTER_ID_COUNT;k++)
+		for (SCID::iterator xi = xCardPool.begin(); xi != xCardPool.end(); xi++)
 		{
-			if (pEvalParams->WildFilterExclude[k])
-			{
-				SID::iterator si = CardPool.find(pEvalParams->WildFilterExclude[k]);
-				if (si != CardPool.end())
-					CardPool.erase(si);
-			}
-			else
-				break;
+			SCID::iterator si = CardPool.find(*xi);
+			if (si != CardPool.end())
+				CardPool.erase(si);
 		}
 		if (CardPool.empty())
 			pEvalParams->WildcardId = -1; // tell API that there were no cards in filter
 
 		UINT BestCard = 0;
-		for (SID::iterator si=CardPool.begin();si!=CardPool.end();si++)
+		for (SCID::iterator si=CardPool.begin();si!=CardPool.end();si++)
 		{
 			ActiveDeck x(X);
 			if (pEvalParams->WildcardId < 0)
@@ -210,12 +393,26 @@ int _tmain(int argc, char* argv[])
 				memcpy(pEvalParams->ResultByCard,lrbc,sizeof(lrbc));
 				BestCard = *si;
 			}
+			RID.insert(PRID(lresult.Win,*si));
+			pEvalParams->FullAmountOfGames += lresult.Games;
 		}
 		if (BestCard)
 			pEvalParams->WildcardId = BestCard;
+		UCHAR i = 0;
+		for (MRID::iterator mi = RID.begin(); (mi != RID.end()) && (i < 10); mi++)
+			if (mi->second != BestCard)
+			{
+				pEvalParams->WildCardWins[i] = mi->first;
+				pEvalParams->WildCardIds[i] = mi->second;
+				i++;
+			}
 	}
-	else // simple eval
+	else
+	{
+		// simple eval
 		EvaluateInThreads(pEvalParams->Seed,X,Y,pEvalParams->RaidID,pEvalParams->Result,pEvalParams->ResultByCard,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode,pEvalParams->Req,pEvalParams->SkillProcs);
+		pEvalParams->FullAmountOfGames += pEvalParams->Result.Games;
+	}
 	if (OrderLength > 0)
 	{
 		// reorder
@@ -279,7 +476,7 @@ int _tmain(int argc, char* argv[])
 	//printf("%d %d %d\n",sizeof(PICK_STATS),sizeof(RESULT_BY_CARD),sizeof(EVAL_PARAMS));
 	//DB.CreateDeck("Gaia, Utopia Beacon(3), Support Carrier(2), Flux Blaster, Radiant Dawnbringer, Acropolis, Adytum(2)",x);
 	//DB.CreateDeck("Krellus[1144],Abominable Raksha,Venorax,Beetle Bomber,Phantom,Azure Reaper,Xeno Mothership,Xeno Overlord,Cloaked Exarch,Kyrios,Revoker,Predator,Shaded Hollow,Vaporwing,Landing Pods,Chaos Wave",z);
-
+	
 	VLOG log;
 	log.reserve(10000);
 

@@ -12,7 +12,6 @@
 //
 // contains some threading evaluation routines
 
-#define MAX_FILTER_ID_COUNT		50
 #define TOP10					10
 
 CardDB DB; // just to make all easier ...
@@ -667,8 +666,9 @@ struct EVAL_PARAMS
 	int WildFilterType;
 	int WildFilterRarity;
 	int WildFilterFaction;
-	int WildFilterInclude[MAX_FILTER_ID_COUNT];
-	int WildFilterExclude[MAX_FILTER_ID_COUNT];
+	bool WildFilterSpecific;
+	UINT WildCardIds[TOP10];
+	UINT WildCardWins[TOP10];
 	UINT MaxTurn;
 	// control
 	int State; // set to -1 to stop
@@ -682,4 +682,6 @@ struct EVAL_PARAMS
 	UINT SkillProcs[CARD_ABILITIES_MAX];
 	//
 	RESULT_BY_ORDER ResultByOrder[TOP10];
+	//
+	UINT FullAmountOfGames;
 };

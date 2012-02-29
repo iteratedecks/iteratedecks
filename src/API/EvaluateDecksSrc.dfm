@@ -35,10 +35,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsMin: TcxTabSheet
       Caption = 'Minimalistic'
       ImageIndex = 6
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         784
         665)
@@ -1946,10 +1942,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Caption = 'Visual'
       ImageIndex = 0
       OnShow = tsDecksShow
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object rPanel: TPanel
         Left = 434
         Top = 0
@@ -2493,10 +2485,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Caption = 'Evaluate'
       ImageIndex = 2
       OnShow = tsEvalShow
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object pcEval: TcxPageControl
         Left = 0
         Top = 0
@@ -2511,9 +2499,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
         object tsEEvaluate: TcxTabSheet
           Caption = 'Results'
           ImageIndex = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object pEvalMid: TPanel
             Left = 0
             Top = 70
@@ -2906,11 +2891,8 @@ object EvaluateDecksForm: TEvaluateDecksForm
           end
         end
         object tsEWildcard: TcxTabSheet
-          Caption = 'Wildcard filters'
+          Caption = 'Wildcard'
           ImageIndex = 1
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object gbGenericFilter: TcxGroupBox
             Left = 3
             Top = 30
@@ -3022,55 +3004,53 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Top = 3
             Caption = 'Use specific filter'
             TabOrder = 2
-            OnClick = cbUseSpecificFilterClick
             Width = 121
           end
-          object gbSpecificFilter: TcxGroupBox
+          object cxLabel8: TcxLabel
             Left = 155
             Top = 30
-            Caption = 'Specific filter (card names, separated by commas)'
+            Caption = 
+              'Specific filters were moved to text files "wildcard\include.txt"' +
+              ' and "wildcard\exclude.txt"'
             Enabled = False
-            TabOrder = 3
-            Height = 110
-            Width = 366
-            object eIncludeCards: TcxTextEdit
-              Left = 11
-              Top = 30
-              TabOrder = 0
-              Width = 345
-            end
-            object eExcludeCards: TcxTextEdit
-              Left = 11
-              Top = 73
-              TabOrder = 1
-              Width = 345
-            end
-            object lInclude: TcxLabel
-              Left = 11
-              Top = 15
-              Caption = 'Include cards:'
-            end
-            object lExclude: TcxLabel
-              Left = 11
-              Top = 57
-              Caption = 'Exclude cards:'
-            end
+            Properties.WordWrap = True
+            Width = 205
           end
-          object cbIncludeOriginalCard: TcxCheckBox
+          object gWildCards: TcxGrid
             Left = 3
-            Top = 152
-            Caption = 'Include original card in filter'
-            State = cbsChecked
+            Top = 146
+            Width = 214
+            Height = 241
             TabOrder = 4
-            Width = 174
+            object vWildCards: TcxGridTableView
+              NavigatorButtons.ConfirmDelete = False
+              DataController.Summary.DefaultGroupSummaryItems = <>
+              DataController.Summary.FooterSummaryItems = <>
+              DataController.Summary.SummaryGroups = <>
+              OptionsCustomize.ColumnFiltering = False
+              OptionsCustomize.ColumnGrouping = False
+              OptionsCustomize.ColumnMoving = False
+              OptionsCustomize.ColumnSorting = False
+              OptionsView.GroupByBox = False
+              object vWildCardsName: TcxGridColumn
+                Caption = 'Card name'
+                Width = 142
+              end
+              object vWildCardsWins: TcxGridColumn
+                Caption = 'Win rate'
+                DataBinding.ValueType = 'Float'
+                PropertiesClassName = 'TcxCurrencyEditProperties'
+                Properties.DisplayFormat = ',0.###;-,0.###'
+              end
+            end
+            object gWildCardsLevel1: TcxGridLevel
+              GridView = vWildCards
+            end
           end
         end
         object tsRequrements: TcxTabSheet
           Caption = 'Skill procs'
           ImageIndex = 2
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           DesignSize = (
             784
             641)
@@ -3195,13 +3175,22 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Height = 46
             Width = 265
           end
+          object cxLabel9: TcxLabel
+            Left = 288
+            Top = 303
+            AutoSize = False
+            Caption = 
+              'Please note, that Avg. procs column won'#39't calculate correct aver' +
+              'age procs for wildcards, procs count is divided on full game cou' +
+              'nt'
+            Properties.WordWrap = True
+            Height = 46
+            Width = 265
+          end
         end
         object tsCardOrder: TcxTabSheet
           Caption = 'Card order'
           ImageIndex = 3
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object pTopCO: TPanel
             Left = 0
             Top = 0
@@ -3505,10 +3494,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Caption = 'Batch Eval'
       ImageIndex = 6
       OnShow = tsBatchShow
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         784
         665)
@@ -3903,10 +3888,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsUpdate: TcxTabSheet
       Caption = 'Update DB'
       ImageIndex = 3
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object bCustom: TcxButton
         Left = 3
         Top = 205
@@ -4066,10 +4047,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsHelp: TcxTabSheet
       Caption = 'Tips'
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         784
         665)
@@ -6764,10 +6741,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsSettings: TcxTabSheet
       Caption = 'Settings'
       ImageIndex = 5
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object rgEval: TcxRadioGroup
         Left = 3
         Top = 3
