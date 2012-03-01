@@ -3152,41 +3152,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
               GridView = vProcs
             end
           end
-          object cxLabel6: TcxLabel
-            Left = 288
-            Top = 168
-            AutoSize = False
-            Caption = 
-              'This is the list of procs from last evaluation, this table only ' +
-              'includes skill procs from games that were counted as won for the' +
-              ' sake of being useful for achievements'
-            Properties.WordWrap = True
-            Height = 65
-            Width = 265
-          end
-          object cxLabel7: TcxLabel
-            Left = 288
-            Top = 239
-            AutoSize = False
-            Caption = 
-              'This list is build regardless of enabling requirements, however ' +
-              'it takes them into account'
-            Properties.WordWrap = True
-            Height = 46
-            Width = 265
-          end
-          object cxLabel9: TcxLabel
-            Left = 288
-            Top = 303
-            AutoSize = False
-            Caption = 
-              'Please note, that Avg. procs column won'#39't calculate correct aver' +
-              'age procs for wildcards, procs count is divided on full game cou' +
-              'nt'
-            Properties.WordWrap = True
-            Height = 46
-            Width = 265
-          end
         end
         object tsCardOrder: TcxTabSheet
           Caption = 'Card order'

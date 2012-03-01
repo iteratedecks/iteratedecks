@@ -221,8 +221,6 @@ In other words, it is the same as on auto, only the counters reset every time yo
 			if (tAtk.CheckRequirements(Reqs))
 			{
 				r.Win++;
-				if (SkillProcs)
-					MergeBuffers(SkillProcs,tAtk.SkillProcs);
 			}
 			r.Points+=10; // +10 points for winning 
 			r.AutoPoints+=10;
@@ -297,6 +295,9 @@ In other words, it is the same as on auto, only the counters reset every time yo
 			i++;
 		}
 	}
+	// used to calc only for wins, now for all games
+	if (SkillProcs)
+		MergeBuffers(SkillProcs,tAtk.SkillProcs);
 	// check if cards stayed in deck - we finished before they could be played, lol
 	if (CSIndex && rbc && (!tAtk.Deck.empty()))
 	{

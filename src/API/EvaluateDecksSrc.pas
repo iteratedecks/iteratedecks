@@ -404,8 +404,6 @@ type
     vProcsSkill: TcxGridColumn;
     vProcsProcs: TcxGridColumn;
     vProcsAvg: TcxGridColumn;
-    cxLabel6: TcxLabel;
-    cxLabel7: TcxLabel;
     tsCardOrder: TcxTabSheet;
     pTopCO: TPanel;
     cbShowWinsCO: TcxCheckBox;
@@ -469,7 +467,6 @@ type
     vWildCards: TcxGridTableView;
     vWildCardsName: TcxGridColumn;
     vWildCardsWins: TcxGridColumn;
-    cxLabel9: TcxLabel;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
