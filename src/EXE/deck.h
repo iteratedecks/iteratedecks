@@ -564,12 +564,12 @@ Valor: Removed after owner ends his turn.
 					printf(" died!\n");
 				}
 			}
+			DeathEvents++;
 			if (actualdamagedealt) // siphon and leech are kinda bugged - overkill damage counts as full attack damage even if card has 1 hp left, therefore this workaround
 			{
 				*actualdamagedealt = dealt;
 				return dmg;
 			}
-			DeathEvents++;
 			// crush damage will be dealt even if the defending unit Regenerates
 			return dealt;// note that CRUSH & BACKFIRE are processed elsewhere
 		}
@@ -989,7 +989,7 @@ private:
 
 				// gotta check walls & source onDeath here
 				for (UCHAR z=0;z<Def.Structures.size();z++)
-					CheckDeathEvents(Def.Structures[z],*this);
+					Def.CheckDeathEvents(Def.Structures[z],*this);
 				CheckDeathEvents(SRC,Def);
 
 				SRC.fsOverkill += overkill;
@@ -1070,7 +1070,7 @@ private:
 
 						// gotta check walls & source onDeath here
 						for (UCHAR z=0;z<Def.Structures.size();z++)
-							CheckDeathEvents(Def.Structures[z],*this);
+							Def.CheckDeathEvents(Def.Structures[z],*this);
 						CheckDeathEvents(SRC,Def);
 
 						SRC.fsDmgDealt += cdmg;
@@ -1162,7 +1162,7 @@ private:
 							Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),0,dmg));
 						SRC.fsDmgDealt += actualdamagedealt;
 						SRC.fsOverkill += overkill;
-						CheckDeathEvents(*targets[s],*this);
+						Def.CheckDeathEvents(*targets[s],*this);
 					}
 					if (bPierce)
 						SkillProcs[COMBAT_PIERCE]++;
@@ -1187,7 +1187,7 @@ private:
 
 							// gotta check walls onDeath here
 							for (UCHAR z=0;z<Def.Structures.size();z++)
-								CheckDeathEvents(Def.Structures[z],*this);
+								Def.CheckDeathEvents(Def.Structures[z],*this);
 
 							SRC.fsOverkill += overkill;
 							SkillProcs[DMGDEPENDANT_CRUSH]++;
@@ -1731,7 +1731,7 @@ public:
 									SkillProcs[aid]++;
 								else
 									Dest.SkillProcs[aid]++;
-								if (Src.IsAlive())
+								if (Src.IsAlive() && (EffectType != EVENT_DIED))
 									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback
 									{
 										Src.SetEffect(aid,Src.GetEffect(aid) + effect);
@@ -2011,7 +2011,7 @@ public:
 										SkillProcs[aid]++;
 									else
 										Dest.SkillProcs[aid]++;
-									if (Src.IsAlive())
+									if (Src.IsAlive() && (EffectType != EVENT_DIED))
 			/*  ?  */					if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback is it 1/2 or 1/4 chance to return jam with payback????
 										{
 											Src.SetEffect(aid,effect);
@@ -2080,7 +2080,7 @@ public:
 									SkillProcs[aid]++;
 								else
 									Dest.SkillProcs[aid]++;
-								if (Src.IsAlive())
+								if (Src.IsAlive() && (EffectType != EVENT_DIED))
 									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos)) 
 									{
 										Src.SetEffect(aid,effect);
@@ -2324,7 +2324,7 @@ public:
 							{
 								UCHAR overkill = 0;
 								UCHAR sdmg = vi->first->SufferDmg(effect,0,0,0,&overkill);
-								CheckDeathEvents(*vi->first,Dest);
+								Dest.CheckDeathEvents(*vi->first,*this);
 								if (!IsMimiced)
 								{
 									Src.fsDmgDealt += sdmg;
@@ -2400,7 +2400,7 @@ public:
 								}
 								UCHAR overkill = 0;
 								UCHAR sdmg = vi->first->StrikeDmg(effect,&overkill);
-								CheckDeathEvents(*vi->first,Dest);
+								Dest.CheckDeathEvents(*vi->first,*this);
 								if (!IsMimiced)
 								{
 									Src.fsDmgDealt += sdmg;
@@ -2415,12 +2415,12 @@ public:
 									SkillProcs[aid]++;
 								else
 									Dest.SkillProcs[aid]++;
-								if (Src.IsAlive())
+								if (Src.IsAlive() && (EffectType != EVENT_DIED))
 									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback
 									{
 										UCHAR overkill = 0;
 										vi->first->fsDmgDealt += Src.StrikeDmg(effect,&overkill);
-										CheckDeathEvents(Src,*this);
+										CheckDeathEvents(Src,Dest);
 										vi->first->fsOverkill += overkill;
 										Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
 									}
@@ -2498,7 +2498,7 @@ public:
 									SkillProcs[aid]++;
 								else
 									Dest.SkillProcs[aid]++;
-								if (Src.IsAlive())
+								if (Src.IsAlive() && (EffectType != EVENT_DIED))
 									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50 && (!chaos))  // payback
 									{
 										vi->first->fsSpecial += Src.Weaken(effect);
@@ -2610,7 +2610,7 @@ public:
 									SkillProcs[aid]++;
 								else
 									Dest.SkillProcs[aid]++;
-								if (Src.IsAlive())
+								if (Src.IsAlive() && (EffectType != EVENT_DIED))
 									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50)  // payback
 									{
 										Src.SetEffect(ACTIVATION_CHAOS,effect);
