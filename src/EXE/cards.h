@@ -909,7 +909,7 @@ public:
 				trim(buffer);
 				if ((buffer[0] != '/') && (buffer[1] != '/') && bReadLine) 
 				{
-					const Card *c = GetCard(buffer);
+					const Card *c = GetCardSmart(buffer);
 					if ((!c) || (!c->IsCard()))
 						errline = cline;
 					else
