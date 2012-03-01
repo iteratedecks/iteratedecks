@@ -1342,6 +1342,8 @@ public:
 		//
 		size_t len = strlen(HashBase64);
 		_ASSERT(!(len & 1)); // bytes should go in pairs
+		if (len & 1)
+			return;
 		len = len >> 1; // div 2
 		Deck.reserve(DEFAULT_DECK_RESERVE_SIZE);
 		for (UCHAR i = 0; i < len; i++)

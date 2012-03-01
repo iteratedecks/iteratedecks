@@ -933,185 +933,177 @@ public:
 		size_t decknameend = 0;
 		if (output_id_buffer)
 			output_id_buffer[0] = 0;
-		try
-		{
-			for (size_t i=0;i<len+1;i++)
-				if ((List[i] == ',') || ((List[i] == ':') && (!p)) || (!List[i]))
+		for (size_t i=0;i<len+1;i++)
+			if ((List[i] == ',') || ((List[i] == ':') && (!p)) || (!List[i]))
+			{
+				if ((List[i] == ',') && (!strnicmp(List+p,CARD_NAME_SYNTAX_EXCLUSION,sizeof(CARD_NAME_SYNTAX_EXCLUSION))))
+					continue;
+				if (!p)
 				{
-					if ((List[i] == ',') && (!strnicmp(List+p,CARD_NAME_SYNTAX_EXCLUSION,sizeof(CARD_NAME_SYNTAX_EXCLUSION))))
-						continue;
-					if (!p)
+					if (List[i] == ':')
 					{
-						if (List[i] == ':')
+						decknameend = i;
+						continue;
+					}
+					else
+						if (decknameend > 0)
 						{
-							decknameend = i;
-							continue;
-						}
-						else
-							if (decknameend > 0)
+							memcpy(buffer,List,decknameend);
+							buffer[decknameend] = 0; // finalize string
+							FormatCardName(buffer);
+							if (output_id_buffer)
 							{
-								memcpy(buffer,List,decknameend);
-								buffer[decknameend] = 0; // finalize string
-								FormatCardName(buffer);
-								if (output_id_buffer)
+								// we dont need deck name here
+							}
+							else
+							{
+								// detect IDs in square brackets [ ]
+								int z=-1,x=-1;
+								for (UINT v=0;buffer[v];v++)
+									if (buffer[v] == '[')
+										z = v;
+									else
+										if (buffer[v] == ']')
+											x = v;
+								int NewTag = 0;
+								if ((z >= 0) && (x >= 0))
 								{
-									// we dont need deck name here
+									buffer[z]=0;
+									buffer[x]=0;
+									NewTag = atoi(trim(buffer + z + 1));
+									strcat(buffer,trim(buffer+x+1)); // remove [id] from deck name
+								}
+								if (Tag == TAG_SOMERAID)
+								{
+									if (NewTag)
+									{
+										Tag = -NewTag; // negative tags for raids
+									}
+									else 
+										if (!RIIndex.empty())
+										{
+											// try to detect by name
+											for (MSUINT::iterator ri = RIIndex.begin(); ri != RIIndex.end(); ri++)
+											{
+												// full raid name
+												const char *ptr = ri->first.c_str();
+												if (strstr(buffer,ptr))
+												{
+													NewTag = ri->second; // found
+													Tag = -NewTag;
+													break;
+												}
+												// abbrevation
+												char abv[10];
+												UCHAR x=0;
+												bool bStore = true;
+												for (UINT z=0;ptr[z];z++)
+													if (isspace(ptr[z]))
+														bStore = true;
+													else
+														if (bStore)
+														{
+															abv[x] = ptr[z];
+															x++;
+															bStore = false;
+														}
+												if (!stricmp(ptr,"Blightbloom"))
+												{
+													abv[0] = 'B';
+													abv[1] = 'B';
+													x = 2;
+												}
+												if (x < 2) // it is pointless to search 1 char abbrevation
+													continue;
+												abv[x] = 0;
+												const char *f = strstr(buffer,abv);
+												while (f)
+												{
+													const char c = f[x];
+													if (((f == buffer) || (isspace(*((unsigned char*)f-1)))) && ((!c) || (isspace(c))))
+													{
+														NewTag = ri->second; // found 
+														break;
+													}
+													f = strstr(abv,ptr);
+												}
+												if (NewTag)
+												{
+													Tag = -NewTag;
+													break;
+												}
+											}
+										}
 								}
 								else
-								{
-									// detect IDs in square brackets [ ]
-									int z=-1,x=-1;
-									for (UINT v=0;buffer[v];v++)
-										if (buffer[v] == '[')
-											z = v;
-										else
-											if (buffer[v] == ']')
-												x = v;
-									int NewTag = 0;
-									if ((z >= 0) && (x >= 0))
-									{
-										buffer[z]=0;
-										buffer[x]=0;
-										NewTag = atoi(trim(buffer + z + 1));
-										strcat(buffer,trim(buffer+x+1)); // remove [id] from deck name
-									}
-									if (Tag == TAG_SOMERAID)
+									if (Tag == TAG_SOMEMISSION)
 									{
 										if (NewTag)
 										{
-											Tag = -NewTag; // negative tags for raids
+											Tag = NewTag; // positive tags for missions
 										}
-										else 
-											if (!RIIndex.empty())
-											{
-												// try to detect by name
-												for (MSUINT::iterator ri = RIIndex.begin(); ri != RIIndex.end(); ri++)
-												{
-													// full raid name
-													const char *ptr = ri->first.c_str();
-													if (strstr(buffer,ptr))
-													{
-														NewTag = ri->second; // found
-														Tag = -NewTag;
-														break;
-													}
-													// abbrevation
-													char abv[10];
-													UCHAR x=0;
-													bool bStore = true;
-													for (UINT z=0;ptr[z];z++)
-														if (isspace(ptr[z]))
-															bStore = true;
-														else
-															if (bStore)
-															{
-																abv[x] = ptr[z];
-																x++;
-																bStore = false;
-															}
-													if (!stricmp(ptr,"Blightbloom"))
-													{
-														abv[0] = 'B';
-														abv[1] = 'B';
-														x = 2;
-													}
-													if (x < 2) // it is pointless to search 1 char abbrevation
-														continue;
-													abv[x] = 0;
-													const char *f = strstr(buffer,abv);
-													while (f)
-													{
-														const char c = f[x];
-														if (((f == buffer) || (isspace(*((unsigned char*)f-1)))) && ((!c) || (isspace(c))))
-														{
-															NewTag = ri->second; // found 
-															break;
-														}
-														f = strstr(abv,ptr);
-													}
-													if (NewTag)
-													{
-														Tag = -NewTag;
-														break;
-													}
-												}
-											}
 									}
-									else
-										if (Tag == TAG_SOMEMISSION)
-										{
-											if (NewTag)
-											{
-												Tag = NewTag; // positive tags for missions
-											}
-										}
-									mi = Into->insert(PAIRMDECKS(DeckIndex(trim(buffer),Tag),cardlist)).first;
-									mi->second.clear();
-								}
-								p = decknameend+1;
+								mi = Into->insert(PAIRMDECKS(DeckIndex(trim(buffer),Tag),cardlist)).first;
+								mi->second.clear();
 							}
-					}
-					memcpy(buffer,List+p*sizeof(char),i-p);
-					buffer[i-p] = 0; // finalize string
-					if (brs > 0)
-					{
-						for (size_t k = brs - p; k < i - p; k++)
-						{
-							if ((buffer[k] == '(') || (buffer[k] == ')') || isdigit(buffer[k]))
-							{
-								buffer[k] = ' ';
-							}
+							p = decknameend+1;
 						}
-						brs = 0;
-					}
-					if ((output_id_buffer) || (mi != Into->end()))
-					{
-						// fix buffer
-						for (UCHAR z=0;buffer[z];z++)
-							if (buffer[z] == '’') // this char is so decieving ;(
-								buffer[z] = '\'';
-						FormatCardName(buffer);
-						do
-						{
-							if (!output_id_buffer)
-								mi->second.push_back(trim(buffer));
-							else
-							{
-								const Card * c = GetCardSmart(trim(buffer));
-								if (c)
-								{
-									char itoabuffer[10];
-									itoa(c->GetId(),itoabuffer,10);
-									if (output_id_buffer[0])
-										strcat(output_id_buffer,",");
-									strcat(output_id_buffer,itoabuffer);
-								}
-							}
-							if (cnt)
-								cnt--;
-						}
-						while (cnt > 0);
-						cnt = 0;
-					}
-					p = i + 1;
 				}
-				else
-					if (List[i] == '(')
-						brs = i;
-					else
-						if ((List[i] == ')') && (brs > 0))
+				memcpy(buffer,List+p*sizeof(char),i-p);
+				buffer[i-p] = 0; // finalize string
+				if (brs > 0)
+				{
+					for (size_t k = brs - p; k < i - p; k++)
+					{
+						if ((buffer[k] == '(') || (buffer[k] == ')') || isdigit(buffer[k]))
 						{
-							memcpy(buffer,List+(brs+1)*sizeof(char),i-brs-1);
-							buffer[i-brs-1] = 0;
-							cnt = atoi(buffer);
+							buffer[k] = ' ';
 						}
-			return (!output_id_buffer) || (output_id_buffer[0]);
-		}
-		catch(char * /* str*/) 
-		{
-			//cout << "Exception raised: " << str << '\n';
-			return false;
-		}
+					}
+					brs = 0;
+				}
+				if ((output_id_buffer) || (mi != Into->end()))
+				{
+					// fix buffer
+					for (UCHAR z=0;buffer[z];z++)
+						if (buffer[z] == '’') // this char is so decieving ;(
+							buffer[z] = '\'';
+					FormatCardName(buffer);
+					do
+					{
+						if (!output_id_buffer)
+							mi->second.push_back(trim(buffer));
+						else
+						{
+							const Card * c = GetCardSmart(trim(buffer));
+							if (c)
+							{
+								char itoabuffer[10];
+								itoa(c->GetId(),itoabuffer,10);
+								if (output_id_buffer[0])
+									strcat(output_id_buffer,",");
+								strcat(output_id_buffer,itoabuffer);
+							}
+						}
+						if (cnt)
+							cnt--;
+					}
+					while (cnt > 0);
+					cnt = 0;
+				}
+				p = i + 1;
+			}
+			else
+				if (List[i] == '(')
+					brs = i;
+				else
+					if ((List[i] == ')') && (brs > 0))
+					{
+						memcpy(buffer,List+(brs+1)*sizeof(char),i-brs-1);
+						buffer[i-brs-1] = 0;
+						cnt = atoi(buffer);
+					}
+		return (!output_id_buffer) || (output_id_buffer[0]);
 	}
 	void Print()
 	{
