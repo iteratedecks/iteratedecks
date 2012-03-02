@@ -4674,6 +4674,14 @@ begin
     slIDIndex.Values[IntToStr(Cards[i].Id)] := inttostr(i);
   end;
 
+  if MAX_CARD_COUNT < CardsLoaded then
+  begin
+    tLoad.Enabled := false;
+    ShowMessage('EvaluateDecks version is obsolete.'#13 + 'Check for the update.');
+    Application.Terminate;
+    Halt;
+  end;
+
   tsDecks.Enabled := CheckCardImages;
   Application.ProcessMessages;
 
