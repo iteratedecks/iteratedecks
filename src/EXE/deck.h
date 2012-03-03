@@ -1523,7 +1523,7 @@ public:
 				return true;
 		return false;
 	}
-	UCHAR Intercept(PPCIV &targets, UCHAR destindex)
+	UCHAR Intercept(PPCIV &targets, UCHAR destindex, ActiveDeck &Dest)
 	{
 		// modify a target by intercept here
 		if ((destindex > 0) &&
@@ -1531,7 +1531,7 @@ public:
 			(targets[destindex-1].first->GetAbility(DEFENSIVE_INTERCEPT) > 0))
 		{
 			destindex = destindex-1;
-			SkillProcs[DEFENSIVE_INTERCEPT]++;
+			Dest.SkillProcs[DEFENSIVE_INTERCEPT]++;
 			LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,destindex),DEFENSIVE_INTERCEPT);
 		}
 		else
@@ -1540,7 +1540,7 @@ public:
 				(targets[destindex+1].first->GetAbility(DEFENSIVE_INTERCEPT) > 0))
 			{
 				destindex = destindex+1;
-				SkillProcs[DEFENSIVE_INTERCEPT]++;
+				Dest.SkillProcs[DEFENSIVE_INTERCEPT]++;
 				LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,destindex),DEFENSIVE_INTERCEPT);
 			}
 		return destindex;
@@ -1703,7 +1703,7 @@ public:
 						{
 							destindex = rand() % targets.size();
 							if (!chaos)
-								destindex = Intercept(targets, destindex);
+								destindex = Intercept(targets, destindex, Dest);
 							tmp = targets[destindex];							
 							targets.clear();
 							targets.push_back(tmp);
@@ -1989,7 +1989,7 @@ public:
 						{
 							destindex = rand() % targets.size();
 							if (!chaos)
-								destindex = Intercept(targets, destindex);
+								destindex = Intercept(targets, destindex, Dest);
 							tmp = targets[destindex];
 							targets.clear();
 							targets.push_back(tmp);
@@ -2059,7 +2059,7 @@ public:
 						{
 							destindex = rand() % targets.size();
 							if (!chaos)
-								destindex = Intercept(targets, destindex);
+								destindex = Intercept(targets, destindex, Dest);
 							tmp = targets[destindex];
 							targets.clear();
 							targets.push_back(tmp);
@@ -2122,7 +2122,7 @@ public:
 							destindex = rand() % targets.size();
 							// can Mimic be intercepted?
 							if (!chaos)
-								destindex = Intercept(targets, destindex);
+								destindex = Intercept(targets, destindex, Dest);
 							tmp = targets[destindex];
 							targets.clear();
 							targets.push_back(tmp);
@@ -2379,7 +2379,7 @@ public:
 						{
 							destindex = rand() % targets.size();
 							if (!chaos)
-								destindex = Intercept(targets, destindex);
+								destindex = Intercept(targets, destindex, Dest);
 							tmp = targets[destindex];
 							targets.clear();
 							targets.push_back(tmp);
@@ -2471,7 +2471,7 @@ public:
 						{
 							destindex = rand() % targets.size();
 							if (!chaos)
-								destindex = Intercept(targets, destindex);
+								destindex = Intercept(targets, destindex, Dest);
 							tmp = targets[destindex];
 							targets.clear();
 							targets.push_back(tmp);
@@ -2582,7 +2582,7 @@ public:
 						{
 							destindex = rand() % targets.size();
 							if (!chaos)
-								destindex = Intercept(targets, destindex);
+								destindex = Intercept(targets, destindex, Dest);
 							tmp = targets[destindex];
 							targets.clear();
 							targets.push_back(tmp);
@@ -2837,7 +2837,7 @@ public:
 			if (!targets.empty())
 			{
 				UCHAR i = rand() % targets.size();
-				i = Intercept(targets, i); // we don't know anything about Infuse being interceptable :( I assume, it is
+				i = Intercept(targets, i, Def); // we don't know anything about Infuse being interceptable :( I assume, it is
 				PlayedCard *t = targets[i].first;
 				if ((i < defcount) && (t->GetAbility(DEFENSIVE_EVADE)) && PROC50) // we check evade only on our cards, enemy cards don't seem to actually evade infuse since it's rather helpful to them then harmful
 				{
