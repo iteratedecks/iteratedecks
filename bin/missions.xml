@@ -103,8 +103,8 @@
 		<money>50</money>
 		<commander>1046</commander>
 		<desc>Enemy force is being escorted by an Artemis tank.  It is powerful, but slow.  Destroy it before it is able to attack.</desc>
-		<speech commander='1049'>
-			<line>They've brought in an Artemis Tank to support Vex's assault.  Take it out before it becomes entrenched.</line>
+		<speech>
+			<line commander='1049'>They've brought in an Artemis Tank to support Vex's assault.  Take it out before it becomes entrenched.</line>
 		</speech>
 		<banter>We're being attacked - redirect the Artemis!</banter>
 		<deck>
@@ -196,9 +196,9 @@
 		<commander>1058</commander>
 		<rep faction='1' amount='6' />
 		<desc>Enemy medics are in the field and will heal injured Infantry.</desc>
-		<speech commander='1042'>
-			<line>Lord Halcyon has ordered us to destroy a Raider encampment in northern Arctis which is defending an ancient Relay.</line>
-			<line>Defeat the Raider squadron and advance towards their base.</line>
+		<speech>
+			<line commander='1042'>Lord Halcyon has ordered us to destroy a Raider encampment in northern Arctis which is defending an ancient Relay.</line>
+			<line commander='1042'>Defeat the Raider squadron and advance towards their base.</line>
 		</speech>
 		<deck>
 			<card>7</card>
@@ -463,8 +463,8 @@
 		<rep faction='2' amount='10' />
 		<commander>1048</commander>
 		<desc>Another wave of the Raider air force is approaching!</desc>
-		<speech commander='1049'>
-			<line>Typhon has entered the Tech grounds.  Intercept him before he reaches the Prometheus.</line>
+		<speech>
+			<line commander='1049'>Typhon has entered the Tech grounds.  Intercept him before he reaches the Prometheus.</line>
 		</speech>
 		<deck>
 			<card>2</card>
@@ -1421,8 +1421,8 @@
 		<money>900</money>
 		<commander>1066</commander>
 		<desc>They are powerful with Malika as their leader but will not work together as well under her order. Take out what little support they have and the rest will fall.</desc>
-		<speech commander='1046'>
-			<line>Commander, a group of rebels calling themselves the Veritas have begun raids on local Imperial encampments.  Destroy them.</line>
+		<speech>
+			<line commander='1046'>Commander, a group of rebels calling themselves the Veritas have begun raids on local Imperial encampments.  Destroy them.</line>
 		</speech>
 		<deck>
 			<card>95</card>
@@ -1452,9 +1452,9 @@
 		<money>1000</money>
 		<commander>1066</commander>
 		<desc>More support units have joined them, and they have joined up with some Raiders. They will strike fast and work together.</desc>
-		<speech commander='1046'>
-			<line>Veritas claims to have discovered proof of the Imperial involvement with the Bloodthirsty outbreak in the Swamps of Andar.</line>
-			<line>Needless to say, this information cannot become public.  Find their leader and destroy the evidence.</line>
+		<speech>
+			<line commander='1046'>Veritas claims to have discovered proof of the Imperial involvement with the Bloodthirsty outbreak in the Swamps of Andar.</line>
+			<line commander='1046'>Needless to say, this information cannot become public.  Find their leader and destroy the evidence.</line>
 		</speech>
 		<deck>
 			<card>38</card>
@@ -1486,8 +1486,8 @@
 		<money>1100</money>
 		<commander>1067</commander>
 		<desc>The traitors and Raiders have now completely united and Malika commands both. We must focus on both forces or be overwhelmed if we ignore a side.</desc>
-		<speech commander='1046'>
-			<line>We have the traitors backed to a corner.  Wipe them out and prevent an all-out civil war.</line>
+		<speech>
+			<line commander='1046'>We have the traitors backed to a corner.  Wipe them out and prevent an all-out civil war.</line>
 		</speech>
 		<deck>
 			<card>68</card>
@@ -1520,9 +1520,9 @@
 		<money>1200</money>
 		<commander>1067</commander>
 		<desc>There are more traitors than we expected. And they will coordinate as one!</desc>
-		<speech commander='1046'>
-			<line>Veritas is on the run, but they have seized control of an Imperial Armory.</line>
-			<line>They are well fortified and equipped with powerful technology, but their rebellion must end now.</line>
+		<speech>
+			<line commander='1046'>Veritas is on the run, but they have seized control of an Imperial Armory.</line>
+			<line commander='1046'>They are well fortified and equipped with powerful technology, but their rebellion must end now.</line>
 		</speech>
 		<deck>
 			<card>82</card>
@@ -1560,8 +1560,8 @@
 		<money>900</money>
 		<commander>1068</commander>
 		<desc>The Bloodthirsty support for Ascaris is weak now that the Brood Mother is destroyed, but they will still defend their nest.</desc>
-		<speech commander='1042'>
-			<line>Ascaris has been destroyed, but more Bloodthirsty remain.  Destroy the nest here to eliminate the Bloodthirsty threat in this region.</line>
+		<speech>
+			<line commander='1042'>Ascaris has been destroyed, but more Bloodthirsty remain.  Destroy the nest here to eliminate the Bloodthirsty threat in this region.</line>
 		</speech>
 		<deck>
 			<card>113</card>
@@ -1688,8 +1688,8 @@
 		<money>1000</money>
 		<commander>1069</commander>
 		<desc>Vyander has returned with powerful Xeno forces. Strike them while they are still regrouping from their landing.</desc>
-		<speech commander='1027'>
-			<line>The primary Enclave onslaught has been repelled, but Vyander continues to probe for weakness.  Show him there is none.</line>
+		<speech>
+			<line commander='1027'>The primary Enclave onslaught has been repelled, but Vyander continues to probe for weakness.  Show him there is none.</line>
 		</speech>
 		<deck>
 			<card>161</card>
@@ -2786,8 +2786,8 @@
 		<money>1100</money>
 		<commander>1057</commander>
 		<desc>The Raiders have assembled a quick force, they will die to defend their territory.</desc>
-		<speech commander='1026'>
-			<line>Typhon's guard is killing civilians claiming them to be traitors.  We must put an end to their madness!</line>
+		<speech>
+			<line commander='1026'>Typhon's guard is killing civilians claiming them to be traitors.  We must put an end to their madness!</line>
 		</speech>
 		<deck>
 			<card>59</card>
@@ -2914,8 +2914,8 @@
 		<money>1100</money>
 		<commander>1053</commander>
 		<desc>Large Imperial forces are attempting to block our progress.</desc>
-		<speech commander='1026'>
-			<line>Imperial forces have become entrenched in Sulfuris, and are planning a larger siege on our compounds in Kor.</line>
+		<speech>
+			<line commander='1026'>Imperial forces have become entrenched in Sulfuris, and are planning a larger siege on our compounds in Kor.</line>
 		</speech>
 		<deck>
 			<card>246</card>
@@ -3042,8 +3042,8 @@
 		<money>1100</money>
 		<commander>1030</commander>
 		<desc>Both the Bloodthirsty and Xenos would rather destroy you before fighting each other.</desc>
-		<speech commander='1026'>
-			<line>Something strange is happening - the Bloodthirsty and some Xeno units are moving in on our position... together!</line>
+		<speech>
+			<line commander='1026'>Something strange is happening - the Bloodthirsty and some Xeno units are moving in on our position... together!</line>
 		</speech>
 		<deck>
 			<card>27</card>
@@ -3867,8 +3867,8 @@
 		<picture>mission110.jpg</picture>
 		<location_id>15</location_id>
 		<num_to_complete>7</num_to_complete>
-		<x>50</x>
-		<y>290</y>
+		<x>80</x>
+		<y>230</y>
 		<xp>43</xp> <!-- ~2.66 -->
 		<energy>16</energy> <!-- 16 -->
 		<money>850</money> <!-- ~13.4 GPE -->
@@ -4374,8 +4374,8 @@
 		<money>1250</money>
 		<commander>1095</commander>
 		<desc>The Bloodthirsty are beginning to attack in packs.</desc>
-		<speech commander='1042'>
-			<line>Those Bloodthirsty are unlike any we have seen so far, we should investigate it may provide clues as to what is going on.</line>
+		<speech>
+			<line commander='1042'>Those Bloodthirsty are unlike any we have seen so far, we should investigate it may provide clues as to what is going on.</line>
 		</speech>
 		<deck>
 			<card>308</card>
@@ -4479,7 +4479,7 @@
 		<picture>mission127.jpg</picture>
 		<location_id>15</location_id>
 		<num_to_complete>6</num_to_complete>
-		<x>460</x>
+		<x>400</x>
 		<y>350</y>
 		<xp>23</xp>  <!-- 2.3 -->
 		<energy>10</energy>

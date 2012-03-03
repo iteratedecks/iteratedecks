@@ -10652,7 +10652,7 @@
 	</unit>
 	
 	<unit>
-		<id>632</id>
+		<id>633</id>
 		<name>Use This One</name>
 		<picture>alex.jpg</picture>
 		<attack>1</attack>
@@ -10698,10 +10698,10 @@
 		<name>TEST</name>
 		<picture>alex.jpg</picture>
 		<attack>1</attack>
-		<health>20</health>
+		<health>50</health>
 		<cost>0</cost>
 		<rarity>1</rarity> <gold_cost>10000</gold_cost>
-		<skill id='payback' />
+		<skill id='intercept' />
 		<type>8</type>
 	</unit>
 	
@@ -10719,11 +10719,10 @@
 		<id>2089</id>
 		<name>Test Structure</name>
 		<picture>lambo.jpg</picture>
-		<health>20</health>
+		<health>4</health>
 		<cost>1</cost>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
 		<skill id='wall' />
-		<skill id='strike' x='1' y='1' />
 		<skill id='weaken' x='1' />
 		<type>9</type>
 	</unit>
@@ -10742,9 +10741,9 @@
 		<picture>xdog.jpg</picture>
 		<attack>0</attack>
 		<health>1</health>
-		<cost>2</cost>
+		<cost>0</cost>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
-		<skill id='strike' x='1' died='1' />
+		<skill id='weaken' x='1' />
 		<type>4</type> 
 	</unit>
 
@@ -13692,7 +13691,7 @@
 		<icon>InterceptSkillIcon</icon>
 		<anim>interceptorigin.swf</anim>
 		<target_anim>intercept.swf</target_anim>
-		<desc>If an adjacent Assault unit were to be the target of an Enemy skill while this unit is not the target of the same skill, target this unit instead if this unit is a valid target. (Only 1 Intercept per skill. If two possible Intercepts, oldest unit has priority.)</desc>
+		<desc>Defensive - If an adjacent Assault unit were to be the target of an Enemy skill while this unit is not the target of the same skill, target this unit instead if this unit is a valid target. (Only 1 Intercept per skill. If two possible Intercepts, oldest unit has priority.)</desc>
 		<cardValue cost='2.0' passive='1' />
 	</skillType>
 	<skillType>
@@ -13700,7 +13699,7 @@
 		<name>Burst</name>
 		<icon>CritSkillIcon</icon> 
 		<target_anim>crit.swf</target_anim>
-		<desc>When this unit attacks, if the defending Assault unit's health is at max, this unit deals additional attack damage.</desc>
+		<desc>Combat-Modifier - When this unit attacks, if the defending Assault unit's health is at max, this unit deals additional attack damage.</desc>
 		<cardValue cost='2.2' />
 	</skillType>
 	
