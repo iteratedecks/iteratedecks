@@ -211,16 +211,23 @@ In other words, it is the same as on auto, only the counters reset every time yo
 			iLastManualTurn = i;
 		tAtk.AttackDeck(tDef);
 		if (!tDef.Commander.IsAlive())
-		{
-			if (CSIndex && rbc)
-				for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
-					if (tAtk.CardPicks[i])
-						rbc[CSIndex[tAtk.CardPicks[i]]].PickStats[i].Win++;
-			
-			InsertOrder(tAtk.GetHash64(true),1);
+		{			
 			if (tAtk.CheckRequirements(Reqs))
 			{
+				InsertOrder(tAtk.GetHash64(true),1);
+				if (CSIndex && rbc)
+					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+						if (tAtk.CardPicks[i])
+							rbc[CSIndex[tAtk.CardPicks[i]]].PickStats[i].Win++;
 				r.Win++;
+			}
+			else
+			{
+				InsertOrder(tAtk.GetHash64(true),0);
+				if (CSIndex && rbc)
+					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+						if (tAtk.CardPicks[i])
+							rbc[CSIndex[tAtk.CardPicks[i]]].PickStats[i].Stall++;
 			}
 			r.Points+=10; // +10 points for winning 
 			r.AutoPoints+=10;
@@ -418,17 +425,22 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 		tAtk.AttackDeck(tDef);
 		if (!tDef.Commander.IsAlive())
 		{
-			if (CSIndex && rbc)
-				for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
-					if (tAtk.CardPicks[i])
-						rbc[CSIndex[tAtk.CardPicks[i]]].PickStats[i].Win++;
-
-			InsertOrder(tAtk.GetHash64(true),1);
 			if (tAtk.CheckRequirements(Reqs))
 			{
+				InsertOrder(tAtk.GetHash64(true),1);
+				if (CSIndex && rbc)
+					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+						if (tAtk.CardPicks[i])
+							rbc[CSIndex[tAtk.CardPicks[i]]].PickStats[i].Win++;
 				r.Win++;
-				if (SkillProcs)
-					MergeBuffers(SkillProcs,tAtk.SkillProcs);
+			}
+			else
+			{
+				InsertOrder(tAtk.GetHash64(true),0);
+				if (CSIndex && rbc)
+					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+						if (tAtk.CardPicks[i])
+							rbc[CSIndex[tAtk.CardPicks[i]]].PickStats[i].Stall++;
 			}
 			r.Points+=10; // +10 points for winning 
 			r.AutoPoints+=10;
@@ -469,6 +481,8 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 						rbc[CSIndex[tAtk.CardPicks[i]]].PickStats[i].Stall++;
 				}
 	}
+	if (SkillProcs)
+		MergeBuffers(SkillProcs,tAtk.SkillProcs);
 	// check if cards stayed in deck - we finished before they could be played, lol
 	if (CSIndex && rbc && (!tAtk.Deck.empty()))
 	{
