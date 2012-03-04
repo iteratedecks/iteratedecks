@@ -4094,6 +4094,14 @@ begin
   //cbComplexDefence
 end;
 
+function GetNumberOfProcessors:integer;
+var
+  s:TSystemInfo;
+begin
+  GetSystemInfo(s);
+  result:=s.dwNumberOfProcessors;
+end;
+
 procedure TEvaluateDecksForm.FormCreate(Sender: TObject);
 var
   p1: pchar;
@@ -4107,10 +4115,8 @@ begin
 
   bHide.Click;
 
-{$IFDEF DEVELOPMENT}
   LoadDefenceLists;
-  Caption := Caption + ' DEV';
-{$ENDIF}
+
   //AddFontResource(PAnsiChar(sLocalDir + sOptimusFont));
   AddFontResource(PAnsiChar(sLocalDir + sEnigmaticFont));
 
@@ -4165,6 +4171,12 @@ begin
 
   // hide win columns
   cbShowWinsCO.OnClick(cbShowWinsCO);
+
+  try
+    seThreads.Value := GetNumberOfProcessors;
+  except
+    seThreads.Value := 2;
+  end;
 end;
 
 procedure TEvaluateDecksForm.FormDestroy(Sender: TObject);
