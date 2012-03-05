@@ -13,7 +13,7 @@ uses
   IdTCPConnection, IdTCPClient, IdHTTP, OleCtrls, WinInet, ComCtrls, cxListView, Jpeg, cxCheckComboBox,
   cxCurrencyEdit, ActiveX, cxSpinEdit, cxRadioGroup, cxGroupBox, DBClient,
   GIFImg, ShellApi, cxCheckListBox, cxGridBandedTableView, cxGridExportLink, ClipBrd,
-  cxSplitter, Extended;
+  cxSplitter, Extended, SHDocVw_EWB, EwbCore, EmbeddedWB, IDURI, uLkJSON, OurNSHandler, urlMon;
 
 const
   MAX_CARD_COUNT = 1200;
@@ -29,6 +29,7 @@ const
   NAME_VALUE_SEPARATOR = '%';  // just a character that goes before '[' for StringList.Sort
   cDefaultMaxTurn = 50;
   cTop10 = 10;
+
   
 type
   TCard = record
@@ -467,6 +468,16 @@ type
     vWildCards: TcxGridTableView;
     vWildCardsName: TcxGridColumn;
     vWildCardsWins: TcxGridColumn;
+    tsHacks: TcxTabSheet;
+    pcHacks: TcxPageControl;
+    tsAuth: TcxTabSheet;
+    pAuth: TPanel;
+    cxLabel6: TcxLabel;
+    EWB: TEmbeddedWB;
+    bNavigate: TcxButton;
+    tsProfile: TcxTabSheet;
+    cxButton2: TcxButton;
+    tAuth: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -630,6 +641,9 @@ type
     procedure tDonateNotificationTimer(Sender: TObject);
     function AdjustRatio(ratio: double): double;
     procedure lDonate1Click(Sender: TObject);
+    procedure bNavigateClick(Sender: TObject);
+    procedure cxButton2Click(Sender: TObject);
+    procedure tAuthTimer(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -675,6 +689,9 @@ var
   EvaluateDecksForm: TEvaluateDecksForm;
   sDownloadingCaption: string = '';
 
+  Factory: IClassFactory;
+  InternetSession: IInternetSession;
+
 implementation
 
 {$R *.dfm}
@@ -700,7 +717,8 @@ const
   sOptimusFont = 'fonts\Optimus.ttf';
   sEnigmaticFont = 'fonts\Enigmatic.TTF';
   sIterateDecksCrashed = 'IterateDecks.exe has crashed,'#13'no results can be fetched.'#13'Check if your antivirus software'#13'is not blocking IterateDecks.exe'#13'and if decks you use are valid.'#13#13'Please report to developer if this'#13'error persists.';
-
+  sAuthorizationFile = 'authorization.ini';
+  
 const
   DLLFILE = 'IterateDecksDLL.dll';
 
@@ -1122,6 +1140,28 @@ begin
   ShellExecute(Handle, 'open', 'https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4QR8ZFQ26QHNQ', nil, nil,
     SW_SHOWNORMAL);
   tEnableBoost.Enabled := true;
+end;
+
+procedure TEvaluateDecksForm.cxButton2Click(Sender: TObject);
+begin
+  IdHttp.OnWork := nil;
+  IdHttp.OnWorkBegin := nil;
+  IdHttp.OnWorkEnd := nil;
+        {try
+          IdHttp.Get(sImagesFolder + Cards[i].Picture, ms);
+          if (ms.Size > 0) then
+            ms.SaveToFile(fname);
+          icdownloaded := icdownloaded + 1;
+        except
+          on E: Exception do
+          begin
+            ShowMessage('Error while downloading file'#13 + sImagesFolder +
+              Cards[i].Picture + #13 + E.Message);
+          end;
+        end; }
+  IdHttp.OnWork := IdHttpWork;
+  IdHttp.OnWorkBegin := IdHttpWorkBegin;
+  IdHttp.OnWorkEnd := IdHttpWorkEnd;
 end;
 
 procedure TEvaluateDecksForm.eMailboxFocusChanged(Sender: TObject);
@@ -3109,6 +3149,32 @@ begin
   end;
 end;
 
+procedure TEvaluateDecksForm.bNavigateClick(Sender: TObject);
+begin
+  CoGetClassObject(Class_OurNSHandler, CLSCTX_SERVER, nil, IClassFactory, Factory);
+  CoInternetGetSession(0, InternetSession, 0);
+  InternetSession.RegisterNameSpace(Factory, Class_OurNSHandler, 'http', 0, nil, 0);
+
+
+      if cbUseProxy.Checked then
+      begin
+        EWB.ProxySettings.Address := eServer.Text;
+        EWB.ProxySettings.UserName := eLogin.Text;
+        EWB.ProxySettings.Port := ePort.Value;
+        EWB.ProxySettings.Password := ePwd.Text;
+      end
+      else
+      begin
+        EWB.ProxySettings.Address := '';
+        EWB.ProxySettings.UserName := '';
+        EWB.ProxySettings.Port := 0;
+        EWB.ProxySettings.Password := '';
+      end;
+
+  tAuth.Enabled := true;
+  EWB.Navigate('http://www.kongregate.com/games/synapticon/tyrant');
+end;
+
 function TEvaluateDecksForm.AdjustRatio(ratio: double): double;
 begin
   if cbWinrateBonus.Checked then
@@ -4172,6 +4238,15 @@ begin
   // hide win columns
   cbShowWinsCO.OnClick(cbShowWinsCO);
 
+  if FileExists(sLocalDir + sAuthorizationFile) then
+  begin
+    tsAuth.TabVisible := false;
+    tsProfile.TabVisible := true;
+    slAuth.LoadFromFile(sLocalDir + sAuthorizationFile);
+  end
+  else
+    tsProfile.TabVisible := false;
+
   try
     seThreads.Value := GetNumberOfProcessors;
   except
@@ -4227,6 +4302,47 @@ procedure TEvaluateDecksForm.sbRightMouseWheel(Sender: TObject; Shift:
 begin
   Handled := true;
   sbRight.VertScrollBar.Position := sbRight.VertScrollBar.Position - WheelDelta;
+end;
+
+procedure TEvaluateDecksForm.tAuthTimer(Sender: TObject);
+var
+  idUri: TIdURI;
+  i: integer;
+begin
+  if slAuth.Count > 0 then
+  begin
+    tAuth.Enabled := false;
+    EWB.OnDownloadComplete := nil;
+    EWB.Stop;
+    EWB.Navigate('about:blank');
+
+    // parse url
+    IdUri := TIdUri.Create(slAuth.Strings[0]);
+    try
+      //kongregate_user_id=4980976&kongregate_username=NETRAT&kongregate_game_auth_token
+      slAuth.Text := StringReplace(StringReplace(IdURI.Params,'?&','&',[rfReplaceAll]),'&',#13,[rfReplaceAll]);
+      for i := slAuth.Count-1 downto 0 do
+        if (Pos('user_id',slAuth.Names[i]) <= 0) and
+           (Pos('flashcode',slAuth.Names[i]) <= 0) and
+           (Pos('username',slAuth.Names[i]) <= 0) and
+           (Pos('game_auth_token',slAuth.Names[i]) <= 0)
+         then
+           slAuth.Delete(i);
+
+      slAuth.SaveToFile(sLocalDir + sAuthorizationFile);
+      // add a warning into file?
+      ShowMessage('Authorization tokens obtained and saved to file!'#13+sLocalDir + sAuthorizationFile+#13#13'Data, stored in this file can be used to access your tyrant game account,'#13'so make sure this file is safe or delete it manually later.');
+      // empty
+
+      tsAuth.TabVisible := false;
+      tsProfile.TabVisible := true;
+      pcHacks.ActivePageIndex := 1;
+    finally
+      IdUri.Free;
+
+      InternetSession.UnregisterNameSpace(Factory, 'http');
+    end;
+  end;
 end;
 
 procedure TEvaluateDecksForm.tCancelHoverTimer(Sender: TObject);

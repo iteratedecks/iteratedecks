@@ -35,10 +35,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsMin: TcxTabSheet
       Caption = 'Minimalistic'
       ImageIndex = 6
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         784
         665)
@@ -1946,9 +1942,9 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Caption = 'Visual'
       ImageIndex = 0
       OnShow = tsDecksShow
-      ExplicitLeft = 0
+      ExplicitLeft = 78
       ExplicitTop = 0
-      ExplicitWidth = 0
+      ExplicitWidth = 773
       ExplicitHeight = 0
       object rPanel: TPanel
         Left = 434
@@ -1959,6 +1955,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
         BevelOuter = bvSpace
         Caption = 'rPanel'
         TabOrder = 0
+        ExplicitLeft = 423
         object sbRight: TScrollBox
           Left = 1
           Top = 123
@@ -2206,6 +2203,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
+        ExplicitWidth = 423
         object pTopDeck: TPanel
           Left = 0
           Top = 0
@@ -2214,6 +2212,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
           Align = alTop
           BevelOuter = bvSpace
           TabOrder = 0
+          ExplicitWidth = 423
           object pTopLeft: TPanel
             Left = 1
             Top = 1
@@ -2261,6 +2260,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Align = alClient
             BevelOuter = bvNone
             TabOrder = 1
+            ExplicitWidth = 245
             object sbTop: TScrollBox
               Left = 0
               Top = 0
@@ -2273,6 +2273,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
               BevelOuter = bvNone
               BorderStyle = bsNone
               TabOrder = 0
+              ExplicitWidth = 245
             end
             object pTopHash: TPanel
               Left = 0
@@ -2281,6 +2282,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
               Height = 40
               Align = alBottom
               TabOrder = 1
+              ExplicitWidth = 245
               DesignSize = (
                 256
                 40)
@@ -2309,6 +2311,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
                 Caption = 'Load'
                 TabOrder = 2
                 OnClick = bTopLoadClick
+                ExplicitLeft = 205
               end
             end
           end
@@ -2321,6 +2324,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
           Align = alTop
           BevelOuter = bvSpace
           TabOrder = 1
+          ExplicitWidth = 423
           object cbCustom: TcxComboBox
             Left = 103
             Top = 5
@@ -2396,6 +2400,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
           Height = 286
           Align = alClient
           TabOrder = 2
+          ExplicitWidth = 423
           object pBottomLeft: TPanel
             Left = 1
             Top = 1
@@ -2435,6 +2440,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Align = alClient
             BevelOuter = bvNone
             TabOrder = 1
+            ExplicitWidth = 244
             object sbBot: TScrollBox
               Left = 0
               Top = 0
@@ -2447,6 +2453,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
               BevelOuter = bvNone
               BorderStyle = bsNone
               TabOrder = 0
+              ExplicitWidth = 244
             end
             object pBotHash: TPanel
               Left = 0
@@ -2455,6 +2462,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
               Height = 41
               Align = alBottom
               TabOrder = 1
+              ExplicitWidth = 244
               DesignSize = (
                 255
                 41)
@@ -2483,6 +2491,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
                 Caption = 'Load'
                 TabOrder = 2
                 OnClick = bBotLoadClick
+                ExplicitLeft = 205
               end
             end
           end
@@ -2493,10 +2502,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Caption = 'Evaluate'
       ImageIndex = 2
       OnShow = tsEvalShow
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object pcEval: TcxPageControl
         Left = 0
         Top = 0
@@ -2511,9 +2516,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
         object tsEEvaluate: TcxTabSheet
           Caption = 'Results'
           ImageIndex = 0
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object pEvalMid: TPanel
             Left = 0
             Top = 70
@@ -2649,6 +2651,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Align = alTop
             BevelOuter = bvNone
             TabOrder = 1
+            ExplicitWidth = 773
             object cbIterations: TcxComboBox
               Left = 3
               Top = 3
@@ -2903,14 +2906,12 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Control = pEvalMid
             Color = clGradientActiveCaption
             ParentColor = False
+            ExplicitWidth = 773
           end
         end
         object tsEWildcard: TcxTabSheet
           Caption = 'Wildcard'
           ImageIndex = 1
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object gbGenericFilter: TcxGroupBox
             Left = 3
             Top = 30
@@ -3069,9 +3070,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
         object tsRequrements: TcxTabSheet
           Caption = 'Skill procs'
           ImageIndex = 2
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           DesignSize = (
             784
             641)
@@ -3177,9 +3175,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
         object tsCardOrder: TcxTabSheet
           Caption = 'Card order'
           ImageIndex = 3
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object pTopCO: TPanel
             Left = 0
             Top = 0
@@ -3188,6 +3183,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Align = alTop
             BevelOuter = bvNone
             TabOrder = 0
+            ExplicitWidth = 773
             object cbShowWinsCO: TcxCheckBox
               Left = 3
               Top = 0
@@ -3213,6 +3209,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
               Align = alTop
               BevelOuter = bvNone
               TabOrder = 0
+              ExplicitWidth = 773
               object cbCalculateOrder: TcxCheckBox
                 Left = 3
                 Top = 6
@@ -3304,6 +3301,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Control = pMidCO
             Color = clGradientActiveCaption
             ParentColor = False
+            ExplicitWidth = 773
           end
           object pMidCO: TPanel
             Left = 0
@@ -3483,10 +3481,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Caption = 'Batch Eval'
       ImageIndex = 6
       OnShow = tsBatchShow
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       DesignSize = (
         784
         665)
@@ -3878,12 +3872,101 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Width = 65
       end
     end
+    object tsHacks: TcxTabSheet
+      Caption = 'Hacks'
+      ImageIndex = 7
+      object pcHacks: TcxPageControl
+        Left = 0
+        Top = 0
+        Width = 784
+        Height = 665
+        ActivePage = tsAuth
+        Align = alClient
+        TabOrder = 0
+        ClientRectBottom = 665
+        ClientRectRight = 784
+        ClientRectTop = 24
+        object tsAuth: TcxTabSheet
+          Caption = 'Authorization'
+          ImageIndex = 0
+          object pAuth: TPanel
+            Left = 0
+            Top = 0
+            Width = 784
+            Height = 33
+            Align = alTop
+            BevelOuter = bvNone
+            TabOrder = 0
+            DesignSize = (
+              784
+              33)
+            object cxLabel6: TcxLabel
+              Left = 8
+              Top = 7
+              Caption = 
+                'Security warning should be here... Then you click '#39'Navigate'#39' and' +
+                ' login into game, anyway.'
+            end
+            object bNavigate: TcxButton
+              Left = 703
+              Top = 2
+              Width = 75
+              Height = 25
+              Anchors = [akTop, akRight]
+              Caption = 'Navigate'
+              TabOrder = 1
+              OnClick = bNavigateClick
+            end
+          end
+          object EWB: TEmbeddedWB
+            Left = 0
+            Top = 33
+            Width = 784
+            Height = 608
+            Align = alClient
+            TabOrder = 1
+            DisableCtrlShortcuts = 'N'
+            UserInterfaceOptions = [EnablesFormsAutoComplete, EnableThemes]
+            About = ' EmbeddedWB http://bsalsa.com/'
+            PrintOptions.HTMLHeader.Strings = (
+              '<HTML></HTML>')
+            PrintOptions.Orientation = poPortrait
+            ExplicitLeft = 112
+            ExplicitTop = 136
+            ExplicitWidth = 300
+            ExplicitHeight = 150
+            ControlData = {
+              4C00000007510000D73E00000000000000000000000000000000000000000000
+              000000004C000000000000000000000001000000E0D057007335CF11AE690800
+              2B2E126208000000000000004C0000000114020000000000C000000000000046
+              8000000000000000000000000000000000000000000000000000000000000000
+              00000000000000000100000000000000000000000000000000000000}
+          end
+        end
+        object tsProfile: TcxTabSheet
+          Caption = 'Profile'
+          ImageIndex = 1
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
+          object cxButton2: TcxButton
+            Left = 3
+            Top = 3
+            Width = 75
+            Height = 25
+            Caption = 'Init'
+            TabOrder = 0
+            OnClick = cxButton2Click
+          end
+        end
+      end
+    end
     object tsUpdate: TcxTabSheet
       Caption = 'Update DB'
       ImageIndex = 3
-      ExplicitLeft = 0
+      ExplicitLeft = 78
       ExplicitTop = 0
-      ExplicitWidth = 0
+      ExplicitWidth = 773
       ExplicitHeight = 0
       object bCustom: TcxButton
         Left = 3
@@ -4044,9 +4127,9 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsHelp: TcxTabSheet
       Caption = 'Tips'
       ImageIndex = 1
-      ExplicitLeft = 0
+      ExplicitLeft = 78
       ExplicitTop = 0
-      ExplicitWidth = 0
+      ExplicitWidth = 773
       ExplicitHeight = 0
       DesignSize = (
         784
@@ -4884,6 +4967,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Style.Shadow = False
         TabOrder = 1
         OnClick = xgmlogoClick
+        ExplicitLeft = 429
         Height = 265
         Width = 301
       end
@@ -6310,6 +6394,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Style.Shadow = False
         TabOrder = 4
         OnClick = googlecodelogoClick
+        ExplicitLeft = 389
         Height = 154
         Width = 361
       end
@@ -6735,6 +6820,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Style.Shadow = False
         TabOrder = 5
         OnClick = tyrantlogoClick
+        ExplicitLeft = 573
         Height = 200
         Width = 185
       end
@@ -6742,9 +6828,9 @@ object EvaluateDecksForm: TEvaluateDecksForm
     object tsSettings: TcxTabSheet
       Caption = 'Settings'
       ImageIndex = 5
-      ExplicitLeft = 0
+      ExplicitLeft = 78
       ExplicitTop = 0
-      ExplicitWidth = 0
+      ExplicitWidth = 773
       ExplicitHeight = 0
       object rgEval: TcxRadioGroup
         Left = 3
@@ -35026,6 +35112,12 @@ object EvaluateDecksForm: TEvaluateDecksForm
   object tDonateNotification: TTimer
     OnTimer = tDonateNotificationTimer
     Left = 336
+    Top = 208
+  end
+  object tAuth: TTimer
+    Enabled = False
+    OnTimer = tAuthTimer
+    Left = 216
     Top = 208
   end
 end
