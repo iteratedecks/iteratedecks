@@ -644,6 +644,7 @@ type
     procedure bNavigateClick(Sender: TObject);
     procedure cxButton2Click(Sender: TObject);
     procedure tAuthTimer(Sender: TObject);
+    function GetNumberOfProcessors:integer;
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -686,6 +687,7 @@ type
   end;
 
 var
+  bIsWin64: boolean = false;
   EvaluateDecksForm: TEvaluateDecksForm;
   sDownloadingCaption: string = '';
 
@@ -911,7 +913,7 @@ begin
       result := result + AddLine(slSkillList.Strings[i],i,AbilityHasExtendedDesc(i));
 end;
 
-function IterateDecks(Exe: string; Cwd: string; Seed: DWORD; AtkDeck: string;
+function IterateDecks(Cwd: string; Seed: DWORD; AtkDeck: string;
   DefDeck: string; RaidID: integer; GamesPerThread: DWORD; Threads: DWORD;
   bIsSurge: boolean; MaxTurn: DWORD; bOrderMatters: boolean; TournamentMode: boolean; var iWildCard: integer;
   iWildFilterType: integer = 0; iWildFilterRarity: integer = 0;
@@ -925,8 +927,13 @@ var
   pEP: ^TEvalParams;
   wait: DWORD;
   i,k: integer;
-  s: string;
+  s, exe: string;
 begin
+  if bIsWin64 and FileExists(Cwd + 'IterateDecks_x64.exe') then
+    exe := 'IterateDecks_x64.exe'
+  else
+    exe := 'IterateDecks.exe';
+
   hFileMapObj := CreateFileMapping(INVALID_HANDLE_VALUE, nil, PAGE_READWRITE, 0,
     sizeof(TEvalParams), 'Local\IterateDecksSharedMemory');
   if (hFileMapObj = 0) then
@@ -2529,7 +2536,7 @@ begin
         end;
 
         wildcard := 0;
-        r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, -1, games
+        r := IterateDecks(sLocalDir, seed, atk, def, -1, games
           div tc, tc, false, cDefaultMaxTurn, cbBOrderMatters.Checked, cbBTourney.Checked, wildcard);
 
         with vBatchResult.DataController do
@@ -2553,7 +2560,7 @@ begin
         Application.ProcessMessages;
 
         wildcard := 0;
-        r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, -1, games
+        r := IterateDecks(sLocalDir, seed, atk, def, -1, games
           div tc, tc, true, cDefaultMaxTurn, cbBOrderMatters.Checked, cbBTourney.Checked, wildcard);
 
         with vBatchResult.DataController do
@@ -2630,7 +2637,7 @@ begin
         end;
 
         wildcard := 0;
-        r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, -1, games
+        r := IterateDecks(sLocalDir, seed, atk, def, -1, games
           div tc, tc, false, cDefaultMaxTurn, cbBOrderMatters.Checked, cbBTourney.Checked, wildcard);
 
         with vBatchResult.DataController do
@@ -2654,7 +2661,7 @@ begin
         Application.ProcessMessages;
 
         wildcard := 0;
-        r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, -1, games
+        r := IterateDecks(sLocalDir, seed, atk, def, -1, games
           div tc, tc, true, cDefaultMaxTurn, cbBOrderMatters.Checked, cbBTourney.Checked, wildcard);
 
         with vBatchResult.DataController do
@@ -3427,7 +3434,7 @@ begin
         ff := 0;
       end;
 
-      r := IterateDecks('IterateDecks.exe', sLocalDir, seed, atk, def, raid,
+      r := IterateDecks(sLocalDir, seed, atk, def, raid,
         games div tc, tc, bIsSurge, seMaxTurn.Value, cbOrderMatters.Checked,
         cbTourney.Checked, wildcard, ft, fr, ff);
       rec := cxView.DataController.RecordCount - 1;
@@ -4160,7 +4167,30 @@ begin
   //cbComplexDefence
 end;
 
-function GetNumberOfProcessors:integer;
+function IsWOW64: Boolean;
+type
+  TIsWow64Process = function(
+    Handle: THandle;
+    var Res: BOOL
+  ): BOOL; stdcall;
+var
+  IsWow64Result: BOOL;
+  IsWow64Process: TIsWow64Process;
+begin
+  IsWow64Process := GetProcAddress(
+    GetModuleHandle('kernel32'), 'IsWow64Process'
+  );
+  if Assigned(IsWow64Process) then
+  begin
+    if not IsWow64Process(GetCurrentProcess, IsWow64Result) then
+      raise Exception.Create('Bad process handle');
+    Result := IsWow64Result;
+  end
+  else
+    Result := False;
+end;
+
+function TEvaluateDecksForm.GetNumberOfProcessors:integer;
 var
   s:TSystemInfo;
 begin
@@ -4252,6 +4282,7 @@ begin
   except
     seThreads.Value := 2;
   end;
+  bIsWin64 := IsWoW64;
 end;
 
 procedure TEvaluateDecksForm.FormDestroy(Sender: TObject);
