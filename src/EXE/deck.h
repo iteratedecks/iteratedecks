@@ -176,7 +176,7 @@ protected:
 	{
 		if (name)
 		{
-			UCHAR len = strlen(name);
+			size_t len = strlen(name);
 			memcpy(Name,name,len);
 			Name[len] = 0;
 		}
@@ -187,7 +187,7 @@ protected:
 	{
 		if (pic)
 		{
-			UCHAR len = strlen(pic);
+			size_t len = strlen(pic);
 			memcpy(Picture,pic,len);
 			Picture[len] = 0;
 		}
@@ -342,7 +342,7 @@ public:
 	const UCHAR GetRarity() const { return Rarity; }
 	const UCHAR GetFaction() const { return Faction; }
 	const UCHAR GetAbility(const UCHAR id) const { return Effects[id]; }
-	const UCHAR GetAbilitiesCount() const { return AbilitiesOrdered.size(); }
+	const UCHAR GetAbilitiesCount() const { return (UCHAR)AbilitiesOrdered.size(); }
 	const UCHAR GetAbilityInOrder(const UCHAR order) const
 	{
 		_ASSERT(AbilitiesOrdered.size() > order);
@@ -1616,7 +1616,7 @@ public:
 						bool bTributable = (IsMimiced && IsInTargets(Mimicer,&targets)) || ((!IsMimiced) && IsInTargets(&Src,&targets));
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
-							destindex = rand() % targets.size();
+							destindex = UCHAR(rand() % targets.size());
 							tmp = targets[destindex];
 							targets.clear();
 							targets.push_back(tmp);
@@ -1701,7 +1701,7 @@ public:
 					{
 						if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL)
 						{
-							destindex = rand() % targets.size();
+							destindex = UCHAR(rand() % targets.size());
 							if (!chaos)
 								destindex = Intercept(targets, destindex, Dest);
 							tmp = targets[destindex];							
@@ -1775,7 +1775,7 @@ public:
 						bool bTributable = (IsMimiced && IsInTargets(Mimicer,&targets)) || ((!IsMimiced) && IsInTargets(&Src,&targets));
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
-							destindex = rand() % targets.size();
+							destindex = UCHAR(rand() % targets.size());
 							tmp = targets[destindex];
 							targets.clear();
 							targets.push_back(tmp);
@@ -1911,7 +1911,7 @@ public:
 							}*/
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
-							destindex = rand() % targets.size();
+							destindex = UCHAR(rand() % targets.size());
 							tmp = targets[destindex];
 							targets.clear();
 							targets.push_back(tmp);
@@ -1987,7 +1987,7 @@ public:
 						}
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
-							destindex = rand() % targets.size();
+							destindex = UCHAR(rand() % targets.size());
 							if (!chaos)
 								destindex = Intercept(targets, destindex, Dest);
 							tmp = targets[destindex];
@@ -2057,7 +2057,7 @@ public:
 						}
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
-							destindex = rand() % targets.size();
+							destindex = UCHAR(rand() % targets.size());
 							if (!chaos)
 								destindex = Intercept(targets, destindex, Dest);
 							tmp = targets[destindex];
@@ -2119,7 +2119,7 @@ public:
 					{
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL))
 						{
-							destindex = rand() % targets.size();
+							destindex = UCHAR(rand() % targets.size());
 							// can Mimic be intercepted?
 							if (!chaos)
 								destindex = Intercept(targets, destindex, Dest);
@@ -2182,7 +2182,7 @@ public:
 						bool bTributable = (IsMimiced && IsInTargets(Mimicer,&targets)) || ((!IsMimiced) && IsInTargets(&Src,&targets));
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
-							destindex = rand() % targets.size();
+							destindex = UCHAR(rand() % targets.size());
 							tmp = targets[destindex];
 							targets.clear();
 							targets.push_back(tmp);
@@ -2260,7 +2260,7 @@ public:
 						}
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
-							destindex = rand() % targets.size();
+							destindex = UCHAR(rand() % targets.size());
 							tmp = targets[destindex];
 							targets.clear();
 							targets.push_back(tmp);
@@ -2309,7 +2309,7 @@ public:
 					{
 						if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL)
 						{
-							destindex = rand() % targets.size();
+							destindex = UCHAR(rand() % targets.size());
 							tmp = targets[destindex];
 							targets.clear();
 							targets.push_back(tmp);
@@ -2377,7 +2377,7 @@ public:
 					{
 						if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL)
 						{
-							destindex = rand() % targets.size();
+							destindex = UCHAR(rand() % targets.size());
 							if (!chaos)
 								destindex = Intercept(targets, destindex, Dest);
 							tmp = targets[destindex];
@@ -2469,7 +2469,7 @@ public:
 						}
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
-							destindex = rand() % targets.size();
+							destindex = UCHAR(rand() % targets.size());
 							if (!chaos)
 								destindex = Intercept(targets, destindex, Dest);
 							tmp = targets[destindex];
@@ -2531,7 +2531,7 @@ public:
 						}
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
-							destindex = rand() % targets.size();
+							destindex = UCHAR(rand() % targets.size());
 							tmp = targets[destindex];
 							targets.clear();
 							targets.push_back(tmp);
@@ -2580,7 +2580,7 @@ public:
 						}
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
-							destindex = rand() % targets.size();
+							destindex = UCHAR(rand() % targets.size());
 							if (!chaos)
 								destindex = Intercept(targets, destindex, Dest);
 							tmp = targets[destindex];
@@ -2664,7 +2664,7 @@ public:
 			if (!bOrderMatters)
 			{
 				// standard random pick
-				indx = rand() % Deck.size();
+				indx = UCHAR(rand() % Deck.size());
 			}
 			else
 			{
@@ -2681,7 +2681,7 @@ public:
 				{
 					do
 					{
-						indx = rand() % Deck.size();
+						indx = UCHAR(rand() % Deck.size());
 						// we need to pick first card of a same type, instead of picking this card
 						for (UCHAR i=0;i<Deck.size();i++)
 							if ((Deck[indx].GetId() == Deck[i].GetId()) && (Hand.find(indx) == Hand.end()) && (Hand.find(i) == Hand.end()))
@@ -2832,11 +2832,11 @@ public:
 			PPCIV targets;
 			targets.reserve(DEFAULT_DECK_RESERVE_SIZE);
 			GetTargets(Def.Units,FACTION_BLOODTHIRSTY,targets,true);
-			UCHAR defcount = targets.size();
+			UCHAR defcount = (UCHAR)targets.size();
 			GetTargets(Units,FACTION_BLOODTHIRSTY,targets,true);
 			if (!targets.empty())
 			{
-				UCHAR i = rand() % targets.size();
+				UCHAR i = UCHAR(rand() % targets.size());
 				i = Intercept(targets, i, Def); // we don't know anything about Infuse being interceptable :( I assume, it is
 				PlayedCard *t = targets[i].first;
 				if ((i < defcount) && (t->GetAbility(DEFENSIVE_EVADE)) && PROC50) // we check evade only on our cards, enemy cards don't seem to actually evade infuse since it's rather helpful to them then harmful

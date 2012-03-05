@@ -72,7 +72,7 @@ public:
 			xmul += Children[i].Weight;
 		//_ASSERT(xmul >= 1.0);
 		if (xmul < 1.0)
-			xmul = Children.size();
+			xmul = (double)Children.size();
 		for (UINT i=0;i<Children.size();i++)
 			Children[i].Weight /= xmul;
 	}
@@ -331,7 +331,7 @@ typedef vector<Node *> VPBN;
 		set<UINT> clones;
 		if (!atk->Deck.empty())
 		{
-			UCHAR size = atk->Deck.size();
+			UCHAR size = (UCHAR)atk->Deck.size();
 			for (UCHAR idx = 0; idx < size; idx++)
 			{
 				if (clones.find(atk->Deck[idx].GetId()) != clones.end())
@@ -487,7 +487,7 @@ class Branching
 protected:
 	Node::VPBN Leaves;
 private:
-	const UINT GetSize() const { /*return Root.GetSize();*/ return Vars.size(); }
+	const UINT GetSize() const { /*return Root.GetSize();*/ return (UINT)Vars.size(); }
 	bool ApplyEffects(PlayedCard &csrc,Node &node,int cardindex,bool bNormal,bool IsMimiced=false,bool IsFusioned=false)
 	{
 		UCHAR aid,faction;
@@ -1725,7 +1725,7 @@ private:
 		SNODE SNodes;
 
 		// check for cloWnes
-		UINT cnt = 0, basecnt = leaves.size();
+		UINT cnt = 0, basecnt = (UINT)leaves.size();
 		// if size = 1 we dont need this ...
 		if (leaves.size() <= 1)
 			return;

@@ -121,7 +121,7 @@ public:
 	}
 	const UINT GetCommander() const { return Commander; }
 	const char *GetName() const { return Name.c_str(); }
-	const UINT GetCardCount() const { return Deck.size(); }
+	const UINT GetCardCount() const { return (UINT)Deck.size(); }
 	const UINT GetCardID(UINT Index) const { return Deck[Index]; }
 	~MissionInfo()
 	{
@@ -152,7 +152,7 @@ void PickACard(Card *pCDB, VID &fromIDpool, VCARDS &topool)
 				bLegendary = true;
 		do
 		{
-			indx = rand() % fromIDpool.size();
+			indx = UCHAR(rand() % fromIDpool.size());
 		}
 		while (((pCDB[fromIDpool[indx]].GetRarity() == RARITY_UNIQUE) && IsCardInDeck(fromIDpool[indx],topool))
 			|| (bLegendary && (pCDB[fromIDpool[indx]].GetRarity() == RARITY_LEGENDARY)));   // unique check    
@@ -782,7 +782,7 @@ public:
 	}
 	char *trim(char *str, char c=' ')
 	{
-		int len = strlen(str);
+		size_t len = strlen(str);
 		int beg=0;
 		while(str[len-1]==c) str[--len]=0;
 		while(str[beg]==c) str[beg++]=0;
