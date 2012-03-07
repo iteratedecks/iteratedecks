@@ -1282,14 +1282,14 @@ public:
 	{
 		UINT c = 0;
 		for (MDECKS::iterator mi = DIndex.begin(); mi != DIndex.end(); mi++)
-			if (mi->first.Tag == TAG_CUSTOM)
+			//if (mi->first.Tag == TAG_CUSTOM) GET ANY COUNT
 				c++;
 		return c;
 	}
 	bool GetCustomDeck(UINT Index, ActiveDeck &R)
 	{
 		for (MDECKS::iterator mi = DIndex.begin(); mi != DIndex.end(); mi++)
-			if (mi->first.Tag == TAG_CUSTOM)
+			//if (mi->first.Tag == TAG_CUSTOM) GET ANY DECK
 			{
 				if (!Index)
 				{
