@@ -1525,9 +1525,11 @@ public:
 	}
 	UCHAR Intercept(PPCIV &targets, UCHAR destindex, ActiveDeck &Dest)
 	{
+		if (targets.size() < 2)
+			return destindex;
 		// modify a target by intercept here
 		if ((destindex > 0) &&
-			(targets[destindex-1].second = targets[destindex].second - 1) && 
+			(targets[destindex-1].second == targets[destindex].second - 1) && 
 			(targets[destindex-1].first->GetAbility(DEFENSIVE_INTERCEPT) > 0))
 		{
 			destindex = destindex-1;
@@ -1536,7 +1538,7 @@ public:
 		}
 		else
 			if ((destindex < targets.size() - 1) &&
-				(targets[destindex+1].second = targets[destindex].second + 1) && 
+				(targets[destindex+1].second == targets[destindex].second + 1) && 
 				(targets[destindex+1].first->GetAbility(DEFENSIVE_INTERCEPT) > 0))
 			{
 				destindex = destindex+1;
