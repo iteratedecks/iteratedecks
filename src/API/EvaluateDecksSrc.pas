@@ -475,7 +475,6 @@ type
     tsAuth: TcxTabSheet;
     pAuth: TPanel;
     cxLabel6: TcxLabel;
-    EWB: TEmbeddedWB;
     bNavigate: TcxButton;
     tsProfile: TcxTabSheet;
     tAuth: TTimer;
@@ -554,7 +553,7 @@ type
     procedure bDeleteAllClick(Sender: TObject);
     procedure bDeleteSelectedClick(Sender: TObject);
     procedure cbRandomSeedClick(Sender: TObject);
-    function GetIndexFromID(Id: string): integer;
+    function GetIndexFromID(Id: integer): integer;
     procedure tsDecksShow(Sender: TObject);
     procedure vTopDataControllerRecordChanged(
       ADataController: TcxCustomDataController; ARecordIndex,
@@ -620,7 +619,7 @@ type
     function ParseWildCCB(ccb: TcxCheckComboBox): integer;
     procedure tsEvalShow(Sender: TObject);
     procedure bCheckImagesClick(Sender: TObject);
-    function CheckCardImages: boolean;
+    function CheckCardImages(bDisplayProgress: boolean = false): boolean;
     procedure cbUseGenericFilterClick(Sender: TObject);
     procedure ceFilterKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
@@ -662,13 +661,10 @@ type
     ImageCount: integer;
     iOffset: integer; // hiding images while loading
     Cards: array[0..MAX_CARD_COUNT] of ^TCard;
-    RemapMinID: array[0..MAX_CARD_COUNT] of UINT;
-    RemapMinIDInversed: array[0..MAX_CARD_COUNT] of UINT;
+    IndexByID: array[0..4000] of integer;
     TopDeck: array[0..MAX_DECK_SIZE] of TcxImage;
     BotDeck: array[0..MAX_DECK_SIZE] of TcxImage;
     iHoverTag: integer;
-    slLibIndex: TStringList;
-    slIDIndex: TStringList;
     slSkillList: TStringList;
     //slSetList: TStringList;
     slUpdate: TStringList;
@@ -696,6 +692,7 @@ type
     //
     fversion: string;
     bKongregateConnection: boolean;
+    EWB : TEmbeddedWB;
   public
     { Public declarations }
   end;
@@ -801,6 +798,7 @@ function LoadPointers(Ptr: Pointer; MaxCount: DWORD): DWORD; cdecl; external
   DLLFILE;
 
 function InsertCustomDeck(List: string): boolean; cdecl; external DLLFILE;
+function GetCardListSorted(buffer: PChar; size: DWORD): boolean; cdecl; external DLLFILE;
 
 procedure EvaluateInThreads(Seed: DWORD; var r: RESULTS; gamesperthread: DWORD;
   threadscount: DWORD = 1; bSurge: boolean = false); cdecl; external DLLFILE;
@@ -1097,7 +1095,7 @@ begin
             begin
               if s <> '' then
                 s := s + ', ';
-              s := s + EvaluateDecksForm.Cards[StrToInt(EvaluateDecksForm.slIDIndex.Values[IntToStr(pEP.ResultByOrder[i].CardIDs[k])])].Name;
+              s := s + EvaluateDecksForm.Cards[EvaluateDecksForm.IndexByID[pEP.ResultByOrder[i].CardIDs[k]]].Name;
             end;
           Values[RecordCount-1,EvaluateDecksForm.vFCODeck.Index] := s;
         end;
@@ -1109,7 +1107,7 @@ begin
         with EvaluateDecksForm.vWildCards.DataController do
         begin
           RecordCount := RecordCount + 1;
-          s := EvaluateDecksForm.Cards[StrToInt(EvaluateDecksForm.slIDIndex.Values[IntToStr(pEP.WildCardId)])].Name;
+          s := EvaluateDecksForm.Cards[EvaluateDecksForm.IndexByID[pEP.WildCardId]].Name;
           Values[RecordCount-1,EvaluateDecksForm.vWildCardsWins.Index] := pEP.Result.Win / pEP.Result.Games;
           Values[RecordCount-1,EvaluateDecksForm.vWildCardsName.Index] := s;
         end;
@@ -1118,7 +1116,7 @@ begin
         with EvaluateDecksForm.vWildCards.DataController do
         begin
           RecordCount := RecordCount + 1;
-          s := EvaluateDecksForm.Cards[StrToInt(EvaluateDecksForm.slIDIndex.Values[IntToStr(pEP.WildCardIds[i])])].Name;
+          s := EvaluateDecksForm.Cards[EvaluateDecksForm.IndexByID[pEP.WildCardIds[i]]].Name;
           if pEP.Result.Games > 0 then
             Values[RecordCount-1,EvaluateDecksForm.vWildCardsWins.Index] := pEP.WildCardWins[i] / pEP.Result.Games
           else
@@ -1139,16 +1137,9 @@ begin
   end;
 end;
 
-function TEvaluateDecksForm.GetIndexFromID(Id: string): integer;
+function TEvaluateDecksForm.GetIndexFromID(Id: integer): integer;
 begin
-  if slIDIndex.IndexOfName(Id) < 0 then
-    result := -1
-  else
-  try
-    result := StrToInt(slIDIndex.Values[Id]);
-  except
-    result := -1;
-  end;
+  result := IndexByID[id];
 end;
 
 procedure TEvaluateDecksForm.CopyCard(FromCard: TcxImage; ToCard: TcxImage);
@@ -1473,15 +1464,15 @@ function TEvaluateDecksForm.GetCardID(CardName: string): integer;
 var
   i, k: integer;
   s: string;
+  c: ^TCard;
 begin
-  CardName := StringReplace(CardName, ',','',[]);
   i := Pos('[', CardName);
   k := Pos(']', CardName);
   if (i > 0) and (k > 0) then
   begin
     s := Copy(CardName, i + 1, k - i - 1);
     try
-      result := StrToInt(slIDIndex.Values[s]);
+      result := IndexByID[strtoint(s)];
     except
       //ShowMessage(slIDIndex.Text);
       result := -1;
@@ -1489,21 +1480,11 @@ begin
   end
   else
   begin
+    CardName := StringReplace(CardName, ',','',[]);
     s := Trim(CardName);
-    if slLibIndex.IndexOfName(s) < 0 then
-    begin
-      result := -1;
-      //if Cards[i].Id = 345 then
-      //begin
-      //  ShowMessage('"'+slLibIndex[308] + '" <> "' + s + '" <> "'+slLibIndex.Names[308]+'"');
-      //  ShowMessage(Inttostr(k) + ' <> ' + Inttostr(slLibIndex.IndexOfName(slLibIndex.Names[308])));
-      //end;
-      //if s <> slLibIndex.Names[308] then
-      //  ShowMessage(s+'<>'+slLibIndex.Names[308]);
-    end
-    else
     try
-      result := StrToInt(slLibIndex.Values[CardName]);
+      c := GetCard(s);
+      result := IndexByID[c.Id];
     except
       result := -1;
     end;
@@ -1518,7 +1499,7 @@ begin
   // LoadDeck
   GetMem(p1, cMaxBuffer); // initialize
   try
-    id := GetIndexFromID(IntToStr(GetRaidCommanderID(cbRaid.ItemIndex + 1)));
+    id := GetIndexFromID(GetRaidCommanderID(cbRaid.ItemIndex + 1));
     if id >= 0 then
       CopyCard(Images[id], imgBot)
     else
@@ -2017,7 +1998,7 @@ begin
     LastCardIndexBot := -1
   else
   begin
-    LastCardIndexBot := RemapMinID[(Sender as TcxComboBox).ItemIndex];
+    LastCardIndexBot := GetCardID(DisplayValue);
     // do checks on unique etc
     with vBot.DataController do
     begin
@@ -2233,7 +2214,7 @@ begin
     LastCardIndex := -1
   else
   begin
-    LastCardIndex := RemapMinID[(Sender as TcxComboBox).ItemIndex];
+    LastCardIndex := GetCardID(DisplayValue);
     // do checks on unique etc
     with vTop.DataController do
     begin
@@ -2329,7 +2310,7 @@ begin
       ClearDeck(Deck);
       //cname := GetCommanderNameEx(Strings[0],cmod);
       if bAlwaysUseId then
-        id := GetIndexFromID(Strings[0])
+        id := GetIndexFromID(strtoint(Strings[0]))
       else
         id := GetCardID(Strings[0]);
       if id < 0 then
@@ -2349,7 +2330,7 @@ begin
       for i := 1 to Count - 1 do
       begin
         if bAlwaysUseId then
-          id := GetIndexFromID(Strings[i])
+          id := GetIndexFromID(strtoint(Strings[i]))
         else
           id := GetCardID(Strings[i]);
         if id < 0 then
@@ -2503,7 +2484,7 @@ begin
         sl.CommaText := p1;
         for i := 0 to sl.Count - 1 do
         begin
-          id := GetIndexFromID(sl[i]);
+          id := GetIndexFromID(strtoint(sl[i]));
           if Cards[id].CardType = 1 then
           begin
             CopyCard(Images[id], imgBot);
@@ -2526,6 +2507,7 @@ procedure TEvaluateDecksForm.bBotPasteClick(Sender: TObject);
 var
   p1: pchar;
   i, id: integer;
+  s: string;
 begin
   // LoadDeck
   GetMem(p1, cMaxBuffer); // initialize
@@ -2537,15 +2519,15 @@ begin
     begin
       for i := 0 to Count - 1 do
       begin
-        id := GetIndexFromID(Strings[i]);
+        id := GetIndexFromID(strtoint(Strings[i]));
         if id < 0 then
           ShowMessage(Format(sCardNotFound, [Strings[i]]))
         else
         begin
           LastCardIndexBot := id;
           vBot.DataController.SetValue(i, vBotID.Index, id);
-          vBot.DataController.SetValue(i, vBotName.Index, (vBotName.Properties as
-            TcxComboBoxProperties).Items[remapMinIDInversed[id]]);
+          s := Cards[id].Name;
+          vBot.DataController.SetValue(i, vBotName.Index, s);
         end;
       end;
       for i := Count to vBot.DataController.RecordCount - 1 do
@@ -2936,20 +2918,25 @@ begin
   //EndThread(0);
 end;
 
-function TEvaluateDecksForm.CheckCardImages: boolean;
+function TEvaluateDecksForm.CheckCardImages;
 var
   i, ictoupdate, icdownloaded: integer;
   ms: TMemoryStream;
   fname: string;
+  t: TDateTime;
 begin
   result := false;
   icdownloaded := 0;
   ictoupdate := 0;
+  t := Now;
   ms := TMemoryStream.Create;
   try
     CardsLoaded := LoadPointers(@Cards, MAX_CARD_COUNT);
-    ProgressStart(CardsLoaded, 'Checking images ...');
-    sDownloadingCaption := 'Downloading image ...';
+    if bDisplayProgress then
+    begin
+      ProgressStart(CardsLoaded, 'Checking images ...');
+      sDownloadingCaption := 'Downloading image ...';
+    end;
     for i := 0 to CardsLoaded - 1 do
     begin
       ms.Position := 0;
@@ -2983,12 +2970,17 @@ begin
         IdHttp.OnWorkBegin := IdHttpWorkBegin;
         IdHttp.OnWorkEnd := IdHttpWorkEnd;
       end;
-      ProgressUpdate(i);
+      if bDisplayProgress then
+        ProgressUpdate(i);
     end;
   finally
-    sDownloadingCaption := '';
-    ProgressFinish;
+    if bDisplayProgress then
+    begin
+      sDownloadingCaption := '';
+      ProgressFinish;
+    end;
   end;
+  //ShowMessage(FormatDateTime('ss.zzz', Now - t));
   result := (icdownloaded = ictoupdate);
 end;
 
@@ -3235,6 +3227,7 @@ procedure TEvaluateDecksForm.LoadTopDeck(Name: string; Tag: integer = 0);
 var
   p1: pchar;
   i, id: integer;
+  s: string;
 begin
   // LoadDeck
   GetMem(p1, cMaxBuffer); // initialize
@@ -3252,8 +3245,8 @@ begin
         begin
           LastCardIndex := id;
           vTop.DataController.SetValue(i, vTopID.Index, id);
-          vTop.DataController.SetValue(i, vTopName.Index, (vTopName.Properties as
-            TcxComboBoxProperties).Items[remapMinIDInversed[id]]);
+          s := Cards[id].Name;
+          vTop.DataController.SetValue(i, vTopName.Index, s);
           //vTop.DataController.SetValue(i,2,id);
           //vTop.DataController.SetValue(i,3,id);
         end;
@@ -3297,6 +3290,7 @@ procedure TEvaluateDecksForm.bmCustomDefenceClick(Sender: TObject);
 var
   p1: pchar;
   i, id: integer;
+  s: string;
 begin
   // LoadDeck
   GetMem(p1, cMaxBuffer); // initialize
@@ -3314,8 +3308,8 @@ begin
         begin
           LastCardIndexBot := id;
           vBot.DataController.SetValue(i, vBotID.Index, id);
-          vBot.DataController.SetValue(i, vBotName.Index, (vBotName.Properties as
-            TcxComboBoxProperties).Items[remapMinIDInversed[id]]);
+          s := Cards[id].Name;
+          vBot.DataController.SetValue(i, vBotName.Index, s);
           //vTop.DataController.SetValue(i,2,id);
           //vTop.DataController.SetValue(i,3,id);
         end;
@@ -3357,6 +3351,7 @@ procedure TEvaluateDecksForm.bmMissionClick(Sender: TObject);
 var
   p1: pchar;
   i, id: integer;
+  s: string;
 begin
   // LoadDeck
   GetMem(p1, cMaxBuffer); // initialize
@@ -3367,7 +3362,7 @@ begin
     begin
       for i := 0 to Count - 1 do
       begin
-        id := GetIndexFromID(Strings[i]);
+        id := GetIndexFromID(strtoint(Strings[i]));
         if Count > vBot.DataController.RecordCount then
           vBot.DataController.RecordCount := Count;
         if id < 0 then
@@ -3376,8 +3371,8 @@ begin
         begin
           LastCardIndexBot := id;
           vBot.DataController.SetValue(i, vBotID.Index, id);
-          vBot.DataController.SetValue(i, vBotName.Index, (vBotName.Properties as
-            TcxComboBoxProperties).Items[remapMinIDInversed[id]]);
+          s := Cards[id].Name;
+          vBot.DataController.SetValue(i, vBotName.Index, s);
           //vTop.DataController.SetValue(i,2,id);
           //vTop.DataController.SetValue(i,3,id);
         end;
@@ -3404,6 +3399,9 @@ begin
   CoInternetGetSession(0, InternetSession, 0);
   InternetSession.RegisterNameSpace(Factory, Class_OurNSHandler, 'http', 0, nil, 0);
 
+  EWB := TEmbeddedWB.Create(tsAuth);
+  EWB.Parent := tsAuth;
+  EWB.Align := alClient;
 
       if cbUseProxy.Checked then
       begin
@@ -3682,7 +3680,7 @@ begin
       rec := cxView.DataController.RecordCount - 1;
       if wildcard > 0 then
       begin
-        s := Cards[StrToInt(slIDIndex.Values[IntToStr(wildcard)])].Name;
+        s := Cards[IndexByID[wildcard]].Name;
         if s <> cbWildCardName.Text then
         begin
           ShowMessage('Replace '+cbWildCardName.Text+' with '+s+'.');
@@ -3717,7 +3715,7 @@ begin
 
           with vCardStats.DataController do
           try
-            i := GetIndexFromID(IntToStr(r.ResultByCard[z].Id));
+            i := GetIndexFromID(r.ResultByCard[z].Id);
             if i < 0 then
               continue;
             lrec := AppendRecord;
@@ -3767,7 +3765,7 @@ begin
 
           with vCardOrder.DataController do
           try
-            i := GetIndexFromID(IntToStr(r.ResultByCard[z].Id));
+            i := GetIndexFromID(r.ResultByCard[z].Id);
             if i < 0 then
               continue;
             lrec := AppendRecord;
@@ -3902,7 +3900,7 @@ begin
           VarIsNull(Values[i, vTopID.Index])) then
         begin
           id := values[i, vTopID.Index];
-          if Cards[remapminidinversed[id]].CardType = 1 then
+          if Cards[id].CardType = 1 then
             slr.Insert(0, Values[i, vTopName.Index])
           else
             slr.Add(Values[i, vTopName.Index]);
@@ -4053,7 +4051,7 @@ begin
         sl.CommaText := p1;
         for i := 0 to sl.Count - 1 do
         begin
-          id := GetIndexFromID(sl[i]);
+          id := GetIndexFromID(strtoint(sl[i]));
           if Cards[id].CardType = 1 then
           begin
             CopyCard(Images[id], imgTop);
@@ -4076,6 +4074,7 @@ procedure TEvaluateDecksForm.bTopPasteClick(Sender: TObject);
 var
   p1: pchar;
   i, id: integer;
+  s: string;
 begin
   // LoadDeck
   GetMem(p1, cMaxBuffer); // initialize
@@ -4092,15 +4091,15 @@ begin
     begin
       for i := 0 to Count - 1 do
       begin
-        id := GetIndexFromID(Strings[i]);
+        id := GetIndexFromID(strtoint(Strings[i]));
         if id < 0 then
           ShowMessage(Format(sCardNotFound, [Strings[i]]))
         else
         begin
           LastCardIndex := id;
           vTop.DataController.SetValue(i, vTopID.Index, id);
-          vTop.DataController.SetValue(i, vTopName.Index, (vTopName.Properties as
-            TcxComboBoxProperties).Items[remapMinIDInversed[id]]);
+          s := Cards[id].Name;
+          vTop.DataController.SetValue(i, vTopName.Index, s);
           //vTop.DataController.SetValue(i,2,id);
           //vTop.DataController.SetValue(i,3,id);
         end;
@@ -4471,8 +4470,6 @@ begin
   vAtkDeckName := '';
   ImageCount := 0;
   iHoverTag := -1;
-  slLibIndex := TStringList.Create;
-  slIDIndex := TStringList.Create;
   slSkillList := TStringList.Create;
   //slSetList := TStringList.Create;
   slUpdate := TStringList.Create;
@@ -4511,7 +4508,7 @@ begin
   cbShowWinsCO.OnClick(cbShowWinsCO);
 
   bKongregateConnection := FileExists(sLocalDir + sAuthorizationFile);
-  cbCheckOnlyCardsOwned.Enabled := bKongregateConnection;
+  cbCheckOnlyCardsOwned.Enabled := FileExists(sLocalDir + 'wildcard\ownedcards.txt');
   if bKongregateConnection then
   begin
     tsAuth.TabVisible := false;
@@ -4546,8 +4543,6 @@ begin
   intmask.Free;
   intal.Free;
 
-  slLibIndex.Free;
-  slIDIndex.Free;
   slSkillList.Free;
   //slSetList.Free;
   slUpdate.Free;
@@ -4618,6 +4613,7 @@ begin
       pcHacks.ActivePageIndex := 1;
     finally
       IdUri.Free;
+      EWB.Free;
 
       InternetSession.UnregisterNameSpace(Factory, 'http');
     end;
@@ -4974,7 +4970,6 @@ var
 begin
 //  CoInitialize(nil);
 //  Canvas.Lock;
-
   LoadMissionXML(sLocalDir + sMissionsFile);
   LoadRaidXML(sLocalDir + sRaidsFile);
 
@@ -5049,6 +5044,7 @@ begin
     cbCustom.ItemIndex := 0;
     cbmCustom.ItemIndex := 0;
   end;
+
   GetRaidDecksList(p1, cMaxBuffer);
   cbRaid.Properties.Items.CommaText := p1;
   cbmRaid.Properties.Items.CommaText := p1;
@@ -5067,19 +5063,9 @@ begin
   end;
   FreeMem(p1);
 
-  CardsLoaded := LoadPointers(@Cards, MAX_CARD_COUNT);
-  for i := 0 to CardsLoaded - 1 do
-  begin
-    if Cards[i].CardSet <> 0 then
-      slLibIndex.Values[Cards[i].Name] := inttostr(i);
-
-    {if Cards[i].Id = 345 then
-    begin
-      ShowMessage(slLibIndex[slLibIndex.Count-1]);
-      ShowMessage(Inttostr(slLibIndex.IndexOfName((Cards[i].Name))));
-    end; }
-    slIDIndex.Values[IntToStr(Cards[i].Id)] := inttostr(i);
-  end;
+//  CardsLoaded := LoadPointers(@Cards, MAX_CARD_COUNT);
+  tsDecks.Enabled := CheckCardImages;
+  Application.ProcessMessages;
 
   if MAX_CARD_COUNT < CardsLoaded then
   begin
@@ -5089,50 +5075,25 @@ begin
     Halt;
   end;
 
-  tsDecks.Enabled := CheckCardImages;
-  Application.ProcessMessages;
+  for I := 0 to 4000 - 1 do
+    IndexByID[i] := -1;
+  for i := 0 to CardsLoaded - 1 do
+    IndexByID[Cards[i].Id] := i;
 
   //
   vTop.DataController.RecordCount := 11;
   vBot.DataController.RecordCount := 16;
 
-  sl := TStringList.Create;
-  sl.NameValueSeparator := NAME_VALUE_SEPARATOR;
-  k := 0;
-  (vTopName.Properties as TcxComboBoxProperties).Items.Clear;
-  (vBotName.Properties as TcxComboBoxProperties).Items.Clear;
-  for i := 0 to CardsLoaded - 1 do
+  GetMem(p1, cMaxBuffer); // initialize
+  if GetCardListSorted(p1, cMaxBuffer) then
   begin
-    if cbUseHidden.Checked or (Cards[i].CardSet > 0) then
-    begin
-      if (Cards[i].CardSet = 0) OR
-        (sl.IndexOfName(Cards[i].Name) >= 0) then
-        sl.Values[Cards[i].Name + '[' + IntToStr(Cards[i].Id) + ']'] := IntToStr(i)
-       { (vTopName.Properties as TcxComboBoxProperties).Items.Add(Cards[i].Name +
-          '[' + IntToStr(Cards[i].Id) + ']')               }
-      else
-        sl.Values[Cards[i].Name] := IntToStr(i);
-       { (vTopName.Properties as TcxComboBoxProperties).Items.Add(Cards[i].Name);
-      RemapMinID[k] := i;
-      RemapMinIDInversed[i] := k;
-      inc(k);    }
-    end;
-    {if Cards[i].CardSet = 0 then
-      (vBotName.Properties as TcxComboBoxProperties).Items.Add(Cards[i].Name +
-        '[' + IntToStr(Cards[i].Id) + ']')
-    else
-      (vBotName.Properties as TcxComboBoxProperties).Items.Add(Cards[i].Name); }
+    sl := TStringList.Create;
+    sl.CommaText := p1;
+    (vTopName.Properties as TcxComboBoxProperties).Items.AddStrings(sl);
+    (vBotName.Properties as TcxComboBoxProperties).Items.AddStrings(sl);
+    sl.Free;
   end;
-  sl.Sort;
-  for k := 0 to sl.Count - 1 do
-  begin
-    (vTopName.Properties as TcxComboBoxProperties).Items.Add(sl.Names[k]);
-    (vBotName.Properties as TcxComboBoxProperties).Items.Add(sl.Names[k]);
-    i := StrToInt(sl.ValueFromIndex[k]);
-    RemapMinID[k] := i;
-    RemapMinIDInversed[i] := k;
-  end;
-  sl.Free;
+  FreeMem(p1);
 //  Canvas.UnLock;
 end;
 

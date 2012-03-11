@@ -1211,6 +1211,14 @@ public:
 			return 0;
 		}
 	}
+	/*const int GetCardIndex(const char *Name)
+	{
+		MSUINT::iterator it=Index.find(Name);
+		if (it != Index.end())
+			return std::distance(Index.begin(), it);
+		else
+			return -1;
+	}*/
 	const Card &GetCard(const UINT Id)
 	{
 		if (Id > CARD_MAX_ID)
@@ -1232,6 +1240,34 @@ public:
 			return &GetCard(atoi(bu));
 		}
 		return GetCard(Name);			
+	}
+	const bool GetCardListSorted(char *buffer, DWORD size)
+	{
+		string s;
+		char lbuff[50];
+		set<string> ss;
+		for (UINT i=0;i<CARD_MAX_ID;i++)
+			if (CDB[i].IsCard())
+			{			
+				s = CDB[i].GetName();
+				if (!CDB[i].GetSet())
+				{
+					sprintf(lbuff,"[%d]",i);
+					s += lbuff;
+				}
+				ss.insert(s);
+			}
+		s.clear();
+		for (set<string>::iterator si = ss.begin(); si != ss.end(); si++)
+		{
+			if (!s.empty())
+				s += ',';				
+			s += '"' + *si + '"';
+		}
+		if (s.length() > size)
+			return false;
+		strcpy(buffer,s.c_str());
+		return (!s.empty());
 	}
 	const char* GetCustomDecksList(char *buffer, size_t size, int byTag = TAG_ANY)
 	{

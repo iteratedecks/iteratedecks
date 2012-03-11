@@ -197,6 +197,10 @@ extern "C"
 	{		
 		return &DB.GetCard(Id);
 	};
+	IDAPI const bool GetCardListSorted(char *buffer, DWORD size)
+	{
+		return DB.GetCardListSorted(buffer, size);
+	};
 	IDAPI const char * GetCustomDecksList(int Tag, char *buffer, DWORD size)
 	{
 		return DB.GetCustomDecksList(buffer, size, Tag);
