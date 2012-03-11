@@ -13,7 +13,8 @@ uses
   IdTCPConnection, IdTCPClient, IdHTTP, OleCtrls, WinInet, ComCtrls, cxListView, Jpeg, cxCheckComboBox,
   cxCurrencyEdit, ActiveX, cxSpinEdit, cxRadioGroup, cxGroupBox, DBClient,
   GIFImg, ShellApi, cxCheckListBox, cxGridBandedTableView, cxGridExportLink, ClipBrd,
-  cxSplitter, Extended, SHDocVw_EWB, EwbCore, EmbeddedWB, IDURI, uLkJSON, OurNSHandler, urlMon;
+  cxSplitter, Extended, SHDocVw_EWB, EwbCore, EmbeddedWB, IDURI, uLkJSON, OurNSHandler, urlMon, md5,
+  cxTreeView, cxTL, cxInplaceContainer;
 
 const
   MAX_CARD_COUNT = 1200;
@@ -141,6 +142,7 @@ type
     SkillProcs: array[0..CARD_ABILITIES_MAX-1] of DWORD;
     ResultByOrder: array[0..cTop10-1] of RESULT_BY_ORDER;
     FullAmountOfGames: DWORD;
+    SkipWildcardsWeDontHave: boolean;
   end;
 
 type
@@ -476,8 +478,16 @@ type
     EWB: TEmbeddedWB;
     bNavigate: TcxButton;
     tsProfile: TcxTabSheet;
-    cxButton2: TcxButton;
     tAuth: TTimer;
+    tProfile: TcxTreeList;
+    tProfilecxTreeListColumn1: TcxTreeListColumn;
+    tProfilecxTreeListColumn2: TcxTreeListColumn;
+    Panel1: TPanel;
+    cxButton2: TcxButton;
+    tProfilecxTreeListColumn3: TcxTreeListColumn;
+    cbSaveLogin: TcxCheckBox;
+    cbExportOwned: TcxCheckBox;
+    cbCheckOnlyCardsOwned: TcxCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -645,6 +655,7 @@ type
     procedure cxButton2Click(Sender: TObject);
     procedure tAuthTimer(Sender: TObject);
     function GetNumberOfProcessors:integer;
+    function GenerateRequestHeader(msg: string): string;
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -682,6 +693,9 @@ type
     EvaluateParams: ^TEvalParams;
     //
     fLastWinRatio: double;
+    //
+    fversion: string;
+    bKongregateConnection: boolean;
   public
     { Public declarations }
   end;
@@ -711,6 +725,7 @@ const
   sMissionsFile = 'missions.xml';
   sCardsFile = 'cards.xml';
   sCardsDir = 'cards\';
+  sTyrantAPI = 'http://kg.tyrantonline.com/api.php';
   sAssetsFolder = 'http://%s.tyrantonline.com/assets/';
   sImagesFolder = 'http://cdn.tyrantonline.com/warhawk/images/';
   sCustomDecks = 'Custom.txt';
@@ -992,6 +1007,7 @@ begin
   pEP.Surge := bIsSurge;
   pEP.OrderMatters := bOrderMatters;
   pEP.TournamentMode := integer(TournamentMode);
+  pEP.SkipWildcardsWeDontHave := EvaluateDecksForm.cbCheckOnlyCardsOwned.Checked;
 
   pEP.MaxTurn := MaxTurn;
 
@@ -1149,26 +1165,252 @@ begin
   tEnableBoost.Enabled := true;
 end;
 
+function TEvaluateDecksForm.GenerateRequestHeader;
+const
+  cBaseTime = 25569; // StrToDate('1.01.1970')
+  time_hash = 'fgjk380vf34078oi37890ioj43';
+var
+  t: integer;
+  userid: string;
+begin
+  t := round((Now - cBaseTime) * 24 * 4) - 12;     // -12 ????
+  userid := slAuth.Values['user_id'];
+  result := sTyrantAPI + '?user_id=' + userid;
+  result := result + '&message=' + msg;
+  if fversion <> '' then  
+    result := result + '&version=' + fversion;
+  result := result + '&time=' + inttostr(t);
+  result := result + '&hash=' + MD5Print(md5string(msg + inttostr(t) + time_hash));
+  result := result + '&ccache=' + MD5Print(md5string(userid + inttostr(t)));
+  result := result + '&flashcode=' + slAuth.Values['flashcode'];
+  result := result + '&game_auth_token=' + slAuth.Values['game_auth_token'];
+{
+$time = round(time()/60/15); // or you can extract it from initProfile
+$hash = md5(message . time . time_hash);
+$ccache = md5($uid . time);
+
+$param1 = $uid;
+$param3 = $time_hash;
+$param4 = "doMission";
+
+$loc8 = round(Time() / (60 * 15));
+$request = $param6 . "?user_id=" . $param1 . "&message=" . $param4;
+$request = $request . "&mission_id=241";
+//$request = $request . "&target_user_id=3334478";
+//$request = $request . "&target_user_id=".$uid;
+//$request = $request . "&index=1";
+//$request = $request . "&card_id=540&deck_id=3";
+//$request = $request . "&reward_id=434";
+//$request = $request . "&tournament_id=154030209";
+//$request = $request . "&flag=xp&value=100";
+//$request = $request . "reward_id=434";
+//$request = $request . "&text=Bob";
+$request = $request . "&flashcode=" . $param2;
+$request = $request . "&time=" . $loc8;
+$request = $request . "&version=" . "2.0.5";
+$request = $request . "&hash=" . MD5($param4 . $loc8 . $param3);
+$request = $request . "&ccache=" . $ccache;
+$request = $request . "&game_auth_token=4694e2450798536545425626e2b1fa2cec58c0401e84c01279573f7347cab42e";
+}
+end;
+
 procedure TEvaluateDecksForm.cxButton2Click(Sender: TObject);
+const MAX_ID = 4000;
+  function FixID(var id: integer): string;
+  begin
+    if id > 10000 then
+          begin
+            id := id - 10000;
+            result := ' (Foil)';
+          end
+          else
+            result := '';
+  end;
+  function GetCardName(id: string; amount: integer = 0): string;
+  var idx: integer; s: string;
+    c: ^TCard;
+  begin
+    idx := StrToInt(id);
+    FixId(idx);
+    result := '';
+          if (idx < MAX_ID) and (idx > 0) then
+          begin
+            C := GetCardByID(idx);
+            if C <> nil then
+            begin
+              s := C.Name;
+              if amount > 1 then
+                result := Format('%s(%d)',[s,amount])
+              else
+                result := s;
+            end;
+          end;
+  end;
+var
+  CardsOwned: array[0..MAX_ID] of dword;
+  c: ^TCard;
+  s: string;
+  currentdeckid: integer;
+  decks: array[0..20] of string;
+  procedure ParseObject(vJsonObj: TlkJsonObject; node: TcxTreeListNode);
+  var
+    i, idx: integer;
+    lnode: TcxTreeListNode;
+    foil: string;
+  begin
+    i := 0;
+    //vJsonStr := GenerateReadableText(vJsonObj,i);
+    //ShowMessage(vJsonStr);
+    for i := 0 to vJsonObj.Count-1 do
+    begin    {
+            if js.Field['childobject'] is TlkJSONnumber then writeln('type: xs is number!');
+      if js.Field['childobject'] is TlkJSONstring then writeln('type: xs is string!');
+      if js.Field['childobject'] is TlkJSONboolean then writeln('type: xs is boolean!');
+      if js.Field['childobject'] is TlkJSONnull then writeln('type: xs is null!');
+      if js.Field['childobject'] is TlkJSONlist then writeln('type: xs is list!');
+      if js.Field['childobject'] is TlkJSONobject then writeln('type: xs is object!'); }
+      if (vJsonObj.FieldByIndex[i] is TlkJSONstring) OR
+         (vJsonObj.FieldByIndex[i] is TlkJSONnumber) OR
+         (vJsonObj.FieldByIndex[i] is TlkJSONboolean)
+         then
+      begin
+        lnode := tProfile.AddChild(node,nil);
+        lnode.Values[0] := vJsonObj.NameOf[i];
+        lnode.Values[1] := vJsonObj.FieldByIndex[i].Value;
+        if Assigned(node) then
+        begin
+        if lnode.Values[0] = 'deck_id' then
+        begin
+          currentdeckid := lnode.Values[1];
+          decks[currentdeckid] := '';
+        end else
+        if (currentdeckid <> 0) and (lnode.Values[0] = 'name') and (currentdeckid = node.Values[0]) then
+          decks[currentdeckid] := '-MY- ' + vJsonObj.FieldByIndex[i].Value
+        else
+        if (currentdeckid <> 0) and (lnode.Values[0] = 'commander_id') and (currentdeckid = node.Values[0]) then
+          decks[currentdeckid] := decks[currentdeckid] + ':' + GetCardName(lnode.Values[1])
+        else
+        if (currentdeckid <> 0) and (currentdeckid <> 0) and (node.Values[0] = 'cards') then
+          decks[currentdeckid] := decks[currentdeckid] + ',' + GetCardName(lnode.Values[0],vJsonObj.FieldByIndex[i].Value);
+
+        //
+        if ((node.Values[0] = 'cards') OR (node.Values[0] = 'cards_for_sale_cost')) then
+        begin
+          idx := StrToInt(vJsonObj.NameOf[i]);
+          foil := FixId(idx);
+          if (idx < MAX_ID) and (idx > 0) then
+          begin
+            C := GetCardByID(idx);
+            if C <> nil then
+            begin
+              s := C.Name;
+              lnode.Values[2] := s + foil;
+            end;
+          end;
+        end;
+        if (vJsonObj.NameOf[i] = 'num_owned') then
+        begin
+          idx := StrToInt(node.Values[0]);
+          FixId(idx);
+          CardsOwned[idx] := CardsOwned[idx] + vJsonObj.FieldByIndex[i].Value;
+        end;
+        end;
+      end;
+      if (vJsonObj.FieldByIndex[i] is TlkJSONobject) then
+      begin
+        lnode := tProfile.AddChild(node,nil);
+        lnode.Values[0] := vJsonObj.NameOf[i];
+        if Assigned(node) and (node.Values[0] = 'user_cards') then
+        begin
+          idx := StrToInt(vJsonObj.NameOf[i]);
+          foil := FixId(idx);
+          if (idx < MAX_ID) and (idx > 0) then
+          begin
+            C := GetCardByID(idx);
+            if C <> nil then
+            begin
+              s := C.Name;
+              lnode.Values[2] := s + foil;
+            end;
+          end;
+        end;
+        ParseObject(vJsonObj.FieldByIndex[i] as TlkJSONobject, lnode);
+      end;
+    end;
+  end;
+var
+  vJsonObj: TlkJsonObject;
+  vJsonStr: String;
+  ms : TMemoryStream;
+  cardList: TStringList;
+  i: integer;
 begin
   IdHttp.OnWork := nil;
   IdHttp.OnWorkBegin := nil;
   IdHttp.OnWorkEnd := nil;
-        {try
-          IdHttp.Get(sImagesFolder + Cards[i].Picture, ms);
+
+  ms := TMemoryStream.Create;
+  try
+        try
+          IdHttp.Get(GenerateRequestHeader('init'), ms);
+          ms.Position := 0;
           if (ms.Size > 0) then
-            ms.SaveToFile(fname);
-          icdownloaded := icdownloaded + 1;
+          begin
+            vJsonObj := TlkJSONstreamed.LoadFromStream(ms) as TlkJsonObject;
+            tProfile.BeginUpdate;
+            tProfile.Clear;
+            currentdeckid := 0;
+            for I := 1 to 20-1 do
+              decks[i] := '';
+            for I := 1 to MAX_ID - 1 do
+              CardsOwned[i] := 0;
+            try
+              ParseObject(vJsonObj, nil);
+            finally
+              tProfile.EndUpdate;
+              vJsonObj.Free;
+            end;
+            if cbExportOwned.Checked then
+            try
+              cardList := TStringList.Create;
+              for I := 1 to MAX_ID - 1 do
+                if CardsOwned[i] > 0 then
+                begin
+                  C := GetCardByID(i);
+                  if C <> nil then
+                  begin
+                    s := C.Name;
+                    if CardsOwned[i] = 1 then
+                      cardList.Add(Format('%s',[s]))
+                    else
+                      cardList.Add(Format('%s(%d)',[s,CardsOwned[i]]));
+                  end;
+                end;
+              if cardList.Count > 0 then
+                cardList.SaveToFile(sLocalDir + 'wildcard\ownedcards.txt');
+              cardList.Clear;
+              for I := 1 to 20-1 do
+                if decks[i] <> '' then
+                  cardList.Add(decks[i]);
+              if cardList.Count > 0 then
+                cardList.SaveToFile(sLocalDir + 'decks\custom\my_kg_decks.txt');
+              bCustom.Click; // reload decks  
+            finally
+              cardList.Free;
+            end;
+          end;
         except
           on E: Exception do
           begin
-            ShowMessage('Error while downloading file'#13 + sImagesFolder +
-              Cards[i].Picture + #13 + E.Message);
+            ShowMessage('Error while connecting to API'#13 + E.Message);
           end;
-        end; }
-  IdHttp.OnWork := IdHttpWork;
-  IdHttp.OnWorkBegin := IdHttpWorkBegin;
-  IdHttp.OnWorkEnd := IdHttpWorkEnd;
+        end;
+  finally
+    ms.Free;
+    IdHttp.OnWork := IdHttpWork;
+    IdHttp.OnWorkBegin := IdHttpWorkBegin;
+    IdHttp.OnWorkEnd := IdHttpWorkEnd;
+  end;
 end;
 
 procedure TEvaluateDecksForm.eMailboxFocusChanged(Sender: TObject);
@@ -2490,7 +2732,7 @@ begin
     atk := StringReplace(sl1.CommaText, '"', '', [rfReplaceAll]);
     tc := seThreads.Value;
 
-    if cbUseComplexDefence.Checked then
+    {if cbUseComplexDefence.Checked then
     try
       // alternate version ...
       GetMem(p1, cMaxBuffer); // initialize
@@ -2586,7 +2828,7 @@ begin
     finally
       FreeMem(p1);
     end
-    else
+    else }
     begin
       // normal version
       if (atk = '') then
@@ -4268,7 +4510,9 @@ begin
   // hide win columns
   cbShowWinsCO.OnClick(cbShowWinsCO);
 
-  if FileExists(sLocalDir + sAuthorizationFile) then
+  bKongregateConnection := FileExists(sLocalDir + sAuthorizationFile);
+  cbCheckOnlyCardsOwned.Enabled := bKongregateConnection;
+  if bKongregateConnection then
   begin
     tsAuth.TabVisible := false;
     tsProfile.TabVisible := true;
@@ -4283,6 +4527,7 @@ begin
     seThreads.Value := 2;
   end;
   bIsWin64 := IsWoW64;
+  fversion := '';
 end;
 
 procedure TEvaluateDecksForm.FormDestroy(Sender: TObject);
@@ -4359,12 +4604,15 @@ begin
            (Pos('game_auth_token',slAuth.Names[i]) <= 0)
          then
            slAuth.Delete(i);
-
-      slAuth.SaveToFile(sLocalDir + sAuthorizationFile);
-      // add a warning into file?
-      ShowMessage('Authorization tokens obtained and saved to file!'#13+sLocalDir + sAuthorizationFile+#13#13'Data, stored in this file can be used to access your tyrant game account,'#13'so make sure this file is safe or delete it manually later.');
-      // empty
-
+           
+      if cbSaveLogin.Checked then
+      begin
+        // add a warning into file?
+        slAuth.Insert(0,'// This data can be used to access your tyrant game account(login into Tyrant server), however, it is insufficient to access kongregate account');
+        slAuth.Insert(1,'// Keep in mind that sharing this file violates Tyrant ToS: You may not share accounts or authentication data. Any players using such methods may be immediately banned from the Service.');
+        slAuth.SaveToFile(sLocalDir + sAuthorizationFile);
+        ShowMessage('Authorization tokens obtained and saved to file!'#13+sLocalDir + sAuthorizationFile+#13#13'Data, stored in this file can be used to access your tyrant game account,'#13'so make sure this file is safe or delete it manually later.');
+      end;
       tsAuth.TabVisible := false;
       tsProfile.TabVisible := true;
       pcHacks.ActivePageIndex := 1;
@@ -4890,9 +5138,9 @@ end;
 
 procedure TEvaluateDecksForm.tsBatchShow(Sender: TObject);
 begin
-  gbCombinedDefence.Parent := tsBatch;
+  {gbCombinedDefence.Parent := tsBatch;
   gbCombinedDefence.Left := 391;
-  gbCombinedDefence.Top := 57;
+  gbCombinedDefence.Top := 57;}
 end;
 
 procedure TEvaluateDecksForm.tsDecksShow(Sender: TObject);

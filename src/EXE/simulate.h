@@ -699,4 +699,6 @@ struct EVAL_PARAMS
 	RESULT_BY_ORDER ResultByOrder[TOP10];
 	//
 	UINT FullAmountOfGames;
+	//
+	bool SkipWildCardsWeDontHave;
 };

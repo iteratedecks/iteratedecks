@@ -288,6 +288,29 @@ int _tmain(int argc, char* argv[])
 			DB.LoadCardList("wildcard\\include.txt",CardPool);
 			DB.LoadCardList("wildcard\\exclude.txt",xCardPool);
 		}
+		MUUINT OwnedCards;
+		if (pEvalParams->SkipWildCardsWeDontHave)
+		{
+			DB.LoadOwnedCards("wildcard\\ownedcards.txt",OwnedCards);
+			/*for (MUUINT::iterator mi = OwnedCards.begin();mi!=OwnedCards.end();mi++)
+			{
+				printf("%d : %d\n",mi->first,mi->second);
+			}*/
+			// mark all cards in deck as used, except for one wildcard
+			bool bWildMarked = false;
+			for (VCARDS::iterator vi=X.Deck.begin();vi!=X.Deck.end();vi++)
+				if ((vi->GetId() == pEvalParams->WildcardId) && (!bWildMarked))
+					bWildMarked = true;	// skip only one wildcard
+				else
+				{
+					MUUINT::iterator mi = OwnedCards.find(vi->GetId());
+					if (mi != OwnedCards.end())
+					{
+						mi->second--; // don't check whether we have enough cards or not
+					}
+					// else DON'T CHANGE ANYTHING IF WE DON'T HAVE BASIC CARDS
+				}
+		}
 		if (pEvalParams->WildcardId < 0)
 		{
 			// remove all non-commander cards from pool
@@ -377,6 +400,16 @@ int _tmain(int argc, char* argv[])
 		UINT BestCard = 0;
 		for (SCID::iterator si=CardPool.begin();si!=CardPool.end();si++)
 		{
+			if (pEvalParams->SkipWildCardsWeDontHave && (!OwnedCards.empty()))
+			{
+				MUUINT::iterator mi = OwnedCards.find(*si);
+				if (mi != OwnedCards.end())
+				{
+					if (mi->second < 1)
+						continue; // we don't have enough cards of a type
+				}
+				else continue; // we don't have this card
+			}
 			ActiveDeck x(X);
 			if (pEvalParams->WildcardId < 0)
 				x.Commander = PlayedCard(&DB.GetCard(*si));
@@ -459,8 +492,21 @@ int _tmain(int argc, char* argv[])
 	DB.LoadMissionXML("missions.xml");
 	DB.LoadRaidXML("raids.xml");
 	//DB.SaveMissionDecks("c:\\pun.txt");
-	ActiveDeck x("P9AXDd+jGqfk+ju8u8",DB.GetPointer());
-	ActiveDeck z("RLIO+kgN+kgOgf",DB.GetPointer());
+	ActiveDeck x("PuJTA2",DB.GetPointer());
+	ActiveDeck z("P8CTCT",DB.GetPointer());
+	x.SetOrderMatters(true);
+
+	{
+	RESULTS r;
+	for (UINT k=0;k<1000;k++)
+	{
+		ActiveDeck X(x);
+		ActiveDeck Y(z);
+
+		Simulate(X,Y,r);
+	}
+	return r.Win;
+	}
 
 	{
 	RESULTS r;

@@ -24,6 +24,8 @@ typedef vector<string> VSTRINGS;
 typedef map<string, UCHAR> MSKILLS;
 typedef pair<string, UCHAR> PAIRMSKILLS;
 typedef set <UINT>		SCID;
+typedef map<UINT, UINT> MUUINT;
+typedef pair<UINT, UINT> PAIRMUUINT;
 #define TAG_ANY			-100500
 #define TAG_BATCHEVAL	100500
 #define TAG_CUSTOM		0
@@ -878,6 +880,62 @@ public:
 						errline = cline;
 						break;					
 					}
+				cline++;
+			}
+			fclose(f);
+			return errline;
+		}
+		return -2; // fnf
+	}
+	int LoadOwnedCards(const char *FileName, MUUINT &OwnedCards)
+	{
+		FILE *f;
+		int errline = -1, cline = 0; // no errors
+		if (!fopen_s(&f,FileName,"r"))
+		{
+#define MAX_BUFFER_SIZE	65535
+			char buffer[MAX_BUFFER_SIZE];
+			while (!feof(f))
+			{
+				bool bReadLine = false;
+				size_t brs = 0, bre = 0;
+				fgets(buffer,MAX_BUFFER_SIZE,f);
+				for (UINT i=0;(i<MAX_BUFFER_SIZE)&&(buffer[i]);i++)
+					if (buffer[i] == '\n')
+					{
+						buffer[i] = 0;
+						break;
+					}
+					else
+						if (!isspace(buffer[i]))
+						{
+							bReadLine = true;
+							if (buffer[i] == '(')
+								brs = i;
+							else
+								if (buffer[i] == ')')
+									bre = i;
+						}
+				if (!bReadLine)
+					continue;
+				UINT amount = 1;
+				if ((brs > 0) && (bre > 0))
+				{
+					buffer[brs] = 0;
+					buffer[bre] = 0;
+					trim(buffer + brs + 1);
+					amount = atoi(buffer + brs + 1);
+					memset(buffer + brs,' ',bre - brs + 1);
+				}
+				trim(buffer);
+				if ((buffer[0] != '/') && (buffer[1] != '/') && bReadLine) 
+				{
+					const Card *c = GetCardSmart(buffer);
+					if ((!c) || (!c->IsCard()))
+						errline = cline;
+					else
+						OwnedCards.insert(PAIRMUUINT::pair(c->GetId(),amount));
+				}
 				cline++;
 			}
 			fclose(f);
