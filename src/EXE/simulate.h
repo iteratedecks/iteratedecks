@@ -12,8 +12,6 @@
 //
 // contains some threading evaluation routines
 
-#define TOP10					10
-
 CardDB DB; // just to make all easier ...
 UINT MaxTurn = MAX_TURN;
 
@@ -509,7 +507,9 @@ static unsigned int __stdcall ThreadFunc(void *pvParam)
 	EVAL_THREAD_PARAMS *p = (EVAL_THREAD_PARAMS *)pvParam;
 	srand((unsigned)p->Seed); // it seems like each thread shares seed with others before it starts, so we should reset seed or we will gate the same random sequences in all threads
 	RESULTS lr;
-	RESULT_BY_CARD rbc[DEFAULT_DECK_RESERVE_SIZE+1];
+	/*RESULT_BY_CARD rbc[DEFAULT_DECK_RESERVE_SIZE+1];
+	for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE+1;i++)
+		rbc[i].Id = p->rbc[i].Id;*/
 	UINT customcount = DB.GetCustomCount();
 	UINT customindex = 100; // doesn't matter if it is not 0
 	ActiveDeck customdeck;
@@ -537,15 +537,15 @@ static unsigned int __stdcall ThreadFunc(void *pvParam)
 					else
 						Atk.DelayFirstCard();
 				}
-				Simulate(Atk,Def,lr,p->CSIndex,rbc,p->bSurge,p->Req,p->SkillProcs);
+				Simulate(Atk,Def,lr,p->CSIndex,p->rbc,p->bSurge,p->Req,p->SkillProcs);
 			}
 			else
-				EvaluateRaidOnce(*(p->Atk),lr,p->CSIndex,rbc,(DWORD)p->RaidID,p->Req,p->SkillProcs);
+				EvaluateRaidOnce(*(p->Atk),lr,p->CSIndex,p->rbc,(DWORD)p->RaidID,p->Req,p->SkillProcs);
 		}
 	//_endthread();
 	p->r.Add(lr);
-	for (UCHAR m=0;m<DEFAULT_DECK_SIZE+1;m++)
-		p->rbc[m].Add(rbc[m]);
+	//for (UCHAR m=0;m<DEFAULT_DECK_SIZE+1;m++)
+	//	p->rbc[m].Add(rbc[m]);
 	return (UINT)p;
 }
 
@@ -623,6 +623,8 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 			parms[i].Atk = &gAtk;
 			parms[i].Def = &gDef;
 			parms[i].CSIndex = CSIndex;
+			for (UCHAR k=0;k<DEFAULT_DECK_RESERVE_SIZE+1;k++)
+				parms[i].rbc[k].Id = rbc[k].Id;
 			parms[i].RaidID = RaidID;
 			parms[i].gamesperthread = gamesperthread;
 			parms[i].Seed = Seed + i; // offset seed or we will have same results for all threads
@@ -647,7 +649,7 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 			cwait(NULL,m_ulThreadHandle[i],NULL); // now wait them all, order doesn't matter since we will have to wait all of them
 			// collect results
 			ret.Add(parms[i].r);
-			for (UCHAR m=0;m<DEFAULT_DECK_SIZE+1;m++)
+			for (UCHAR m=0;m<DEFAULT_DECK_RESERVE_SIZE+1;m++)
 				rbc[m].Add(parms[i].rbc[m]);
 
 			if (pSkillProcs)
@@ -682,8 +684,8 @@ struct EVAL_PARAMS
 	int WildFilterRarity;
 	int WildFilterFaction;
 	bool WildFilterSpecific;
-	UINT WildCardIds[TOP10];
-	UINT WildCardWins[TOP10];
+	UINT WildCardIds[DEFAULT_DECK_RESERVE_SIZE];
+	UINT WildCardWins[DEFAULT_DECK_RESERVE_SIZE];
 	UINT MaxTurn;
 	// control
 	int State; // set to -1 to stop
@@ -696,7 +698,7 @@ struct EVAL_PARAMS
 	//
 	UINT SkillProcs[CARD_ABILITIES_MAX];
 	//
-	RESULT_BY_ORDER ResultByOrder[TOP10];
+	RESULT_BY_ORDER ResultByOrder[DEFAULT_DECK_RESERVE_SIZE];
 	//
 	UINT FullAmountOfGames;
 	//

@@ -29,7 +29,6 @@ const
   cMaxBuffer = 65535;
   NAME_VALUE_SEPARATOR = '%';  // just a character that goes before '[' for StringList.Sort
   cDefaultMaxTurn = 50;
-  cTop10 = 10;
 
   
 type
@@ -132,15 +131,15 @@ type
     WildFilterRarity: integer;
     WildFilterFaction: integer;
     WildFilterSpecific: boolean;
-    WildCardIds: array[0..cTop10-1] of DWORD;
-    WildCardWins: array[0..cTop10-1] of DWORD;
+    WildCardIds: array[0..DECK_MAX_SIZE-1] of DWORD;
+    WildCardWins: array[0..DECK_MAX_SIZE-1] of DWORD;
     MaxTurn: DWORD;
     State: integer;
     TournamentMode: byte;
     OrderHeapSize: DWORD;
     Reqs: array[0..REQ_MAX_SIZE -1] of REQUIREMENT;
     SkillProcs: array[0..CARD_ABILITIES_MAX-1] of DWORD;
-    ResultByOrder: array[0..cTop10-1] of RESULT_BY_ORDER;
+    ResultByOrder: array[0..DECK_MAX_SIZE-1] of RESULT_BY_ORDER;
     FullAmountOfGames: DWORD;
     SkipWildcardsWeDontHave: boolean;
   end;
@@ -1074,7 +1073,7 @@ begin
     EvaluateDecksForm.vFullCardOrder.DataController.RecordCount := 0;
     if pEP.OrderHeapSize > 0 then
     begin
-      for i := 0 to cTOP10 - 1 do
+      for i := 0 to DECK_MAX_SIZE - 1 do
         if pEP.ResultByOrder[i].CardIDs[0] <> 0 then
         with EvaluateDecksForm.vFullCardOrder.DataController do
         begin
@@ -1111,7 +1110,7 @@ begin
           Values[RecordCount-1,EvaluateDecksForm.vWildCardsWins.Index] := pEP.Result.Win / pEP.Result.Games;
           Values[RecordCount-1,EvaluateDecksForm.vWildCardsName.Index] := s;
         end;
-      for i := 0 to cTOP10 - 1 do
+      for i := 0 to DECK_MAX_SIZE - 1 do
         if pEP.WildCardIds[i] <> 0 then
         with EvaluateDecksForm.vWildCards.DataController do
         begin
@@ -3771,8 +3770,9 @@ begin
             lrec := AppendRecord;
             s := Cards[i].Name;
             Values[lrec, vcoCard.Index] := s;
-            for I := 0 to 10 do
-              if r.ResultByCard[z].PickStats[i].Win > 0 then
+            for I := 0 to DECK_MAX_SIZE-1 do
+              if (r.ResultByCard[z].PickStats[i].Win > 0)
+               AND (i < 10) then  // we have only 10 columns
               begin
                 Values[lrec, (vCardOrder.FindItemByName('vcoW'+inttostr(i+1)) as TcxGridColumn).Index] := r.ResultByCard[z].PickStats[i].Win;
                 Values[lrec, (vCardOrder.FindItemByName('vcoR'+inttostr(i+1)) as TcxGridColumn).Index] :=

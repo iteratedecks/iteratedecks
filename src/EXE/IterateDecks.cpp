@@ -262,9 +262,9 @@ int _tmain(int argc, char* argv[])
 	memset(&pEvalParams->Result,0,sizeof(RESULTS));
 	memset(&pEvalParams->ResultByCard,0,sizeof(RESULT_BY_CARD) * (DEFAULT_DECK_RESERVE_SIZE + 1));	
 	memset(&pEvalParams->SkillProcs,0,sizeof(UINT)*CARD_ABILITIES_MAX);
-	memset(&pEvalParams->ResultByOrder,0,sizeof(RESULT_BY_ORDER)*TOP10);
-	memset(&pEvalParams->WildCardIds,0,sizeof(UCHAR)*TOP10);
-	memset(&pEvalParams->WildCardWins,0,sizeof(UINT)*TOP10);
+	memset(&pEvalParams->ResultByOrder,0,sizeof(RESULT_BY_ORDER)*DEFAULT_DECK_RESERVE_SIZE);
+	memset(&pEvalParams->WildCardIds,0,sizeof(UCHAR)*DEFAULT_DECK_RESERVE_SIZE);
+	memset(&pEvalParams->WildCardWins,0,sizeof(UINT)*DEFAULT_DECK_RESERVE_SIZE);
 	pEvalParams->FullAmountOfGames = 0;
 
 	time_t t;
@@ -432,7 +432,7 @@ int _tmain(int argc, char* argv[])
 		if (BestCard)
 			pEvalParams->WildcardId = BestCard;
 		UCHAR i = 0;
-		for (MRID::iterator mi = RID.begin(); (mi != RID.end()) && (i < 10); mi++)
+		for (MRID::iterator mi = RID.begin(); (mi != RID.end()) && (i < DEFAULT_DECK_RESERVE_SIZE /* amount of wildcards to dump */); mi++)
 			if (mi->second != BestCard)
 			{
 				pEvalParams->WildCardWins[i] = mi->first;
@@ -492,11 +492,11 @@ int _tmain(int argc, char* argv[])
 	DB.LoadMissionXML("missions.xml");
 	DB.LoadRaidXML("raids.xml");
 	//DB.SaveMissionDecks("c:\\pun.txt");
-	ActiveDeck x("PuJTA2",DB.GetPointer());
-	ActiveDeck z("P8CTCT",DB.GetPointer());
+	ActiveDeck x("SFJdJdJoJLJXJyDwCfAeFhCLvmgw",DB.GetPointer());
+	ActiveDeck z("SFJdJdJoJLJXJyDwCfAeFhCLvmgw",DB.GetPointer());
 	x.SetOrderMatters(true);
 
-	{
+	/*{
 	RESULTS r;
 	for (UINT k=0;k<1000;k++)
 	{
@@ -517,7 +517,7 @@ int _tmain(int argc, char* argv[])
 	//DB.LoadDecks("C:\\Users\\NT\\Documents\\Visual Studio 2008\\Projects\\EvaluateDecks\\bin\\decks\\_defence\\crash.txt");
 	//DB.GetCustomDeck(0,Y);
 	Simulate(X,Y,r);
-	}
+	}*/
 	
 	//printf("%d %d %d\n",sizeof(PICK_STATS),sizeof(RESULT_BY_CARD),sizeof(EVAL_PARAMS));
 	//DB.CreateDeck("Gaia, Utopia Beacon(3), Support Carrier(2), Flux Blaster, Radiant Dawnbringer, Acropolis, Adytum(2)",x);
@@ -527,8 +527,9 @@ int _tmain(int argc, char* argv[])
 	log.reserve(10000);
 
 	RESULTS r;
-	RESULT_BY_CARD rbc[DEFAULT_DECK_SIZE+1];
+	RESULT_BY_CARD rbc[DEFAULT_DECK_RESERVE_SIZE+1];
 	UCHAR CSIndex[CARD_MAX_ID];
+	memset(CSIndex,0,sizeof(CSIndex));
 	CSIndex[x.Commander.GetId()] = 0;
 	rbc[0].Id = x.Commander.GetId();
 	for (UCHAR i=0;i<x.Deck.size();i++)
@@ -546,6 +547,17 @@ int _tmain(int argc, char* argv[])
 		_ASSERT(idx);
 		CSIndex[x.Deck[i].GetId()] = idx;
 		rbc[idx].Id = x.Deck[i].GetId();
+	}
+	{
+	RESULTS r;
+	for (UINT k=0;k<1000;k++)
+	{
+		ActiveDeck X(x);
+		ActiveDeck Y(z);
+
+		Simulate(X,Y,r,CSIndex,rbc);
+	}
+	return r.Win;
 	}
 	//EvaluateRaidOnce(x,r,0,0,12);
 	for (UINT k=0;k<1000;k++)
