@@ -1384,7 +1384,10 @@ begin
                   end;
                 end;
               if cardList.Count > 0 then
+              begin
                 cardList.SaveToFile(sLocalDir + 'wildcard\ownedcards.txt');
+                cbCheckOnlyCardsOwned.Enabled := true;
+              end;
               cardList.Clear;
               for I := 1 to 20-1 do
                 if decks[i] <> '' then
