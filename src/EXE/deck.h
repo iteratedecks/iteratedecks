@@ -32,7 +32,7 @@ typedef	unsigned int UINT;
 #define FANCY_STATS_COUNT		5
 
 #define CARD_MAX_ID				4000 // size of storage array
-#define MISSION_MAX_ID			250  // size of storage array
+#define MISSION_MAX_ID			350  // size of storage array
 #define RAID_MAX_ID				20  // size of storage array
 
 #define RARITY_COMMON			0

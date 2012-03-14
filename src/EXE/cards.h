@@ -514,6 +514,8 @@ public:
 				UINT Commander = atoi(it->child("commander").child_value());
 
 				_ASSERT(Id < MISSION_MAX_ID);
+				if (Id >= MISSION_MAX_ID)
+					continue;
 				MDB[Id] = MissionInfo(Commander,Name);
 				MIIndex.insert(PAIRMSUINT(Name,Id));
 
