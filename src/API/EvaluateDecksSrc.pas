@@ -1103,6 +1103,7 @@ begin
     EvaluateDecksForm.vWildCards.DataController.RecordCount := 0;
     if pEP.WildCardId <> 0 then
     begin
+      if pEP.WildCardId > 0 then
         with EvaluateDecksForm.vWildCards.DataController do
         begin
           RecordCount := RecordCount + 1;

@@ -315,8 +315,12 @@ int _tmain(int argc, char* argv[])
 		{
 			// remove all non-commander cards from pool
 			for (SCID::iterator si = CardPool.begin(); si != CardPool.end(); si++)
+			{
 				while ((si != CardPool.end()) && (DB.GetCard(*si).GetType() != TYPE_COMMANDER))
 					si = CardPool.erase(si);
+				if (si == CardPool.end())
+					break;
+			}
 			// commander
 			for (UINT icmd=1000;icmd<2000;icmd++)
 			{
