@@ -3004,24 +3004,15 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Top = 3
             Caption = 'Use specific filter'
             TabOrder = 2
+            OnClick = cbUseSpecificFilterClick
             Width = 121
-          end
-          object cxLabel8: TcxLabel
-            Left = 155
-            Top = 30
-            Caption = 
-              'Specific filters were moved to text files "wildcard\include.txt"' +
-              ' and "wildcard\exclude.txt"'
-            Enabled = False
-            Properties.WordWrap = True
-            Width = 205
           end
           object gWildCards: TcxGrid
             Left = 3
             Top = 146
             Width = 214
             Height = 343
-            TabOrder = 4
+            TabOrder = 3
             object vWildCards: TcxGridTableView
               NavigatorButtons.ConfirmDelete = False
               DataController.Summary.DefaultGroupSummaryItems = <>
@@ -3048,11 +3039,62 @@ object EvaluateDecksForm: TEvaluateDecksForm
             end
           end
           object cbCheckOnlyCardsOwned: TcxCheckBox
-            Left = 155
-            Top = 91
+            Left = 428
+            Top = 3
             Caption = 'Only check cards I own'
-            TabOrder = 5
+            TabOrder = 4
             Width = 158
+          end
+          object lOwned: TcxLabel
+            Left = 428
+            Top = 20
+            AutoSize = False
+            Caption = 
+              'Requires wildcard\ownedcards.txt file that can be either created' +
+              ' manually or imported using kongregate integration (Kongregate -' +
+              ' Profile - Init)'
+            Enabled = False
+            Properties.WordWrap = True
+            Style.TextColor = clWindowText
+            Height = 77
+            Width = 205
+          end
+          object gbSpecificFilter: TcxGroupBox
+            Left = 155
+            Top = 30
+            Caption = 'Specific filter'
+            Enabled = False
+            TabOrder = 6
+            Height = 87
+            Width = 262
+            object bEditInclude: TcxButton
+              Left = 11
+              Top = 19
+              Width = 121
+              Height = 25
+              Caption = 'Edit included cards'
+              TabOrder = 0
+              OnClick = bEditIncludeClick
+            end
+            object bEditExclude: TcxButton
+              Left = 11
+              Top = 50
+              Width = 121
+              Height = 25
+              Caption = 'Edit excluded cards'
+              TabOrder = 1
+              OnClick = bEditExcludeClick
+            end
+            object cxLabel8: TcxLabel
+              Left = 143
+              Top = 18
+              Caption = 
+                'Specific filters were moved to text files "wildcard\include.txt"' +
+                '  "wildcard\exclude.txt"'
+              Enabled = False
+              Properties.WordWrap = True
+              Width = 114
+            end
           end
         end
         object tsRequrements: TcxTabSheet

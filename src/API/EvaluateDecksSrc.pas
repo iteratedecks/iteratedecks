@@ -27,7 +27,6 @@ const
   REQ_MAX_SIZE = 5;
   CARD_ABILITIES_MAX = 70;
   cMaxBuffer = 65535;
-  NAME_VALUE_SEPARATOR = '%';  // just a character that goes before '[' for StringList.Sort
   cDefaultMaxTurn = 50;
 
   
@@ -463,7 +462,6 @@ type
     tEnableBoost: TTimer;
     tDonateNotification: TTimer;
     lDonate4: TcxLabel;
-    cxLabel8: TcxLabel;
     gWildCardsLevel1: TcxGridLevel;
     gWildCards: TcxGrid;
     vWildCards: TcxGridTableView;
@@ -486,6 +484,11 @@ type
     cbSaveLogin: TcxCheckBox;
     cbExportOwned: TcxCheckBox;
     cbCheckOnlyCardsOwned: TcxCheckBox;
+    lOwned: TcxLabel;
+    gbSpecificFilter: TcxGroupBox;
+    bEditInclude: TcxButton;
+    bEditExclude: TcxButton;
+    cxLabel8: TcxLabel;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -654,6 +657,9 @@ type
     procedure tAuthTimer(Sender: TObject);
     function GetNumberOfProcessors:integer;
     function GenerateRequestHeader(msg: string): string;
+    procedure bEditIncludeClick(Sender: TObject);
+    procedure bEditExcludeClick(Sender: TObject);
+    procedure cbUseSpecificFilterClick(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -1424,6 +1430,20 @@ end;
 procedure TEvaluateDecksForm.cbEnableRatingClick(Sender: TObject);
 begin
   ImageCount := 0;
+end;
+
+procedure TEvaluateDecksForm.bEditExcludeClick(Sender: TObject);
+begin
+  if not FileExists(sLocalDir + 'wildcard\exclude.txt') then
+    FileClose(FileCreate(sLocalDir + 'wildcard\exclude.txt'));
+  ShellExecute(Handle, 'edit', 'wildcard\exclude.txt', nil, nil, SW_SHOWNORMAL);
+end;
+
+procedure TEvaluateDecksForm.bEditIncludeClick(Sender: TObject);
+begin
+  if not FileExists(sLocalDir + 'wildcard\include.txt') then
+    FileClose(FileCreate(sLocalDir + 'wildcard\include.txt'));
+  ShellExecute(Handle, 'edit', 'wildcard\include.txt', nil, nil, SW_SHOWNORMAL);
 end;
 
 procedure TEvaluateDecksForm.bEvalExportClick(Sender: TObject);
@@ -4341,6 +4361,11 @@ begin
     cbTourney.Checked := false;
 end;
 
+
+procedure TEvaluateDecksForm.cbUseSpecificFilterClick(Sender: TObject);
+begin
+  gbSpecificFilter.Enabled := cbUseSpecificFilter.Checked;
+end;
 
 procedure TEvaluateDecksForm.cbWildCardClick(Sender: TObject);
 begin
