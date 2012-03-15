@@ -33900,8 +33900,8 @@ object EvaluateDecksForm: TEvaluateDecksForm
     end
   end
   object cxStyleRepository1: TcxStyleRepository
-    Left = 328
-    Top = 368
+    Left = 368
+    Top = 360
     PixelsPerInch = 96
     object cxStyle1: TcxStyle
       AssignedValues = [svColor]

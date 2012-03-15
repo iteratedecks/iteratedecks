@@ -3395,6 +3395,10 @@ begin
           LastCardIndexBot := id;
           vBot.DataController.SetValue(i, vBotID.Index, id);
           s := Cards[id].Name;
+          if Cards[id].CardSet = 0 then
+            s := Cards[id].Name+ '[' + IntToStr(Cards[id].Id) + ']'
+          else
+            s := Cards[id].Name;
           vBot.DataController.SetValue(i, vBotName.Index, s);
           //vTop.DataController.SetValue(i,2,id);
           //vTop.DataController.SetValue(i,3,id);

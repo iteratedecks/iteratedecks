@@ -2477,11 +2477,11 @@
 		<deck>
 			<card>99</card>
 			<card>152</card>
-			<card>171</card> <!-- Flying -->
+			<card>171</card>
 			<card>106</card>
 			<card>41</card>
-			<card>212</card> <!-- Flying -->
-			<card>212</card> <!-- Flying -->
+			<card>212</card>
+			<card>212</card>
 			<card>156</card>
 			<card>178</card>
 			<card>178</card>
@@ -5918,7 +5918,7 @@
 		<picture>mission165.jpg</picture>
 		<location_id>19</location_id>
 		<num_to_complete>8</num_to_complete>
-		<x>140</x>
+		<x>180</x>
 		<y>310</y>
 		<xp>69</xp>
 		<energy>25</energy>
@@ -5951,7 +5951,7 @@
 		<picture>mission166.jpg</picture>
 		<location_id>19</location_id>
 		<num_to_complete>9</num_to_complete>
-		<x>190</x>
+		<x>220</x>
 		<y>300</y>
 		<xp>71</xp>
 		<energy>25</energy>
@@ -5985,8 +5985,8 @@
 		<picture>mission167.jpg</picture>
 		<location_id>19</location_id>
 		<num_to_complete>10</num_to_complete>
-		<x>230</x>
-		<y>290</y>
+		<x>250</x>
+		<y>270</y>
 		<xp>73</xp>
 		<energy>25</energy>
 		<money>1550</money>
@@ -8651,7 +8651,7 @@
 		<desc>Xeno ships are docking to assist in fighting you off.</desc>
 		<speech>
 			<line commander='1153'>Alright we made it, but the worst is far from over. From here we need to split up.</line>
-			<line commander='1153'>Katana and Yurich, we need to you to secure the control room and revert all power to the Ion Cannon, we will secure the cannon and fire when ready.</line>
+			<line commander='1153'>Katana and Yurich, we need you to secure the control room and revert all power to the Ion Cannon, we will secure the cannon and fire when ready.</line>
 			<line commander='1042'>This way Commander, the station will be overrun with Xeno so we need to make quick work of any that get in our way.</line>
 		</speech>
 		<deck>
@@ -8833,6 +8833,435 @@
 	</mission>
 
 <!-- END Phobos Missions -->
+
+<!-- Phobos Side Missions -->
+
+	<mission>
+		<id>242</id>
+		<name>Pagan Righteous 1</name>
+		<picture>mission242.jpg</picture>
+		<location_id>26</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>210</x>
+		<y>110</y> 
+		<xp>75</xp> <!-- 3.0 -->
+		<energy>25</energy>
+		<money>1550</money> <!-- 15.5 -->
+		<commander>1165</commander>
+		<desc>Righteous units are giving their lives for the Bloodthirsty attacking you.</desc>
+		<speech>
+			<line commander='1097'>It has begun. As the Pantheons lose power, the Righteous lose faith.</line>
+			<line commander='1097'>But I never expected any of them to become so deranged that they would help the Bloodthirsty!</line>
+		</speech>
+		<deck>
+			<card>326</card>
+			<card>315</card>
+			<card>534</card>
+			<card>131</card>
+			<card>609</card>
+			<card>532</card>
+			<card>352</card>
+			<card>349</card>
+			<card>3018</card>
+			<card>2090</card>
+		</deck>
+		<req>241</req>
+	</mission>
+
+	<mission>
+		<id>243</id>
+		<name>Pagan Righteous 2</name>
+		<picture>mission243.jpg</picture>
+		<location_id>26</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>250</x>
+		<y>120</y> 
+		<xp>76</xp> <!-- 3.05 -->
+		<energy>25</energy>
+		<money>1600</money> <!-- 16.0 -->
+		<commander>1165</commander>
+		<desc>You cannot reason with your Righteous brothers, you must destroy them as if they were the Bloodthirsty they fight with.</desc>
+		<speech>
+			<line commander='1097'>The Righteous have always been focused on the prevention of an apocalypse that the Bloodthirsty threaten to cause.</line>
+			<line commander='1097'>Even without the Pantheons those values should still be instilled within them.</line>
+		</speech>
+		<deck>
+			<card>166</card>
+			<card>225</card>
+			<card>200</card>
+			<card>303</card>
+			<card>346</card>
+			<card>291</card>
+			<card>489</card>
+			<card>553</card>
+			<card>497</card>
+			<card>606</card>
+			<card>3030</card>
+			<card>2066</card>
+		</deck>
+		<req>242</req>
+	</mission>
+
+	<mission>
+		<id>244</id>
+		<name>Pagan Righteous 3</name>
+		<picture>mission244.jpg</picture>
+		<location_id>26</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>320</x>
+		<y>140</y> 
+		<xp>77</xp> <!-- 3.1 -->
+		<energy>25</energy>
+		<money>1650</money> <!-- 16.5 -->
+		<commander>1166</commander>
+		<desc>With the help of the Righteous, more Bloodthirsty were able to invade the once sacred island.</desc>
+		<speech>
+			<line commander='1097'>I understand it now. The Pantheons bring out the good in the Righteous, but without that all the darkness in them floods out, they cannot overcome it.</line>
+		</speech>
+		<deck>
+			<card>632</card>
+			<card>543</card>
+			<card>491</card>
+			<card>492</card>
+			<card>597</card>
+			<card>333</card>
+			<card>593</card>
+			<card>621</card>
+			<card>540</card>
+			<card>308</card>
+			<card>190</card>
+			<card>481</card>
+			<card>3028</card>
+		</deck>
+		<req>243</req>
+	</mission>
+
+	<mission>
+		<id>245</id>
+		<name>Pagan Righteous 4</name>
+		<picture>mission245.jpg</picture>
+		<location_id>26</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>360</x>
+		<y>160</y> 
+		<xp>79</xp> <!-- 3.15 -->
+		<energy>25</energy>
+		<money>1700</money> <!-- 17.0 -->
+		<commander>1166</commander>
+		<desc>They will protect their most powerful units and crush you with them.</desc>
+		<speech>
+			<line commander='1097'>I am afraid our efforts have been futile. Attack the ones that we must, the rest we must leave. We have far more important issues to attend to.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1097'>When the Pantheons are restored, may they have mercy on our lost Righteous brothers and sisters.</line>
+		</speechComplete>
+		<deck>
+			<card>632</card>
+			<card>607</card>
+			<card>592</card>
+			<card>469</card>
+			<card>494</card>
+			<card>376</card>
+			<card>437</card>
+			<card>579</card>
+			<card>603</card>
+			<card>629</card>
+			<card>242</card>
+			<card>506</card>
+			<card>345</card>
+			<card>2049</card>
+			<card>2095</card>
+		</deck>
+		<rewards>
+			<card>632</card>
+		</rewards>
+		<req>244</req>
+	</mission>
+
+	<mission>
+		<id>246</id>
+		<name>Double Trouble 1</name>
+		<picture>mission246.jpg</picture>
+		<location_id>27</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>120</x>
+		<y>190</y> 
+		<xp>75</xp> <!-- 3.0 -->
+		<energy>25</energy>
+		<money>1550</money> <!-- 15.5 -->
+		<commander>1167</commander>
+		<desc>They are not going easy on us because we are weak. They have brought in the heavy artillery.</desc>
+		<speech>
+			<line commander='1097'>Vicar, the Council members are extremely weak. I know your forces sustained losses while defending them at the Nexus.</line>
+			<line commander='1097'>But we need you to hold out longer so we can escort them back to Valhalla.</line>
+		</speech>
+		<deck>
+			<card>631</card>
+			<card>615</card>
+			<card>610</card>
+			<card>476</card>
+			<card>536</card>
+			<card>314</card>
+			<card>624</card>
+			<card>54</card>
+			<card>2021</card>
+			<card>2057</card>
+		</deck>
+		<req>241</req>
+	</mission>
+
+	<mission>
+		<id>247</id>
+		<name>Double Trouble 2</name>
+		<picture>mission247.jpg</picture>
+		<location_id>27</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>150</x>
+		<y>130</y> 
+		<xp>76</xp> <!-- 3.05 -->
+		<energy>25</energy>
+		<money>1600</money> <!-- 16.0 -->
+		<commander>1167</commander>
+		<desc>They have brought reinforcements. Even if you are not as weak as they expected they will not stop attacking.</desc>
+		<speech>
+			<line commander='1097'>We must not have defeated all the Imperials on the island. Even worse they have joined with the Raiders. They are just taking advantage of our weakened state.</line>
+		</speech>
+		<deck>
+			<card>140</card>
+			<card>103</card>
+			<card>567</card>
+			<card>577</card>
+			<card>430</card>
+			<card>73</card>
+			<card>37</card>
+			<card>618</card>
+			<card>523</card>
+			<card>495</card>
+			<card>2058</card>
+			<card>3047</card>
+		</deck>
+		<req>246</req>
+	</mission>
+
+	<mission>
+		<id>248</id>
+		<name>Double Trouble 3</name>
+		<picture>mission248.jpg</picture>
+		<location_id>27</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>100</x>
+		<y>90</y> 
+		<xp>77</xp> <!-- 3.1 -->
+		<energy>25</energy>
+		<money>1650</money> <!-- 16.5 -->
+		<commander>1168</commander>
+		<desc>More enemies are approaching from the shore to aid their allies.</desc>
+		<speech>
+			<line commander='1097'>Vicar your devotion to protecting the Council is truly inspiring. Not much further and we will be safe.</line>
+		</speech>
+		<deck>
+			<card>634</card>
+			<card>258</card>
+			<card>186</card>
+			<card>498</card>
+			<card>468</card>
+			<card>395</card>
+			<card>509</card>
+			<card>383</card>
+			<card>533</card>
+			<card>373</card>
+			<card>568</card>
+			<card>2077</card>
+			<card>3041</card>
+		</deck>
+		<req>247</req>
+	</mission>
+
+	<mission>
+		<id>249</id>
+		<name>Double Trouble 4</name>
+		<picture>mission249.jpg</picture>
+		<location_id>27</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>130</x>
+		<y>30</y> 
+		<xp>79</xp> <!-- 3.15 -->
+		<energy>25</energy>
+		<money>1700</money> <!-- 17.0 -->
+		<commander>1168</commander>
+		<desc>This is the best opportunity they have to destroy you, they will not waste it.</desc>
+		<speech>
+			<line commander='1097'>They will not give up. Vicar show them the true power of the Righteous!</line>
+		</speech>
+		<speechComplete>
+			<line commander='1097'>You did it. I am sure if the Council could, they would give you their infinite gratitude.</line>
+		</speechComplete>
+		<deck>
+			<card>634</card>
+			<card>322</card>
+			<card>511</card>
+			<card>436</card>
+			<card>575</card>
+			<card>578</card>
+			<card>221</card>
+			<card>585</card>
+			<card>566</card>
+			<card>460</card>
+			<card>580</card>
+			<card>428</card>
+			<card>2088</card>
+			<card>2024</card>
+			<card>3004</card>
+		</deck>
+		<rewards>
+			<card>634</card>
+		</rewards>
+		<req>248</req>
+	</mission>
+
+	<mission>
+		<id>250</id>
+		<name>Boarded Xeno 1</name>
+		<picture>mission250.jpg</picture>
+		<location_id>28</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>80</x>
+		<y>80</y> 
+		<xp>75</xp> <!-- 3.0 -->
+		<energy>25</energy>
+		<money>1550</money> <!-- 15.5 -->
+		<commander>1169</commander>
+		<desc>Careful, you will be attacked by Xeno from within and from outside the transport.</desc>
+		<speech>
+			<line commander='1153'>Commander, we have been boarded by Xeno. Clear them out before we make it to main defense forces at the station.</line>
+			<line commander='1153'>They will draw the attention of patrols outside, so take them out quickly.</line>
+		</speech>
+		<deck>
+			<card>582</card>
+			<card>587</card>
+			<card>531</card>
+			<card>493</card>
+			<card>546</card>
+			<card>525</card>
+			<card>514</card>
+			<card>249</card>
+			<card>194</card>
+			<card>3017</card>
+		</deck>
+		<req>241</req>
+	</mission>
+
+	<mission>
+		<id>251</id>
+		<name>Boarded Xeno 2</name>
+		<picture>mission251.jpg</picture>
+		<location_id>28</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>120</x>
+		<y>50</y> 
+		<xp>76</xp> <!-- 3.05 -->
+		<energy>25</energy>
+		<money>1600</money> <!-- 16.0 -->
+		<commander>1169</commander>
+		<desc>More Xeno are overtaking the transport as you get closer to their defenses.</desc>
+		<speech>
+			<line commander='1153'>I am certain there were more than that. Keep searching and report back anything you find.</line>
+		</speech>
+		<deck>
+			<card>626</card>
+			<card>541</card>
+			<card>139</card>
+			<card>256</card>
+			<card>418</card>
+			<card>552</card>
+			<card>572</card>
+			<card>616</card>
+			<card>240</card>
+			<card>537</card>
+			<card>2096</card>
+			<card>3046</card>
+		</deck>
+		<req>250</req>
+	</mission>
+
+	<mission>
+		<id>252</id>
+		<name>Boarded Xeno 3</name>
+		<picture>mission252.jpg</picture>
+		<location_id>28</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>180</x>
+		<y>70</y> 
+		<xp>77</xp> <!-- 3.1 -->
+		<energy>25</energy>
+		<money>1650</money> <!-- 16.5 -->
+		<commander>1170</commander>
+		<desc>More units from outside the ship are attacking. Try to fend them off.</desc>
+		<speech>
+			<line commander='1153'>We are under attack from a patrol. See if you can handle them as well as the intruders.</line>
+		</speech>
+		<deck>
+			<card>636</card>
+			<card>605</card>
+			<card>545</card>
+			<card>353</card>
+			<card>261</card>
+			<card>287</card>
+			<card>324</card>
+			<card>397</card>
+			<card>152</card>
+			<card>310</card>
+			<card>99</card>
+			<card>2096</card>
+			<card>3023</card>
+		</deck>
+		<req>251</req>
+	</mission>
+
+	<mission>
+		<id>253</id>
+		<name>Boarded Xeno 4</name>
+		<picture>mission253.jpg</picture>
+		<location_id>28</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>140</x>
+		<y>120</y> 
+		<xp>79</xp> <!-- 3.15 -->
+		<energy>25</energy>
+		<money>1700</money> <!-- 17.0 -->
+		<commander>1170</commander>
+		<desc>The Xenos have a greater advantage now that you are closer to their defenses.</desc>
+		<speech>
+			<line commander='1153'>The Xeno are trying to bring us down from the inside even if they go down with us!</line>
+			<line commander='1153'>Destroy them before they destroy us.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1153'>Excellent work Commander. We should be safe until we approach the station.</line>
+		</speechComplete>
+		<deck>
+			<card>636</card>
+			<card>30</card>
+			<card>61</card>
+			<card>159</card>
+			<card>441</card>
+			<card>599</card>
+			<card>139</card>
+			<card>316</card>
+			<card>310</card>
+			<card>452</card>
+			<card>432</card>
+			<card>613</card>
+			<card>587</card>
+			<card>2092</card>
+			<card>3038</card>
+		</deck>
+		<rewards>
+			<card>636</card>
+		</rewards>
+		<req>252</req>
+	</mission>
+
+<!-- END Phobos Side Missions -->
 	
 <!-- END MISSIONS -->
 	
