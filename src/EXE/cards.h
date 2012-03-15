@@ -1392,10 +1392,10 @@ public:
 					if (mi->second.empty())
 						return false;
 					VSTRINGS::iterator vi = mi->second.begin();
-					R.Commander = GetCard(*vi);
+					R.Commander = GetCardSmart(vi->c_str());
 					R.Deck.clear();
 					for (vi++;vi != mi->second.end();vi++)
-						R.Add(GetCard(*vi));
+						R.Add(GetCardSmart(vi->c_str()));
 					return true;
 				}
 				Index--;
