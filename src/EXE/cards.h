@@ -463,9 +463,9 @@ public:
 						UCHAR TF = RemapFaction(child.attribute("y").as_uint());
 						UCHAR skillevent = EVENT_EMPTY;
 						if (child.attribute("died").as_uint() > 0)
-							skillevent = EVENT_DIED;
+							skillevent += EVENT_DIED;
 						if (child.attribute("played").as_uint() > 0)
-							skillevent = EVENT_PLAYED;
+							skillevent += EVENT_PLAYED;
 						c.AddAbility(Id,Effect,TC,TF,skillevent);
 						//for (pugi::xml_attribute attr = child.first_attribute(); attr; attr = attr.next_attribute())
 							//printf("    %s = %s\n",attr.name(),attr.value());

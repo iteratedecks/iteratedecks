@@ -905,7 +905,11 @@ var
     if Id = 2 then
       result := ' on play'
     else
-      result := ' on death'; {
+    if Id = 1 then
+      result := ' on death'
+    else
+      result := ' on play/death';
+       {
   #define EVENT_EMPTY				0
 #define EVENT_DIED				1
 #define EVENT_PLAYED			2   }
@@ -1390,7 +1394,7 @@ begin
               end;
               cardList.Clear;
               for I := 1 to 20-1 do
-                if decks[i] <> '' then
+                if (decks[i] <> '') and (Pos(',',decks[i]) > 1) then// not empty and has cards aside from commander
                   cardList.Add(decks[i]);
               if cardList.Count > 0 then
                 cardList.SaveToFile(sLocalDir + 'decks\custom\my_kg_decks.txt');

@@ -58,6 +58,7 @@ char FACTIONS[6][CARD_NAME_MAX_LENGTH] = {0,"Imperial","Raider","Bloodthirsty","
 #define EVENT_EMPTY				0
 #define EVENT_DIED				1
 #define EVENT_PLAYED			2
+#define EVENT_BOTH				3
 
 #define TYPE_NONE				0
 #define TYPE_COMMANDER			1
@@ -1592,7 +1593,14 @@ public:
 			aid = Src.GetAbilityInOrder(aindex);
 
 			// filter certain types of skills
-			if (EffectType != Src.GetAbilityEvent(aid)) continue;
+			/*EMPTY - EMPTY
+			DIED - DIED
+			DIED - BOTH
+			PLAY - PLAY
+			PLAY - BOTH*/
+			if (!((EffectType == Src.GetAbilityEvent(aid)) ||
+				((EffectType != EVENT_EMPTY) && (Src.GetAbilityEvent(aid) == EVENT_BOTH)))) 
+				continue;
 
 			// cleanse
 			if (aid == ACTIVATION_CLEANSE)
