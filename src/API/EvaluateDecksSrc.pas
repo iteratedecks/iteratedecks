@@ -3783,7 +3783,10 @@ begin
         end
         else
         begin
-          HashID := GetMissionDeckIndex(mDefDeckName);
+          if mDefDeckName <> '' then
+            HashID := GetMissionDeckIndex(mDefDeckName)
+          else
+            HashID := 0;
           if HashID = 0 then
             HashType := 6;
         end;
