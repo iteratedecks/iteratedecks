@@ -489,6 +489,7 @@ type
     bEditInclude: TcxButton;
     bEditExclude: TcxButton;
     cxLabel8: TcxLabel;
+    bSaveWildcardList: TcxButton;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -660,6 +661,7 @@ type
     procedure bEditIncludeClick(Sender: TObject);
     procedure bEditExcludeClick(Sender: TObject);
     procedure cbUseSpecificFilterClick(Sender: TObject);
+    procedure bSaveWildcardListClick(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -3976,6 +3978,22 @@ begin
     finally
       Free;
     end;
+  end;
+end;
+
+procedure TEvaluateDecksForm.bSaveWildcardListClick(Sender: TObject);
+var
+  i: integer;
+  sl: TStringList;
+begin
+  sl := TStringList.Create;
+  try
+    for i := 0 to vWildcards.DataController.RecordCount-1 do
+      sl.Add(vWildcards.DataController.Values[i, 0]);
+    if sl.Count > 0 then
+      sl.SaveToFile(sLocalDir + 'wildcard\include.txt');
+  finally
+    sl.Free;
   end;
 end;
 
