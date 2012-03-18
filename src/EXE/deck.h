@@ -2243,7 +2243,7 @@ public:
 									{
 										Src.Rally(effect);
 										vi->first->fsSpecial += effect;
-										Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;										
+										SkillProcs[DEFENSIVE_TRIBUTE]++;										
 									}
 								}
 							}
