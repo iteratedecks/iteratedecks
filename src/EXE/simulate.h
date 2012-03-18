@@ -79,7 +79,7 @@ void MergeBuffers(UINT *Dest, const UCHAR *Src, UINT Size = CARD_ABILITIES_MAX)
 		Dest[i] += Src[i];
 }
 
-void Simulate(ActiveDeck &tAtk, ActiveDeck &tDef, RESULTS &r, const UCHAR *CSIndex = 0, RESULT_BY_CARD *rbc = 0, bool bSurge = false, REQUIREMENT *Reqs = 0, UINT *SkillProcs = 0)
+void Simulate(ActiveDeck &tAtk, ActiveDeck &tDef, RESULTS &r, const UCHAR *CSIndex = 0, RESULT_BY_CARD *rbc = 0, bool bSurge = false, REQUIREMENT *Reqs = 0, UINT *SkillProcs = 0, bool bAnnihilator = false)
 {
 /*
 Should have given more credit to people that help improving...
@@ -181,7 +181,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 					iwl++;
 					if (!ywl.Commander.IsAlive())
 					{
-						if (xwl.CheckRequirements(Reqs))
+						if (xwl.CheckRequirements(Reqs) && ((!bAnnihilator) || (ywl.IsAnnihilated())))
 							rbc[CSIndex[id]].WLWin++;
 						break;
 					}
@@ -210,7 +210,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 		tAtk.AttackDeck(tDef);
 		if (!tDef.Commander.IsAlive())
 		{			
-			if (tAtk.CheckRequirements(Reqs))
+			if (tAtk.CheckRequirements(Reqs) && ((!bAnnihilator) || (tDef.IsAnnihilated())))
 			{
 				InsertOrder(tAtk.GetHash64(true),1);
 				if (CSIndex && rbc)
@@ -370,9 +370,10 @@ struct EVAL_THREAD_PARAMS
 	UCHAR TournamentMode;
 	REQUIREMENT Req[REQ_MAX_SIZE];
 	UINT SkillProcs[CARD_ABILITIES_MAX];
+	bool Annihilator;
 };
 
-void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* = 0*/, RESULT_BY_CARD *rbc/* = 0*/, DWORD RaidID, REQUIREMENT *Reqs = 0, UINT *SkillProcs = 0)
+void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* = 0*/, RESULT_BY_CARD *rbc/* = 0*/, DWORD RaidID, REQUIREMENT *Reqs = 0, UINT *SkillProcs = 0, bool bAnnihilator = false)
 {
 	ActiveDeck tAtk(gAtk);
 	ActiveDeck tDef;
@@ -423,7 +424,7 @@ void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* 
 		tAtk.AttackDeck(tDef);
 		if (!tDef.Commander.IsAlive())
 		{
-			if (tAtk.CheckRequirements(Reqs))
+			if (tAtk.CheckRequirements(Reqs) && ((!bAnnihilator) || (tDef.IsAnnihilated())))
 			{
 				InsertOrder(tAtk.GetHash64(true),1);
 				if (CSIndex && rbc)
@@ -537,10 +538,10 @@ static unsigned int __stdcall ThreadFunc(void *pvParam)
 					else
 						Atk.DelayFirstCard();
 				}
-				Simulate(Atk,Def,lr,p->CSIndex,p->rbc,p->bSurge,p->Req,p->SkillProcs);
+				Simulate(Atk,Def,lr,p->CSIndex,p->rbc,p->bSurge,p->Req,p->SkillProcs,p->Annihilator);
 			}
 			else
-				EvaluateRaidOnce(*(p->Atk),lr,p->CSIndex,p->rbc,(DWORD)p->RaidID,p->Req,p->SkillProcs);
+				EvaluateRaidOnce(*(p->Atk),lr,p->CSIndex,p->rbc,(DWORD)p->RaidID,p->Req,p->SkillProcs,p->Annihilator);
 		}
 	//_endthread();
 	p->r.Add(lr);
@@ -549,7 +550,7 @@ static unsigned int __stdcall ThreadFunc(void *pvParam)
 	return (UINT)p;
 }
 
-void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDef, int RaidID, RESULTS &ret, RESULT_BY_CARD *rbc, int &State, DWORD gamesperthread, DWORD threadscount = 1, bool bSurge = false, UCHAR TournamentMode = 0, REQUIREMENT *Req = 0, UINT *pSkillProcs = 0)
+void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDef, int RaidID, RESULTS &ret, RESULT_BY_CARD *rbc, int &State, DWORD gamesperthread, DWORD threadscount = 1, bool bSurge = false, UCHAR TournamentMode = 0, REQUIREMENT *Req = 0, UINT *pSkillProcs = 0, bool bAnnihilator = false)
 {
 	// create Index
 	UCHAR CSIndex[CARD_MAX_ID];
@@ -602,10 +603,10 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 					}
 					tDef = customdeck;
 				}
-				Simulate(tAtk,tDef,ret,CSIndex,rbc,bSurge,Req,pSkillProcs);
+				Simulate(tAtk,tDef,ret,CSIndex,rbc,bSurge,Req,pSkillProcs,bAnnihilator);
 			}
 			else
-				EvaluateRaidOnce(gAtk,ret,CSIndex,rbc,(DWORD)RaidID,Req,pSkillProcs);
+				EvaluateRaidOnce(gAtk,ret,CSIndex,rbc,(DWORD)RaidID,Req,pSkillProcs,bAnnihilator);
 		}
 	}
 	else
@@ -631,6 +632,7 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 			parms[i].bSurge = bSurge;
 			parms[i].pState = &State;
 			parms[i].TournamentMode = TournamentMode;
+			parms[i].Annihilator = bAnnihilator;
 			memset(parms[i].SkillProcs,0,sizeof(parms[i].SkillProcs));
 			if (Req)
 				memcpy(parms[i].Req,Req,sizeof(REQUIREMENT)*REQ_MAX_SIZE);
@@ -703,4 +705,5 @@ struct EVAL_PARAMS
 	UINT FullAmountOfGames;
 	//
 	bool SkipWildCardsWeDontHave;
+	bool Annihilator;
 };

@@ -2772,6 +2772,13 @@ object EvaluateDecksForm: TEvaluateDecksForm
               TabOrder = 11
               OnClick = bBatchRunEvalClick
             end
+            object cbAnnihilator: TcxCheckBox
+              Left = 431
+              Top = 3
+              Caption = 'Annihilator'
+              TabOrder = 12
+              Width = 106
+            end
           end
           object pEvalBot: TPanel
             Left = 0

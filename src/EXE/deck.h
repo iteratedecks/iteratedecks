@@ -1311,6 +1311,17 @@ public:
 				return false;
 		return true;
 	}
+	bool IsAnnihilated()
+	{
+		if (!Deck.empty()) return false;
+		for (VCARDS::iterator vi = Units.begin(); vi != Units.end(); vi++)
+			if (vi->IsAlive())
+				return false;
+		for (VCARDS::iterator vi = Structures.begin(); vi != Structures.end(); vi++)
+			if (vi->IsAlive())
+				return false;
+		return true;
+	}
 	void SetFancyStatsBuffer(const UCHAR *resindex, RESULT_BY_CARD *res)
 	{
 		CSIndex = resindex;

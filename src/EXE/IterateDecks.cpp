@@ -423,7 +423,7 @@ int _tmain(int argc, char* argv[])
 				continue;
 			RESULTS lresult;
 			RESULT_BY_CARD lrbc[DEFAULT_DECK_RESERVE_SIZE+1];
-			EvaluateInThreads(pEvalParams->Seed,x,Y,pEvalParams->RaidID,lresult,lrbc,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode,pEvalParams->Req,pEvalParams->SkillProcs);
+			EvaluateInThreads(pEvalParams->Seed,x,Y,pEvalParams->RaidID,lresult,lrbc,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode,pEvalParams->Req,pEvalParams->SkillProcs,pEvalParams->Annihilator);
 			if (lresult.Win > pEvalParams->Result.Win)
 			{
 				pEvalParams->Result = lresult;
@@ -447,7 +447,7 @@ int _tmain(int argc, char* argv[])
 	else
 	{
 		// simple eval
-		EvaluateInThreads(pEvalParams->Seed,X,Y,pEvalParams->RaidID,pEvalParams->Result,pEvalParams->ResultByCard,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode,pEvalParams->Req,pEvalParams->SkillProcs);
+		EvaluateInThreads(pEvalParams->Seed,X,Y,pEvalParams->RaidID,pEvalParams->Result,pEvalParams->ResultByCard,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode,pEvalParams->Req,pEvalParams->SkillProcs,pEvalParams->Annihilator);
 		pEvalParams->FullAmountOfGames += pEvalParams->Result.Games;
 	}
 	if (OrderLength > 0)
@@ -492,20 +492,24 @@ int _tmain(int argc, char* argv[])
    return 1;
 #else
 	bConsoleOutput = false;
-	DB.LoadCardXML("cards.xml");
+	DB.LoadCardXML("C:\\Users\\NT\\Documents\\Visual Studio 2008\\Projects\\EvaluateDecks\\bin\\cards.xml");
 	DB.LoadMissionXML("missions.xml");
 	DB.LoadRaidXML("raids.xml");
 	//DB.SaveMissionDecks("c:\\pun.txt");
-	ActiveDeck x("SFJdJdJoJLJXJyDwCfAeFhCLvmgw",DB.GetPointer());
-	ActiveDeck z("SFJdJdJoJLJXJyDwCfAeFhCLvmgw",DB.GetPointer());
+	ActiveDeck x("PsCDfcfc",DB.GetPointer());
+	ActiveDeck z("QVCDDICsDNBxBGBGBxB0DnC7fcfc",DB.GetPointer());
 	x.SetOrderMatters(true);
 
-	/*{
+	//DB.LoadDecks("C:\\Users\\NT\\Documents\\Visual Studio 2008\\Projects\\EvaluateDecks\\bin\\decks\\batcheval\\New Missions.txt");
+
+	bConsoleOutput = true;
+	{
 	RESULTS r;
 	for (UINT k=0;k<1000;k++)
 	{
 		ActiveDeck X(x);
 		ActiveDeck Y(z);
+
 
 		Simulate(X,Y,r);
 	}
@@ -521,7 +525,7 @@ int _tmain(int argc, char* argv[])
 	//DB.LoadDecks("C:\\Users\\NT\\Documents\\Visual Studio 2008\\Projects\\EvaluateDecks\\bin\\decks\\_defence\\crash.txt");
 	//DB.GetCustomDeck(0,Y);
 	Simulate(X,Y,r);
-	}*/
+	}
 	
 	//printf("%d %d %d\n",sizeof(PICK_STATS),sizeof(RESULT_BY_CARD),sizeof(EVAL_PARAMS));
 	//DB.CreateDeck("Gaia, Utopia Beacon(3), Support Carrier(2), Flux Blaster, Radiant Dawnbringer, Acropolis, Adytum(2)",x);

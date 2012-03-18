@@ -141,6 +141,7 @@ type
     ResultByOrder: array[0..DECK_MAX_SIZE-1] of RESULT_BY_ORDER;
     FullAmountOfGames: DWORD;
     SkipWildcardsWeDontHave: boolean;
+    Annihilator: boolean;
   end;
 
 type
@@ -490,6 +491,7 @@ type
     bEditExclude: TcxButton;
     cxLabel8: TcxLabel;
     bSaveWildcardList: TcxButton;
+    cbAnnihilator: TcxCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -1017,6 +1019,7 @@ begin
   pEP.OrderMatters := bOrderMatters;
   pEP.TournamentMode := integer(TournamentMode);
   pEP.SkipWildcardsWeDontHave := EvaluateDecksForm.cbCheckOnlyCardsOwned.Checked;
+  pEP.Annihilator := EvaluateDecksForm.cbAnnihilator.Checked;
 
   pEP.MaxTurn := MaxTurn;
 
