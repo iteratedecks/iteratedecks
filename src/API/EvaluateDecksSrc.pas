@@ -492,6 +492,7 @@ type
     cxLabel8: TcxLabel;
     bSaveWildcardList: TcxButton;
     cbAnnihilator: TcxCheckBox;
+    vcHash: TcxGridColumn;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -816,8 +817,12 @@ function AbilityHasExtendedDesc(AbilityID: Byte): boolean; cdecl; external DLLFI
 
 function GetHashFromDeck(Deck: string; buffer: PChar; size: DWORD): boolean; cdecl; external DLLFILE;
 
+function BuildResultHash(CardList: string; Version: DWORD; Revision: DWORD; HashType: DWORD; HashID: DWORD; GamesOverall: DWORD; GamesWon: DWORD; buffer: PChar; size: DWORD): boolean; cdecl; external DLLFILE;
+
 function GetDeckFromHash(Hash: string; buffer: PChar; size: DWORD): boolean; cdecl; external DLLFILE;
 function GetDeckFromString(CardList: string; OutputIDList: PChar): boolean; cdecl; external DLLFILE;
+
+function GetMissionDeckIndex(DeckName: string): DWORD; cdecl; external DLLFILE;
 
 procedure SpeedTest; cdecl; external DLLFILE;
 
@@ -1183,7 +1188,7 @@ begin
   userid := slAuth.Values['user_id'];
   result := sTyrantAPI + '?user_id=' + userid;
   result := result + '&message=' + msg;
-  if fversion <> '' then  
+  if fversion <> '' then
     result := result + '&version=' + fversion;
   result := result + '&time=' + inttostr(t);
   result := result + '&hash=' + MD5Print(md5string(msg + inttostr(t) + time_hash));
@@ -3490,8 +3495,12 @@ var
   //SpeedTest: procedure;
   LibHandle: THandle;
   bImages: boolean;
-  s: string;
+  s, ResultHash: string;
   p1: pchar;
+
+  EDVersion, EDRevision, HashType, HashID: DWORD;
+  Size, Size2: DWord;
+  Pt, Pt2: Pointer;
 begin
   if EvaluateParams <> nil then
   begin
@@ -3727,6 +3736,7 @@ begin
             sl1[z] := s;
           //sl1.CommaText := StringReplace(sl1.CommaText,cbWildCardName.Text,s,[]);
           s := StringReplace(FormatDeck(sl1.CommaText), '"', '', [rfReplaceAll]);
+          atk := s; // ?
           cxView.DataController.Values[rec, vcAtk.Index] := StringReplace(s, ',', ', ', [rfReplaceAll]);
         end
         else
@@ -3738,6 +3748,59 @@ begin
           ShowMessage('No cards in current filter!');
           abort;
         end;
+
+      ResultHash := '';
+      if (not bIsSurge) and
+         (not cbTourney.Checked) and
+         (not cbAnnihilator.Checked) and
+         (seMaxTurn.Value = 50) and
+         (not cbRequirements.Checked) and
+         (not cbUseComplexDefence.Checked) then
+      begin
+        EDVersion := 0;
+        EDRevision := 0;
+        Size := GetFileVersionInfoSize(PChar(ParamStr(0)), Size2);
+        if Size > 0 then
+        begin
+          GetMem(Pt, Size);
+          try
+            GetFileVersionInfo(PChar(ParamStr(0)), 0, Size, Pt);
+            VerQueryValue(Pt, '\', Pt2, Size2);
+            with TVSFixedFileInfo(Pt2^) do
+            begin
+              EDVersion := HiWord(dwFileVersionLS);
+              EDRevision := LoWord(dwFileVersionLS);
+            end;
+          finally
+            FreeMem(Pt);
+          end;
+        end;
+
+        if bIsRaid then
+        begin
+          HashType := 2; // 3
+          HashID := raid;
+        end
+        else
+        begin
+          HashID := GetMissionDeckIndex(mDefDeckName);
+          if HashID = 0 then
+            HashType := 6;
+        end;
+        if cbOrderMatters.Checked then
+          inc(HashType);
+
+        if HashType < 6 then // we don't need custom deck hashes yet
+        begin
+          GetMem(p1, cMaxBuffer); // initialize
+          try
+            if BuildResultHash(atk,EDVersion,EDRevision,HashType,HashID,r.Result.Games,r.Result.Win,p1,cMaxBuffer) then
+              ResultHash := p1;
+          finally
+            FreeMem(p1);
+          end;
+        end;
+      end;
 
       // load individual results
       vCardStats.BeginUpdate;
@@ -3842,6 +3905,7 @@ begin
       Values[rec, vcAvgS.Index] := r.Result.LPoints / i;
       Values[rec, vcAvgSA.Index] := r.Result.LAutoPoints / i;
       Values[rec, vcNet.Index] := Integer(r.Result.Points - r.Result.LPoints) / i;
+      Values[rec, vcHash.Index] := ResultHash;
     except
       ResetBatchRunEval;
       ShowMessage(sIterateDecksCrashed);

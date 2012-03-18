@@ -2841,6 +2841,10 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   Properties.DisplayFormat = ',0.###;-,0.###'
                   Options.Editing = False
                 end
+                object vcHash: TcxGridColumn
+                  Caption = 'Result hash'
+                  Width = 110
+                end
                 object vcAvgD: TcxGridColumn
                   Caption = 'Avg. Dmg Dealt'
                   DataBinding.ValueType = 'Float'

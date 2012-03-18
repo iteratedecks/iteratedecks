@@ -33,10 +33,6 @@
 
 int _tmain(int argc, char* argv[])
 {
-/*	DB.LoadCardXML("cards.xml");
-	DB.LoadMissionXML("missions.xml");
-	DB.SaveMissionDecks("missions.txt");
-	return 1;*/
 /*
 	ActiveDeck m154("SGJDJRJbJZDhGWH0IMI6gz",DB.GetPointer());
 	for (UINT i=0;i<1000;i++)

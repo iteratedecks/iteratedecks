@@ -1342,6 +1342,13 @@ public:
 		MDB[mi->second].GetDeck(buffer,size);
 		return buffer;
 	}
+	const UINT GetMissionDeckIndex(const char* DeckName)
+	{
+		MSUINT::iterator mi = MIIndex.find(DeckName);
+		if (mi == MIIndex.end())	
+			return 0; // not found
+		return mi->second;
+	}
 	const char* GetRaidDecksList(char *buffer, size_t size)
 	{
 		buffer[0] = 0;

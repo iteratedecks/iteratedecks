@@ -217,6 +217,10 @@ extern "C"
 	{
 		return DB.GetMissionDeck(DeckName, buffer, size);
 	};
+	IDAPI const UINT GetMissionDeckIndex(const char* DeckName)
+	{
+		return DB.GetMissionDeckIndex(DeckName);
+	};
 	IDAPI const char * GetRaidDecksList(char *buffer, DWORD size)
 	{
 		return DB.GetRaidDecksList(buffer, size);
@@ -475,6 +479,62 @@ extern "C"
 	IDAPI bool RateCard(const UINT Id, double &OffenceValue, double &DefenceValue, const UCHAR iFormulaUsed = 0)
 	{
 		return DB.RateCard(Id, OffenceValue, DefenceValue, iFormulaUsed);
+	}
+	IDAPI bool BuildResultHash(const char *CardList, UINT Version, UINT Revision, UINT HashType, UINT HashID, UINT GamesOverall, UINT GamesWon, char *Buffer, DWORD MaxBufferSize)
+	{
+#define HASH_VERSION	0
+		ActiveDeck X;
+		DB.CreateDeck(CardList,X);
+		if (X.Deck.empty() || (!X.IsValid()))
+			return false;
+
+		UINT DeckChecksum = 0;
+		for (VCARDS::iterator vi = X.Deck.begin();vi!=X.Deck.end();vi++)
+			DeckChecksum += vi->GetId();
+/*
+Everything is in base64
+H - hash version (0 for now)
+V - EvaluateDecks version
+RR - EvaluateDecks revision
+T - hash type (0 - mission(auto), 1 - mission(manual), 2 - raid(auto), 3 - raid(manual), 4 - achievement(auto), 5 - achievement(manual), 6+ - custom deck?)
+II - mission/raid/achievement id
+GGGG - count of games overall
+WWWW - count of games won
+D - deck checksum ((sum of deck card IDs) mod 64)
+R - result checksum ((H + V + RR + T + GGGG + WWWW) mod 64)
+
+Full result, containing both deck definition and result of evaluations may look like this:
+DECKHASH.HVRRTIIGGGGWWWWDR
+*/
+		string s = X.GetHash64();
+		s += ".";
+		unsigned short c = ID2BASE64(HASH_VERSION);
+		s += ((char*)&c + 1); // need only last 1 char
+		c = ID2BASE64(Version);
+		s += ((char*)&c + 1); // need only last 1 char
+		c = ID2BASE64(Revision);
+		s += (char*)&c;
+		c = ID2BASE64(HashType);
+		s += ((char*)&c + 1); // need only last 1 char
+		c = ID2BASE64(HashID);
+		s += (char*)&c;
+		c = ID2BASE64(GamesOverall / 4096);
+		s += (char*)&c;
+		c = ID2BASE64(GamesOverall % 4096);
+		s += (char*)&c;
+		c = ID2BASE64(GamesWon / 4096);
+		s += (char*)&c;
+		c = ID2BASE64(GamesWon % 4096);
+		s += (char*)&c;
+		c = ID2BASE64(DeckChecksum % 4096);
+		s += ((char*)&c + 1); // need only last 1 char
+		UINT ResultChecksum = HASH_VERSION + Version + Revision + HashType + HashID + GamesOverall + GamesWon;
+		c = ID2BASE64(ResultChecksum % 4096);
+		s += ((char*)&c + 1); // need only last 1 char
+		if (s.length() > MaxBufferSize)
+			return false;
+		strcpy(Buffer,s.c_str());		
+		return true;
 	}
 }
 
