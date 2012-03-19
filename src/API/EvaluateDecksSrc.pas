@@ -1264,6 +1264,28 @@ var
   currentdeckid: integer;
   decks: array[0..20] of string;
   procedure ParseObject(vJsonObj: TlkJsonObject; node: TcxTreeListNode);
+    procedure ParseList(vJsonObj: TlkJsonCustomList; node: TcxTreeListNode);
+    var
+      z: integer;
+      znode: TcxTreeListNode;
+    begin
+        for z := 0 to vJsonObj.Count - 1 do
+        begin
+          znode := tProfile.AddChild(node,nil);
+          znode.Values[0] := inttostr(z+1);
+          if (vJsonObj.Child[z] is TlkJSONstring) OR
+             (vJsonObj.Child[z] is TlkJSONnumber) OR
+             (vJsonObj.Child[z] is TlkJSONboolean)
+             then
+            znode.Values[1] := vJsonObj.Child[z].Value
+          else
+          if (vJsonObj.Child[z] is TlkJSONobject) then
+            ParseObject(vJsonObj.Child[z] as TlkJSONobject, znode)
+          else
+          if (vJsonObj.Child[z] is TlkJsonCustomList) then
+            ParseList(vJsonObj.Child[z] as TlkJSONcustomlist, znode)
+        end;
+    end;
   var
     i, idx: integer;
     lnode: TcxTreeListNode;
@@ -1326,7 +1348,8 @@ var
           CardsOwned[idx] := CardsOwned[idx] + vJsonObj.FieldByIndex[i].Value;
         end;
         end;
-      end;
+      end
+      else
       if (vJsonObj.FieldByIndex[i] is TlkJSONobject) then
       begin
         lnode := tProfile.AddChild(node,nil);
@@ -1346,6 +1369,13 @@ var
           end;
         end;
         ParseObject(vJsonObj.FieldByIndex[i] as TlkJSONobject, lnode);
+      end
+      else
+      if (vJsonObj.FieldByIndex[i] is TlkJSONcustomlist) then
+      begin
+        lnode := tProfile.AddChild(node,nil);
+        lnode.Values[0] := vJsonObj.NameOf[i];
+        ParseList(vJsonObj.FieldByIndex[i] as TlkJSONcustomlist,lnode);
       end;
     end;
   end;
