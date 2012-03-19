@@ -488,7 +488,7 @@ extern "C"
 		if (X.Deck.empty() || (!X.IsValid()))
 			return false;
 
-		UINT DeckChecksum = 0;
+		UINT DeckChecksum = X.Commander.GetId();
 		for (VCARDS::iterator vi = X.Deck.begin();vi!=X.Deck.end();vi++)
 			DeckChecksum += vi->GetId();
 /*
@@ -501,7 +501,7 @@ II - mission/raid/achievement id
 GGGG - count of games overall
 WWWW - count of games won
 D - deck checksum ((sum of deck card IDs) mod 64)
-R - result checksum ((H + V + RR + T + GGGG + WWWW) mod 64)
+R - result checksum ((H + V + RR + T + II + GGGG + WWWW) mod 64)
 
 Full result, containing both deck definition and result of evaluations may look like this:
 DECKHASH.HVRRTIIGGGGWWWWDR

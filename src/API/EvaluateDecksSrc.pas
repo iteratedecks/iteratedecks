@@ -14,7 +14,7 @@ uses
   cxCurrencyEdit, ActiveX, cxSpinEdit, cxRadioGroup, cxGroupBox, DBClient,
   GIFImg, ShellApi, cxCheckListBox, cxGridBandedTableView, cxGridExportLink, ClipBrd,
   cxSplitter, Extended, SHDocVw_EWB, EwbCore, EmbeddedWB, IDURI, uLkJSON, OurNSHandler, urlMon, md5,
-  cxTreeView, cxTL, cxInplaceContainer;
+  cxTreeView, cxTL, cxInplaceContainer, cxButtonEdit;
 
 const
   MAX_CARD_COUNT = 1200;
@@ -665,6 +665,8 @@ type
     procedure bEditExcludeClick(Sender: TObject);
     procedure cbUseSpecificFilterClick(Sender: TObject);
     procedure bSaveWildcardListClick(Sender: TObject);
+    procedure vcHashPropertiesButtonClick(Sender: TObject;
+      AButtonIndex: Integer);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -738,6 +740,7 @@ const
   sCustomDecks = 'Custom.txt';
   sCardNotFound = 'Card "%s" not found in database.';
   cFansiteBaseLink = 'http://tyrant.40in.net/deck.php?id=';
+  cFansitePostResult = 'http://tyrant.40in.net/kg/nsupload.php?id=';
   sOptimusFont = 'fonts\Optimus.ttf';
   sEnigmaticFont = 'fonts\Enigmatic.TTF';
   sIterateDecksCrashed = 'IterateDecks.exe has crashed,'#13'no results can be fetched.'#13'Check if your antivirus software'#13'is not blocking IterateDecks.exe'#13'and if decks you use are valid.'#13#13'Please report to developer if this'#13'error persists.';
@@ -2121,6 +2124,18 @@ begin
       emul := (fLastWinRatio - v);
       ACanvas.Brush.Color := RGB(round(180 - 120*emul),round(180 - 40*emul),round(180+50*emul))//round(clSkyBlue - (10 * 40 * (fLastWinRatio - v)));
     end;
+  end;
+end;
+
+procedure TEvaluateDecksForm.vcHashPropertiesButtonClick(Sender: TObject;
+  AButtonIndex: Integer);
+var s: string;
+begin
+  if not VarIsNull(cxView.DataController.Values[cxView.DataController.FocusedRecordIndex,vcHash.Index]) and
+    (cxView.DataController.Values[cxView.DataController.FocusedRecordIndex,vcHash.Index] <> '') then
+  begin
+     s := cFansitePostResult + cxView.DataController.Values[cxView.DataController.FocusedRecordIndex,vcHash.Index];
+     ShellExecute(Handle, 'open', PChar(s), nil, nil, SW_SHOWNORMAL);
   end;
 end;
 
@@ -3823,7 +3838,7 @@ begin
         if cbOrderMatters.Checked then
           inc(HashType);
 
-        if HashType < 6 then // we don't need custom deck hashes yet
+        //if HashType < 6 then // we don't need custom deck hashes yet
         begin
           GetMem(p1, cMaxBuffer); // initialize
           try

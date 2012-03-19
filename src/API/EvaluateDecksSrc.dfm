@@ -2843,6 +2843,15 @@ object EvaluateDecksForm: TEvaluateDecksForm
                 end
                 object vcHash: TcxGridColumn
                   Caption = 'Result hash'
+                  PropertiesClassName = 'TcxButtonEditProperties'
+                  Properties.Buttons = <
+                    item
+                      Caption = 'POST'
+                      Default = True
+                      Kind = bkText
+                    end>
+                  Properties.OnButtonClick = vcHashPropertiesButtonClick
+                  Options.ShowEditButtons = isebAlways
                   Width = 110
                 end
                 object vcAvgD: TcxGridColumn
