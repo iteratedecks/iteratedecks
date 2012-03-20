@@ -419,7 +419,7 @@ int _tmain(int argc, char* argv[])
 				continue;
 			RESULTS lresult;
 			RESULT_BY_CARD lrbc[DEFAULT_DECK_RESERVE_SIZE+1];
-			EvaluateInThreads(pEvalParams->Seed,x,Y,pEvalParams->RaidID,lresult,lrbc,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode,pEvalParams->Req,pEvalParams->SkillProcs,pEvalParams->Annihilator);
+			EvaluateInThreads(pEvalParams->Seed,x,Y,pEvalParams->RaidID,lresult,lrbc,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode,pEvalParams->Req,pEvalParams->SkillProcs,pEvalParams->Annihilator,pEvalParams->SurrenderAtLoss);
 			if (lresult.Win > pEvalParams->Result.Win)
 			{
 				pEvalParams->Result = lresult;
@@ -443,7 +443,7 @@ int _tmain(int argc, char* argv[])
 	else
 	{
 		// simple eval
-		EvaluateInThreads(pEvalParams->Seed,X,Y,pEvalParams->RaidID,pEvalParams->Result,pEvalParams->ResultByCard,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode,pEvalParams->Req,pEvalParams->SkillProcs,pEvalParams->Annihilator);
+		EvaluateInThreads(pEvalParams->Seed,X,Y,pEvalParams->RaidID,pEvalParams->Result,pEvalParams->ResultByCard,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode,pEvalParams->Req,pEvalParams->SkillProcs,pEvalParams->Annihilator,pEvalParams->SurrenderAtLoss);
 		pEvalParams->FullAmountOfGames += pEvalParams->Result.Games;
 	}
 	if (OrderLength > 0)

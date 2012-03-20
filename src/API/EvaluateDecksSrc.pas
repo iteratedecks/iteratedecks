@@ -142,6 +142,7 @@ type
     FullAmountOfGames: DWORD;
     SkipWildcardsWeDontHave: boolean;
     Annihilator: boolean;
+    SurrenderAtLoss: boolean;
   end;
 
 type
@@ -493,6 +494,7 @@ type
     bSaveWildcardList: TcxButton;
     cbAnnihilator: TcxCheckBox;
     vcHash: TcxGridColumn;
+    cbSurrenderAtLoss: TcxCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -949,7 +951,7 @@ end;
 
 function IterateDecks(Cwd: string; Seed: DWORD; AtkDeck: string;
   DefDeck: string; RaidID: integer; GamesPerThread: DWORD; Threads: DWORD;
-  bIsSurge: boolean; MaxTurn: DWORD; bOrderMatters: boolean; TournamentMode: boolean; var iWildCard: integer;
+  bIsSurge: boolean; MaxTurn: DWORD; bOrderMatters: boolean; TournamentMode: boolean; bAnnihilator: boolean; var iWildCard: integer;
   iWildFilterType: integer = 0; iWildFilterRarity: integer = 0;
   iWildFilterFaction: integer = 0): FULLRESULT;
 var
@@ -1027,7 +1029,8 @@ begin
   pEP.OrderMatters := bOrderMatters;
   pEP.TournamentMode := integer(TournamentMode);
   pEP.SkipWildcardsWeDontHave := EvaluateDecksForm.cbCheckOnlyCardsOwned.Checked;
-  pEP.Annihilator := EvaluateDecksForm.cbAnnihilator.Checked;
+  pEP.Annihilator := bAnnihilator;
+  pEP.SurrenderAtLoss := EvaluateDecksForm.cbSurrenderAtLoss.Checked;
 
   pEP.MaxTurn := MaxTurn;
 
@@ -2944,7 +2947,7 @@ begin
 
         wildcard := 0;
         r := IterateDecks(sLocalDir, seed, atk, def, -1, games
-          div tc, tc, false, cDefaultMaxTurn, cbBOrderMatters.Checked, cbBTourney.Checked, wildcard);
+          div tc, tc, false, cDefaultMaxTurn, cbBOrderMatters.Checked, cbBTourney.Checked, false, wildcard);
 
         with vBatchResult.DataController do
         try
@@ -2968,7 +2971,7 @@ begin
 
         wildcard := 0;
         r := IterateDecks(sLocalDir, seed, atk, def, -1, games
-          div tc, tc, true, cDefaultMaxTurn, cbBOrderMatters.Checked, cbBTourney.Checked, wildcard);
+          div tc, tc, true, cDefaultMaxTurn, cbBOrderMatters.Checked, cbBTourney.Checked, false, wildcard);
 
         with vBatchResult.DataController do
         try
@@ -3766,7 +3769,7 @@ begin
 
       r := IterateDecks(sLocalDir, seed, atk, def, raid,
         games div tc, tc, bIsSurge, seMaxTurn.Value, cbOrderMatters.Checked,
-        cbTourney.Checked, wildcard, ft, fr, ff);
+        cbTourney.Checked, cbAnnihilator.Checked, wildcard, ft, fr, ff);
       rec := cxView.DataController.RecordCount - 1;
       if wildcard > 0 then
       begin

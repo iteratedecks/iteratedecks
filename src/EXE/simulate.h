@@ -79,7 +79,7 @@ void MergeBuffers(UINT *Dest, const UCHAR *Src, UINT Size = CARD_ABILITIES_MAX)
 		Dest[i] += Src[i];
 }
 
-void Simulate(ActiveDeck &tAtk, ActiveDeck &tDef, RESULTS &r, const UCHAR *CSIndex = 0, RESULT_BY_CARD *rbc = 0, bool bSurge = false, REQUIREMENT *Reqs = 0, UINT *SkillProcs = 0, bool bAnnihilator = false)
+void Simulate(ActiveDeck &tAtk, ActiveDeck &tDef, RESULTS &r, const UCHAR *CSIndex = 0, RESULT_BY_CARD *rbc = 0, bool bSurge = false, REQUIREMENT *Reqs = 0, UINT *SkillProcs = 0, bool bAnnihilator = false, bool bSurrenderAtLoss = false)
 {
 /*
 Should have given more credit to people that help improving...
@@ -130,10 +130,13 @@ In other words, it is the same as on auto, only the counters reset every time yo
 					r.Points+=10;
 				else
 					r.Points+=tAtk.DamageToCommander;
-				if (tDef.DamageToCommander >= 10)  // dying
-					r.LPoints+=10;
-				else
-					r.LPoints+=tDef.DamageToCommander;
+				if (!bSurrenderAtLoss)
+				{
+					if (tDef.DamageToCommander >= 10)  // dying
+						r.LPoints+=10;
+					else
+						r.LPoints+=tDef.DamageToCommander;
+				}
 				iAutoAtkDmg += tAtk.DamageToCommander;
 				iAutoDefDmg += tDef.DamageToCommander;
 				if (iAutoAtkDmg > 10)
@@ -147,8 +150,11 @@ In other words, it is the same as on auto, only the counters reset every time yo
 				r.Loss++;
 				if (i < 10)
 					r.LAutoPoints+=5; // +5 points for losing by turn 10 on auto
-				if (i < iLastManualTurn + 10)
-					r.LPoints+=5; // +5 points for losing by turn T+10 
+				if (!bSurrenderAtLoss)
+				{
+					if (i < iLastManualTurn + 10)
+						r.LPoints+=5; // +5 points for losing by turn T+10 
+				}
 				break;
 			}
 			i++;
@@ -233,10 +239,13 @@ In other words, it is the same as on auto, only the counters reset every time yo
 				r.Points+=10;
 			else
 				r.Points+=tAtk.DamageToCommander;
-			if (tDef.DamageToCommander >= 10)  // suffering damage
-				r.LPoints+=10;
-			else
-				r.LPoints+=tDef.DamageToCommander;
+			if (!bSurrenderAtLoss)
+			{
+				if (tDef.DamageToCommander >= 10)  // suffering damage
+					r.LPoints+=10;
+				else
+					r.LPoints+=tDef.DamageToCommander;
+			}
 			iAutoAtkDmg += tAtk.DamageToCommander;
 			iAutoDefDmg += tDef.DamageToCommander;
 			if (iAutoAtkDmg > 10)
@@ -276,10 +285,13 @@ In other words, it is the same as on auto, only the counters reset every time yo
 					r.Points+=10;
 				else
 					r.Points+=tAtk.DamageToCommander;
-				if (tDef.DamageToCommander >= 10)  // dying
-					r.LPoints+=10;
-				else
-					r.LPoints+=tDef.DamageToCommander;
+				if (!bSurrenderAtLoss)
+				{
+					if (tDef.DamageToCommander >= 10)  // dying
+						r.LPoints+=10;
+					else
+						r.LPoints+=tDef.DamageToCommander;
+				}
 				iAutoAtkDmg += tAtk.DamageToCommander;
 				iAutoDefDmg += tDef.DamageToCommander;
 				if (iAutoAtkDmg > 10)
@@ -293,8 +305,11 @@ In other words, it is the same as on auto, only the counters reset every time yo
 				r.Loss++;
 				if (i < 10)
 					r.LAutoPoints+=5; // +5 points for losing by turn 10 on auto
-				if (i < iLastManualTurn + 10)
-					r.LPoints+=5; // +5 points for losing by turn T+10
+				if (!bSurrenderAtLoss)
+				{
+					if (i < iLastManualTurn + 10)
+						r.LPoints+=5; // +5 points for losing by turn T+10
+				}
 				break;
 			}
 			i++;
@@ -336,10 +351,13 @@ In other words, it is the same as on auto, only the counters reset every time yo
 			r.Points+=10;
 		else
 			r.Points+=tAtk.DamageToCommander;
-		if (tDef.DamageToCommander >= 10)  // suffered damage
-			r.LPoints+=10;
-		else
-			r.LPoints+=tDef.DamageToCommander;
+		if (!bSurrenderAtLoss)
+		{
+			if (tDef.DamageToCommander >= 10)  // suffered damage
+				r.LPoints+=10;
+			else
+				r.LPoints+=tDef.DamageToCommander;
+		}
 		iAutoAtkDmg += tAtk.DamageToCommander;
 		iAutoDefDmg += tDef.DamageToCommander;
 		if (iAutoAtkDmg > 10)
@@ -371,9 +389,10 @@ struct EVAL_THREAD_PARAMS
 	REQUIREMENT Req[REQ_MAX_SIZE];
 	UINT SkillProcs[CARD_ABILITIES_MAX];
 	bool Annihilator;
+	bool SurrenderAtLoss;
 };
 
-void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* = 0*/, RESULT_BY_CARD *rbc/* = 0*/, DWORD RaidID, REQUIREMENT *Reqs = 0, UINT *SkillProcs = 0, bool bAnnihilator = false)
+void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* = 0*/, RESULT_BY_CARD *rbc/* = 0*/, DWORD RaidID, REQUIREMENT *Reqs = 0, UINT *SkillProcs = 0, bool bAnnihilator = false, bool bSurrenderAtLoss = false)
 {
 	ActiveDeck tAtk(gAtk);
 	ActiveDeck tDef;
@@ -538,10 +557,10 @@ static unsigned int __stdcall ThreadFunc(void *pvParam)
 					else
 						Atk.DelayFirstCard();
 				}
-				Simulate(Atk,Def,lr,p->CSIndex,p->rbc,p->bSurge,p->Req,p->SkillProcs,p->Annihilator);
+				Simulate(Atk,Def,lr,p->CSIndex,p->rbc,p->bSurge,p->Req,p->SkillProcs,p->Annihilator,p->SurrenderAtLoss);
 			}
 			else
-				EvaluateRaidOnce(*(p->Atk),lr,p->CSIndex,p->rbc,(DWORD)p->RaidID,p->Req,p->SkillProcs,p->Annihilator);
+				EvaluateRaidOnce(*(p->Atk),lr,p->CSIndex,p->rbc,(DWORD)p->RaidID,p->Req,p->SkillProcs,p->Annihilator,p->SurrenderAtLoss);
 		}
 	//_endthread();
 	p->r.Add(lr);
@@ -550,7 +569,7 @@ static unsigned int __stdcall ThreadFunc(void *pvParam)
 	return (UINT)p;
 }
 
-void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDef, int RaidID, RESULTS &ret, RESULT_BY_CARD *rbc, int &State, DWORD gamesperthread, DWORD threadscount = 1, bool bSurge = false, UCHAR TournamentMode = 0, REQUIREMENT *Req = 0, UINT *pSkillProcs = 0, bool bAnnihilator = false)
+void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDef, int RaidID, RESULTS &ret, RESULT_BY_CARD *rbc, int &State, DWORD gamesperthread, DWORD threadscount = 1, bool bSurge = false, UCHAR TournamentMode = 0, REQUIREMENT *Req = 0, UINT *pSkillProcs = 0, bool bAnnihilator = false, bool bSurrenderAtLoss = false)
 {
 	// create Index
 	UCHAR CSIndex[CARD_MAX_ID];
@@ -603,10 +622,10 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 					}
 					tDef = customdeck;
 				}
-				Simulate(tAtk,tDef,ret,CSIndex,rbc,bSurge,Req,pSkillProcs,bAnnihilator);
+				Simulate(tAtk,tDef,ret,CSIndex,rbc,bSurge,Req,pSkillProcs,bAnnihilator,bSurrenderAtLoss);
 			}
 			else
-				EvaluateRaidOnce(gAtk,ret,CSIndex,rbc,(DWORD)RaidID,Req,pSkillProcs,bAnnihilator);
+				EvaluateRaidOnce(gAtk,ret,CSIndex,rbc,(DWORD)RaidID,Req,pSkillProcs,bAnnihilator,bSurrenderAtLoss);
 		}
 	}
 	else
@@ -633,6 +652,7 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 			parms[i].pState = &State;
 			parms[i].TournamentMode = TournamentMode;
 			parms[i].Annihilator = bAnnihilator;
+			parms[i].SurrenderAtLoss = bSurrenderAtLoss;
 			memset(parms[i].SkillProcs,0,sizeof(parms[i].SkillProcs));
 			if (Req)
 				memcpy(parms[i].Req,Req,sizeof(REQUIREMENT)*REQ_MAX_SIZE);
@@ -706,4 +726,5 @@ struct EVAL_PARAMS
 	//
 	bool SkipWildCardsWeDontHave;
 	bool Annihilator;
+	bool SurrenderAtLoss;
 };

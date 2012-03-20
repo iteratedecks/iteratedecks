@@ -7019,6 +7019,14 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Properties.WordWrap = True
         Width = 234
       end
+      object cbSurrenderAtLoss: TcxCheckBox
+        Left = 207
+        Top = 185
+        Caption = 'Surrender at loss'
+        TabOrder = 10
+        OnClick = cbEnableRatingClick
+        Width = 234
+      end
     end
   end
   object pDonate: TPanel
