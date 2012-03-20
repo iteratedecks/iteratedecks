@@ -14,6 +14,7 @@
 
 #include <vector>
 #include <set>
+#include "ctype.h"
 
 #define DEFAULT_DECK_SIZE		10
 #define DEFAULT_DECK_RESERVE_SIZE	15 // up to 20? kinda deck max size for structures
@@ -1360,6 +1361,8 @@ public:
 		Deck.reserve(DEFAULT_DECK_RESERVE_SIZE);
 		for (UCHAR i = 0; i < len; i++)
 		{
+			if (HashBase64[i << 1] == '.') break; // delimeter
+			if (isspace(HashBase64[i << 1])) break; // not a hash
 			tid = BASE64ID((HashBase64[i << 1] << 8) + HashBase64[(i << 1) + 1]);
 			if (!i)
 			{

@@ -1937,6 +1937,11 @@ object EvaluateDecksForm: TEvaluateDecksForm
           F51774F51774F51774F51774F51774F51774F51774F51774F51774F51774F517
           74F51774F51774F51C77F53C8AF77DB1F9D5E6FDFFFFFFFFFFFF}
       end
+      object lCancelSorting: TcxLabel
+        Left = 296
+        Top = 3
+        Caption = 'Hold Ctrl and click on column to cancel sorting'
+      end
     end
     object tsDecks: TcxTabSheet
       Caption = 'Visual'

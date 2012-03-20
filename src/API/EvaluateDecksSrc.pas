@@ -29,6 +29,9 @@ const
   cMaxBuffer = 65535;
   cDefaultMaxTurn = 50;
 
+const
+  MAX_CARD_ERRORS = 3;
+
   
 type
   TCard = record
@@ -495,6 +498,7 @@ type
     cbAnnihilator: TcxCheckBox;
     vcHash: TcxGridColumn;
     cbSurrenderAtLoss: TcxCheckBox;
+    lCancelSorting: TcxLabel;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -1567,8 +1571,9 @@ end;
 procedure TEvaluateDecksForm.LoadRaidCommander;
 var
   p1: pchar;
-  id: integer;
+  id,cnt: integer;
 begin
+  cnt := 0;
   // LoadDeck
   GetMem(p1, cMaxBuffer); // initialize
   try
@@ -1576,7 +1581,12 @@ begin
     if id >= 0 then
       CopyCard(Images[id], imgBot)
     else
+    begin
       ShowMessage(Format(sCardNotFound, [p1]));
+      inc(cnt);
+      if (cnt >= MAX_CARD_ERRORS) then
+        exit; // cancelled
+    end;
   finally
     FreeMem(p1);
   end;
@@ -2045,7 +2055,7 @@ end;
 
 procedure TEvaluateDecksForm.vBotNamePropertiesCloseUp(Sender: TObject);
 begin
-  if (not VarIsNull(vBotName.EditValue)) and (not vBotName.IsLast) then
+  if (not VarIsNull(vBotName.EditValue)) and (not vBotName.IsLast) and (vBot.SortedItemCount = 0) then
     vBot.DataController.GotoNext;
 end;
 
@@ -2273,7 +2283,7 @@ end;
 
 procedure TEvaluateDecksForm.vTopNamePropertiesCloseUp(Sender: TObject);
 begin
-  if (not VarIsNull(vTopName.EditValue)) and (not vTopName.IsLast) then
+  if (not VarIsNull(vTopName.EditValue)) and (not vTopName.IsLast) and (vTop.SortedItemCount = 0) then
     vTop.DataController.GotoNext;
 end;
 
@@ -2379,9 +2389,10 @@ procedure TEvaluateDecksForm.LoadCustomDeck(DeckName: string; var Deck: array of
   end;
 var
   p1: pchar;
-  i, id: integer;
+  i, id, cnt: integer;
   //cname, cmod: string;
 begin
+  cnt := 0;
   // LoadDeck
   GetMem(p1, cMaxBuffer); // initialize
   with TStringList.Create do
@@ -2399,7 +2410,12 @@ begin
       else
         id := GetCardID(Strings[0]);
       if id < 0 then
-        ShowMessage(Format(sCardNotFound, [Strings[0]]))
+      begin
+        ShowMessage(Format(sCardNotFound, [Strings[0]]));
+        inc(cnt);
+        if (cnt >= MAX_CARD_ERRORS) then
+          exit; // cancelled
+      end
       else if bIsTopDeck then
       begin
         CopyCard(Images[id], imgTop);
@@ -2419,7 +2435,12 @@ begin
         else
           id := GetCardID(Strings[i]);
         if id < 0 then
-          ShowMessage(Format(sCardNotFound, [Strings[i]]))
+        begin
+          ShowMessage(Format(sCardNotFound, [Strings[i]]));
+          inc(cnt);
+          if (cnt >= MAX_CARD_ERRORS) then
+            exit; // cancelled
+        end
         else
           AddCard(Deck, bIsTopDeck, Images[id]);
       end;
@@ -2591,9 +2612,10 @@ end;
 procedure TEvaluateDecksForm.bBotPasteClick(Sender: TObject);
 var
   p1: pchar;
-  i, id: integer;
+  i, cnt, id: integer;
   s: string;
 begin
+  cnt := 0;
   // LoadDeck
   GetMem(p1, cMaxBuffer); // initialize
   with TStringList.Create do
@@ -2606,7 +2628,12 @@ begin
       begin
         id := GetIndexFromID(strtoint(Strings[i]));
         if id < 0 then
-          ShowMessage(Format(sCardNotFound, [Strings[i]]))
+        begin
+          ShowMessage(Format(sCardNotFound, [Strings[i]]));
+          inc(cnt);
+          if (cnt >= MAX_CARD_ERRORS) then
+            exit; // cancelled
+        end
         else
         begin
           LastCardIndexBot := id;
@@ -3311,9 +3338,10 @@ end;
 procedure TEvaluateDecksForm.LoadTopDeck(Name: string; Tag: integer = 0);
 var
   p1: pchar;
-  i, id: integer;
+  i, cnt, id: integer;
   s: string;
 begin
+  cnt := 0;
   // LoadDeck
   GetMem(p1, cMaxBuffer); // initialize
   with TStringList.Create do
@@ -3325,7 +3353,12 @@ begin
       begin
         id := GetCardID(Strings[i]);
         if id < 0 then
-          ShowMessage(Format(sCardNotFound, [Strings[i]]))
+        begin
+          ShowMessage(Format(sCardNotFound, [Strings[i]]));
+          inc(cnt);
+          if (cnt >= MAX_CARD_ERRORS) then
+            exit; // cancelled
+        end
         else
         begin
           LastCardIndex := id;
@@ -3374,9 +3407,10 @@ end;
 procedure TEvaluateDecksForm.bmCustomDefenceClick(Sender: TObject);
 var
   p1: pchar;
-  i, id: integer;
+  i, id, cnt: integer;
   s: string;
 begin
+  cnt := 0;
   // LoadDeck
   GetMem(p1, cMaxBuffer); // initialize
   with TStringList.Create do
@@ -3388,7 +3422,12 @@ begin
       begin
         id := GetCardID(Strings[i]);
         if id < 0 then
-          ShowMessage(Format(sCardNotFound, [Strings[i]]))
+        begin
+          ShowMessage(Format(sCardNotFound, [Strings[i]]));
+          inc(cnt);
+          if (cnt >= MAX_CARD_ERRORS) then
+            exit; // cancelled
+        end
         else
         begin
           LastCardIndexBot := id;
@@ -3435,9 +3474,10 @@ end;
 procedure TEvaluateDecksForm.bmMissionClick(Sender: TObject);
 var
   p1: pchar;
-  i, id: integer;
+  i, id, cnt: integer;
   s: string;
 begin
+  cnt := 0;
   // LoadDeck
   GetMem(p1, cMaxBuffer); // initialize
   with TStringList.Create do
@@ -3451,7 +3491,12 @@ begin
         if Count > vBot.DataController.RecordCount then
           vBot.DataController.RecordCount := Count;
         if id < 0 then
-          ShowMessage(Format(sCardNotFound, [Strings[i]]))
+        begin
+          ShowMessage(Format(sCardNotFound, [Strings[i]]));
+          inc(cnt);
+          if (cnt >= MAX_CARD_ERRORS) then
+            exit; // cancelled
+        end
         else
         begin
           LastCardIndexBot := id;
@@ -4241,9 +4286,10 @@ end;
 procedure TEvaluateDecksForm.bTopPasteClick(Sender: TObject);
 var
   p1: pchar;
-  i, id: integer;
+  i, id, cnt: integer;
   s: string;
 begin
+  cnt := 0;
   // LoadDeck
   GetMem(p1, cMaxBuffer); // initialize
   with TStringList.Create do
@@ -4261,7 +4307,12 @@ begin
       begin
         id := GetIndexFromID(strtoint(Strings[i]));
         if id < 0 then
-          ShowMessage(Format(sCardNotFound, [Strings[i]]))
+        begin
+          ShowMessage(Format(sCardNotFound, [Strings[i]]));
+          inc(cnt);
+          if (cnt >= MAX_CARD_ERRORS) then
+            exit; // cancelled
+        end
         else
         begin
           LastCardIndex := id;
