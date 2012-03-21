@@ -4053,7 +4053,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             end
             object bCatface: TcxButton
               Left = 295
-              Top = 1
+              Top = 3
               Width = 122
               Height = 25
               Caption = 'Catface my faction :3'
