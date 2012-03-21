@@ -3126,7 +3126,7 @@ begin
     'By pressing yes, you accept the hatred of the tyrant community,'#13+
     'the loathing of up to '+inttostr(faction_members)+' other people whom you just kicked,'#13+
     'not to mention the undying friendship of lokolopo2.'),
-    'Catface :3',MB_YESNO) = ID_YES then
+    'Nyan nyan :3',MB_YESNO) = ID_YES then
     //PAnsiChar('You have '+inttostr(loyalty)+' loyalty in "'+faction_name+'"'#13+
     //'and permission to catface it, are you sure'#13+
     //'you want to proceed?'),'Catface :3',MB_OKCANCEL) = ID_OK then
@@ -3135,7 +3135,7 @@ begin
       for i := 1 to faction_members do
       begin
         if (LoadingForm.bHalt) then
-          LoadingForm.pText.Caption := 'Sorry, brah, it is irreversible!';
+          LoadingForm.pText.Caption := 'Sorry, brah, it is irreversible! Nyan, nyan!';
         ProgressUpdate(i);
         Application.ProcessMessages;
         Sleep(100);
