@@ -4051,6 +4051,16 @@ object EvaluateDecksForm: TEvaluateDecksForm
               TabOrder = 1
               Width = 205
             end
+            object bCatface: TcxButton
+              Left = 295
+              Top = 1
+              Width = 122
+              Height = 25
+              Caption = 'Catface my faction :3'
+              Enabled = False
+              TabOrder = 2
+              OnClick = bCatfaceClick
+            end
           end
         end
       end

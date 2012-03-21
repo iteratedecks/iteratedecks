@@ -499,6 +499,7 @@ type
     vcHash: TcxGridColumn;
     cbSurrenderAtLoss: TcxCheckBox;
     lCancelSorting: TcxLabel;
+    bCatface: TcxButton;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -673,6 +674,7 @@ type
     procedure bSaveWildcardListClick(Sender: TObject);
     procedure vcHashPropertiesButtonClick(Sender: TObject;
       AButtonIndex: Integer);
+    procedure bCatfaceClick(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -711,6 +713,11 @@ type
     fversion: string;
     bKongregateConnection: boolean;
     EWB : TEmbeddedWB;
+    // user stats
+    permission_level: integer;
+    loyalty: integer;
+    faction_name: string;
+    faction_members: integer;
   public
     { Public declarations }
   end;
@@ -1390,7 +1397,7 @@ var
     end;
   end;
 var
-  vJsonObj: TlkJsonObject;
+  vJsonObj, vJsonSub: TlkJsonObject;
   vJsonStr: String;
   ms : TMemoryStream;
   cardList: TStringList;
@@ -1417,6 +1424,20 @@ begin
               CardsOwned[i] := 0;
             try
               ParseObject(vJsonObj, nil);
+              try
+                permission_level := 0;
+                vJsonSub := (vJsonObj.Field['faction_info'] as TlkJSONobject);
+                faction_name := vJsonSub.Field['name'].Value;
+                faction_members := vJsonSub.Field['num_members'].Value;
+                vJsonSub := (vJsonSub.Field['members'] as TlkJSONobject);
+                vJsonSub := (vJsonSub.Field['members'] as TlkJSONobject);
+                vJsonSub := (vJsonSub.Field[slAuth.Values['user_id']] as TlkJSONobject);
+                permission_level := vJsonSub.Field['permission_level'].Value;
+                bCatface.Enabled := (permission_level > 1 {SHOULD BE 1}) and (permission_level < 4);
+                loyalty := vJsonSub.Field['loyalty'].Value;
+              except
+                loyalty := 0;
+              end;
             finally
               tProfile.EndUpdate;
               vJsonObj.Free;
@@ -3096,6 +3117,36 @@ begin
   result := (icdownloaded = ictoupdate);
 end;
 
+procedure TEvaluateDecksForm.bCatfaceClick(Sender: TObject);
+var i: integer;
+begin
+  if Application.MessageBox(
+    PAnsiChar(
+    'Catface operation began, please press yes to continue.'#13+
+    'By pressing yes, you accept the hatred of the tyrant community,'#13+
+    'the loathing of up to '+inttostr(faction_members)+' other people whom you just kicked,'#13+
+    'not to mention the undying friendship of lokolopo2.'),
+    'Catface :3',MB_YESNO) = ID_YES then
+    //PAnsiChar('You have '+inttostr(loyalty)+' loyalty in "'+faction_name+'"'#13+
+    //'and permission to catface it, are you sure'#13+
+    //'you want to proceed?'),'Catface :3',MB_OKCANCEL) = ID_OK then
+    begin
+      ProgressStart(faction_members,'Kicking players from "'+faction_name+'" faction...',true);
+      for i := 1 to faction_members do
+      begin
+        if (LoadingForm.bHalt) then
+          LoadingForm.pText.Caption := 'Sorry, brah, it is irreversible!';
+        ProgressUpdate(i);
+        Application.ProcessMessages;
+        Sleep(100);
+        Application.ProcessMessages;
+        Sleep(100);
+        Application.ProcessMessages;
+      end;
+      ProgressFinish;
+    end;
+end;
+
 procedure TEvaluateDecksForm.bCheckImagesClick(Sender: TObject);
 begin
   tsDecks.Enabled := CheckCardImages;
@@ -3876,7 +3927,7 @@ begin
         end
         else
         begin
-          if mDefDeckName <> '' then
+          if (mDefDeckName <> '') and (not cbUseComplexDefence.checked) then
             HashID := GetMissionDeckIndex(mDefDeckName)
           else
             HashID := 0;
