@@ -1,0 +1,47 @@
+// Source: http://www.kongregate.com/forums/65-tyrant/topics/246763-guide-phobos-expansion-mission-help-and-more?page=25#posts-5442125
+// Used his decks because they were listed the way it was easier to convert
+[217] 99.9+:Lucina the Wicked, Irradiated Infantry(8), Tiamat, Predator
+[218] 99.3:Lucina the Wicked, Exodrone, Tiamat, Predator, Irradiated Infantry(7)
+[219] 99.9:Lucina the Wicked, Omega, Tiamat, Predator, Exodrone, Trident(5)
+[220] 98.1:Lucina the Wicked, Pathfinder, Soot Launcher, Teslatank, Shapeshifter, Dominated Hatchlings, Predator, Omega, Rifter
+[221] 99.9+:Dracorex, Vigil(2), Havoc, Deadblow, Toxic Cannon(2), Sundering Ogre, Fortifier, Lance Rider, Valefar
+[222] 98.9:Dracorex, ComSat Terminal(3), Utopia Beacon(2), Patrol Cruiser(2), Fortifier, Taloc
+[223] 99.5:Dracorex, Patrol Cruiser(2), Utopia Beacon(2), Abominable Raksha, Elite Diver(2), Engulfing Chasm, Valefar
+[224] 99.9+:Dracorex, Trident(5), Brawler(5)
+[225] 99.9:Lucina the Wicked, Trident(5), Tiamat, Predator, Exodrone, Deranged Hunter
+//154 SR_auto=92.1 Carrier_crush=93
+[227] 98.6:Dracorex, Support Carrier(2), Patrol Cruiser(2), Lance Rider(3), Abominable Raksha, Valefar, Xanadu
+[228] 99.9:Dracorex, Support Carrier(2), Patrol Cruiser(2), Lance Rider(3), Abominable Raksha, Xanadu
+[229] 99.8:Dracorex, ComSat Terminal(3), Vengeant, Abominable Raksha, Patrol Cruiser(2), Hephatat, Utopia Beacon(2)
+[230] 97.4:Lucina the Wicked, Hunter, Omega, Tiamat, Predator, Irradiated Infantry(3), Angelwing(2), Monsoon X
+[231] 99.8:Dracorex, Abominable Raksha, Utopia Beacon(2), Bridge of Destiny, Patrol Cruiser(2), Noxious Den, Prism, Rhino, Revered Monk
+[232] 99.1:Dracorex, Patrol Cruiser(2), Utopia Beacon(2), Abominable Raksha, Elite Diver, Imperial Refuge, Prism, Noxious Den, Hephatat
+[233] 99.6:Dracorex, Haze Geyser, Rifter, Utopia Beacon(2), Abominable Raksha, Support Carrier, Noxious Den, Blood Wall, Hephatat, G-60 Thunder
+[234] 99.5:Lucina the Wicked, Pathfinder, Soot Launcher, Teslatank, Trident(2), Tiamat, Predator, Omega, Rifter
+[235] 97:Lucina the Wicked, Exodrone, Tiamat, Predator, Angelwing, Irradiated Infantry(6)
+[236] 99.9+:Dracorex, Pummeller(4), Hephatat, Smog Tank(4), Gorivore
+[237] 99.9:Dracorex, Support Carrier(2), Patrol Cruiser(2), Sundering Ogre, Elite Diver(2), Abominable Raksha, Hephatat, Xanadu
+[238] 99.9:Dracorex, Patrol Cruiser(2), Sundering Ogre, Revered Monk, Abominable Raksha, Elite Diver(2), Engulfing Chasm, Quadrishot
+[239] 90.1:Dracorex, Patrol Cruiser(2), Utopia Beacon(2), Abominable Raksha, Imperial Refuge(3), Lance Rider, Hephatat
+[240] 99.8:Dracorex, Patrol Cruiser(2), Utopia Beacon(2), Abominable Raksha, Elite Diver(2), Engulfing Chasm, Sundering Ogre, Revered Monk
+[241] 97.8:Dracorex, Azure Reaper(5), Kyrios, Elite Diver, Abominable Raksha, Disposer, Stealthy Niaq
+
+// And for the side mission:
+// Pagan Righteous
+[242] 99.8:Lucina the Wicked, Arc Trooper(7), Gruesome Crawler, Stealthy Niaq, Disposer
+[243] 97.5:Dracorex,Hover Pod(3),Xeno Interceptor(4),Abominable Raksha,Hephatat,Kilgore
+[244] 97.89:Dracorex, Hephatat, Utopia Beacon(2), Bridge of Destiny, Hover Pod(3), Obsidian, Aquatic Epicenter, Rhino
+[245] 97.72:Dracorex, Support Carrier(2), Utopia Beacon(2), Bridge of Destiny, Hover Pod(3), Ayrkrane, Aquatic Epicenter
+
+// Double Trouble
+[246] 97.1:Tabitha, Kilgore, Stealthy Niaq, Irradiated Infantry(8)
+[247] 98.7:Dracorex, Azure Reaper(5), Hephatat, Kilgore, Abominable Raksha, Utopia Beacon, Noxious Den
+[248] 99.8:Tabitha, Toxic Cannon(2), Lance Rider(4), Metalhead, Abominable Raksha, Fortifier, Hephatat
+[249] 99.4:Dracorex, Abominable Raksha, Utopia Beacon(2), Bridge of Destiny, Rhino(3), Noxious Den, Prism, Revered Monk
+// I will buy one more Rhino to replace the Monk, that will incrase the wining rate to 99.5
+
+// Boarded Xeno
+[250] 99.9:Dracorex, Rhino(3), Plated Brute, Sundering Ogre, Elite Diver(2), Abominable Raksha, Hephatat, Xanadu
+[251] 99.4:Dracorex, ComSat Terminal(3), Elite Diver(2), Abominable Raksha, Patrol Cruiser(2), Utopia Beacon(2)
+[252] 96.5:Dracorex, ComSat Terminal(3), Elite Diver(2), Patrol Cruiser(2), Imperial Refuge, Pantheon Progeny, Tesla Cannon
+[253] 98.13:Dracorex, Holy Beacon(2), Gatling Tower(2), Utopia Beacon(2), Tesla Cannon, Offshore Platform, Abominable Raksha, Pantheon Progeny
