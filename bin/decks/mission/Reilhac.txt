@@ -1,5 +1,37 @@
-// Source: http://www.kongregate.com/forums/65-tyrant/topics/246763-guide-phobos-expansion-mission-help-and-more?page=25#posts-5442125
-// Used his decks because they were listed the way it was easier to convert
+// Source: http://www.kongregate.com/accounts/Reilhac
+// Alternate source: http://www.kongregate.com/forums/65-tyrant/topics/246763-guide-phobos-expansion-mission-help-and-more?page=25#posts-5442125
+// missions
+[135] 099 - 99.6:Freddie,Trident(5),Exodrone,Irradiated Infantry(4)
+
+[155] 119 - 97.4:Dracorex,Rancor,Xeno Interceptor,Xeno Interceptor,Nimbus,Havoc,Fortifier,Aegis,Aegis,Poseidon,Stealthy Niaq
+
+[172] 120 - 96.9:Dracorex, Gorivore, Pummeller(4), Blood Pool(3), Recurring Darkness, Malgoth
+[173] 121 - 99.2:Freddie, Trident(5), Nimbus, Lance Rider, Centurion(3)
+[174] 122 - 96.6:Lucina the Wicked, Hunter, Omega, Tiamat, Predator, Trident(6)
+[175] 123 - 99.77:Lucina the Wicked, Rifter, Omega, Tiamat, Predator, Exodrone, Trident(5)
+[176] 124 - 99.37:Lucina the Wicked, Hunter, Omega, Tiamat, Predator, Sabre(4), Trident(2)
+[177] 125 - 97.6:Lucina the Wicked, Sabre(6), Omega, Tiamat, Trident(2)
+[178] 126 - 99.54:Lucina the Wicked, Hunter, Omega, Tiamat, Predator, Rifter, Irradiated Infantry, Exodrone, Trident(3)
+[179] 127 - 99.77:Lucina the Wicked, Omega, Tiamat, Predator, Irradiated Infantry(2), Trident(5)
+[180] 128 - 99.8:Lucina the Wicked, Trident(5), Exodrone, Lance Rider, Dozer Tank, Irradiated Infantry(2)
+[181] 129 - 97.1:Thadius, Trident(5), Fortifier, Fighter Jet, Irradiated Infantry(3)
+[182] 130 - 91.9:Dracorex, Vigil(2), Stealthy Niaq, Gorivore, Rifter, Toxic Cannon(2), Azure Reaper(3)
+[183] 131 - 99.8:Dracorex, Recurring Darkness(2), Blight Master, Pummeller(2), Noxious Den, Blood Pool, Draconian Queen, Valefar
+[184] 132 - 99.9+:Lucina the Wicked, Hunter, Irradiated Infantry(3), Predator, Trident(5)
+[184] 132 - 99.9-:Thadius, Trident(5), Irradiated Infantry(5)
+[185] 133 - 96.4:Lucina the Wicked, Trident(5), Tiamat, Predator, Exodrone, Stealthy Niaq, Dozer Tank
+[186] 134 - 99.6:Dracorex, Pummeller(4), Valefar, Razogoth's Heir, Smog Tank(3), Gorivore
+[187] 135 - 98.2:Dracorex, Vigil(2), Bolide Walker, Gorivore, Pummeller(2), Aegis, Credo Mech, Poseidon, Titan
+[188] 136 - 99.5:Dracorex, Vigil(2), Azure Reaper(3), Mortar Bunker, Toxic Cannon(2), Omega, Pummeller
+[189] 137 - 97.9:Thadius, Lance Rider, Irradiated Infantry(2), Trident(5), Harbor Command(2)
+[190] 138 - 94.7:Lucina the Wicked, Trident(5), Apex, Fighter Jet, Irradiated Infantry(3)
+[191] 139 - 99.26:Lucina the Wicked, Trident(5), Toxic Cannon(2), Irradiated Infantry(3)
+[192] 140 - 99.73:Dracorex, Vigil(2), Azure Reaper(3), Pummeller(3), Toxic Cannon(2)
+[193] 141 - 97.9:Lucina the Wicked, Trident(5), Dozer Tank, Tiamat, Predator, Gatling Tower, Exodrone
+[194] 142 - 97.7:Dracorex, Trident(5), Toxic Cannon(2), Brawler(3)
+[195] 143 - 99.62:Dracorex, Vigil(2), Stealthy Niaq, Gorivore, Gatling Tower, Valefar, Noxious Den, Sundering Ogre, Azure Reaper(2)
+[196] 144 - 91.3:Dracorex, Vigil(2), Stealthy Niaq, Gorivore, Rifter, Valefar, Toxic Cannon, Azure Reaper(3)
+
 [217] 99.9+:Lucina the Wicked, Irradiated Infantry(8), Tiamat, Predator
 [218] 99.3:Lucina the Wicked, Exodrone, Tiamat, Predator, Irradiated Infantry(7)
 [219] 99.9:Lucina the Wicked, Omega, Tiamat, Predator, Exodrone, Trident(5)
@@ -27,21 +59,63 @@
 [241] 97.8:Dracorex, Azure Reaper(5), Kyrios, Elite Diver, Abominable Raksha, Disposer, Stealthy Niaq
 
 // And for the side mission:
+[157] BR2 - 99.99:Dracorex, Support Carrier, Enforcer Mech, Azure Reaper(3), Nimbus, Stealthy Niaq, Kraken, Aegis(2)
+[158] BR3 - 99.74:Dracorex, Nimbus, Support Carrier, Azure Reaper(3), Rifter, Stealthy Niaq, Bolide Walker(2), Titan
+[159] BR4 - 99.70:Dracorex, Support Carrier, Nimbus, Bolide Walker(2), Enforcer Mech, Stealthy Niaq, Rifter, Xanadu, Titan, Bulldozer
+
+[161] VR2 - 94.52:Dracorex, Support Carrier, Recurring Darkness, Draconian Queen, Lance Rider, Valefar, Noxious Den, Azure Reaper(3), Drop Pod
+[162] VR3 - 92.25:Dracorex,Nimbus,Stealthy Niaq,Lance Rider,Support Carrier,Enforcer Mech,Xeno Interceptor(4),Azure Reaper
+[163] VR4 - 95.17:Dracorex, Rifter, Noxious Den, Support Carrier, Enforcer Mech, Bolide Walker(2), Nimbus, Xeno Overlord, Stealthy Niaq, Kraken
+[164] IP1 - Imp 98.70:Freddie, Rumbler, Enforcer Mech, Nimbus, Mech Aid, Fortifier, Metalhead, Lance Rider, Poseidon, Titan, Hierophant
+[165] IP2 - Imp 83.96:Freddie, Lance Rider, Enforcer Mech, Nimbus, Hierophant, Titan, Hellion, Rumbler, Defender Pods, Mech Aid, Trident
+[165] IP2 - Rai 82.44:Yurich, Lance Rider, Havoc, Micromech, Micromech, Micromech, Hierophant, Bulldozer, Barracuda, Fury Walker(2)
+[165] IP2 - Blo 70.63:Dementia, Pummeller, Pummeller, Pummeller, Pummeller, Brawler, Noxious Den, Blood Pool, Blood Pool, Valefar
+[165] IP2 - Xen 82.30:Vyander, Xeno Interceptor(4), Azure Reaper(3), Stealthy Niaq, Hierophant
+[166] IP3 - Xen 81.18:Vyander, Xeno Interceptor(4), Azure Reaper(3), Stealthy Niaq, Hierophant
+[167] IP4 - Imp 88.77:Freddie, Hierophant, Enforcer Mech, Nimbus, Mech Aid, Fortifier, Lance Rider, Aegis, Titan, Support Carrier, Rumbler
+[168] NT1 - 99.14:Dracorex,Rifter,Azure Reaper(3),Xanadu,Nimbus,Support Carrier,Sustainer Xolan,Noxious Den,Metalhead
+[168] NT1 - 99.4:Dracorex, Toxic Cannon, Azure Reaper(4), Nimbus, Support Carrier(2), Stealthy Niaq, Rifter
+[169] NT2 - 99.33:Dracorex,Rifter,Azure Reaper(3),Nimbus,Support Carrier,Stealthy Niaq,Toxic Cannon(2),Xanadu
+[169] NT2 - 99.45:Dracorex,Rifter,Azure Reaper,Nimbus,Support Carrier,Stealthy Niaq,Toxic Cannon(5)
+[170] NT3 - 99.03:Dracorex, Toxic Cannon, Azure Reaper(4), Nimbus, Support Carrier(2), Stealthy Niaq, Rifter
+[170] NT3 - 98.89:Dracorex, Rifter, Azure Reaper(3), Nimbus, Support Carrier, Stealthy Niaq, Toxic Cannon, Xanadu, Xeno Overlord
+[171] NT4 - 95.39:Dracorex, Toxic Cannon, Azure Reaper(4), Nimbus, Support Carrier(2), Stealthy Niaq, Rifter
+[172] NT4 - 92.38:Dracorex, Rifter, Azure Reaper(3), Nimbus, Support Carrier, Stealthy Niaq, Toxic Cannon(2), Xanadu
+
+[197] BL1 - 99:Lucina the Wicked, Trident(5), Gatling Tower, Brawler(2), Exodrone, Dozer Tank
+[198] BL2 - 93.5:Lucina the Wicked, Trident(5), Tiamat, Predator, Omega, Stealthy Niaq
+[199] BL3 - 92.7:Lucina the Wicked, Vigil(2), Trident(5), Brawler(2), Stealthy Niaq
+[200] BL4 - 93.4:Dracorex, Vigil(2), Azure Reaper(3), Bulldozer, Stealthy Niaq, Support Carrier, Cloaked Exarch, Toxic Cannon
+[201] VH1 - 98.7:Lucina the Wicked, Omega, Cannon Walker, Teslatank, Tiamat, Predator, Trident(5)
+[202] VH2 - 99.58:Dracorex, Vigil(2), Stealthy Niaq, Support Carrier, Rifter, Sundering Ogre, Patrol Cruiser, Azure Reaper(2), Nimbus
+[203] VH3 - 98.4:Dracorex, Vigil(2), Stealthy Niaq, Prism, Rifter, Xanadu, Teslatank, Azure Reaper(3)
+[204] VH4 - 99.72:Dracorex, Centurion, Support Carrier, Prism, Patrol Cruiser, Bolide Walker(2), Sundering Ogre, Cannon Walker(2), Omega
+[205] AF1 - 99.52:Dracorex, Vigil(2), Blood Wall, Obsidian, Smog Tank(4), Omega, Sundering Ogre
+[206] AF2 - 99.58:Dracorex, Support Carrier, Vigil(2), Draconian Queen, Lance Rider, Valefar, Xanadu, Azure Reaper(3)
+[207] AF3 - 99.75:Dracorex, Vigil(2), Xeno Interceptor(5), Fortifier, Lance Rider, Valefar
+[208] AF4 - 99.76:Dracorex, Vigil(2), Havoc, Deadblow, Toxic Cannon(2), Sundering Ogre, Fortifier, Lance Rider, Valefar
+[208] AF4 - 99.9:Dracorex, Vigil, Valefar, Metalhead, Abominable Raksha, Toxic Cannon, Fortifier, Lance Rider(4)
+[209] WS1 - 98.4:Dracorex, Vigil(3), Azure Reaper(3), Rifter, Stealthy Niaq, Toxic Cannon(2)
+[210] WS2 - 98.2:Atlas, Venomous Raptor, Trident(2), Irradiated Infantry(4), Monsoon X, Exodrone, Fighter Jet
+[212] WS4 - 94.6:Dracorex, Vigil(3), Prism(2), Noxious Den, Fortifier, Lance Rider(2), Valefar
+[213] WS5 - 96.5:Dracorex, Support Carrier, Hierophant, Fortifier, Lance Rider(3), Valefar, Prism, Signal Towers, Utopia Beacon
+[213] WS5 - 98.36:Tabitha, Lance Rider(4), Fortifier, Abominable Raksha, Utopia Beacon
+[214] WS6 - 87.9:Empress, Benediction, Bridge of Destiny, Hierophant, Vigil(3), Indebted Veteran(4)
+[215] WS7 - 89.9:Lucina the Wicked, Lance Rider(2), Fighter Jet, Monsoon X, Exodrone, Trident(5)
+[216] WS8 - 94.08:Lucina the Wicked, Stealthy Niaq, Hunter, Rifter, Toxic Cannon(2)
 // Pagan Righteous
-[242] 99.8:Lucina the Wicked, Arc Trooper(7), Gruesome Crawler, Stealthy Niaq, Disposer
-[243] 97.5:Dracorex,Hover Pod(3),Xeno Interceptor(4),Abominable Raksha,Hephatat,Kilgore
-[244] 97.89:Dracorex, Hephatat, Utopia Beacon(2), Bridge of Destiny, Hover Pod(3), Obsidian, Aquatic Epicenter, Rhino
-[245] 97.72:Dracorex, Support Carrier(2), Utopia Beacon(2), Bridge of Destiny, Hover Pod(3), Ayrkrane, Aquatic Epicenter
-
+[242] PR1 - 99.8:Lucina the Wicked, Arc Trooper(7), Gruesome Crawler, Stealthy Niaq, Disposer
+[243] PR2 - 97.5:Dracorex,Hover Pod(3),Xeno Interceptor(4),Abominable Raksha,Hephatat,Kilgore
+[243] PR2 - 97.2:Lucina the Wicked, Hover Pod(3), Ayrkrane, Xeno Interceptor(4), Fighter Jet, Kilgore
+[244] PR3 - 97.89:Dracorex, Hephatat, Utopia Beacon(2), Bridge of Destiny, Hover Pod(3), Obsidian, Aquatic Epicenter, Rhino
+[245] PR4 - 97.72:Dracorex, Support Carrier(2), Utopia Beacon(2), Bridge of Destiny, Hover Pod(3), Ayrkrane, Aquatic Epicenter
 // Double Trouble
-[246] 97.1:Tabitha, Kilgore, Stealthy Niaq, Irradiated Infantry(8)
-[247] 98.7:Dracorex, Azure Reaper(5), Hephatat, Kilgore, Abominable Raksha, Utopia Beacon, Noxious Den
-[248] 99.8:Tabitha, Toxic Cannon(2), Lance Rider(4), Metalhead, Abominable Raksha, Fortifier, Hephatat
-[249] 99.4:Dracorex, Abominable Raksha, Utopia Beacon(2), Bridge of Destiny, Rhino(3), Noxious Den, Prism, Revered Monk
-// I will buy one more Rhino to replace the Monk, that will incrase the wining rate to 99.5
-
+[246] DT1 - 97.1:Tabitha, Kilgore, Stealthy Niaq, Irradiated Infantry(8)
+[247] DT2 - 98.7:Dracorex, Azure Reaper(5), Hephatat, Kilgore, Abominable Raksha, Utopia Beacon, Noxious Den
+[248] DT3 - 99.8:Tabitha, Toxic Cannon(2), Lance Rider(4), Metalhead, Abominable Raksha, Fortifier, Hephatat
+[249] DT4 - 99.4:Dracorex, Abominable Raksha, Utopia Beacon(2), Bridge of Destiny, Rhino(3), Noxious Den, Prism, Revered Monk
 // Boarded Xeno
-[250] 99.9:Dracorex, Rhino(3), Plated Brute, Sundering Ogre, Elite Diver(2), Abominable Raksha, Hephatat, Xanadu
-[251] 99.4:Dracorex, ComSat Terminal(3), Elite Diver(2), Abominable Raksha, Patrol Cruiser(2), Utopia Beacon(2)
-[252] 96.5:Dracorex, ComSat Terminal(3), Elite Diver(2), Patrol Cruiser(2), Imperial Refuge, Pantheon Progeny, Tesla Cannon
-[253] 98.13:Dracorex, Holy Beacon(2), Gatling Tower(2), Utopia Beacon(2), Tesla Cannon, Offshore Platform, Abominable Raksha, Pantheon Progeny
+[250] BX1 - 99.9:Dracorex, Rhino(3), Plated Brute, Sundering Ogre, Elite Diver(2), Abominable Raksha, Hephatat, Xanadu
+[251] BX2 - 99.4:Dracorex, ComSat Terminal(3), Elite Diver(2), Abominable Raksha, Patrol Cruiser(2), Utopia Beacon(2)
+[252] BX3 - 96.5:Dracorex, ComSat Terminal(3), Elite Diver(2), Patrol Cruiser(2), Imperial Refuge, Pantheon Progeny, Tesla Cannon
+[253] BX4 - 98.13:Dracorex, Holy Beacon(2), Gatling Tower(2), Utopia Beacon(2), Tesla Cannon, Offshore Platform, Abominable Raksha, Pantheon Progeny

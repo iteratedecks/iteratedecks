@@ -1,0 +1,12 @@
+// Source: http://www.kongregate.com/accounts/Reilhac
+// Raids
+JSG - auto 65:Dracorex, Azure Reaper(5), Noxious Den(2), Drop Pod, Stealthy Niaq, Valefar
+JSG - ord 76.2:Dracorex, Azure Reaper, Azure Reaper, Noxious Den, Prism, Noxious Den, Azure Reaper, Azure Reaper, Noxious Den, Azure Reaper, Azure Reaper
+PP - auto 81.9:Dracorex, Utopia Beacon(2), Engulfing Chasm, Abominable Raksha, Hephatat, Noxious Den(2), Ayrkrane, G-60 Thunder, Patrol Cruiser
+PP - ord 90.5:Dracorex, Utopia Beacon, Engulfing Chasm, Utopia Beacon, Abominable Raksha, Hephatat, Noxious Den, Ayrkrane, G-60 Thunder, Noxious Den, Iron Maiden
+SR - auto 72:Dracorex, Abominable Raksha, Utopia Beacon(2), Bridge of Destiny, Rhino(3), Aquatic Epicenter, Ayrkrane, Support Carrier
+SR - ord 82.1:Dracorex, Abominable Raksha, Utopia Beacon, Bridge of Destiny, Utopia Beacon, Rhino, Rhino, Aquatic Epicenter, Ayrkrane, Rhino, Iron Maiden
+Lithid - auto 86.8:Dracorex, ComSat Terminal, ComSat Terminal, Elite Diver, Elite Diver, Patrol Cruiser, Patrol Cruiser, Hephatat, Azure Reaper, Azure Reaper, ComSat Terminal
+Lithid - ord 93.6:Dracorex, ComSat Terminal, ComSat Terminal, Elite Diver, Elite Diver, Patrol Cruiser, Patrol Cruiser, Hephatat, ComSat Terminal, Executioner, Iron Maiden
+LH - auto 65:Dracorex, ComSat Terminal, Utopia Beacon, Utopia Beacon, ComSat Terminal, Patrol Cruiser, Hephatat, Imperial Refuge, ComSat Terminal, Patrol Cruiser, Elite Diver
+LH - ord 75.8:Dracorex, ComSat Terminal, Patrol Cruiser, Hephatat, Patrol Cruiser, ComSat Terminal, Elite Diver, Vengeant, ComSat Terminal, Executioner, Iron Maidenoner, Iron Maiden

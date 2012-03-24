@@ -3,7 +3,7 @@ unit Extended;
 interface
 
 const
-   cDefenceFolder = 'decks\batcheval\';
+   cDefenceFolder = 'decks\defence\';
    cAttackFile = '\decks\_attack.txt';
 
 implementation

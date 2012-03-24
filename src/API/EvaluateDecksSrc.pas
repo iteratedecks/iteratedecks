@@ -4945,8 +4945,9 @@ procedure TEvaluateDecksForm.tEnableBoostTimer(Sender: TObject);
 begin
   if bHide.Visible then
   begin
-    cbWinrateBonus.Visible := true;
-    tDonateNotification.Enabled := false;
+    // disabled, obsolete
+    //cbWinrateBonus.Visible := true;
+    //tDonateNotification.Enabled := false;
   end;
 end;
 

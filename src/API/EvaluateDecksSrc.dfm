@@ -2733,7 +2733,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
               TabOrder = 9
               Visible = False
               Height = 64
-              Width = 162
+              Width = 195
               object cbUseComplexDefence: TcxCheckBox
                 Left = 3
                 Top = 14
@@ -2746,10 +2746,10 @@ object EvaluateDecksForm: TEvaluateDecksForm
                 Top = 35
                 Properties.DropDownListStyle = lsFixedList
                 TabOrder = 1
-                Width = 122
+                Width = 155
               end
               object bRefreshDefence: TcxButton
-                Left = 134
+                Left = 167
                 Top = 35
                 Width = 21
                 Height = 21
@@ -3991,9 +3991,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
         object tsProfile: TcxTabSheet
           Caption = 'Profile'
           ImageIndex = 1
-          ExplicitTop = 0
-          ExplicitWidth = 0
-          ExplicitHeight = 0
           object tProfile: TcxTreeList
             Left = 0
             Top = 32
@@ -7124,9 +7121,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Left = 8
       Top = 2
       Cursor = crHandPoint
-      Caption = 
-        'Donate now! Don'#39't miss your chance to recieve +5% win rate boost' +
-        ' for all your decks!'
+      Caption = 'I am recieving one donation every 1.5 months on average.'
       ParentColor = False
       Properties.Alignment.Horz = taCenter
       Style.BorderColor = clWindowFrame
