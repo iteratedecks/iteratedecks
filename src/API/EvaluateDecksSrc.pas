@@ -500,6 +500,8 @@ type
     cbSurrenderAtLoss: TcxCheckBox;
     lCancelSorting: TcxLabel;
     bCatface: TcxButton;
+    seSaveWildcardCount: TcxSpinEdit;
+    lWCSaveNote: TcxLabel;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -3253,7 +3255,7 @@ begin
   //cxView.DataController.GetSelectedCount;
   //cxView.DataController.DeleteFocused;
   with cxView.DataController do
-    DeleteRecord(cxView.DataController.FocusedRowIndex);
+    DeleteRecord(cxView.DataController.FocusedRecordIndex);
 end;
 
 procedure TEvaluateDecksForm.bDLXMLClick(Sender: TObject);
@@ -4203,7 +4205,11 @@ begin
   sl := TStringList.Create;
   try
     for i := 0 to vWildcards.DataController.RecordCount-1 do
+    begin
+      if i >= seSaveWildcardCount.Value then
+        break;
       sl.Add(vWildcards.DataController.Values[i, 0]);
+    end;
     if sl.Count > 0 then
       sl.SaveToFile(sLocalDir + 'wildcard\include.txt');
   finally

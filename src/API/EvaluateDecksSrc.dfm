@@ -2827,24 +2827,20 @@ object EvaluateDecksForm: TEvaluateDecksForm
                 object vcWins: TcxGridColumn
                   Caption = 'Won'
                   DataBinding.ValueType = 'Integer'
-                  Options.Editing = False
                 end
                 object vcStalled: TcxGridColumn
                   Caption = 'Stalled'
                   DataBinding.ValueType = 'Integer'
-                  Options.Editing = False
                 end
                 object vcGames: TcxGridColumn
                   Caption = 'Games'
                   DataBinding.ValueType = 'Integer'
-                  Options.Editing = False
                 end
                 object vcRatio: TcxGridColumn
                   Caption = 'Ratio'
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
-                  Options.Editing = False
                 end
                 object vcHash: TcxGridColumn
                   Caption = 'Result hash'
@@ -2896,7 +2892,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',#.##;-,#.##'
-                  Options.Editing = False
                 end
               end
               object cxGridLevel1: TcxGridLevel
@@ -3129,6 +3124,19 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Caption = 'Save as '#39'wildcard\include.txt'#39' (overwrite)'
             TabOrder = 7
             OnClick = bSaveWildcardListClick
+          end
+          object seSaveWildcardCount: TcxSpinEdit
+            Left = 224
+            Top = 496
+            Properties.MaxValue = 15.000000000000000000
+            TabOrder = 8
+            Value = 15
+            Width = 60
+          end
+          object lWCSaveNote: TcxLabel
+            Left = 224
+            Top = 472
+            Caption = 'Save up to:'
           end
         end
         object tsRequrements: TcxTabSheet
