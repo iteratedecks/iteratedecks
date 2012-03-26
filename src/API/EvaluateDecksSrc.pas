@@ -3953,6 +3953,8 @@ begin
           try
             if BuildResultHash(atk,EDVersion,EDRevision,HashType,HashID,r.Result.Games,r.Result.Win,p1,cMaxBuffer) then
               ResultHash := p1;
+            if GetHashFromDeck(def, p1, cMaxBuffer) then
+              ResultHash := ResultHash + '.' + p1;
           finally
             FreeMem(p1);
           end;
