@@ -1,0 +1,39 @@
+NilKingii:Dalia,Enclave Pylon,Airstrike,Pathrazer,Pathrazer,Pathrazer,Pathrazer,Venorax,Pathrazer,Pathrazer,Airstrike
+Poetice:Dracorex,Sundering Ogre,Noxious Den,Sundering Ogre,Necrogeddon,Sundering Ogre,Asylum,Asylum,Sundering Ogre,Sundering Ogre,Sundering Ogre
+worm1337:Dracorex,Rhino,Support Carrier,Rhino,Elemental,Acropolis,Bridge of Destiny,Aquatic Epicenter,Rugged Nomad,Support Carrier,Support Carrier
+Tupolev:Lord of Tartarus,Bulging Mantis,Monsoon X,Pulsating Bunker,Bulging Mantis,Warehouse,Bulging Mantis,Ravenous Dredge,Bulging Mantis,Gorivore,Bulging Mantis
+krogo:Attalia,Benediction,Rhino,Bridge of Destiny,Rhino,Support Carrier,Solar Powerhouse,Support Carrier,Rhino,Aquatic Epicenter,Rhino
+Dr_Faktor:Dracorex,Gatling Tower,Missile Silo,Gatling Tower,Acropolis,Command Center,Command Center,Utopia Beacon,Gatling Tower,Utopia Beacon,Missile Silo
+Dandooka:Atlas,Ravenous Dredge,Neverender,Iron Maiden,Stealthy Niaq,Tiamat,Marshal,Pathfinder,Disposer,Radiant Dawnbringer,Predator
+titiu:Lord of Tartarus,Shapeshifter,Asylum,Razogoth's Heir,Venomous Raptor,Asylum,Asylum,Hovering Pest,Ravenous Dredge,Gorivore,Asylum
+Agaton:Atlas,Tiamat,Sundering Ogre,Electromagnetic Pulse,Mortar Bunker,Predator,Iron Maiden,Ravenous Dredge,Abominable Raksha,Electromagnetic Pulse,Stealthy Niaq
+DRCrain21:Empress,Aquatic Epicenter,Earthquake Generator,Noxious Den,Acropolis,Support Carrier,Support Carrier,Support Carrier,Bridge of Destiny,Apparition,Ayrkrane
+Mortiska:Empress,Hephatat,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod
+4m4nd1l:Atlas,Abominable Raksha,Tiamat,Acropolis,Electromagnetic Pulse,Stealthy Niaq,Hierophant,Dozer Tank,Monsoon X,Electromagnetic Pulse,Predator
+Szoky:Lucina the Wicked,Mech Walker,Omega,Stealthy Niaq,Tiamat,Monsoon X,Hunter,Sabre,Teslatank,Predator,Sharpshooter
+riot99:Dracorex,Dozer Tank,Boundless Blight,Ravenous Dredge,Earthquake Generator,Abominable Raksha,Utopia Beacon,Electromagnetic Pulse,Utopia Beacon,Earthquake Generator,Acropolis
+Ulcus:Lucina the Wicked,Monsoon X,Shapeshifter,Pantheon Progeny,Tiamat,Hunter,Predator,Stealthy Niaq,Ravenous Dredge,Omega,Psycho
+pierre_le_fou:Atlas,Iron Maiden,Disposer,Tiamat,Neverender,Marshal,Ravenous Dredge,Predator,Electromagnetic Pulse,Hephatat,Stealthy Niaq
+LtHedgehog:Atlas,Stealthy Niaq,Acropolis,Monsoon X,Abominable Raksha,Neverender,Ravenous Dredge,Tiamat,Electromagnetic Pulse,Predator,Disposer
+Gyebro:Dracorex,Aquatic Epicenter,Utopia Beacon,Noxious Den,Rhino,Rhino,Support Carrier,Bridge of Destiny,Support Carrier,Utopia Beacon,Apparition
+viejoverde:Atlas,Command Center,Gatling Tower,Gatling Tower,Missile Silo,Gatling Tower,Command Center,Command Center,Command Center,Mobile Command,Missile Silo
+IQWarrior:Lucina the Wicked,Electromagnetic Pulse,Pathfinder,Wasteland Skimmer,Omega,Tiamat,Sabre,Predator,Dozer Tank,Monsoon X,Wasteland Skimmer
+Littlefinger:Atlas,Abominable Raksha,Razogoth's Heir,Sundering Ogre,Boundless Blight,Predator,Omega,Electromagnetic Pulse,Tiamat,Monsoon X
+GaborPivarcsi:Lucina the Wicked,Stealthy Niaq,Disposer,Acropolis,Hunter,Electromagnetic Pulse,Predator,Teslatank,Soot Launcher,Tiamat,Omega
+Subi89:Lucina the Wicked,Disposer,Monsoon X,Tiamat,Razogoth's Heir,Hunter,Stealthy Niaq,Ravenous Dredge,Predator,Mortar Bunker,Omega
+Zsotti:Empress,Hover Pod,Hover Pod,Hover Pod,Gladius,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod
+ackfuvatar:Empress,Hover Pod,Hover Pod,Hephatat,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod
+Gombocz:Gaia,Missile Silo,Bridge of Destiny,Support Carrier,Holy Beacon,Support Carrier,Pantheon Progeny,Support Carrier,Vigil,Aquatic Epicenter,Apollo
+mara80:Atlas,Predator,Tiamat,Neverender,Omega,Shapeshifter,Stealthy Niaq,Soot Launcher,Electromagnetic Pulse,Havoc,Pathfinder
+Avengir2:Lucina the Wicked,Microgen,Omega,Juggernaut,Slider,Mortar Bunker,Ravenous Dredge,Hunter,Irradiated Infantry,Tiamat,Predator
+Klemet:Invasion Coordinator,Sycophant,Venorax,Mortar Bunker,Sycophant,Pathrazer
+HunBence:Tabitha,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Executioner,Wasteland Skimmer,Wasteland Skimmer
+jaydeegt:Dracorex,Sundering Ogre,Sundering Ogre,Noxious Den,Asylum,Sundering Ogre,Asylum,Sundering Ogre,Razogoth's Heir,Sundering Ogre,Sundering Ogre
+Aurri:Empress,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hephatat,Hover Pod,Hover Pod,Hover Pod,Hover Pod
+fernet:Dracorex,Support Carrier,Iron Maiden,Support Carrier,Utopia Beacon,Bridge of Destiny,Aquatic Epicenter,Elemental,Earthquake Generator,Support Carrier,Apparition
+norveghajos:Dracorex,Utopia Beacon,Earthquake Generator,Utopia Beacon,Utopia Beacon,Missile Silo,Missile Silo,Earthquake Generator,Acropolis,Bridge of Destiny,Rhino
+vyern:Empress,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hephatat,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod
+Neptunfu:Dracorex,Rhino,Support Carrier,Aquatic Epicenter,Hephatat,Rhino,Rhino,Acropolis,Bridge of Destiny,Rhino,Support Carrier
+Patry0t:Lucina the Wicked,Ravenous Dredge,Stealthy Niaq,Predator,Omega,Pathfinder,Ayrkrane,Kilgore,Monsoon X,Tiamat,Vigil
+TGabe:Dracorex,Utopia Beacon,Elemental,Support Carrier,Utopia Beacon,Bridge of Destiny,Aquatic Epicenter,Holy Beacon,Holy Beacon,Acropolis,Support Carrier
+Arabkalifa:Lucina the Wicked,Stealthy Niaq,Ravenous Dredge,Tiamat,Electromagnetic Pulse,Acropolis,Electromagnetic Pulse,Predator,Neverender,Abominable Raksha,Kilgore

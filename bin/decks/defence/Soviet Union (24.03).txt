@@ -1,0 +1,48 @@
+VuGluskr:Dracorex,Rhino,Utopia Beacon,Support Carrier,Rhino,Abominable Raksha,Aquatic Epicenter,Bridge of Destiny,Noxious Den,Support Carrier,Rhino
+ForgottenOne:Dracorex,Rhino,Bridge of Destiny,Apparition,Rhino,Rhino,Aquatic Epicenter,Pantheon,Rhino,Guerilla Leader,Adamantite Armor
+serna12345:Empress,Bridge of Destiny,Hover Pod,Hover Pod,Rhino,Noxious Den,Ayrkrane,Hover Pod,Apparition,Rhino,Aquatic Epicenter
+AlexXVL:Dalia,Elemental,Ravenous Dredge,Blindside,Necrogeddon,Sundering Ogre,Sundering Ogre,Pandemic,Asylum,Sundering Ogre,Sundering Ogre
+Cruell:Empress,Aquatic Epicenter,Support Carrier,Support Carrier,Rhino,Bridge of Destiny,Acropolis,Rhino,Rhino,Rhino,Rhino
+smaxx:Atlas,Marshal,Tiamat,Hunter,Pathfinder,Iron Maiden,Omega,Sabre,Neverender,Disposer,Predator
+NaRniM2:Lucina the Wicked,Predator,Omega,Pathfinder,Tiamat,Ayrkrane,Neverender,Marshal,Iron Maiden,Ravenous Dredge,Stealthy Niaq
+bloodless__:Empress,Aquatic Epicenter,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Bridge of Destiny,Hover Pod,Ayrkrane
+Sairon:Lucina the Wicked,Ravenous Dredge,Predator,Whiplash,Wasteland Skimmer,Tiamat,Delphan,Monsoon X,Electromagnetic Pulse,Stealthy Niaq,Hunter
+Mercenaries:Atlas,Gatling Tower,Acropolis,Missile Silo,Pulsating Bunker,Missile Silo,Gatling Tower,Gatling Tower,Pulsating Bunker,Command Center,Abominable Raksha
+n0n4m3r:Lucina the Wicked,Tiamat,Monsoon X,Predator,Electromagnetic Pulse,Iron Maiden,Mortar Bunker,Hunter,Sabre,Stealthy Niaq,Shapeshifter
+Akuavit:Dracorex,Sundering Ogre,Razogoth's Heir,Ravenous Dredge,Sundering Ogre,Necrogeddon,Abominable Raksha,Sundering Ogre,Asylum,Asylum,Prism
+Vishoz:Dracorex,Acropolis,Rhino,Utopia Beacon,Rhino,Bridge of Destiny,Support Carrier,Rhino,Rhino,Support Carrier,Aquatic Epicenter
+AlcoWarrior:Lucina the Wicked,Ravenous Dredge,Wasteland Skimmer,Neverender,Stealthy Niaq,Tiamat,Disposer,Electromagnetic Pulse,Iron Maiden,Predator,Mortar Bunker
+AlVelikij:Empress,Hover Pod,Ayrkrane,Hover Pod,Hover Pod,Hephatat,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod
+unknownaz:Empress,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hephatat,Ayrkrane
+Aarnox:Lucina the Wicked,Pathfinder,Predator,Shapeshifter,Burrower,Omega,Tiamat,Neverender,Teslatank,Mortar Bunker,Mortar Bunker
+HoboHat:Dracorex,Ayrkrane,Support Carrier,Aquatic Epicenter,Elemental,Acropolis,Support Carrier,Abominable Raksha,Azure Reaper,Azure Reaper,Utopia Beacon
+alex317:Dalia,Pathrazer,Pathrazer,Pathrazer,Pathrazer,Beholder,Pathrazer
+be1kin:Lucina the Wicked,Tiamat,Hunter,Stealthy Niaq,Kogoth the Consumer,Shapeshifter,Ravenous Dredge,Predator,Teslatank,Sharpshooter,Monsoon X
+FatalError3467:Empress,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hephatat,Hover Pod,Hover Pod,Hover Pod
+Gray_Wind:Atlas,Teslatank,Mortar Bunker,Pathfinder,Shapeshifter,Predator,Sabre,Neverender,Hunter,Tiamat,Iron Maiden
+Tanatos666666:Attalia,Support Carrier,Rhino,Rhino,Support Carrier,Rhino,Bridge of Destiny,Aquatic Epicenter,Support Carrier,Support Carrier,Rhino
+Hasart:Atlas,Tiamat,Iron Maiden,Marshal,Predator,Ravenous Dredge,Pathfinder,Ayrkrane,Disposer,Neverender,Stealthy Niaq
+Frawen:Dalia,Asylum,Sundering Ogre,Razogoth's Heir,Sundering Ogre,Ravenous Dredge,Sundering Ogre,Asylum,Sundering Ogre,Sundering Ogre,Asylum
+SevaMAN:Dracorex,Sundering Ogre,Asylum,Sundering Ogre,Asylum,Sundering Ogre,Sundering Ogre,Sundering Ogre,Prism,Gatling Tower,Noxious Den
+FantDeFanor:Empress,Rhino,Support Carrier,Rhino,Acropolis,Rhino,Support Carrier,Support Carrier,Aquatic Epicenter,Apparition,Bridge of Destiny
+invisus:Lucina the Wicked,Predator,Marshal,Ravenous Dredge,Neverender,Rox Chainblade,Tiamat,Iron Maiden,Pathfinder,Ayrkrane,Stealthy Niaq
+AEP1:Tabitha,Electromagnetic Pulse,Hellion,Vengeant,Wasteland Skimmer,Tiamat,Wasteland Skimmer,Electromagnetic Pulse,Wasteland Skimmer,Fighter Jet,Wasteland Skimmer
+Hapko3:Lucina the Wicked,Predator,Hierophant,Tiamat,Iron Maiden,Stealthy Niaq,Hunter,Sabre,Teslatank,Mortar Bunker,Sharpshooter
+Povidlo:Dalia,Pathrazer,Subterfuge,Venorax,Pathrazer,Pathrazer,Pathrazer
+xaridar:Dracorex,Bridge of Destiny,Support Carrier,Revered Monk,Rhino,Rhino,Rhino,Support Carrier,Rhino,Acropolis,Rhino
+lkitor:Atlas,Wasteland Skimmer,Disposer,Ravenous Dredge,Wasteland Skimmer,Tiamat,Kilgore,Iron Maiden,Marshal,Predator,Abominable Raksha
+AnqTh:Lucina the Wicked,Omega,Ravenous Dredge,Rifter,Mech Walker,Predator,Stealthy Niaq,Beetle Bomber,Electromagnetic Pulse,Tiamat,Teslatank
+Elochnik:Atlas,Wasteland Skimmer,Sabre,Tiamat,Plague,Predator,Stealthy Niaq,Plague,Sabre,Adaptable Mechsuit,Hunter
+scorcher3:Lucina the Wicked,Sabre,Predator,Stealthy Niaq,Hunter,Sharpshooter,Electromagnetic Pulse,Rifter,Tiamat,Wasteland Skimmer,Electromagnetic Pulse
+bazsa:Atlas,Utopia Beacon,Bloodwings,Hunter,Orbo the Wrathful,Ravenous Dredge,Predator,Pathfinder,Abominable Raksha,Tiamat,Monsoon X
+LSwan:Atlas,Stealthy Niaq,Tiamat,Predator,Electromagnetic Pulse,Pathfinder,Electromagnetic Pulse,Sabre,Neverender,Teslatank,Wasteland Skimmer
+Empiro:Dracorex,Asylum,Asylum,Asylum,Sundering Ogre,Sundering Ogre,Sundering Ogre,Quadrishot,Sundering Ogre,Sundering Ogre,Sundering Ogre
+ogrizok:Dalia,Pathrazer,Subterfuge,Venorax,Pathrazer,Pathrazer,Pathrazer
+NikolayF:Dracorex,Sundering Ogre,Asylum,Sundering Ogre,Sundering Ogre,Sundering Ogre,Sundering Ogre,Asylum,Sundering Ogre,Asylum,Sundering Ogre
+Feduccio:Lucina the Wicked,Neverender,Teslatank,Iron Maiden,Ravenous Dredge,Disposer,Sabre,Predator,Plague,Stealthy Niaq,Tiamat
+Serpol:Dracorex,Mobile Base,Command Center,Undertaker,Mobile Base,Teslatank,Undertaker,Undertaker,Undertaker,Hephatat,Undertaker
+s9000000:Lucina the Wicked,Predator,Shapeshifter,Kilgore,Marshal,Disposer,Iron Maiden,Stealthy Niaq,Neverender,Pathfinder,Tiamat
+coolbe4:Atlas,Tiamat,Sabre,Hunter,Airstrike,Shapeshifter,Electromagnetic Pulse,Marshal,Rifter,Predator,Disposer
+hemfast:Dracorex,Bridge of Destiny,Support Carrier,Scepter,Utopia Beacon,Rhino,Apparition,Radiant Dawnbringer,Aquatic Epicenter,Rhino,Rhino
+GeorgyIV:Dracorex,Bridge of Destiny,Earthquake Generator,Utopia Beacon,Engulfing Chasm,Acropolis,Earthquake Generator,Utopia Beacon,Utopia Beacon,Utopia Beacon,Aquatic Epicenter
+Xytoc:Dracorex,Elemental,Support Carrier,Rhino,Support Carrier,Support Carrier,Bridge of Destiny,Rhino,Rhino,Rhino,Aquatic Epicenter

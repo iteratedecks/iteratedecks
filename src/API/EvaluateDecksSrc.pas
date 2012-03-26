@@ -677,6 +677,8 @@ type
     procedure vcHashPropertiesButtonClick(Sender: TObject;
       AButtonIndex: Integer);
     procedure bCatfaceClick(Sender: TObject);
+    procedure cxViewEditValueChanged(Sender: TcxCustomGridTableView;
+      AItem: TcxCustomGridTableItem);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -1488,6 +1490,12 @@ begin
     IdHttp.OnWorkBegin := IdHttpWorkBegin;
     IdHttp.OnWorkEnd := IdHttpWorkEnd;
   end;
+end;
+
+procedure TEvaluateDecksForm.cxViewEditValueChanged(
+  Sender: TcxCustomGridTableView; AItem: TcxCustomGridTableItem);
+begin
+  Abort;
 end;
 
 procedure TEvaluateDecksForm.eMailboxFocusChanged(Sender: TObject);

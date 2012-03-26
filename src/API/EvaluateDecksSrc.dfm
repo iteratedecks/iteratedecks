@@ -2522,6 +2522,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
               TabOrder = 0
               object vCardStats: TcxGridTableView
                 NavigatorButtons.ConfirmDelete = False
+                OnEditValueChanged = cxViewEditValueChanged
                 DataController.Summary.DefaultGroupSummaryItems = <>
                 DataController.Summary.FooterSummaryItems = <>
                 DataController.Summary.SummaryGroups = <>
@@ -2540,7 +2541,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
-                  Options.Editing = False
                   Width = 40
                 end
                 object vcsWinrate: TcxGridColumn
@@ -2548,25 +2548,21 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
-                  Options.Editing = False
                   Width = 40
                 end
                 object vcsWon: TcxGridColumn
                   Caption = 'Won w/o this card'
                   DataBinding.ValueType = 'Integer'
-                  Options.Editing = False
                   Width = 40
                 end
                 object vcsStalled: TcxGridColumn
                   Caption = 'Stalled w/o this card'
                   DataBinding.ValueType = 'Integer'
-                  Options.Editing = False
                   Width = 40
                 end
                 object vcsGames: TcxGridColumn
                   Caption = 'Games w/o this card'
                   DataBinding.ValueType = 'Integer'
-                  Options.Editing = False
                   Width = 40
                 end
                 object vcsAvgDealt: TcxGridColumn
@@ -2574,7 +2570,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
-                  Options.Editing = False
                   Width = 40
                 end
                 object vcsAvgMitigated: TcxGridColumn
@@ -2582,7 +2577,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
-                  Options.Editing = False
                   Width = 40
                 end
                 object vcsAvgAvoided: TcxGridColumn
@@ -2590,7 +2584,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
-                  Options.Editing = False
                   Width = 40
                 end
                 object vcsAvgHealing: TcxGridColumn
@@ -2598,7 +2591,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
-                  Options.Editing = False
                   Width = 40
                 end
                 object vcsAvgSpecial: TcxGridColumn
@@ -2606,7 +2598,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
-                  Options.Editing = False
                   Width = 40
                 end
                 object vcsAvgOverkill: TcxGridColumn
@@ -2614,7 +2605,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
-                  Options.Editing = False
                   Width = 40
                 end
                 object vcsAvgDeaths: TcxGridColumn
@@ -2622,7 +2612,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',0.###;-,0.###'
-                  Options.Editing = False
                   Width = 40
                 end
               end
@@ -2804,6 +2793,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
               TabOrder = 0
               object cxView: TcxGridTableView
                 NavigatorButtons.ConfirmDelete = False
+                OnEditValueChanged = cxViewEditValueChanged
                 DataController.Summary.DefaultGroupSummaryItems = <>
                 DataController.Summary.FooterSummaryItems = <>
                 DataController.Summary.SummaryGroups = <>
@@ -2814,7 +2804,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
                 object vcType: TcxGridColumn
                   Caption = 'Type'
                   OnCustomDrawCell = vcTypeCustomDrawCell
-                  Options.Editing = False
                 end
                 object vcAtk: TcxGridColumn
                   Caption = 'Your deck'
@@ -2860,7 +2849,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',#.##;-,#.##'
-                  Options.Editing = False
                   Width = 64
                 end
                 object vcAvgDA: TcxGridColumn
@@ -2868,7 +2856,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',#.##;-,#.##'
-                  Options.Editing = False
                   Width = 64
                 end
                 object vcAvgS: TcxGridColumn
@@ -2876,7 +2863,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',#.##;-,#.##'
-                  Options.Editing = False
                   Width = 90
                 end
                 object vcAvgSA: TcxGridColumn
@@ -2884,7 +2870,6 @@ object EvaluateDecksForm: TEvaluateDecksForm
                   DataBinding.ValueType = 'Float'
                   PropertiesClassName = 'TcxCurrencyEditProperties'
                   Properties.DisplayFormat = ',#.##;-,#.##'
-                  Options.Editing = False
                   Width = 90
                 end
                 object vcNet: TcxGridColumn
@@ -3035,6 +3020,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             TabOrder = 3
             object vWildCards: TcxGridTableView
               NavigatorButtons.ConfirmDelete = False
+              OnEditValueChanged = cxViewEditValueChanged
               DataController.Summary.DefaultGroupSummaryItems = <>
               DataController.Summary.FooterSummaryItems = <>
               DataController.Summary.SummaryGroups = <>
@@ -3215,6 +3201,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             TabOrder = 4
             object vProcs: TcxGridTableView
               NavigatorButtons.ConfirmDelete = False
+              OnEditValueChanged = cxViewEditValueChanged
               DataController.Summary.DefaultGroupSummaryItems = <>
               DataController.Summary.FooterSummaryItems = <>
               DataController.Summary.SummaryGroups = <>
@@ -3312,6 +3299,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
               TabOrder = 1
               object vFullCardOrder: TcxGridTableView
                 NavigatorButtons.ConfirmDelete = False
+                OnEditValueChanged = cxViewEditValueChanged
                 DataController.Summary.DefaultGroupSummaryItems = <>
                 DataController.Summary.FooterSummaryItems = <>
                 DataController.Summary.SummaryGroups = <>
@@ -3391,6 +3379,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
               object vCardOrder: TcxGridTableView
                 NavigatorButtons.ConfirmDelete = False
                 OnCustomDrawCell = vCardOrderCustomDrawCell
+                OnEditValueChanged = cxViewEditValueChanged
                 DataController.Summary.DefaultGroupSummaryItems = <>
                 DataController.Summary.FooterSummaryItems = <>
                 DataController.Summary.SummaryGroups = <>
@@ -3603,6 +3592,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
         TabOrder = 3
         object vBatchResult: TcxGridBandedTableView
           NavigatorButtons.ConfirmDelete = False
+          OnEditValueChanged = cxViewEditValueChanged
           DataController.Summary.DefaultGroupSummaryItems = <>
           DataController.Summary.FooterSummaryItems = <
             item

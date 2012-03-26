@@ -1,0 +1,46 @@
+Sighaknight:Empress,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hephatat,Hover Pod,Hover Pod
+awalters:Dracorex,Azure Reaper,Support Carrier,Support Carrier,Support Carrier,Azure Reaper,Azure Reaper,Azure Reaper,Azure Reaper,Azure Reaper,Azure Reaper
+Aapje:Atlas,Wasteland Skimmer,Monsoon X,Tiamat,Wasteland Skimmer,Sabre,Predator,Dozer Tank,Pathfinder,Havoc,Sabre
+muyotenchi:Dracorex,Warehouse,Azure Reaper,Azure Reaper,Acropolis,Azure Reaper,Azure Reaper,Azure Reaper,Azure Reaper,Warehouse,Warehouse
+Danknugz:Lucina the Wicked,Predator,Marshal,Tiamat,Kilgore,Iron Maiden,Neverender,Pathfinder,Ravenous Dredge,Sharpshooter,Insanior
+cartagena:Lucina the Wicked,Earthquake Generator,Stealthy Niaq,Razogoth's Heir,Abominable Raksha,Tiamat,Omega,Soot Launcher,Predator,Electromagnetic Pulse,Hunter
+xanium:Dracorex,Bridge of Destiny,Utopia Beacon,Earthquake Generator,Earthquake Generator,Acropolis,Utopia Beacon,Pantheon Progeny,Abominable Raksha,Utopia Beacon,Earthquake Generator
+Tuxedo:Atlas,Predator,Tiamat,Omega,Poseidon,Electromagnetic Pulse,Irradiated Infantry,Hunter,Irradiated Infantry,Airstrike,Irradiated Infantry
+goedker:Lucina the Wicked,Monsoon X,Neverender,Iron Maiden,Omega,Tiamat,Electromagnetic Pulse,Dozer Tank,Predator,Hunter,Marshal
+Heihu:Lord of Tartarus,Bulging Mantis,Bulging Mantis,Bulging Mantis,Bulging Mantis,Bulging Mantis,Bulging Mantis,Bulging Mantis,Bulging Mantis,Bulging Mantis,Bulging Mantis
+fabio73:Dracorex,Warehouse,Grim Specter,Warehouse,Grim Specter,Grim Specter,Grim Specter,Asylum,Subterfuge
+lolizard:Lucina the Wicked,Teslatank,Predator,Pathfinder,Psycho,Hephatat,Abominable Raksha,Ravenous Dredge,Iron Maiden,Viper,Tiamat
+kman96:Lucina the Wicked,Electromagnetic Pulse,Stealthy Niaq,Monsoon X,Predator,Neverender,Omega,Marshal,Tiamat,Hierophant,Ravenous Dredge
+Idiral:Lord of Tartarus,Asylum,Grim Specter,Grim Specter,Grim Specter,Grim Specter,Asylum
+Kharaen:Dracorex,Necrogeddon,Noxious Den,Vigil,Rhino,Abominable Raksha,Bridge of Destiny,Support Carrier,Support Carrier,Rhino,Support Carrier
+TheRealPip:Empress,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hephatat,Hover Pod
+MeanGun:Tabitha,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Hephatat,Wasteland Skimmer,Patrol Cruiser,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Ion Strykers
+KriegDagger:Emanuel,Command Center,Command Center,Gatling Tower,Missile Silo,Missile Silo,Bahamut,Abominable Raksha,Gatling Tower,Gatling Tower,Missile Silo
+kungfumonkeyMike:Dracorex,Adamantite Armor,Noxious Den,Rhino,Aquatic Epicenter,Apparition,Rhino,Rhino,Support Carrier,Support Carrier,Bridge of Destiny
+Wushu624:Dalia,Subterfuge,Grim Specter,Mortar Bunker,Plasma Field,Warehouse,Ravenous Dredge,Grim Specter,Grim Specter,Grim Specter,Adamantite Armor
+15thShade:Atlas,Disposer,Monsoon X,Iron Maiden,Neverender,Electromagnetic Pulse,Electromagnetic Pulse,Abominable Raksha,Ravenous Dredge,Stealthy Niaq,Hephatat
+th0m1:Atlas,Pathfinder,Iron Maiden,Neverender,Predator,Tiamat,Ravenous Dredge,Omega,Hierophant,Stealthy Niaq,Psycho
+genocide69:Atlas,Iron Maiden,Marshal,Ravenous Dredge,Hephatat,Earthquake Generator,Neverender,Acropolis,Earthquake Generator,Utopia Beacon,Pantheon Progeny
+lubogk:Atlas,Missile Silo,Fortified Cannons,Fortified Cannons,Missile Silo,Bulldozer,Gatling Tower,Command Center,Missile Silo,Acropolis,Gatling Tower
+billyandy726:Dracorex,Support Carrier,Acropolis,Apparition,Monsoon X,Support Carrier,Support Carrier,Kilgore,Support Carrier,Support Carrier,Necrogeddon
+Golden119:Lucina the Wicked,Predator,Neverender,Lodestar,Teslatank,Tiamat,Ravenous Dredge,Marshal,Disposer,Omega,Pathfinder
+malakye:Lucina the Wicked,Predator,Tiamat,Pathfinder,Sharpshooter,Teslatank,Mortar Bunker,Ravenous Dredge,Hephatat,Sharpshooter,Hunter
+retsamerol:Empress,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hephatat
+Soccerlando:Lucina the Wicked,Predator,Ravenous Dredge,Disposer,Pathfinder,Tiamat,Necrogeddon,Neverender,Kilgore,Wasteland Skimmer,Iron Maiden
+kwheels:Lucina the Wicked,Shapeshifter,Hephatat,Tiamat,Monsoon X,Stealthy Niaq,Predator,Disposer,Boundless Blight,Ravenous Dredge,Neverender
+KrazyMonkey68:Lucina the Wicked,Neverender,Iron Maiden,Bursting Spore,Sharpshooter,Omega,Ravenous Dredge,Tiamat,Hunter,Disposer,Pathfinder
+underdogleon:Lucina the Wicked,Sabre,Tiamat,Hierophant,Predator,Stealthy Niaq,Vigil,Soot Launcher,Vaporwing,Disposer,Iron Maiden
+deezabamf:Empress,Holy Beacon,Bridge of Destiny,Aquatic Epicenter,Noxious Den,Rhino,Rhino,Rhino,Rhino,Holy Beacon,Apollo
+molokot:Empress,Hover Pod,Radiant Dawnbringer,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Mortar Bunker,Hover Pod,Hover Pod
+lonelyterrorist:Dracorex,Rhino,Support Carrier,Noxious Den,Rhino,Bridge of Destiny,Aquatic Epicenter,Rhino,Support Carrier,Rhino,Support Carrier
+bafodalho:Emanuel,Missile Silo,Missile Silo,Bridge of Destiny,Mobile Command,Gatling Tower,Gatling Tower,Command Center,Acropolis,Gatling Tower,Missile Silo
+supergeek0830:Lucina the Wicked,Electromagnetic Pulse,Mortar Bunker,Tiamat,Sabre,Predator,Monsoon X,Neverender,Kilgore,Razogoth's Heir,Gatling Tower
+sleaves:Dracorex,Elemental,Support Carrier,Rhino,Support Carrier,Rhino,Bridge of Destiny,Abominable Raksha,Acropolis,Support Carrier,Support Carrier
+discowookie79:Empress,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hephatat,Hover Pod
+Amoureuses:Dracorex,Bridge of Destiny,Rhino,Necrogeddon,Iron Maiden,Rhino,Apparition,Rhino,Adamantite Armor,Rhino,Rhino
+Logoth:Dracorex,Noxious Den,Acropolis,Apollo,Bridge of Destiny,Rhino,Rhino,Utopia Beacon,Abominable Raksha,Rhino,Noxious Den
+Seuchenherr:Tabitha,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Executioner,Wasteland Skimmer
+kesselrun:Lucina the Wicked,Sharpshooter,Disposer,Lich,Ravenous Dredge,Kilgore,Kogoth the Consumer,Neverender,Disposer,Marshal,Gatling Tower
+PlasmaSeattle:Svetlana,Command Center,Mobile Base,Night Ranger,Acropolis,Engulfing Chasm,Heli-Duster,Pantheon,Heli-Duster,Impulse Walker,Night Ranger
+The_Great_Rob:Dracorex,Support Carrier,Abominable Raksha,Support Carrier,Acropolis,Destructive Ram,Kapak the Deceiver,Support Carrier,Rhino,Elemental,Support Carrier
+GeneralRomMohc:Dracorex,Missile Silo,Gatling Tower,Command Center,Earthquake Generator,Pulsating Bunker,Acropolis,Bulldozer,Gatling Tower,Earthquake Generator,Missile Silo

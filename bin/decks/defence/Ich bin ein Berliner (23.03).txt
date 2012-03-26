@@ -1,0 +1,46 @@
+ThomBangalter:Lucina the Wicked,Tiamat,Omega,Pathfinder,Disposer,Predator,Neverender,Monsoon X,Rifter,Stealthy Niaq,Teslatank
+Dainshi:Emanuel,Missile Silo,Acropolis,Command Center,Fortified Cannons,Bridge of Destiny,Gatling Tower,Missile Silo,Gatling Tower,Gatling Tower,Abominable Raksha
+1nfinity:Dracorex,Earthquake Generator,Bridge of Destiny,Utopia Beacon,Engulfing Chasm,Earthquake Generator,Iron Maiden,Abominable Raksha,Utopia Beacon,Utopia Beacon,Ayrkrane
+Hellkeeper:Dracorex,Support Carrier,Deadblow,Nimbus,Elemental,Support Carrier,Apparition,Support Carrier,Support Carrier,Gorivore,Support Carrier
+Biljac:Dracorex,Hierophant,Bridge of Destiny,Aquatic Epicenter,Utopia Beacon,Support Carrier,Support Carrier,Revered Monk,Dozer Tank,Pantheon Progeny,Apparition
+Zyrax:Dracorex,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Aquatic Epicenter,Bridge of Destiny,Hover Pod,Hover Pod
+Bodenite:Lucina the Wicked,Hunter,Tiamat,Hades,Iron Maiden,Neverender,Disposer,Sabre,Marshal,Mech Walker,Predator
+Menzo:Dracorex,Plague,Utopia Beacon,Ayrkrane,Bridge of Destiny,Utopia Beacon,Iron Maiden,Abominable Raksha,Earthquake Generator,Earthquake Generator,Engulfing Chasm
+Amnarak:Lucina the Wicked,Predator,Tiamat,Electromagnetic Pulse,Rifter,Shapeshifter,Stealthy Niaq,Hunter,Omega,Plague,Teslatank
+Eladamri1:Tabitha,Wasteland Skimmer,Elite Diver,Elite Diver,Elite Diver,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Psycho
+Ashaman2000:Atlas,Tiamat,Predator,Neverender,Ravenous Dredge,Pathfinder,Disposer,Iron Maiden,Marshal,Kilgore,Electromagnetic Pulse
+ballnutt:Lucina the Wicked,Sharpshooter,Ravenous Dredge,Tiamat,Mech Walker,Wasteland Skimmer,Beetle Bomber,Predator,Abominable Raksha,Force Breaker,Omega
+Daisuke89:Dracorex,Iron Maiden,Utopia Beacon,Bridge of Destiny,Earthquake Generator,Utopia Beacon,Engulfing Chasm,Ayrkrane,Earthquake Generator,Utopia Beacon,Abominable Raksha
+DINPE:Gaia,Hephatat,Support Carrier,Rhino,Adamantite Armor,Rhino,Aquatic Epicenter,Rhino,Rhino,Bridge of Destiny,Support Carrier
+latmere1:Lucina the Wicked,Ravenous Dredge,Dozer Tank,Tiamat,Iron Maiden,Electromagnetic Pulse,Stealthy Niaq,Predator,Monsoon X,Rifter,Omega
+mab32480:Dracorex,Support Carrier,Hephatat,Apparition,Support Carrier,Scepter,Bridge of Destiny,Support Carrier,Scepter,Elemental,Support Carrier
+GambitMKD:Empress,Support Carrier,Support Carrier,Aquatic Epicenter,Rhino,Rhino,Bridge of Destiny,Utopia Beacon,Rhino,Guerilla Leader,Repromancer
+LonelyRaven:Dracorex,Abominable Raksha,Rhino,Rhino,Benediction,Utopia Beacon,Rhino,Rhino,Rhino,Mortar Bunker,Mortar Bunker
+warrior9694:Svetlana,Salvager,Salvager,Salvager,Command Center,Salvager,Mobile Base,Command Center,Salvager,Pantheon,Mobile Base
+Dunuin:Dracorex,Utopia Beacon,Acropolis,Missile Silo,Missile Silo,Abominable Raksha,Sundering Ogre,Earthquake Generator,Pantheon Progeny,Utopia Beacon,Bridge of Destiny
+cloudx85:Dracorex,Aquatic Epicenter,Support Carrier,Rhino,Rhino,Bridge of Destiny,Rhino,Rhino,Support Carrier,Support Carrier,Noxious Den
+Provokes:Dracorex,Rhino,Apparition,Noxious Den,Rhino,Hephatat,Aquatic Epicenter,Support Carrier,Support Carrier,Bridge of Destiny,Rhino
+duskshine:Dalia,Hover Pod,Aquatic Epicenter,Hover Pod,Hover Pod,Hover Pod,Bridge of Destiny,Hover Pod,Hover Pod,Hover Pod
+steam08:Lucina the Wicked,Elite Diver,Stealthy Niaq,Tiamat,Omega,Pathfinder,Monsoon X,Razogoth's Heir,Predator,Ravenous Dredge,Abominable Raksha
+N0R080T:Dracorex,Utopia Beacon,Rhino,Aquatic Epicenter,Engulfing Chasm,Earthquake Generator,Utopia Beacon,Acropolis,Utopia Beacon,Bridge of Destiny,Gladius
+Jarek_Owicz:Dracorex,Sabre,Bolide Walker,Rifter,Tiamat,Predator,Exodrone,Omega,Electromagnetic Pulse,Stealthy Niaq,Cannon Walker
+Czar001:Thadius,Sub Delver,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Hephatat,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer
+heman727:Atlas,Tiamat,Pathfinder,Iron Maiden,Abominable Raksha,Predator,Ravenous Dredge,Electromagnetic Pulse,Hephatat,Engulfing Chasm,Stealthy Niaq
+mamypoko:Dracorex,Utopia Beacon,Rhino,Bridge of Destiny,Ayrkrane,Aquatic Epicenter,Hephatat,Rhino,Noxious Den,Rhino,Engulfing Chasm
+Swankypickle:Dracorex,Prism,Utopia Beacon,Elemental,Azure Reaper,Support Carrier,Support Carrier,Acropolis,Azure Reaper,Necrogeddon,Bridge of Destiny
+mimicked:Dracorex,Bridge of Destiny,Support Carrier,Support Carrier,Support Carrier,Support Carrier,Aquatic Epicenter,Support Carrier,Support Carrier,Support Carrier,Elemental
+ShinVegeta:Lucina the Wicked,Ravenous Dredge,Iron Maiden,Tiamat,Warehouse,Sharpshooter,Predator,Omega,Sharpshooter,Sharpshooter,Marshal
+nizman96:Lucina the Wicked,Hunter,Omega,Tiamat,Stealthy Niaq,Predator,Mortar Bunker,Soot Launcher,Electromagnetic Pulse,Sabre,Sabre
+Sbrago:Dracorex,Rhino,Ayrkrane,Bridge of Destiny,Apparition,Rhino,Support Carrier,Apollo,Support Carrier,Engulfing Chasm,Aquatic Epicenter
+Blauwzwart1:Dracorex,Aquatic Epicenter,Utopia Beacon,Adytum,Earthquake Generator,Bridge of Destiny,Pantheon Progeny,Acropolis,Utopia Beacon,Utopia Beacon,Apparition
+thepauldude:Atlas,Kyxlite,Stealthy Niaq,Electromagnetic Pulse,Marshal,Disposer,Mortar Bunker,Neverender,Iron Maiden,Monsoon X,Shapeshifter
+Mordekay78:Atlas,Sulfuris Acid Pit,Command Center,Command Center,Gatling Tower,Gatling Tower,Sustained Wall,Dozer Tank,Missile Silo,Sulfuris Acid Pit,Gatling Tower
+kroedl:Dracorex,Rhino,Utopia Beacon,Support Carrier,Rhino,Acropolis,Engulfing Chasm,Utopia Beacon,Bridge of Destiny,Support Carrier,Aquatic Epicenter
+panseinpeter:Atlas,Ravenous Dredge,Stealthy Niaq,Electromagnetic Pulse,Monsoon X,Deadblow,Elite Diver,Electromagnetic Pulse,Bulging Mantis,Omega,Sundering Ogre
+Deathperados:Emanuel,Gatling Tower,Gatling Tower,Gatling Tower,Missile Silo,Earthquake Generator,Missile Silo,Earthquake Generator,Missile Silo,Razogoth's Heir,Acropolis
+shushi85:Dracorex,Aquatic Epicenter,Utopia Beacon,Rhino,Rhino,Rhino,Utopia Beacon,Missile Silo,Acropolis,Bridge of Destiny,Missile Silo
+muckling:Empress,Flux Blaster,Utopia Beacon,Bridge of Destiny,Apparition,Support Carrier,Support Carrier,Elemental,Aquatic Epicenter,Radiant Dawnbringer,Utopia Beacon
+theguytheguy:Dalia,Gatling Tower,Acropolis,Holy Beacon,Utopia Beacon,Pantheon Progeny,Gatling Tower,Gatling Tower,Holy Beacon,Tesla Cannon,Utopia Beacon
+Dewars:Atlas,Disposer,Electromagnetic Pulse,Kilgore,Iron Maiden,Omega,Tiamat,Sabre,Predator,Earthquake Generator,Monsoon X
+impact_donkey:Tabitha,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Tactical Infiltrator,Executioner,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer
+lilorphanannie:Atlas,Kilgore,Mortar Bunker,Iron Maiden,Wasteland Skimmer,Predator,Necrogeddon,Hierophant,Disposer,Sabre,Electromagnetic Pulse

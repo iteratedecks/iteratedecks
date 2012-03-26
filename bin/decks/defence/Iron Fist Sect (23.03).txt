@@ -1,0 +1,50 @@
+Beefhouse3D:Empress,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Solar Powerhouse,Buster,Hephatat,Hover Pod
+harkinsol:Gaia,Bridge of Destiny,Rhino,Aquatic Epicenter,Rhino,Rhino,Apollo,Utopia Beacon,Insanior,Utopia Beacon,Rhino
+Kelrist:Atlas,Predator,Electromagnetic Pulse,Tiamat,Disposer,Hunter,Ravenous Dredge,Iron Maiden,Neverender,Marshal,Omega
+DaLongone9:Lucina the Wicked,Disposer,Shrapnel Engine,Predator,Rifter,Teslatank,Psycho,Iron Maiden,Sabre,Tiamat,Omega
+Jappert:Dracorex,Pantheon Progeny,Earthquake Generator,Utopia Beacon,Acropolis,Prism,Utopia Beacon,Pulsating Bunker,Command Center,Bridge of Destiny,Electromagnetic Pulse
+HoopleDoople:Invasion Coordinator,Adamantite Armor,Adamantite Armor,Sycophant,Sycophant,Sycophant,Sycophant,Venorax
+tinkady:Dracorex,Utopia Beacon,Utopia Beacon,Utopia Beacon,Utopia Beacon,Aquatic Epicenter,Rhino,Bridge of Destiny,Rhino,Rhino,Rhino
+Zahlen:Dracorex,Ayrkrane,Rhino,Utopia Beacon,Apollo,Rhino,Acropolis,Aquatic Epicenter,Bridge of Destiny,Rhino
+Keyboy64:Empress,Hover Pod,Aquatic Epicenter,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Buster,Support Carrier
+Zadier:Empress,Hover Pod,Radiant Dawnbringer,Bridge of Destiny,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Solar Powerhouse,Hover Pod,Aquatic Epicenter
+Moraku:Dalia,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Ravenous Dredge,Hover Pod
+y_salvas:Dracorex,Rhino,Elemental,Rhino,Rhino,Rhino,Aquatic Epicenter,Bridge of Destiny,Rhino,Rhino,Noxious Den
+DaMike:Lucina the Wicked,Predator,Wasteland Skimmer,Neverender,Monsoon X,Iron Maiden,Stealthy Niaq,Ravenous Dredge,Tiamat,Ayrkrane,Abominable Raksha
+himshuffle:Lucina the Wicked,Ravenous Dredge,Tiamat,Pathfinder,Omega,Iron Maiden,Rifter,Ayrkrane,Predator,Abominable Raksha,Disposer
+shian:Atlas,Marshal,Stealthy Niaq,Electromagnetic Pulse,Omega,Abominable Raksha,Ravenous Dredge,Kilgore,Acropolis,Neverender,Iron Maiden
+GregorK:Empress,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Repromancer,Hover Pod,Hover Pod,Hover Pod,Hover Pod
+Elyzard:Atlas,Predator,Iron Maiden,Tiamat,Ravenous Dredge,Pathfinder,Disposer,Neverender,Insanior,Electromagnetic Pulse,Marshal
+DSMagus:Invasion Coordinator,Sycophant,Venorax,Sycophant,Sycophant,Adamantite Armor,Sycophant,Adamantite Armor
+kenigmatic:Empress,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Buster,Hover Pod,Hover Pod,Gladius,Hover Pod
+knightyu:Emanuel,Missile Silo,Gatling Tower,Electromagnetic Pulse,Missile Silo,Gatling Tower,Gatling Tower,Dozer Tank,Electromagnetic Pulse,Missile Silo,Missile Silo
+Qhorin:Empress,Iron Maiden,Hover Pod,Hover Pod,Hephatat,Hover Pod,Hover Pod,Ayrkrane,Hover Pod,Hover Pod,Hover Pod
+ScrewU15:Atlas,Neverender,Insanior,Abominable Raksha,Electromagnetic Pulse,Marshal,Disposer,Disposer,Tiamat,Disposer,Bulging Mantis
+Janison:Empress,G-60 Thunder,G-60 Thunder,Support Carrier,Ayrkrane,Support Carrier,G-60 Thunder,Acropolis,Support Carrier,G-60 Thunder,Support Carrier
+911ultima:Atlas,Ayrkrane,Omega,Wasteland Skimmer,Iron Maiden,Neverender,Ravenous Dredge,Predator,Disposer,Hunter,Tiamat
+dave210342:Dalia,Hover Pod,Hover Pod,Hephatat,Ayrkrane,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod
+Jmizzle7:Atlas,Iron Maiden,Pathfinder,Neverender,Ayrkrane,Disposer,Ravenous Dredge,Kilgore,Marshal,Electromagnetic Pulse,Stealthy Niaq
+MSUSpartan3096:Svetlana,Command Center,Night Ranger,Barbarian,Solitary Mech,Heli-Duster,Mobile Base,Barbarian,Acropolis,Cannon Walker,Lionheart
+catepillar:Dracorex,Apollo,Adamantite Armor,Adamantite Armor,Adamantite Armor,Adamantite Armor,Adamantite Armor,Aquatic Epicenter,Adamantite Armor,Adamantite Armor,Aquatic Epicenter
+fipi:Atlas,Acropolis,Predator,Iron Maiden,Electromagnetic Pulse,Omega,Monsoon X,Abominable Raksha,Stealthy Niaq,Disposer,Ravenous Dredge
+Hoschisack:Dalia,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Marshal,Hover Pod,Hover Pod,Hover Pod
+Showza18:Empress,Hover Pod,Hover Pod,Hover Pod,Hephatat,Hover Pod,Hover Pod,Bridge of Destiny,Hover Pod,Hover Pod,Hover Pod
+bnkntt:Atlas,Disposer,Neverender,Plague,Kilgore,Iron Maiden,Predator,Earthquake Generator,Marshal,Earthquake Generator,Tiamat
+beny1991:Empress,Bridge of Destiny,Rhino,Apparition,Rhino,Rhino,Rhino,Noxious Den,Aquatic Epicenter,Apollo,Rhino
+cuiji2:Atlas,Tiamat,Ravenous Dredge,Bulging Mantis,Electromagnetic Pulse,Kilgore,Disposer,Marshal,Predator,Iron Maiden,Neverender
+IamaTumor:Lucina the Wicked,Shapeshifter,Electromagnetic Pulse,Sharpshooter,Mortar Bunker,Tiamat,Neverender,Disposer,Delphan,Teslatank,Ravenous Dredge
+Seether11:Atlas,Disposer,Neverender,Jagatai,Earthquake Generator,Tiamat,Electromagnetic Pulse,Predator,Ayrkrane,Marshal,Iron Maiden
+pacachomp:Dracorex,Earthquake Generator,Noxious Den,Bridge of Destiny,Rhino,Utopia Beacon,Rhino,Apollo,Utopia Beacon,Rhino,Rhino
+pt14reds:Empress,Hover Pod,Hephatat,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Rhino,Hover Pod
+Trukntigger:Empress,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hephatat,Hover Pod,Hover Pod
+bellzeputh:Tabitha,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Wasteland Skimmer,Ion Strykers,Wasteland Skimmer,Wasteland Skimmer
+Dunkelzahn2061:Atlas,Stealthy Niaq,Acropolis,Hephatat,Monsoon X,Iron Maiden,Electromagnetic Pulse,Abominable Raksha,Tiamat,Predator,Ravenous Dredge
+Ermag:Empress,Rhino,Bridge of Destiny,Utopia Beacon,Rhino,Aquatic Epicenter,Prism,Apollo,Aquatic Epicenter,Hover Pod,Utopia Beacon
+szsjhs:Atlas,Command Center,Gatling Tower,Gatling Tower,Pantheon Progeny,Missile Silo,Colossus,Missile Silo,Command Center,Acropolis,Dozer Tank
+PriestlyJudas:Atlas,Tiamat,Neverender,Electromagnetic Pulse,Predator,Marshal,Kilgore,Omega,Disposer,Iron Maiden,Pathfinder
+tmfk:Lucina the Wicked,Predator,Disposer,Bolster Xeno,Neverender,Tiamat,Marshal,Ayrkrane,Abominable Raksha,Radiant Dawnbringer,Shapeshifter
+longx116:Dracorex,Rhino,Rhino,Bridge of Destiny,Utopia Beacon,Rhino,Abominable Raksha,Rhino,Rhino,Rhino,Aquatic Epicenter
+SleepingGiants:Lord of Tartarus,Subterfuge,Grim Specter,Grim Specter,Grim Specter,Warehouse,Warehouse,Grim Specter
+wandomguy:Empress,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hephatat,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod
+jeffery838:Lucina the Wicked,Warehouse,Predator,Tiamat,Hephatat,Razogoth's Heir,Hunter,Neverender,Sabre,Iron Maiden,Ravenous Dredge
+Antagon16:Empress,Hover Pod,Hover Pod,Gladius,Hover Pod,Hover Pod,Hover Pod,Hover Pod,Hover Pod
