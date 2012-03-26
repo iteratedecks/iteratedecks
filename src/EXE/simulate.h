@@ -598,6 +598,8 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 		UINT customcount = DB.GetCustomCount();
 		UINT customindex = 100; // doesn't matter if it is not 0
 		ActiveDeck customdeck;
+		if (OrderLength >= 0)
+			InitializeCriticalSection(&cs); // this critical section is used to manage shared object calculating best card order
 		for (DWORD i=0;(i<gamesperthread) && (State >= 0);i++)
 		{
 			if (RaidID < 0)
@@ -627,6 +629,8 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 			else
 				EvaluateRaidOnce(gAtk,ret,CSIndex,rbc,(DWORD)RaidID,Req,pSkillProcs,bAnnihilator,bSurrenderAtLoss);
 		}
+		if (OrderLength >= 0)
+			DeleteCriticalSection(&cs);
 	}
 	else
 	{
