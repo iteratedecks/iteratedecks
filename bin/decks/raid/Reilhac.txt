@@ -9,4 +9,4 @@ SR - ord 82.1:Dracorex, Abominable Raksha, Utopia Beacon, Bridge of Destiny, Uto
 Lithid - auto 86.8:Dracorex, ComSat Terminal, ComSat Terminal, Elite Diver, Elite Diver, Patrol Cruiser, Patrol Cruiser, Hephatat, Azure Reaper, Azure Reaper, ComSat Terminal
 Lithid - ord 93.6:Dracorex, ComSat Terminal, ComSat Terminal, Elite Diver, Elite Diver, Patrol Cruiser, Patrol Cruiser, Hephatat, ComSat Terminal, Executioner, Iron Maiden
 LH - auto 65:Dracorex, ComSat Terminal, Utopia Beacon, Utopia Beacon, ComSat Terminal, Patrol Cruiser, Hephatat, Imperial Refuge, ComSat Terminal, Patrol Cruiser, Elite Diver
-LH - ord 75.8:Dracorex, ComSat Terminal, Patrol Cruiser, Hephatat, Patrol Cruiser, ComSat Terminal, Elite Diver, Vengeant, ComSat Terminal, Executioner, Iron Maidenoner, Iron Maiden
+LH - ord 75.8:Dracorex, ComSat Terminal, Patrol Cruiser, Hephatat, Patrol Cruiser, ComSat Terminal, Elite Diver, Vengeant, ComSat Terminal, Executioner, Iron Maiden

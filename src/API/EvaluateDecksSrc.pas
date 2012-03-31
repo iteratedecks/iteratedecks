@@ -757,7 +757,7 @@ const
   sCustomDecks = 'Custom.txt';
   sCardNotFound = 'Card "%s" not found in database.';
   cFansiteBaseLink = 'http://tyrant.40in.net/deck.php?id=';
-  cFansitePostResult = 'http://tyrant.40in.net/kg/nsupload.php?id=';
+  cFansitePostResult = 'http://tyrant.40in.net/sim.php?hash=';
   sOptimusFont = 'fonts\Optimus.ttf';
   sEnigmaticFont = 'fonts\Enigmatic.TTF';
   sIterateDecksCrashed = 'IterateDecks.exe has crashed,'#13'no results can be fetched.'#13'Check if your antivirus software'#13'is not blocking IterateDecks.exe'#13'and if decks you use are valid.'#13#13'Please report to developer if this'#13'error persists.';
@@ -1337,15 +1337,20 @@ var
         begin
           currentdeckid := lnode.Values[1];
           decks[currentdeckid] := '';
-        end else
-        if (currentdeckid <> 0) and (lnode.Values[0] = 'name') and (currentdeckid = node.Values[0]) then
-          decks[currentdeckid] := '-MY- ' + vJsonObj.FieldByIndex[i].Value
+        end
         else
-        if (currentdeckid <> 0) and (lnode.Values[0] = 'commander_id') and (currentdeckid = node.Values[0]) then
-          decks[currentdeckid] := decks[currentdeckid] + ':' + GetCardName(lnode.Values[1])
+        if (Assigned(node.Parent)) and
+          (node.Parent.Values[0] = 'user_decks') then
+        begin
+          if (currentdeckid <> 0) and (lnode.Values[0] = 'name') and (currentdeckid = node.Values[0]) then
+            decks[currentdeckid] := '-MY- ' + vJsonObj.FieldByIndex[i].Value
+          else
+          if (currentdeckid <> 0) and (lnode.Values[0] = 'commander_id') and (currentdeckid = node.Values[0]) then
+            decks[currentdeckid] := decks[currentdeckid] + ':' + GetCardName(lnode.Values[1]);
+        end
         else
-        if (currentdeckid <> 0) and (currentdeckid <> 0) and (node.Values[0] = 'cards') then
-          decks[currentdeckid] := decks[currentdeckid] + ',' + GetCardName(lnode.Values[0],vJsonObj.FieldByIndex[i].Value);
+          if (currentdeckid <> 0) and (currentdeckid <> 0) and (node.Values[0] = 'cards') then
+            decks[currentdeckid] := decks[currentdeckid] + ',' + GetCardName(lnode.Values[0],vJsonObj.FieldByIndex[i].Value);
 
         //
         if ((node.Values[0] = 'cards') OR (node.Values[0] = 'cards_for_sale_cost')) then
@@ -1362,7 +1367,11 @@ var
             end;
           end;
         end;
-        if (vJsonObj.NameOf[i] = 'num_owned') then
+
+        if (vJsonObj.NameOf[i] = 'num_owned') and
+           (Assigned(node.Parent)) and
+           (node.Parent.Values[0] = 'user_cards')
+         then
         begin
           idx := StrToInt(node.Values[0]);
           FixId(idx);
