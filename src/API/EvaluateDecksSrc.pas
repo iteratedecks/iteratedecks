@@ -662,6 +662,7 @@ type
     procedure tEnableBoostTimer(Sender: TObject);
     procedure cxButton1Click(Sender: TObject);
     procedure eMailboxFocusChanged(Sender: TObject);
+    function GetCardNameEx(id: integer): string;
     procedure tDonateNotificationTimer(Sender: TObject);
     function AdjustRatio(ratio: double): double;
     procedure lDonate1Click(Sender: TObject);
@@ -2678,7 +2679,7 @@ begin
         begin
           LastCardIndexBot := id;
           vBot.DataController.SetValue(i, vBotID.Index, id);
-          s := Cards[id].Name;
+          s := GetCardNameEx(id);
           vBot.DataController.SetValue(i, vBotName.Index, s);
         end;
       end;
@@ -3433,7 +3434,7 @@ begin
         begin
           LastCardIndex := id;
           vTop.DataController.SetValue(i, vTopID.Index, id);
-          s := Cards[id].Name;
+          s := GetCardNameEx(id);
           vTop.DataController.SetValue(i, vTopName.Index, s);
           //vTop.DataController.SetValue(i,2,id);
           //vTop.DataController.SetValue(i,3,id);
@@ -3502,7 +3503,7 @@ begin
         begin
           LastCardIndexBot := id;
           vBot.DataController.SetValue(i, vBotID.Index, id);
-          s := Cards[id].Name;
+          s := GetCardNameEx(id);
           vBot.DataController.SetValue(i, vBotName.Index, s);
           //vTop.DataController.SetValue(i,2,id);
           //vTop.DataController.SetValue(i,3,id);
@@ -3541,6 +3542,14 @@ begin
     LoadTopDeck(cbmAntiRaid.Text, -(cbmRaid.ItemIndex + 1));
 end;
 
+function TEvaluateDecksForm.GetCardNameEx(id: integer): string;
+begin
+  if Cards[id].CardSet = 0 then
+    result := Cards[id].Name+ '[' + IntToStr(Cards[id].Id) + ']'
+  else
+    result := Cards[id].Name;
+end;
+
 procedure TEvaluateDecksForm.bmMissionClick(Sender: TObject);
 var
   p1: pchar;
@@ -3571,11 +3580,7 @@ begin
         begin
           LastCardIndexBot := id;
           vBot.DataController.SetValue(i, vBotID.Index, id);
-          s := Cards[id].Name;
-          if Cards[id].CardSet = 0 then
-            s := Cards[id].Name+ '[' + IntToStr(Cards[id].Id) + ']'
-          else
-            s := Cards[id].Name;
+          s := GetCardNameEx(id);
           vBot.DataController.SetValue(i, vBotName.Index, s);
           //vTop.DataController.SetValue(i,2,id);
           //vTop.DataController.SetValue(i,3,id);
@@ -4393,7 +4398,7 @@ begin
         begin
           LastCardIndex := id;
           vTop.DataController.SetValue(i, vTopID.Index, id);
-          s := Cards[id].Name;
+          s := GetCardNameEx(id);
           vTop.DataController.SetValue(i, vTopName.Index, s);
           //vTop.DataController.SetValue(i,2,id);
           //vTop.DataController.SetValue(i,3,id);
