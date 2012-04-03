@@ -1210,7 +1210,7 @@ private:
 					if ((dmg > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
 						bGoBerserk = true;
 					// if target is dead, we dont need to process this effects
-					//if (targets[s]->IsAlive() && (dmg > 0))
+					if (/*targets[s]->IsAlive() && */(dmg > 0))
 					{
 						// immobilize
 						if (SRC.GetAbility(DMGDEPENDANT_IMMOBILIZE) && PROC50)

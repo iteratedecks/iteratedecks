@@ -3951,8 +3951,15 @@ begin
         end
         else
         begin
-          if (mDefDeckName <> '') and (not cbUseComplexDefence.checked) then
-            HashID := GetMissionDeckIndex(mDefDeckName)
+          if (((mDefDeckName <> '') and (not bImages)) OR
+             ((vDefDeckName <> '') and (bImages))) and
+             (not cbUseComplexDefence.checked) then
+          begin
+            if bImages then
+              HashID := GetMissionDeckIndex(vDefDeckName)
+            else
+              HashID := GetMissionDeckIndex(mDefDeckName);
+          end
           else
             HashID := 0;
           if HashID = 0 then
@@ -3967,7 +3974,7 @@ begin
           try
             if BuildResultHash(atk,EDVersion,EDRevision,HashType,HashID,r.Result.Games,r.Result.Win,p1,cMaxBuffer) then
               ResultHash := p1;
-            if GetHashFromDeck(def, p1, cMaxBuffer) then
+            if (HashType >= 6) and GetHashFromDeck(def, p1, cMaxBuffer) then
               ResultHash := ResultHash + '.' + p1;
           finally
             FreeMem(p1);
