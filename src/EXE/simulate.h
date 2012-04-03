@@ -13,6 +13,7 @@
 // contains some threading evaluation routines
 
 CardDB DB; // just to make all easier ...
+#define MAX_TURN				50
 UINT MaxTurn = MAX_TURN;
 
 // Block
@@ -20,6 +21,7 @@ typedef map<string, PICK_STATS> MSPS;
 typedef pair<string, PICK_STATS> PAIRSPS;
 MSPS StatsByOrder;
 #include <windows.h>
+#include "process.h"
 static CRITICAL_SECTION cs;
 int OrderLength = 0;// 0 to disable //DEFAULT_DECK_SIZE;
 UINT MaxOrderHeapSize = 700;
@@ -573,23 +575,26 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 {
 	// create Index
 	UCHAR CSIndex[CARD_MAX_ID];
-	CSIndex[gAtk.Commander.GetId()] = 0;
-	rbc[0].Id = gAtk.Commander.GetId();
-	for (UCHAR i=0;i<gAtk.Deck.size();i++)
+	if (rbc)
 	{
-		UCHAR idx = 0;
-		for (idx=0;idx<DEFAULT_DECK_RESERVE_SIZE+1;idx++)
-			if (rbc[idx].Id == gAtk.Deck[i].GetId())
-				break;
-			else
-				if (!rbc[idx].IsValid())
-				{
-					rbc[idx].Id = i;
+		CSIndex[gAtk.Commander.GetId()] = 0;
+		rbc[0].Id = gAtk.Commander.GetId();
+		for (UCHAR i=0;i<gAtk.Deck.size();i++)
+		{
+			UCHAR idx = 0;
+			for (idx=0;idx<DEFAULT_DECK_RESERVE_SIZE+1;idx++)
+				if (rbc[idx].Id == gAtk.Deck[i].GetId())
 					break;
-				}
-		_ASSERT(idx);
-		CSIndex[gAtk.Deck[i].GetId()] = idx;
-		rbc[idx].Id = gAtk.Deck[i].GetId();
+				else
+					if (!rbc[idx].IsValid())
+					{
+						rbc[idx].Id = i;
+						break;
+					}
+			_ASSERT(idx);
+			CSIndex[gAtk.Deck[i].GetId()] = idx;
+			rbc[idx].Id = gAtk.Deck[i].GetId();
+		}
 	}
 	//
 	if (threadscount <= 1)
@@ -624,10 +629,10 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 					}
 					tDef = customdeck;
 				}
-				Simulate(tAtk,tDef,ret,CSIndex,rbc,bSurge,Req,pSkillProcs,bAnnihilator,bSurrenderAtLoss);
+				Simulate(tAtk,tDef,ret,(rbc)?CSIndex:0,rbc,bSurge,Req,pSkillProcs,bAnnihilator,bSurrenderAtLoss);
 			}
 			else
-				EvaluateRaidOnce(gAtk,ret,CSIndex,rbc,(DWORD)RaidID,Req,pSkillProcs,bAnnihilator,bSurrenderAtLoss);
+				EvaluateRaidOnce(gAtk,ret,(rbc)?CSIndex:0,rbc,(DWORD)RaidID,Req,pSkillProcs,bAnnihilator,bSurrenderAtLoss);
 		}
 		if (OrderLength >= 0)
 			DeleteCriticalSection(&cs);
@@ -646,9 +651,10 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 		{
 			parms[i].Atk = &gAtk;
 			parms[i].Def = &gDef;
-			parms[i].CSIndex = CSIndex;
-			for (UCHAR k=0;k<DEFAULT_DECK_RESERVE_SIZE+1;k++)
-				parms[i].rbc[k].Id = rbc[k].Id;
+			parms[i].CSIndex = (rbc)?CSIndex:0;
+			if (rbc)
+				for (UCHAR k=0;k<DEFAULT_DECK_RESERVE_SIZE+1;k++)
+					parms[i].rbc[k].Id = rbc[k].Id;
 			parms[i].RaidID = RaidID;
 			parms[i].gamesperthread = gamesperthread;
 			parms[i].Seed = Seed + i; // offset seed or we will have same results for all threads
@@ -675,8 +681,9 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 			cwait(NULL,m_ulThreadHandle[i],NULL); // now wait them all, order doesn't matter since we will have to wait all of them
 			// collect results
 			ret.Add(parms[i].r);
-			for (UCHAR m=0;m<DEFAULT_DECK_RESERVE_SIZE+1;m++)
-				rbc[m].Add(parms[i].rbc[m]);
+			if (rbc)
+				for (UCHAR m=0;m<DEFAULT_DECK_RESERVE_SIZE+1;m++)
+					rbc[m].Add(parms[i].rbc[m]);
 
 			if (pSkillProcs)
 				MergeBuffers(pSkillProcs,parms[i].SkillProcs); // merge these

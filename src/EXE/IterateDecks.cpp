@@ -23,8 +23,6 @@
 
 #include "branches.h"
 
-#include "process.h"
-
 #include "simulate.h"
 
 #ifdef _DEBUG
@@ -492,8 +490,8 @@ int _tmain(int argc, char* argv[])
 	DB.LoadMissionXML("missions.xml");
 	DB.LoadRaidXML("raids.xml");
 	//DB.SaveMissionDecks("c:\\pun.txt");
-	ActiveDeck x("PsCDfcfc",DB.GetPointer());
-	ActiveDeck z("QVCDDICsDNBxBGBGBxB0DnC7fcfc",DB.GetPointer());
+	ActiveDeck x("ROgvgfIf+nIf",DB.GetPointer());
+	ActiveDeck z("SQJ6FCH/G0I/JCDdJJI2HMJEGsgofou8",DB.GetPointer());
 	x.SetOrderMatters(true);
 
 	//DB.LoadDecks("C:\\Users\\NT\\Documents\\Visual Studio 2008\\Projects\\EvaluateDecks\\bin\\decks\\batcheval\\New Missions.txt");
@@ -506,8 +504,12 @@ int _tmain(int argc, char* argv[])
 		ActiveDeck X(x);
 		ActiveDeck Y(z);
 
-
+		printf("-----------------------------------\n");
 		Simulate(X,Y,r);
+		if (!X.Commander.IsAlive())
+		{
+			printf("Lost!\n");
+		}
 	}
 	return r.Win;
 	}

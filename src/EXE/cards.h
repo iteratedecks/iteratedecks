@@ -398,7 +398,10 @@ public:
 					{
 						MSKILLS::iterator si = SIndex.find(id);
 						if (si == SIndex.end())
-							printf("Skill \"%s\" not found in index!\n",id);
+						{
+							if (bConsoleOutput)
+								printf("Skill \"%s\" not found in index!\n",id);
+						}
 						else
 						{
 							Skills[si->second].IsPassive = child.attribute("passive").as_bool();
