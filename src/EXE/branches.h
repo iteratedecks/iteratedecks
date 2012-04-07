@@ -16,6 +16,7 @@
 
 #define RESERVE_LEAVES_COUNT	20000
 #define RESERVE_SMALL_COUNT		100
+#define MAX_TURN				50
 
 #define PROC_CHANCE				0.5
 
