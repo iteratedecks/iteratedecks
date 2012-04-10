@@ -2596,7 +2596,10 @@ public:
 						faction = FACTION_NONE;
 					else
 						faction = Src.GetTargetFaction(aid);
-					GetTargets(Dest.Units,faction,targets);
+					if (chaos > 0)
+						GetTargets(Units,faction,targets);
+					else
+						GetTargets(Dest.Units,faction,targets);
 					if (targets.size())
 					{
 						PPCIV::iterator vi = targets.begin();
@@ -2605,7 +2608,7 @@ public:
 							if ((vi->first->GetWait() == 0) && 
 								(!vi->first->GetEffect(ACTIVATION_JAM)) && // not Jammed
 								(!vi->first->GetEffect(ACTIVATION_FREEZE)) && // not Frozen
-								(!vi->first->GetEffect(ACTIVATION_CHAOS))    // not Chaosed
+								(!vi->first->GetEffect(ACTIVATION_CHAOS))   // not Chaosed
 								)
 								vi++; // skip
 							else
@@ -2621,7 +2624,7 @@ public:
 							targets.push_back(tmp);
 						}
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50))
+							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
 							{
 								// evaded
 								Dest.SkillProcs[DEFENSIVE_EVADE]++;
@@ -2646,7 +2649,7 @@ public:
 								else
 									Dest.SkillProcs[aid]++;
 								if (Src.IsAlive() && (EffectType != EVENT_DIED))
-									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50)  // payback
+									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50 && (!chaos))  // payback
 									{
 										Src.SetEffect(ACTIVATION_CHAOS,effect);
 										vi->first->fsSpecial += effect;

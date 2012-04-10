@@ -3956,7 +3956,10 @@ begin
         begin
           HashID := MissionID;
           if MissionID = 0 then
+          begin
             HashType := 6;
+            bClearHash := true; // not yet
+          end;
         end;
       if cbOrderMatters.Checked then
         inc(HashType);
