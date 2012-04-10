@@ -1750,7 +1750,7 @@ public:
 					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
 						if (Atk.CardPicks[i])
 						{
-							if (CDB[Atk.CardPicks[i]].GetFaction() == vi->UnitRace) cnt++;
+							if (CDB[Atk.CardPicks[i]].GetFaction() == RemapFaction(vi->UnitRace)) cnt++;
 						}
 						else break;
 					bMoreAlsoWorks = true;
@@ -1761,7 +1761,7 @@ public:
 					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
 						if (Def.CardDeaths[i])
 						{
-							if (CDB[Def.CardDeaths[i]].GetFaction() == vi->UnitRace) cnt++;
+							if (CDB[Def.CardDeaths[i]].GetFaction() == RemapFaction(vi->UnitRace)) cnt++;
 						}
 						else break;
 				}

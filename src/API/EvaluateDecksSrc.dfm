@@ -7163,7 +7163,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
       Left = 8
       Top = 2
       Cursor = crHandPoint
-      Caption = 'I am recieving one donation every 1.5 months on average.'
+      Caption = 'I am recieving one donation every month on average.'
       ParentColor = False
       Properties.Alignment.Horz = taCenter
       Style.BorderColor = clWindowFrame
