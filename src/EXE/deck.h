@@ -34,6 +34,7 @@ typedef	unsigned int UINT;
 
 #define CARD_MAX_ID				4000 // size of storage array
 #define MISSION_MAX_ID			350  // size of storage array
+#define ACHIEVEMENT_MAX_COUNT	150  // size of storage array
 #define RAID_MAX_ID				20  // size of storage array
 
 #define RARITY_COMMON			0
@@ -129,6 +130,7 @@ char FACTIONS[6][CARD_NAME_MAX_LENGTH] = {0,"Imperial","Raider","Bloodthirsty","
 using namespace std;
 
 bool bConsoleOutput = false; // this is global just for convinience, should be DEFINE instead, to cleanup the code
+int AchievementIndex = -1; // index, not id
 
 typedef vector<LOG_RECORD> VLOG;
 
@@ -911,6 +913,7 @@ public:
 	UCHAR SkillProcs[CARD_ABILITIES_MAX];
 	//
 	UINT CardPicks[DEFAULT_DECK_RESERVE_SIZE];
+	UINT CardDeaths[DEFAULT_DECK_RESERVE_SIZE];
 	//
 	UINT DamageToCommander; // for points calculation - damage dealt to ENEMY commander
 	// logging related stuff
@@ -1300,6 +1303,7 @@ public:
 		DamageToCommander = 0; 
 		memset(SkillProcs,0,CARD_ABILITIES_MAX*sizeof(UCHAR)); 
 		memset(CardPicks,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
+		memset(CardDeaths,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 	}
 	~ActiveDeck() { Deck.clear(); Units.clear(); Structures.clear(); Actions.clear(); }
 public:
@@ -1352,6 +1356,7 @@ public:
 		unsigned short tid = 0, lastid = 0;
 		memset(SkillProcs,0,CARD_ABILITIES_MAX*sizeof(UCHAR));
 		memset(CardPicks,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
+		memset(CardDeaths,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 		//
 		size_t len = strlen(HashBase64);
 		_ASSERT(!(len & 1)); // bytes should go in pairs
@@ -1400,6 +1405,7 @@ public:
 		Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); 
 		memset(SkillProcs,0,CARD_ABILITIES_MAX*sizeof(UCHAR));
 		memset(CardPicks,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
+		memset(CardDeaths,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 	};
 	ActiveDeck(const ActiveDeck &D) // need copy constructor
 	{
@@ -1431,6 +1437,7 @@ public:
 		bDelayFirstCard = D.bDelayFirstCard;
 		memcpy(SkillProcs,D.SkillProcs,CARD_ABILITIES_MAX*sizeof(UCHAR));
 		memcpy(CardPicks,D.CardPicks,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
+		memcpy(CardDeaths,D.CardDeaths,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 		CSIndex = D.CSIndex;
 		CSResult = D.CSResult;
 		DamageToCommander = D.DamageToCommander;
@@ -2910,6 +2917,12 @@ public:
 			while (vi != Units.end())
 				if (!vi->IsAlive())
 				{
+					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+						if (!CardDeaths[i])
+						{
+							CardDeaths[i] = vi->GetId();
+							break;
+						}
 					SweepFancyStats(*vi);
 					vi = Units.erase(vi);
 				}
@@ -2929,6 +2942,12 @@ public:
 			while (vi != Structures.end())
 				if (!vi->IsAlive())
 				{
+					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+						if (!CardDeaths[i])
+						{
+							CardDeaths[i] = vi->GetId();
+							break;
+						}
 					SweepFancyStats(*vi);
 					vi = Structures.erase(vi);
 				}
@@ -2946,6 +2965,12 @@ public:
 			while (vi != Def.Units.end())
 				if (!vi->IsAlive())
 				{
+					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+						if (!Def.CardDeaths[i])
+						{
+							Def.CardDeaths[i] = vi->GetId();
+							break;
+						}
 					Def.SweepFancyStats(*vi);
 					vi = Def.Units.erase(vi);
 				}
@@ -2961,6 +2986,12 @@ public:
 			while (vi != Def.Structures.end())
 				if (!vi->IsAlive())
 				{
+					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+						if (!Def.CardDeaths[i])
+						{
+							Def.CardDeaths[i] = vi->GetId();
+							break;
+						}
 					Def.SweepFancyStats(*vi);
 					vi = Def.Structures.erase(vi);
 				}

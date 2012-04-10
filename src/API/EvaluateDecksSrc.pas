@@ -146,6 +146,7 @@ type
     SkipWildcardsWeDontHave: boolean;
     Annihilator: boolean;
     SurrenderAtLoss: boolean;
+    AchievementIndex: integer;
   end;
 
 type
@@ -502,6 +503,10 @@ type
     bCatface: TcxButton;
     seSaveWildcardCount: TcxSpinEdit;
     lWCSaveNote: TcxLabel;
+    tsAchievement: TcxTabSheet;
+    cbAchievement: TcxComboBox;
+    lAchDesc: TcxLabel;
+    cbUseAchievement: TcxCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -510,6 +515,7 @@ type
     procedure GenericImageMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure tLoadTimer(Sender: TObject);
+    procedure ReloadAchievements;
     procedure UpdateFilter;
     procedure UpdateFilterEvent(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -680,6 +686,7 @@ type
     procedure bCatfaceClick(Sender: TObject);
     procedure cxViewEditValueChanged(Sender: TcxCustomGridTableView;
       AItem: TcxCustomGridTableItem);
+    procedure cbAchievementPropertiesEditValueChanged(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -750,6 +757,7 @@ const
   TYPE_COMMANDER = 1;
   sRaidsFile = 'raids.xml';
   sMissionsFile = 'missions.xml';
+  sAchievementsFile = 'achievements.xml';
   sCardsFile = 'cards.xml';
   sCardsDir = 'cards\';
   sTyrantAPI = 'http://kg.tyrantonline.com/api.php';
@@ -815,6 +823,8 @@ function LoadCardXML(FileName: string; returnnewcards: PChar; MaxBufferSize:
 
 function LoadMissionXML(FileName: string): boolean; cdecl; external DLLFILE;
 
+function LoadAchievementXML(FileName: string): boolean; cdecl; external DLLFILE;
+
 function LoadRaidXML(FileName: string): boolean; cdecl; external DLLFILE;
 
 function GetDBSize(): DWORD; cdecl; external DLLFILE;
@@ -838,12 +848,17 @@ function AbilityHasExtendedDesc(AbilityID: Byte): boolean; cdecl; external DLLFI
 
 function GetHashFromDeck(Deck: string; buffer: PChar; size: DWORD): boolean; cdecl; external DLLFILE;
 
-function BuildResultHash(CardList: string; Version: DWORD; Revision: DWORD; HashType: DWORD; HashID: DWORD; GamesOverall: DWORD; GamesWon: DWORD; buffer: PChar; size: DWORD): boolean; cdecl; external DLLFILE;
+function BuildResultHash(CardList: string; Version: DWORD; Revision: DWORD; HashType: DWORD; HashID: DWORD; MissionID: DWORD; GamesOverall: DWORD; GamesWon: DWORD; buffer: PChar; size: DWORD): boolean; cdecl; external DLLFILE;
 
 function GetDeckFromHash(Hash: string; buffer: PChar; size: DWORD): boolean; cdecl; external DLLFILE;
 function GetDeckFromString(CardList: string; OutputIDList: PChar): boolean; cdecl; external DLLFILE;
 
 function GetMissionDeckIndex(DeckName: string): DWORD; cdecl; external DLLFILE;
+
+procedure GetAchievementList(buffer: PChar; size: DWORD); cdecl; external DLLFILE;
+function GetAchievementDescription(Index: DWORD): PChar; cdecl; external DLLFILE;
+function GetAchievementID(Index: DWORD): DWORD; cdecl; external DLLFILE;
+function CheckAchievementMission(Index: DWORD; MissionID: DWORD): boolean; cdecl; external DLLFILE;
 
 procedure SpeedTest; cdecl; external DLLFILE;
 
@@ -1047,6 +1062,10 @@ begin
   pEP.SkipWildcardsWeDontHave := EvaluateDecksForm.cbCheckOnlyCardsOwned.Checked;
   pEP.Annihilator := bAnnihilator;
   pEP.SurrenderAtLoss := EvaluateDecksForm.cbSurrenderAtLoss.Checked;
+  if EvaluateDecksForm.cbUseAchievement.Checked then
+    pEP.AchievementIndex := EvaluateDecksForm.cbAchievement.ItemIndex
+  else
+    pEP.AchievementIndex := -1;
 
   pEP.MaxTurn := MaxTurn;
 
@@ -2661,8 +2680,16 @@ begin
   GetMem(p1, cMaxBuffer); // initialize
   with TStringList.Create do
   try
-    if (Clipboard.AsText <> '') and (GetDeckFromString(Clipboard.AsText, p1) OR GetDeckFromHash(Clipboard.AsText, p1, cMaxBuffer)) then
-      CommaText := p1;
+    i := Pos('id=',Clipboard.AsText);
+    if i > 0 then
+    begin
+      CommaText := StringReplace(Copy(Clipboard.AsText,i+3,MaxInt),';',',',[rfReplaceAll]);
+      if GetDeckFromHash(Copy(Clipboard.AsText,i+3,MaxInt), p1, cMaxBuffer) then
+        CommaText := p1;
+    end
+    else
+      if (Clipboard.AsText <> '') and (GetDeckFromString(Clipboard.AsText, p1) OR GetDeckFromHash(Clipboard.AsText, p1, cMaxBuffer)) then
+        CommaText := p1;
     if Count > 0 then
     begin
       for i := 0 to Count - 1 do
@@ -3337,6 +3364,8 @@ begin
       try
         LoadMissionXML(sLocalDir + sMissionsFile);
         LoadRaidXML(sLocalDir + sRaidsFile);
+        ReLoadAchievements;
+
         slUpdate.Clear;
         if LoadCardXML(sLocalDir + sCardsFile, p1, cMaxBuffer) then
         begin
@@ -3665,8 +3694,9 @@ var
   bImages: boolean;
   s, ResultHash: string;
   p1: pchar;
+  bClearHash: boolean;
 
-  EDVersion, EDRevision, HashType, HashID: DWORD;
+  EDVersion, EDRevision, HashType, HashID, MissionID: DWORD;
   Size, Size2: DWord;
   Pt, Pt2: Pointer;
 begin
@@ -3784,6 +3814,8 @@ begin
         Values[rec, vcType.Index] := Values[rec, vcType.Index] + ', ordered';
       if cbRequirements.Checked then
         Values[rec, vcType.Index] := Values[rec, vcType.Index] + ', req';
+      if cbUseAchievement.Checked then
+        Values[rec, vcType.Index] := Values[rec, vcType.Index] + ', achv';
 
       if seMaxTurn.Value <> cDefaultMaxTurn then
         Values[rec, vcType.Index] := Values[rec, vcType.Index] + ', '+IntToStr(seMaxTurn.Value) + ' turns';
@@ -3887,6 +3919,48 @@ begin
         ff := 0;
       end;
 
+      bClearHash = false;
+      if (((mDefDeckName <> '') and (not bImages)) OR
+          ((vDefDeckName <> '') and (bImages))) and
+          (not cbUseComplexDefence.checked) then
+      begin
+        if bImages then
+          MissionID := GetMissionDeckIndex(vDefDeckName)
+        else
+          MissionID := GetMissionDeckIndex(mDefDeckName);
+      end
+      else
+        MissionID := 0;
+      if cbUseAchievement.Checked then
+        HashID := GetAchievementID(EvaluateDecksForm.cbAchievement.ItemIndex)
+      else
+        HashID := 0;
+      if HashID > 0 then
+      begin
+        HashType := 4;
+        if not CheckAchievementMission(EvaluateDecksForm.cbAchievement.ItemIndex,MissionID) then
+        begin
+          ShowMessage('This is a wrong mission to test selected achievement.');
+          MissionID := 0;
+          bClearHash = true;
+        end;
+      end
+      else
+        if bIsRaid then
+        begin
+          HashType := 2; // 3
+          HashID := raid;
+          MissionID := 0;
+        end
+        else
+        begin
+          HashID := MissionID;
+          if MissionID = 0 then
+            HashType := 6;
+        end;
+      if cbOrderMatters.Checked then
+        inc(HashType);
+      //
       r := IterateDecks(sLocalDir, seed, atk, def, raid,
         games div tc, tc, bIsSurge, seMaxTurn.Value, cbOrderMatters.Checked,
         cbTourney.Checked, cbAnnihilator.Checked, wildcard, ft, fr, ff);
@@ -3944,35 +4018,12 @@ begin
           end;
         end;
 
-        if bIsRaid then
-        begin
-          HashType := 2; // 3
-          HashID := raid;
-        end
-        else
-        begin
-          if (((mDefDeckName <> '') and (not bImages)) OR
-             ((vDefDeckName <> '') and (bImages))) and
-             (not cbUseComplexDefence.checked) then
-          begin
-            if bImages then
-              HashID := GetMissionDeckIndex(vDefDeckName)
-            else
-              HashID := GetMissionDeckIndex(mDefDeckName);
-          end
-          else
-            HashID := 0;
-          if HashID = 0 then
-            HashType := 6;
-        end;
-        if cbOrderMatters.Checked then
-          inc(HashType);
-
         //if HashType < 6 then // we don't need custom deck hashes yet
+        if not bClearHash then        
         begin
           GetMem(p1, cMaxBuffer); // initialize
           try
-            if BuildResultHash(atk,EDVersion,EDRevision,HashType,HashID,r.Result.Games,r.Result.Win,p1,cMaxBuffer) then
+            if BuildResultHash(atk,EDVersion,EDRevision,HashType,HashID,MissionID,r.Result.Games,r.Result.Win,p1,cMaxBuffer) then
               ResultHash := p1;
             if (HashType >= 6) and GetHashFromDeck(def, p1, cMaxBuffer) then
               ResultHash := ResultHash + '.' + p1;
@@ -4385,7 +4436,11 @@ begin
   // http://tyrant.40in.net/deck.php?id=7;8;9;9;11;25;26;27;42
     i := Pos('id=',Clipboard.AsText);
     if i > 0 then
-      CommaText := StringReplace(Copy(Clipboard.AsText,i+3,MaxInt),';',',',[rfReplaceAll])
+    begin
+      CommaText := StringReplace(Copy(Clipboard.AsText,i+3,MaxInt),';',',',[rfReplaceAll]);
+      if GetDeckFromHash(Copy(Clipboard.AsText,i+3,MaxInt), p1, cMaxBuffer) then
+        CommaText := p1;
+    end
     else
       if (Clipboard.AsText <> '') and (GetDeckFromString(Clipboard.AsText, p1) OR GetDeckFromHash(Clipboard.AsText, p1, cMaxBuffer)) then
         CommaText := p1;
@@ -4504,6 +4559,12 @@ begin
         else
           AddCard(TopDeck, true, Images[id]);
       end;
+end;
+
+procedure TEvaluateDecksForm.cbAchievementPropertiesEditValueChanged(
+  Sender: TObject);
+begin
+  lAchDesc.Caption := GetAchievementDescription(cbAchievement.ItemIndex);
 end;
 
 procedure TEvaluateDecksForm.cbAllowMorePropertiesChange(Sender: TObject);
@@ -5243,6 +5304,21 @@ begin
   //BeginThread(nil, 0, Addr(LoadEverythingThread), nil,  0, Id);
 end;
 
+procedure TEvaluateDecksForm.ReloadAchievements;
+var
+  p1: pchar;
+begin
+  LoadAchievementXML(sLocalDir + sAchievementsFile);
+  GetMem(p1, cMaxBuffer); // initialize
+  try
+    GetAchievementList(p1, cMaxBuffer);
+    cbAchievement.Properties.Items.CommaText := p1;
+  finally
+    FreeMem(p1);
+  end;
+  cbAchievement.ItemIndex := 0;
+end;
+
 procedure TEvaluateDecksForm.LoadEverything;
 {procedure LoadCards(Path: string);
 var
@@ -5285,6 +5361,7 @@ begin
 //  Canvas.Lock;
   LoadMissionXML(sLocalDir + sMissionsFile);
   LoadRaidXML(sLocalDir + sRaidsFile);
+  ReLoadAchievements;
 
   sl := TStringList.Create;
   try

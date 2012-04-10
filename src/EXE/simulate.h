@@ -189,7 +189,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 					iwl++;
 					if (!ywl.Commander.IsAlive())
 					{
-						if (xwl.CheckRequirements(Reqs) && ((!bAnnihilator) || (ywl.IsAnnihilated())))
+						if (xwl.CheckRequirements(Reqs) && ((!bAnnihilator) || (ywl.IsAnnihilated())) && (DB.CheckAchievement(AchievementIndex,i,xwl,ywl)))
 							rbc[CSIndex[id]].WLWin++;
 						break;
 					}
@@ -218,7 +218,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 		tAtk.AttackDeck(tDef);
 		if (!tDef.Commander.IsAlive())
 		{			
-			if (tAtk.CheckRequirements(Reqs) && ((!bAnnihilator) || (tDef.IsAnnihilated())))
+			if (tAtk.CheckRequirements(Reqs) && ((!bAnnihilator) || (tDef.IsAnnihilated())) && (DB.CheckAchievement(AchievementIndex,i,tAtk,tDef)))
 			{
 				InsertOrder(tAtk.GetHash64(true),1);
 				if (CSIndex && rbc)
@@ -738,4 +738,6 @@ struct EVAL_PARAMS
 	bool SkipWildCardsWeDontHave;
 	bool Annihilator;
 	bool SurrenderAtLoss;
+	//
+	int AchievementIndex;
 };

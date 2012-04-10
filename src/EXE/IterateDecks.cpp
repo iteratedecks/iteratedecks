@@ -260,6 +260,9 @@ int _tmain(int argc, char* argv[])
 	memset(&pEvalParams->WildCardIds,0,sizeof(UCHAR)*DEFAULT_DECK_RESERVE_SIZE);
 	memset(&pEvalParams->WildCardWins,0,sizeof(UINT)*DEFAULT_DECK_RESERVE_SIZE);
 	pEvalParams->FullAmountOfGames = 0;
+	AchievementIndex = pEvalParams->AchievementIndex;
+	if (AchievementIndex >= 0)
+		DB.LoadAchievementXML("achievements.xml");
 
 	time_t t;
 	time(&t);
@@ -486,16 +489,18 @@ int _tmain(int argc, char* argv[])
    return 1;
 #else
 	bConsoleOutput = false;
-	DB.LoadCardXML("C:\\Users\\NT\\Documents\\Visual Studio 2008\\Projects\\EvaluateDecks\\bin\\cards.xml");
+	_chdir("..\\..\\bin\\"); // just in case
+	DB.LoadAchievementXML("achievements.xml");
+	DB.LoadCardXML("cards.xml");
 	DB.LoadMissionXML("missions.xml");
 	DB.LoadRaidXML("raids.xml");
 	//DB.SaveMissionDecks("c:\\pun.txt");
-	ActiveDeck x("ROgvgfIf+nIf",DB.GetPointer());
-	ActiveDeck z("SQJ6FCH/G0I/JCDdJJI2HMJEGsgofou8",DB.GetPointer());
+	ActiveDeck x("Poggg1AF",DB.GetPointer());
+	ActiveDeck z("PoHt",DB.GetPointer());
 	x.SetOrderMatters(true);
 
 	//DB.LoadDecks("C:\\Users\\NT\\Documents\\Visual Studio 2008\\Projects\\EvaluateDecks\\bin\\decks\\batcheval\\New Missions.txt");
-
+	//AchievementIndex = 56; // index, not id
 	bConsoleOutput = true;
 	{
 	RESULTS r;
@@ -504,12 +509,7 @@ int _tmain(int argc, char* argv[])
 		ActiveDeck X(x);
 		ActiveDeck Y(z);
 
-		printf("-----------------------------------\n");
 		Simulate(X,Y,r);
-		if (!X.Commander.IsAlive())
-		{
-			printf("Lost!\n");
-		}
 	}
 	return r.Win;
 	}

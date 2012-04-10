@@ -82,6 +82,143 @@ struct CardSet
 		Visible = visible;
 	}
 };
+#define EQUAL			0
+#define LESS			1
+#define LESSEQUAL		2
+#define GREATER			3
+#define GREATEREQUAL	4
+UCHAR DetectCompare(const char *compare)
+{
+	if (!compare) return EQUAL;
+	if (!stricmp(compare,"less")) return LESS;
+	if (!stricmp(compare,"less_equal")) return LESSEQUAL;
+	if (!stricmp(compare,"great")) return GREATER;
+	if (!stricmp(compare,"great_equal")) return GREATEREQUAL;
+	return EQUAL;
+};
+class AchievementInfo
+{
+	struct AchievementType
+	{
+		UINT MissionID;
+		bool Winner;
+		UCHAR Compare;
+		AchievementType() 		
+		{
+			MissionID = 0;
+			Winner = 0;
+			Compare = 0;
+		};
+		const bool IsValid() const
+		{
+			return (MissionID != 0);
+		}
+		const bool CheckMissionID(UINT missionID) const
+		{
+			// checks
+			if ((Compare == EQUAL) && (missionID != MissionID)) return false;
+			if ((Compare == GREATEREQUAL) && (missionID < MissionID)) return false;
+			if ((Compare == GREATER) && (missionID <= MissionID)) return false;
+			if ((Compare == LESSEQUAL) && (missionID > MissionID)) return false;
+			if ((Compare == LESS) && (missionID >= MissionID)) return false;
+			return true;
+		}
+	};
+private:
+	UINT Id;
+	string Name;
+	string Description;
+	AchievementType Type;
+	static const UCHAR RemapUnitType(const UCHAR unitType)
+	{
+		switch (unitType)
+		{
+			case 1: return TYPE_COMMANDER;
+			case 2: return TYPE_ASSAULT;
+			case 4: return TYPE_STRUCTURE;
+			case 8: return TYPE_ACTION;
+		}
+		return 0;
+	};
+public:
+	struct AchievementRequirement
+	{
+		UCHAR NumTurns;
+		//
+		UINT UnitID;
+		UINT UnitRace;
+		UCHAR NumPlayed;
+		//
+		UCHAR UnitType;
+		UCHAR NumKilled;
+		//
+		UINT SkillID;
+		UCHAR NumUsed;
+		UCHAR NumKilledWith;
+		bool Status; // ???
+		//
+		UCHAR Compare;
+		AchievementRequirement(UCHAR numTurns, UINT unitId, UINT unitRace, UCHAR numPlayed, UCHAR unitType, UCHAR numKilled, UINT skillID, UCHAR numUsed, UCHAR numKilledWith, bool status, UCHAR compare)
+		{
+			NumTurns = numTurns;
+			UnitID = unitId;
+			UnitRace = unitRace;
+			NumPlayed = numPlayed;
+			UnitType = RemapUnitType(unitType);
+			NumKilled = numKilled;
+			SkillID = skillID;
+			NumUsed = numUsed;
+			NumKilledWith = numKilledWith;
+			Status = status;
+			Compare = compare;
+		};
+	};
+	vector<AchievementRequirement> Reqs;
+public:
+	AchievementInfo()
+	{
+		Id = 0;
+	};
+	AchievementInfo(const UINT id, const char *name = 0, const char *desc = 0)
+	{
+		Id = id;
+		if (name)
+			Name = string(name);
+		if (desc)
+			Description = string(desc);
+		Reqs.clear();
+	}
+	void SetType(UINT missionID, bool winner, UCHAR compare)
+	{
+		Type.MissionID = missionID;
+		Type.Winner = winner;
+		Type.Compare = compare;
+	}
+	void AddRequirement(UCHAR NumTurns, UINT UnitId, UINT UnitRace, UCHAR NumPlayed, UCHAR UnitType, UCHAR NumKilled, UINT SkillID, UCHAR NumUsed, UCHAR NumKilledWith, bool Status, UCHAR Compare)
+	{
+		Reqs.push_back(AchievementRequirement(NumTurns,UnitId,UnitRace,NumPlayed,UnitType,NumKilled,SkillID,NumUsed,NumKilledWith,Status,Compare));
+	};
+	const bool IsValid()
+	{
+		return (Id && Type.IsValid() && (Reqs.size() > 0));
+	}
+	const char *GetName() const
+	{
+		return Name.c_str();
+	}
+	const char *GetDescription() const
+	{
+		return Description.c_str();
+	}
+	const UINT GetID() const
+	{
+		return Id;
+	}
+	const bool CheckMissionID(UINT MissionID) const
+	{
+		return Type.CheckMissionID(MissionID);
+	}
+};
 typedef map<UINT, CardSet> MSETS;
 typedef pair<UINT, CardSet> PAIRMSETS;
 typedef vector<UINT> VID;
@@ -283,8 +420,10 @@ class CardDB
 {	
 	Card CDB[CARD_MAX_ID]; // this can cause stack overflow, but should work fastest
 	MissionInfo MDB[MISSION_MAX_ID];
+	AchievementInfo ADB[ACHIEVEMENT_MAX_COUNT];
 	RaidInfo RDB[RAID_MAX_ID];
 	MSUINT MIIndex;
+	MSUINT AIIndex;
 	MSUINT RIIndex;
 	MSUINT Index;
 	MDECKS DIndex;
@@ -497,6 +636,76 @@ public:
 					UINT Visible = atoi(it->child("visible").child_value());
 					SetIndex.insert(PAIRMSETS(Id,CardSet((char*)Name,(char*)Icon,(Visible != 0))));
 				}
+		}
+		return (loaded > 0);
+	}
+	bool LoadAchievementXML(const char *FileName)
+	{
+		pugi::xml_document doc;
+		if (!doc.load_file(FileName)) return false;
+
+		size_t loaded = 0;
+		AIIndex.clear(); // clean index, we don't really need to clean array, it doesn't take too much space and cleaning it up will take time
+		pugi::xml_node root = doc.child("root");
+		for (pugi::xml_node_iterator it = root.begin(); it != root.end(); ++it)
+		{
+			if (!_strcmpi(it->name(),"achievement"))
+			{
+				const char *Name = it->child("name").child_value();
+				UINT Id = atoi(it->child("id").child_value());
+				const char *Desc = it->child("desc").child_value();
+				
+				UINT index = AIIndex.size();
+				_ASSERT(index < ACHIEVEMENT_MAX_COUNT);
+				
+				AchievementInfo ai(Id,Name,Desc);
+				// <type enemy_id="*" winner="1"/> - we don't really need those
+				// <type mission_id="166" winner="1"/>
+				// <type mission_id="172" compare="great_equal" winner="1"/>
+				if (!it->child("type").empty())
+					ai.SetType(
+						it->child("type").attribute("mission_id").as_uint(),
+						it->child("type").attribute("winner").as_bool(),
+						DetectCompare(it->child("type").attribute("compare").value()));
+				for (pugi::xml_node_iterator di = it->begin(); di != it->end(); ++di)
+					if (!_strcmpi(di->name(),"req"))
+					{
+						UCHAR sid = 0;
+						if (!di->attribute("skill_id").empty())
+						{
+							MSKILLS::iterator si = SIndex.find(di->attribute("skill_id").value());
+							if (si == SIndex.end())
+							{
+								if (bConsoleOutput)
+									printf("Skill \"%s\" not found in index!\n",di->attribute("skill_id").value());
+								continue;
+							}
+							else
+								sid = si->second;
+						}
+						// <req num_turns="9" compare="less_equal"/>
+						// <req unit_type="2" num_killed="10" compare="equal"/>
+						// <req skill_id="disease" num_used="5" status="1"/>
+						ai.AddRequirement(
+							di->attribute("num_turns").as_uint(),
+							di->attribute("unit_id").as_uint(),
+							di->attribute("unit_race").as_uint(),
+							di->attribute("num_played").as_uint(),
+							di->attribute("unit_type").as_uint(),
+							di->attribute("num_killed").as_uint(),
+							sid,
+							di->attribute("num_used").as_uint(),
+							di->attribute("num_killed_with").as_uint(),
+							di->attribute("status").as_bool(),
+							DetectCompare(di->attribute("compare").value()));
+					}
+				if (ai.IsValid())
+				{
+					AIIndex.insert(PAIRMSUINT(Name,index));
+					ADB[index] = ai;
+					loaded++;	
+				}
+			}			
 		}
 		return (loaded > 0);
 	}
@@ -1168,6 +1377,42 @@ public:
 					}
 		return (!output_id_buffer) || (output_id_buffer[0]);
 	}
+	void GetAchievementList(char *Buffer, DWORD MaxBufferSize)
+	{
+		Buffer[0]=0;
+		for (UCHAR i=0;i<ACHIEVEMENT_MAX_COUNT;i++)
+		{
+			if (ADB[i].IsValid())
+			{
+				if (i > 0)
+					strcat_s(Buffer,MaxBufferSize,",");
+				strcat_s(Buffer,MaxBufferSize,"\"");
+				strcat_s(Buffer,MaxBufferSize,ADB[i].GetName());
+				strcat_s(Buffer,MaxBufferSize,"\"");
+			}
+		}
+	}
+	const char *GetAchievementDescription(DWORD AchievementIndex)
+	{
+		if ((AchievementIndex < ACHIEVEMENT_MAX_COUNT) && (ADB[AchievementIndex].IsValid()))
+			return ADB[AchievementIndex].GetDescription();
+		else
+			return 0;
+	}
+	const UINT GetAchievementID(DWORD AchievementIndex)
+	{
+		if ((AchievementIndex < ACHIEVEMENT_MAX_COUNT) && (ADB[AchievementIndex].IsValid()))
+			return ADB[AchievementIndex].GetID();
+		else
+			return 0;
+	}
+	bool CheckAchievementMission(UINT AchievementIndex, UINT MissionID)
+	{
+		if ((AchievementIndex < ACHIEVEMENT_MAX_COUNT) && (ADB[AchievementIndex].IsValid()))
+			return ADB[AchievementIndex].CheckMissionID(MissionID);
+		else
+			return 0;
+	}
 	void Print()
 	{
 		for (UINT i=0;i<CARD_MAX_ID;i++)
@@ -1411,6 +1656,138 @@ public:
 				Index--;
 			}
 		return false;
+	}
+	bool CheckAchievement(int achievementIndex, const UINT iTurn, ActiveDeck &Atk, ActiveDeck &Def)
+	{
+		if (achievementIndex < 0) return true;
+		for (vector<AchievementInfo::AchievementRequirement>::iterator vi = ADB[achievementIndex].Reqs.begin(); vi != ADB[achievementIndex].Reqs.end(); vi++)
+		{
+			UINT cnt = 0;
+			UINT rcnt = 0;
+			bool bMoreAlsoWorks = false;
+			// skill procs
+			if (vi->SkillID)
+			{				
+				if (vi->NumUsed)
+				{
+					cnt = Atk.SkillProcs[vi->SkillID];
+					rcnt = vi->NumUsed;
+				}
+				else
+				{
+					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+						if (Def.CardDeaths[i])
+						{
+							if (CDB[Def.CardDeaths[i]].GetAbility(vi->SkillID)) cnt++;
+						}
+						else break;
+					rcnt = vi->NumKilledWith;
+				}
+				bMoreAlsoWorks = true;
+			}
+			// turns
+			if (vi->NumTurns)
+			{
+				cnt = iTurn;
+				rcnt = vi->NumTurns;
+			}
+			// cards
+			if (vi->UnitID)
+			{
+				if (vi->NumPlayed)
+				{
+					rcnt = vi->NumPlayed;
+					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+						if (Atk.CardPicks[i])
+						{
+							if (Atk.CardPicks[i] == vi->UnitID) cnt++;
+						}
+						else break;
+					bMoreAlsoWorks = true;
+				}
+				if (vi->NumKilled)
+				{
+					rcnt = vi->NumKilled;
+					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+						if (Def.CardDeaths[i])
+						{
+							if (Def.CardDeaths[i] == vi->UnitID) cnt++;
+						}
+						else break;
+				}
+			}
+			// cards of a type
+			if (vi->UnitType)
+			{
+				if (vi->NumPlayed)
+				{
+					rcnt = vi->NumPlayed;
+					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+						if (Atk.CardPicks[i])
+						{
+							if (CDB[Atk.CardPicks[i]].GetType() == vi->UnitType) cnt++;
+						}
+						else break;
+					bMoreAlsoWorks = true;
+				}
+				if (vi->NumKilled)
+				{
+					rcnt = vi->NumKilled;
+					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+						if (Def.CardDeaths[i])
+						{
+							if (CDB[Def.CardDeaths[i]].GetType() == vi->UnitType) cnt++;
+						}
+						else break;
+				}
+			}
+			// cards of a faction
+			if (vi->UnitRace)
+			{
+				if (vi->NumPlayed)
+				{
+					rcnt = vi->NumPlayed;
+					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+						if (Atk.CardPicks[i])
+						{
+							if (CDB[Atk.CardPicks[i]].GetFaction() == vi->UnitRace) cnt++;
+						}
+						else break;
+					bMoreAlsoWorks = true;
+				}
+				if (vi->NumKilled)
+				{
+					rcnt = vi->NumKilled;
+					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+						if (Def.CardDeaths[i])
+						{
+							if (CDB[Def.CardDeaths[i]].GetFaction() == vi->UnitRace) cnt++;
+						}
+						else break;
+				}
+			}
+			// checks
+			if ((vi->Compare == EQUAL) && (cnt != rcnt) && ((!bMoreAlsoWorks) || (cnt < rcnt))) return false;
+			if ((vi->Compare == GREATEREQUAL) && (cnt < rcnt)) return false;
+			if ((vi->Compare == GREATER) && (cnt <= rcnt)) return false;
+			if ((vi->Compare == LESSEQUAL) && (cnt > rcnt)) return false;
+			if ((vi->Compare == LESS) && (cnt >= rcnt)) return false;
+		}
+		//Atk.CardDeaths;
+		/*
+		UCHAR NumTurns;
+		//
+		UCHAR UnitID;
+		UCHAR NumPlayed;
+		//
+		UCHAR UnitType;
+		UCHAR NumKilled;
+		//
+		UCHAR SkillID;
+		UCHAR NumUsed;
+		bool Status; // ???
+		*/
+		return true;
 	}
 	// named decks
 	ActiveDeck GetNamedDeck(const char* DeckName, const int Tag)

@@ -3557,6 +3557,37 @@ object EvaluateDecksForm: TEvaluateDecksForm
             end
           end
         end
+        object tsAchievement: TcxTabSheet
+          Caption = 'Achievement'
+          ImageIndex = 4
+          ExplicitTop = 0
+          ExplicitWidth = 0
+          ExplicitHeight = 0
+          object cbAchievement: TcxComboBox
+            Left = 3
+            Top = 28
+            Properties.DropDownListStyle = lsFixedList
+            Properties.OnEditValueChanged = cbAchievementPropertiesEditValueChanged
+            TabOrder = 0
+            Width = 121
+          end
+          object lAchDesc: TcxLabel
+            Left = 130
+            Top = 28
+            AutoSize = False
+            Caption = 'lAchDesc'
+            Properties.WordWrap = True
+            Height = 54
+            Width = 431
+          end
+          object cbUseAchievement: TcxCheckBox
+            Left = 3
+            Top = 3
+            Caption = 'Check achievement requrements'
+            TabOrder = 2
+            Width = 190
+          end
+        end
       end
     end
     object tsBatch: TcxTabSheet

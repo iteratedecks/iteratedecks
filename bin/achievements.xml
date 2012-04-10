@@ -1,0 +1,1672 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+	<!-- completion achievements -->
+	<achievement> 
+		<id>1</id>
+		<name>Taskmaster</name>
+		<type mission_id='*' winner='1' />
+		<number>5</number>
+		<desc>Complete 5 Missions</desc>
+		<gold_reward>50</gold_reward>
+		<chip_reward>1</chip_reward>
+		<order>1</order>
+	</achievement>
+	<achievement>
+		<id>2</id>
+		<name>Veteran</name>
+		<type mission_id='*' winner='1' />
+		<number>10</number>
+		<desc>Complete 10 Missions</desc>
+		<gold_reward>100</gold_reward>
+		<chip_reward>2</chip_reward>
+		<achievement_req>1</achievement_req>
+	</achievement>
+	<achievement>
+		<id>3</id>
+		<name>Honorable Commander</name>
+		<type mission_id='*' winner='1' />
+		<number>20</number>
+		<desc>Complete 20 Missions</desc>
+		<gold_reward>200</gold_reward>
+		<chip_reward>3</chip_reward>
+		<achievement_req>2</achievement_req>
+	</achievement>
+	<achievement>
+		<id>4</id>
+		<name>Completionist</name>
+		<type mission_id='*' winner='1' />
+		<number>50</number>
+		<desc>Complete 50 Missions</desc>
+		<gold_reward>1000</gold_reward>
+		<chip_reward>3</chip_reward>
+		<achievement_req>3</achievement_req>
+	</achievement>
+	<achievement>
+		<id>5</id>
+		<name>Prestigious Leader</name>
+		<type mission_id='*' winner='1' />
+		<number>100</number>
+		<desc>Complete 100 Missions</desc>
+		<gold_reward>5000</gold_reward>
+		<chip_reward>3</chip_reward>
+		<achievement_req>4</achievement_req>
+	</achievement>
+	<achievement>
+		<id>6</id>
+		<name>Conquerer</name>
+		<type mission_id='*' winner='1' />
+		<number>500</number>
+		<desc>Complete 500 Missions</desc>
+		<card_reward>40</card_reward>
+		<chip_reward>3</chip_reward>
+		<achievement_req>5</achievement_req>
+	</achievement>
+	<achievement>
+		<id>7</id>
+		<name>Supreme Warlord</name>
+		<type mission_id='*' winner='1' />
+		<number>1000</number>
+		<desc>Complete 1000 Missions</desc>
+		<card_reward>37</card_reward>
+		<chip_reward>3</chip_reward>
+		<achievement_req>6</achievement_req>
+	</achievement>
+	<achievement>
+		<id>20</id>
+		<name>Victor</name>
+		<type enemy_id='*' winner='1'/>
+		<number>25</number>
+		<desc>Win 25 battles against other players</desc>
+		<chip_reward>3</chip_reward>
+		<gold_reward>500</gold_reward>
+		<order>20</order>
+	</achievement>
+	<achievement>
+		<id>21</id>
+		<name>Veteran</name>
+		<type enemy_id='*' winner='1'/>
+		<number>50</number>
+		<desc>Win 50 battles against other players</desc>
+		<chip_reward>3</chip_reward>
+		<gold_reward>1000</gold_reward>
+		<achievement_req>20</achievement_req>
+	</achievement>
+	<achievement>
+		<id>22</id>
+		<name>Champion</name>
+		<type enemy_id='*' winner='1'/>
+		<number>100</number>
+		<desc>Win 100 battles against other players</desc>
+		<chip_reward>3</chip_reward>
+		<gold_reward>3000</gold_reward>
+		<achievement_req>21</achievement_req>
+	</achievement>
+	<achievement>
+		<id>23</id>
+		<name>Destroyer</name>
+		<type enemy_id='*' winner='1'/>
+		<number>500</number>
+		<desc>Win 500 battles against other players</desc>
+		<chip_reward>3</chip_reward>
+		<gold_reward>5000</gold_reward>
+		<achievement_req>22</achievement_req>
+	</achievement>
+	<achievement>
+		<id>24</id>
+		<name>Warlord</name>
+		<type enemy_id='*' winner='1'/>
+		<number>1000</number>
+		<desc>Win 1000 battles against other players</desc>
+		<chip_reward>5</chip_reward>
+		<card_reward>101</card_reward>
+		<achievement_req>23</achievement_req>
+	</achievement>
+	<achievement>
+		<id>25</id>
+		<name>Emperor</name>
+		<type enemy_id='*' winner='1'/>
+		<number>5000</number>
+		<desc>Win 5000 battles against other players</desc>
+		<chip_reward>5</chip_reward>
+		<card_reward>23</card_reward>
+		<achievement_req>24</achievement_req>
+	</achievement>
+	
+	<!-- gameplay achievements -->
+	<achievement>
+		<id>100</id>
+		<name>Battlemaster</name>
+		<type winner='1' />
+  		<req unit_type='2' num_killed='5' />
+		<number>1</number>
+		<desc>Kill at least 5 Assault units in a battle and win</desc>
+		<gold_reward>100</gold_reward>
+		<chip_reward>3</chip_reward>
+	</achievement>
+	<achievement>
+		<id>101</id>
+		<name>Super Structure</name>
+		<type enemy_id='*' winner='1' />
+  		<req unit_type='4' num_played='5' />
+		<number>1</number>
+		<desc>Defeat a player after you played at least 5 Structures in the battle</desc>
+		<gold_reward>500</gold_reward>
+		<chip_reward>5</chip_reward>
+	</achievement>
+	<achievement>
+		<id>102</id>
+		<name>Battle Medic</name>
+  		<req unit_id='14' num_played='3' />
+  		<type enemy_id='*' winner='1' />
+		<number>1</number>
+		<desc>Defeat a player with at least 3 Medics played in the battle</desc>
+		<gold_reward>750</gold_reward>
+		<chip_reward>3</chip_reward>
+	</achievement>
+	<achievement>
+		<id>103</id>
+		<name>Air Raid</name>
+  		<req skill_id='strike' num_used='5' />
+  		<type enemy_id='*' winner='1' />
+		<number>1</number>
+		<desc>Defeat a player after using Strike at least 5 times in the battle</desc>
+		<gold_reward>500</gold_reward>
+		<chip_reward>3</chip_reward>
+	</achievement>
+	<achievement>
+		<id>104</id>
+		<name>Sky Control</name>
+  		<req skill_id='flying' num_killed_with='3' />
+  		<type winner='1' />
+		<number>1</number>
+		<desc>Kill at least 3 flying units in one battle and win</desc>
+		<gold_reward>200</gold_reward>
+		<chip_reward>3</chip_reward>
+	</achievement>
+	<achievement>
+		<id>105</id>
+		<name>Brute Strength</name>
+		<type mission_id='*' winner='1' />
+  		<req skill_id='0' only='1' />
+		<number>10</number>
+		<desc>Win 10 missions using only the basic attack (No skills can activate)</desc>
+		<gold_reward>200</gold_reward>
+		<chip_reward>3</chip_reward>
+	</achievement>
+	<achievement>
+		<id>106</id>
+		<name>Skill Connoisseur</name>
+		<type winner='1' />
+  		<req skill_id='strike' num_used='1' />
+  		<req skill_id='heal' num_used='1' />
+  		<req skill_id='rally' num_used='1' />
+  		<req skill_id='jam' num_used='1' />
+  		<req skill_id='weaken' num_used='1' />
+		<number>1</number>
+		<desc>Win a battle using Strike, Heal, Jam, Rally, and Weaken</desc>
+		<card_reward>3007</card_reward>
+		<chip_reward>3</chip_reward>
+	</achievement>
+	<achievement>
+		<id>107</id>
+		<name>Standard Conqueror</name>
+		<type mission_id='28' winner='1' />
+		<number>7</number>
+		<desc>Complete all missions associated with the Standard set (through Mission 28)</desc>
+		<card_reward>90</card_reward>
+		<chip_reward>3</chip_reward>
+	</achievement>
+	<achievement>
+		<id>108</id>
+		<name>Typhon's Conqueror</name>
+		<type mission_id='41' winner='1' />
+		<number>10</number>
+		<desc>Complete all missions associated with the Enclave set (through Mission 41)</desc>
+		<card_reward>173</card_reward>
+		<chip_reward>3</chip_reward>
+	</achievement>
+	<achievement>
+		<id>109</id>
+		<name>Bloodthirsty Companion</name>
+		<type enemy_id='*' winner='1' />
+  		<req skill_id='leech' num_used='1' />
+  		<req skill_id='siphon' num_used='1' />
+		<number>1</number>
+		<desc>Defeat a player after using Leech and Siphon in the battle</desc>
+		<card_reward>2032</card_reward>
+		<chip_reward>3</chip_reward>
+	</achievement>
+	<achievement>
+		<id>110</id>
+		<name>Defensive Minded</name>
+		<type winner='1' />
+  		<req skill_id='counter' num_used='1' />
+  		<req skill_id='regenerate' num_used='1' />
+		<number>1</number>
+		<desc>Win a battle using Counter and Regenerate</desc>
+		<gold_reward>500</gold_reward>
+		<chip_reward>3</chip_reward>
+	</achievement>
+	<achievement>
+		<id>111</id>
+		<name>Xeno Sympathizer</name>
+		<type winner='1' />
+  		<req skill_id='mimic' num_used='1' />
+  		<req skill_id='immobilize' num_used='1' />
+  		<req skill_id='fear' num_used='1' />
+		<number>1</number>
+		<desc>Win a battle using Mimic, Immobilize, and Fear</desc>
+		<card_reward>1024</card_reward>
+		<chip_reward>3</chip_reward>
+	</achievement>
+	<achievement>
+		<id>112</id>
+		<name>Spare the Troops</name>
+		<type winner='1' />
+		<req unit_type='2' num_killed='0' compare='equal' />
+		<number>1</number>
+		<desc>Win a battle without killing an Assault card</desc>
+		<gold_reward>300</gold_reward>
+		<chip_reward>3</chip_reward>
+	</achievement>
+	<achievement>
+		<id>113</id>
+		<name>Limited Support</name>
+		<type winner='1' />
+		<req unit_type='2' num_played='1' compare='equal' />
+		<number>1</number>
+		<desc>Win a battle playing only 1 Assault card</desc>
+		<card_reward>76</card_reward>
+		<chip_reward>5</chip_reward>
+	</achievement>
+	<achievement>
+		<id>114</id>
+		<name>Full Circle</name>
+		<type mission_id='28' winner='1' />
+		<req unit_id='1' num_played='1' />
+		<number>1</number>
+		<desc>Play the card "Infantry" during Mission 28 and win</desc>
+		<gold_reward>2000</gold_reward>
+		<chip_reward>3</chip_reward>
+	</achievement>
+	<achievement>
+		<id>115</id>
+		<name>Supply Lines</name>
+  		<req skill_id='heal' num_used='5' />
+  		<type enemy_id='*' winner='1' />
+		<number>1</number>
+		<desc>Defeat a player after using Heal at least 5 times in the battle</desc>
+		<gold_reward>500</gold_reward>
+		<chip_reward>3</chip_reward>
+	</achievement>
+	<achievement>
+		<id>116</id>
+		<name>Encouraging War Cry</name>
+  		<req skill_id='rally' num_used='5' />
+  		<type enemy_id='*' winner='1' />
+		<number>1</number>
+		<desc>Defeat a player after using Rally at least 5 times in the battle</desc>
+		<gold_reward>500</gold_reward>
+		<chip_reward>3</chip_reward>
+	</achievement>
+	<achievement>
+		<id>117</id>
+		<name>Demolition</name>
+		<type winner='1' />
+  		<req unit_type='4' num_killed='3' />
+		<number>1</number>
+		<desc>Destroy at least 3 Structures in a battle and win</desc>
+		<gold_reward>250</gold_reward>
+		<chip_reward>3</chip_reward>
+	</achievement>
+	<achievement>
+		<id>118</id>
+		<name>Copycat</name>
+  		<type enemy_id='*' winner='1' />
+  		<req skill_id='mimic' num_used='5' />
+		<number>1</number>
+		<desc>Defeat a player after using Mimic at least 5 times in the battle</desc>
+		<gold_reward>1000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>119</id>
+		<name>Front-Line Pressure</name>
+  		<type winner='1' />
+  		<req skill_id='0' num_used='25' />
+		<number>10</number>
+		<desc>Win 10 battles attacking at least 25 times in each battle</desc>
+		<gold_reward>2000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>120</id>
+		<name>Lucky Streak</name>
+  		<type winner='1' />
+  		<req skill_id='jam' num_used='5' />
+		<number>1</number>
+		<desc>Use Jam at least 5 times in a battle and win</desc>
+		<gold_reward>750</gold_reward>
+	</achievement>
+	<achievement>
+		<id>121</id>
+		<name>Deny Support</name>
+  		<req unit_id='14' num_played='2' />
+  		<type mission_id='24' compare='great_equal' winner='1' />
+  		<req skill_id='heal' num_used='0' compare='equal' />
+  		<req skill_id='leech' num_used='0' compare='equal' />
+  		<req skill_id='siphon' num_used='0' compare='equal' />
+  		<req skill_id='regenerate' num_used='0' compare='equal' />
+		<number>1</number>
+		<desc>Play at least 2 Medics in Mission 24 or higher, and win without using Heal, Leech, Siphon, or Regenerate</desc>
+		<gold_reward>2000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>122</id>
+		<name>Action Hero</name>
+		<type enemy_id='*' winner='1' />
+  		<req unit_type='8' num_played='3' />
+		<number>1</number>
+		<desc>Defeat a player after playing at least 3 Action Cards in that battle</desc>
+		<gold_reward>2000</gold_reward>
+	</achievement>
+	<!-- <achievement>
+		<id>123</id>
+		<name>Bad Commander</name>
+		<type winner='0' />
+		<req unit_type='2' num_killed='10' compare='equal' />
+		<number>1</number>
+		<desc>Kill 10 Assault Cards and lose (If neither Commander's health reaches 0 by turn 50, the attacking player loses)</desc>
+		<gold_reward>4000</gold_reward>
+	</achievement> -->
+	<achievement>
+		<id>124</id>
+		<name>Speedy Wastelands</name>
+		<type mission_id='41' winner='1' />
+		<req num_turns='9' compare='less_equal'/>
+		<number>1</number>
+		<desc>Beat Mission 41 by turn 9</desc>
+		<gold_reward>5000</gold_reward>
+		<card_reward>197</card_reward>
+	</achievement>
+	<achievement>
+		<id>125</id>
+		<name>Speedy Red Sands</name>
+		<type mission_id='35' winner='1' />
+		<req num_turns='13' compare='less_equal'/>
+		<number>1</number>
+		<desc>Beat Mission 35 by turn 13</desc>
+		<gold_reward>4000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>126</id>
+		<name>Speedy Swamps</name>
+		<type mission_id='28' winner='1' />
+		<req num_turns='15' compare='less_equal'/>
+		<number>1</number>
+		<desc>Beat Mission 28 by turn 15</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>127</id>
+		<name>Speedy Blackmarsh</name>
+		<type mission_id='23' winner='1' />
+		<req num_turns='15' compare='less_equal'/>
+		<number>1</number>
+		<desc>Beat Mission 23 by turn 15</desc>
+		<gold_reward>2000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>128</id>
+		<name>Speedy Cyprion</name>
+		<type mission_id='17' winner='1' />
+		<req num_turns='15' compare='less_equal'/>
+		<number>1</number>
+		<desc>Beat Mission 17 by turn 15</desc>
+		<gold_reward>1000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>129</id>
+		<name>Slow Roll</name>
+		<type mission_id='1' winner='1' />
+		<req num_turns='27' compare='great_equal'/>
+		<number>1</number>
+		<desc>Beat Mission 1, but not before turn 27</desc>
+		<gold_reward>2000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>130</id>
+		<name>Traitor Annihilator</name>
+		<type mission_id='44' winner='1' />
+		<req unit_type='2' num_killed='11' compare='equal' />
+		<req unit_type='4' num_killed='2' compare='equal' />
+		<number>1</number>
+		<desc>Beat the mission "Imperial Traitors 3" and destroy all Assault cards and Structures in opponent's deck</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>131</id>
+		<name>Nest Annihilator</name>
+		<type mission_id='48' winner='1' />
+		<req unit_type='2' num_killed='11' compare='equal' />
+		<req unit_type='4' num_killed='1' compare='equal' />
+		<number>1</number>
+		<desc>Beat the mission "Bloodthirsty Nest 3" and destroy all Assault cards and Structures in the opponent's deck</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>132</id>
+		<name>Xeno Annihilator</name>
+		<type mission_id='52' winner='1' />
+		<req unit_type='2' num_killed='11' compare='equal' />
+		<req unit_type='4' num_killed='1' compare='equal' />
+		<number>1</number>
+		<desc>Beat the mission "Xeno Invasion 3" and destroy all Assault cards and Structures in the opponent's deck</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>133</id>
+		<name>Honored Vanguard</name>
+  		<req unit_id='17' num_played='1' />
+  		<req unit_id='18' num_played='1' />
+  		<req unit_id='1019' num_played='1' />
+  		<type mission_id='10' winner='1' />
+		<number>1</number>
+		<desc>Play the cards "Zealot" "Marine" and have "Eva" as your Commander in Mission 10 and win.</desc>
+		<gold_reward>13000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>134</id>
+		<name>Honored Champions</name>
+  		<req unit_id='67' num_played='1' />
+  		<req unit_id='19' num_played='1' />
+  		<req unit_id='2004' num_played='1' />
+  		<type mission_id='18' winner='1' />
+		<number>1</number>
+		<desc>Play the cards "Impulse Walker" "Exterminator" and "Skycom" in Mission 18 and win.</desc>
+		<gold_reward>10000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>135</id>
+		<name>Honored Shield</name>
+  		<req unit_id='169' num_played='1' />
+  		<req unit_id='1031' num_played='1' />
+  		<req unit_id='54' num_played='1' />
+  		<type mission_id='28' winner='1' />
+		<number>1</number>
+		<desc>Play the cards "Moloch" "Bolide Walker" and have "Dalia" as your Commander in Mission 28 and win.</desc>
+		<gold_reward>12000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>136</id>
+		<name>Honored Protectorate</name>
+  		<req unit_id='2029' num_played='1' />
+  		<req unit_id='36' num_played='1' />
+  		<req unit_id='91' num_played='1' />
+  		<type mission_id='38' winner='1' />
+		<number>1</number>
+		<desc>Play the cards "Fortified Extractor" "Sarcous Grub" and "Pyro Rig" in Mission 38 and win.</desc>
+		<gold_reward>14000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>137</id>
+		<name>Honored Outrider</name>
+  		<req unit_id='165' num_played='1' />
+  		<req unit_id='3010' num_played='1' />
+  		<req unit_id='126' num_played='1' />
+  		<type mission_id='41' winner='1' />
+		<number>1</number>
+		<desc>Play the cards "Ghost" "Massive Assault" and "Pathrazer" in Mission 41 and win.</desc>
+		<gold_reward>15000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>138</id>
+		<name>Nexus Conqueror</name>
+		<type mission_id='78' winner='1' />
+		<number>10</number>
+		<desc>Complete all missions associated with the Nexus set (through Mission 66)</desc>
+		<card_reward>104</card_reward>
+	</achievement>
+	<achievement>
+		<id>139</id>
+		<name>CHARGE!</name>
+		<type winner='1' />
+  		<req skill_id='crush' num_used='1' />
+  		<req skill_id='flurry' num_used='1' />
+  		<req skill_id='rally' num_used='1' />
+		<number>1</number>
+		<desc>Win a battle using Crush, Flurry, and Rally</desc>
+		<gold_reward>2000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>140</id>
+		<name>No-Fly Zone</name>
+		<type mission_id='70' winner='1' />
+  		<req skill_id='flying' num_used='0' compare='equal' />
+		<number>1</number>
+		<desc>Beat Mission 58 without any of your units activating a 'Flying' skill</desc>
+		<gold_reward>1000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>141</id>
+		<name>Story Mode - Raider's Unite</name>
+		<type mission_id='76' winner='1' />
+		<req unit_race='9' num_played='5' />
+		<number>1</number>
+		<desc>Play at least 5 Raiders (Commander doesn't count) in mission 64 and win</desc>
+		<gold_reward>1000</gold_reward>
+		<card_reward>237</card_reward>
+	</achievement>
+	<achievement>
+		<id>142</id>
+		<name>Crushing Victory</name>
+		<type winner='1' />
+  		<req skill_id='crush' num_used='3' />
+		<number>1</number>
+		<desc>Win a battle after using Crush 3 times</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>143</id>
+		<name>Can't Touch This</name>
+		<type winner='1' />
+  		<req skill_id='evade' num_used='5' />
+		<number>1</number>
+		<desc>Win a battle after using Evade 5 times</desc>
+		<gold_reward>2500</gold_reward>
+	</achievement>
+	<achievement>
+		<id>144</id>
+		<name>Fists of Flurry</name>
+		<type mission_id='24' compare='great_equal' winner='1' />
+  		<req skill_id='flurry' num_used='5' />
+		<number>1</number>
+		<desc>Defeat Mission 24 or higher using Flurry 5 times</desc>
+		<gold_reward>2000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>145</id>
+		<name>One-Hit Kill</name>
+		<type mission_id='24' compare='great_equal' winner='1' />
+		<req unit_type='2' num_played='1' compare='equal' />
+		<req skill_id='rally' num_used='5' />
+		<req skill_id='0' num_used='1' compare='equal' />
+		<number>1</number>
+		<desc>Defeat Mission 24 or higher playing only 1 Assault card, using Rally 5 times, and only attacking once.</desc>
+		<card_reward>231</card_reward>
+		<gold_reward>4000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>146</id>
+		<name>Nexus Heavy Hitters</name>
+		<type mission_id='54' compare='great_equal' winner='1'  />
+		<req unit_race='1' num_played='1' />
+		<req unit_race='3' num_played='1' />
+		<req unit_race='4' num_played='1' />
+		<req unit_race='9' num_played='1' />
+		<number>1</number>
+		<desc>Play at least 1 Raider, Imperial, Bloodthirsty, and Xeno (Commander does not count) in Mission 42 or higher and win.</desc>
+		<gold_reward>1000</gold_reward>
+		<card_reward>1033</card_reward>
+	</achievement>
+	<achievement>
+		<id>147</id>
+		<name>Speedy Sulfuris</name>
+		<type mission_id='65' winner='1' />
+		<req num_turns='13' compare='less_equal'/>
+		<number>1</number>
+		<desc>Beat Mission 53 by turn 13</desc>
+		<gold_reward>1000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>148</id>
+		<name>Speedy Odeus</name>
+		<type mission_id='71' winner='1' />
+		<req num_turns='11' compare='less_equal'/>
+		<number>1</number>
+		<desc>Beat Mission 59 by turn 11</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>149</id>
+		<name>Speedy Blightlands</name>
+		<type mission_id='78' winner='1' />
+		<req num_turns='9' compare='less_equal'/>
+		<number>1</number>
+		<desc>Beat Mission 66 by turn 9</desc>
+		<gold_reward>5000</gold_reward>
+		<card_reward>261</card_reward>
+	</achievement>
+	<achievement>
+		<id>150</id>
+		<name>Honored Forsaken</name>
+  		<req unit_id='2047' num_played='1' />
+  		<req unit_id='50' num_played='1' />
+  		<req unit_id='239' num_played='1' />
+  		<type mission_id='65' winner='1' />
+		<number>1</number>
+		<desc>Play the cards "Assembly Plant" "Vorpal Tank" and "Tactical Infiltrator" in Mission 53 and win.</desc>
+		<gold_reward>16000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>151</id>
+		<name>Honored Purge</name>
+  		<req unit_id='238' num_played='1' />
+  		<req unit_id='222' num_played='1' />
+  		<req unit_id='205' num_played='1' />
+  		<type mission_id='78' winner='1' />
+		<number>1</number>
+		<desc>Play the cards "Irradiated Infantry" "Sky Watcher" and "Pummeller" in Mission 66 and win.</desc>
+		<gold_reward>16000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>152</id>
+		<name>Homeland Annihilator</name>
+		<type mission_id='81' winner='1' />
+		<req unit_type='2' num_killed='11' compare='equal' />
+		<req unit_type='4' num_killed='2' compare='equal' />
+		<number>1</number>
+		<desc>Beat the mission "Homeland Defenders 3" and destroy all Assault cards and Structures in opponent's deck</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>153</id>
+		<name>Elite Annihilator</name>
+		<type mission_id='85' winner='1' />
+		<req unit_type='2' num_killed='10' compare='equal' />
+		<req unit_type='4' num_killed='1' compare='equal' />
+		<number>1</number>
+		<desc>Beat the mission "Halcyon's Elite 3" and destroy all Assault cards and Structures in opponent's deck</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>154</id>
+		<name>Creature Annihilator</name>
+		<type mission_id='89' winner='1' />
+		<req unit_type='2' num_killed='12' compare='equal' />
+		<req unit_type='4' num_killed='1' compare='equal' />
+		<number>1</number>
+		<desc>Beat the mission "Creature Combo 3" and destroy all Assault cards and Structures in opponent's deck</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>155</id>
+		<name>Conserving Ammo</name>
+  		<type enemy_id='*' winner='1' />
+  		<req skill_id='0' num_used='5' compare='less_equal' />
+		<number>10</number>
+		<desc>Win 10 battles against players, attacking no more than 5 times in each battle</desc>
+		<gold_reward>2500</gold_reward>
+	</achievement>
+	<achievement>
+		<id>156</id>
+		<name>Resiliant</name>
+		<type winner='1' />
+  		<req skill_id='evade' num_used='1' />
+  		<req skill_id='regenerate' num_used='1' />
+  		<req skill_id='immobilize' num_used='1' />
+  		<req skill_id='jam' num_used='1' />
+		<number>1</number>
+		<desc>Win a battle using Evade, Regenerate, Jam, and Immobilize</desc>
+		<gold_reward>2000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>157</id>
+		<name>Fear the Reaper</name>
+		<type enemy_id='*' winner='1' />
+  		<req skill_id='fear' num_used='5' />
+		<number>1</number>
+		<desc>Defeat a player after using Fear 5 times.</desc>
+		<gold_reward>1000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>158</id>
+		<name>True Valor</name>
+		<type mission_id='28' compare='great_equal' winner='1' />
+		<req unit_type='2' num_played='5' compare='less_equal' />
+		<req unit_type='4' num_played='0' compare='equal' />
+		<req unit_type='8' num_played='0' compare='equal' />
+		<req unit_type='2' num_killed='10' />
+		<number>1</number>
+		<desc>Defeat Mission 28 or higher killing at least 10 Assault card while playing no more than 5 Assault cards, and no Actions or Structures</desc>
+		<gold_reward>5000</gold_reward>
+		<card_reward>290</card_reward>
+	</achievement>
+	<achievement>
+		<id>159</id>
+		<name>Enfeeblict</name>
+		<type winner='1' />
+  		<req skill_id='enfeeble' num_used='10' />
+		<number>1</number>
+		<desc>Win a battle after using Enfeeble 10 times</desc>
+		<gold_reward>2500</gold_reward>
+	</achievement>
+	<achievement>
+		<id>160</id>
+		<name>Come from Behind</name>
+		<type winner='1' />
+  		<req skill_id='valor' num_used='5' />
+		<number>1</number>
+		<desc>Win a battle after using Valor 5 times</desc>
+		<gold_reward>2000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>161</id>
+		<name>Wide Range</name>
+		<type winner='1' />
+  		<req skill_id='swipe' num_used='5' />
+		<number>1</number>
+		<desc>Win a battle after using Swipe 5 times</desc>
+		<gold_reward>2000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>162</id>
+		<name>Take That!</name>
+		<type winner='1' />
+  		<req skill_id='payback' num_used='5' />
+		<number>1</number>
+		<desc>Win a battle after using Payback 5 times</desc>
+		<gold_reward>2500</gold_reward>
+	</achievement>
+	<achievement>
+		<id>163</id>
+		<name>Bloodthirsty Pet</name>
+		<type winner='1' />
+  		<req skill_id='payback' num_used='1' />
+  		<req skill_id='enfeeble' num_used='1' />
+  		<req skill_id='swipe' num_used='1' />
+  		<req skill_id='leech' num_used='1' />
+  		<req skill_id='siphon' num_used='1' />
+		<number>1</number>
+		<desc>Win a battle after using Payback, Enfeeble, Swipe, Leech, and Siphon</desc>
+		<gold_reward>4000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>164</id>
+		<name>Blight Conqueror</name>
+		<type mission_id='114' winner='1' />
+		<number>10</number>
+		<desc>Complete all missions associated with the Blight set (through Mission 90)</desc>
+		<card_reward>1004</card_reward>
+	</achievement>
+	<achievement>
+		<id>165</id>
+		<name>Against the Odds - 74</name>
+		<type mission_id='98' winner='1' />
+		<req unit_race='9' num_played='8' />
+		<number>1</number>
+		<desc>Defeat Mission 74 after playing at least 8 Raiders (Commander doesn't count)</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>166</id>
+		<name>Common Theme</name>
+		<type mission_id='28' compare='great_equal' winner='1' />
+		<req unit_rarity='1' num_played='10' />
+		<number>1</number>
+		<desc>Defeat Mission 28 or higher after playing 10 Common cards (Commander doesn't count)</desc>
+		<gold_reward>2000</gold_reward>
+		<card_reward>304</card_reward>
+	</achievement>
+	<achievement>
+		<id>167</id>
+		<name>Against the Odds - 80</name>
+		<type mission_id='104' winner='1' />
+		<req unit_race='3' num_played='8' />
+		<number>1</number>
+		<desc>Defeat Mission 80 after playing at least 8 Bloodthirsty (Commander doesn't count)</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>168</id>
+		<name>SMASH!</name>
+		<type mission_id='28' compare='great_equal' winner='1' />
+		<req damage='10' />
+		<number>1</number>
+		<desc>Defeat Mission 28 or higher and have at least 1 attack do at least 10 damage</desc>
+		<gold_reward>2000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>169</id>
+		<name>Overkill</name>
+		<type mission_id='28' compare='great_equal' winner='1' />
+		<req com_total='20' />
+		<number>1</number>
+		<desc>Defeat Mission 28 or higher and deal at least 20 total damage to the enemy Commander</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>170</id>
+		<name>EXTREME Overkill!!!</name>
+		<type mission_id='28' compare='great_equal' winner='1' />
+		<req com_total='25' />
+		<number>1</number>
+		<desc>Defeat Mission 28 or higher and deal at least 25 total damage to the enemy Commander</desc>
+		<gold_reward>3000</gold_reward>
+		<card_reward>305</card_reward>
+	</achievement>
+	<achievement>
+		<id>171</id>
+		<name>Common Attacker</name>
+		<type player_id='*' winner='1' />
+		<req unit_rarity='1' num_played='8' />
+		<number>25</number>
+		<desc>Defeat 25 Players after playing 8 Common cards (Commander doesn't count)</desc>
+		<gold_reward>2000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>172</id>
+		<name>Speedy Pits</name>
+		<type mission_id='109' winner='1' />
+		<req num_turns='11' compare='less_equal'/>
+		<number>1</number>
+		<desc>Beat Mission 85 by turn 11</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>173</id>
+		<name>Speedy Core</name>
+		<type mission_id='114' winner='1' />
+		<req num_turns='9' compare='less_equal'/>
+		<number>1</number>
+		<desc>Beat Mission 90 by turn 9</desc>
+		<gold_reward>5000</gold_reward>
+		<card_reward>324</card_reward>
+	</achievement>
+	<achievement>
+		<id>174</id>
+		<name>Honored Pact</name>
+  		<req unit_id='300' num_played='1' />
+  		<req unit_id='3025' num_played='1' />
+  		<req unit_id='303' num_played='1' />
+  		<type mission_id='103' winner='1' />
+		<number>1</number>
+		<desc>Play the cards "Cypher" "Exhaust" and "Whiplash" in Mission 79 and win.</desc>
+		<gold_reward>16000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>175</id>
+		<name>Honored Order</name>
+  		<req unit_id='302' num_played='1' />
+  		<req unit_id='281' num_played='1' />
+  		<req unit_id='301' num_played='1' />
+  		<type mission_id='114' winner='1' />
+		<number>1</number>
+		<desc>Play the cards "Lumbering Ogre" "Onslaught Lead" and "Cycle Mech" in Mission 90 and win.</desc>
+		<gold_reward>16000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>176</id>
+		<name>Displaced Annihilator</name>
+		<type mission_id='117' winner='1' />
+		<req unit_type='2' num_killed='11' compare='equal' />
+		<req unit_type='4' num_killed='1' compare='equal' />
+		<number>1</number>
+		<desc>Beat the mission "Displaced Raiders 3" and destroy all Assault cards and Structures in opponent's deck</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>177</id>
+		<name>Corrupted Annihilator</name>
+		<type mission_id='121' winner='1' />
+		<req unit_type='2' num_killed='11' compare='equal' />
+		<req unit_type='4' num_killed='2' compare='equal' />
+		<number>1</number>
+		<desc>Beat the mission "Corrupted Forces 3" and destroy all Assault cards and Structures in opponent's deck</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>178</id>
+		<name>Mutant Annihilator</name>
+		<type mission_id='125' winner='1' />
+		<req unit_type='2' num_killed='11' compare='equal' />
+		<req unit_type='4' num_killed='1' compare='equal' />
+		<number>1</number>
+		<desc>Beat the mission "Mutant Bloodthirsty 3" and destroy all Assault cards and Structures in opponent's deck</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>179</id>
+		<name>Their Time Will Come</name>
+		<type mission_id='111' winner='1' />
+		<req unit_type='2' num_killed='0' compare='equal' />
+		<number>1</number>
+		<desc>Defeat Mission 87 without killing a single Assault unit.</desc>
+		<gold_reward>2500</gold_reward>
+	</achievement>
+	<achievement>
+		<id>180</id>
+		<name>Purity Conqueror</name>
+		<type mission_id='155' winner='1' />
+		<number>10</number>
+		<desc>Complete all missions associated with the Purity set (through Mission 119)</desc>
+		<card_reward>363</card_reward>
+	</achievement>
+	<achievement>
+		<id>181</id>
+		<name>Defender</name>
+  		<req skill_id='protect' num_used='10' />
+  		<type mission_id='127' compare='great_equal' winner='1' />
+		<number>1</number>
+		<desc>Defeat Mission 91 or higher after using Protect at least 10 times</desc>
+		<gold_reward>2500</gold_reward>
+	</achievement>
+	<achievement>
+		<id>182</id>
+		<name>Sharing is Caring</name>
+  		<req skill_id='tribute' num_used='5' />
+  		<type mission_id='127' compare='great_equal' winner='1' />
+		<number>1</number>
+		<desc>Defeat Mission 91 or higher after using Tribute at least 5 times</desc>
+		<gold_reward>2500</gold_reward>
+	</achievement>
+	<achievement>
+		<id>183</id>
+		<name>Rally Free Zone</name>
+		<type mission_id='28' compare='great_equal' winner='1' />
+		<req damage='10' />
+		<req skill_id='rally' num_used='0' compare='equal' />
+		<number>1</number>
+		<desc>Defeat Mission 28 or higher and have at least 1 attack do at least 10 damage, without using Rally the entire battle</desc>
+		<card_reward>425</card_reward>
+	</achievement>
+	<achievement>
+		<id>184</id>
+		<name>Berserker</name>
+  		<req skill_id='berserk' num_used='5' />
+  		<type mission_id='127' compare='great_equal' winner='1' />
+		<number>1</number>
+		<desc>Defeat Mission 91 or higher after using Berserk at least 5 times</desc>
+		<gold_reward>2500</gold_reward>
+	</achievement>
+	<achievement>
+		<id>185</id>
+		<name>Supplier</name>
+  		<req skill_id='supply' num_used='5' />
+  		<type mission_id='127' compare='great_equal' winner='1' />
+		<number>1</number>
+		<desc>Defeat Mission 91 or higher after using Supply at least 5 times</desc>
+		<gold_reward>2500</gold_reward>
+	</achievement>
+	<achievement>
+		<id>186</id>
+		<name>Join the Righteous</name>
+		<type mission_id='152' winner='1' />
+		<req unit_race='8' num_played='10' />
+		<number>1</number>
+		<desc>Defeat Mission 116 after playing 10 Righteous Units (Commander doesn't count)</desc>
+		<card_reward>335</card_reward>
+	</achievement>
+	<achievement>
+		<id>187</id>
+		<name>Free Tartarus</name>
+		<type mission_id='149' winner='1' />
+		<req unit_race='3' num_played='10' />
+		<number>1</number>
+		<desc>Defeat Mission 113 after playing 10 Bloodthirsty Units (Commander doesn't count)</desc>
+		<card_reward>345</card_reward>
+	</achievement>
+	<achievement>
+		<id>188</id>
+		<name>Damage Sponge</name>
+  		<req skill_id='armored' num_used='5' block='1' />
+		<req skill_id='wall' num_used='5' block='1' />
+  		<type winner='1' />
+		<number>1</number>
+		<desc>Win a battle after using Armored and Wall 5 times each</desc>
+		<gold_reward>2000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>189</id>
+		<name>Power of All</name>
+  		<req unit_race='8' num_played='2' />
+		<req unit_race='3' num_played='2' />
+		<req unit_race='4' num_played='2' />
+		<req unit_race='1' num_played='2' />
+		<req unit_race='9' num_played='2' />
+  		<type mission_id='127' compare='great_equal' winner='1' />
+		<number>1</number>
+		<desc>Defeat Mission 91 or higher after playing 2 cards of each type (Imperial, Raider, Bloodthirsty, Xeno, Righteous)(Commander does not count)</desc>
+		<gold_reward>2000</gold_reward>
+		<card_reward>372</card_reward>
+	</achievement>
+	<achievement>
+		<id>190</id>
+		<name>Speedy Cradle</name>
+		<type mission_id='149' winner='1' />
+		<req num_turns='11' compare='less_equal'/>
+		<number>1</number>
+		<desc>Beat Mission 113 by turn 11</desc>
+		<gold_reward>5000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>191</id>
+		<name>Speedy Valhalla</name>
+		<type mission_id='155' winner='1' />
+		<req num_turns='9' compare='less_equal'/>
+		<number>1</number>
+		<desc>Beat Mission 119 by turn 9</desc>
+		<gold_reward>5000</gold_reward>
+		<card_reward>431</card_reward>
+	</achievement>
+	<achievement>
+		<id>192</id>
+		<name>Honored Retribution</name>
+  		<req unit_id='422' num_played='1' />
+  		<req unit_id='328' num_played='1' />
+  		<req unit_id='1097' num_played='1' />
+  		<type mission_id='135' winner='1' />
+		<number>1</number>
+		<desc>Play the cards "Grenadier" "Lull Fiend" and "Attalia" in Mission 99 and win.</desc>
+		<gold_reward>16000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>193</id>
+		<name>Honored Credo</name>
+  		<req unit_id='420' num_played='1' />
+  		<req unit_id='2065' num_played='1' />
+  		<req unit_id='352' num_played='1' />
+  		<type mission_id='145' winner='1' />
+		<number>1</number>
+		<desc>Play the cards "Repenter" "Fortified Cannons" and "Support Carrier" in Mission 109 and win.</desc>
+		<gold_reward>16000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>194</id>
+		<name>Honored Obliterators</name>
+  		<req unit_id='424' num_played='1' />
+  		<req unit_id='421' num_played='1' />
+  		<req unit_id='423' num_played='1' />
+  		<type mission_id='155' winner='1' />
+		<number>1</number>
+		<desc>Play the cards "Captor" "Righteous Punisher" and "Lance Rider" in Mission 119 and win.</desc>
+		<gold_reward>16000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>195</id>
+		<name>Bloody Annihilator</name>
+		<type mission_id='158' winner='1' />
+		<req unit_type='2' num_killed='11' compare='equal' />
+		<req unit_type='4' num_killed='1' compare='equal' />
+		<number>1</number>
+		<desc>Beat the mission "Bloody Raiders 3" and destroy all Assault cards and Structures in opponent's deck</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>196</id>
+		<name>Vengeful Annihilator</name>
+		<type mission_id='162' winner='1' />
+		<req unit_type='2' num_killed='11' compare='equal' />
+		<req unit_type='4' num_killed='1' compare='equal' />
+		<number>1</number>
+		<desc>Beat the mission "Vengeful Righteous 3" and destroy all Assault cards and Structures in opponent's deck</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>197</id>
+		<name>Purist Annihilator</name>
+		<type mission_id='166' winner='1' />
+		<req unit_type='2' num_killed='10' compare='equal' />
+		<req unit_type='4' num_killed='2' compare='equal' />
+		<number>1</number>
+		<desc>Beat the mission "Imperial Purists 3" and destroy all Assault cards and Structures in opponent's deck</desc>
+		<gold_reward>3000</gold_reward>
+		<card_reward>435</card_reward>
+	</achievement>
+	<achievement>
+		<id>198</id>
+		<name>Fight Blood with Blood</name>
+		<req unit_race='3' num_played='10' />
+  		<type mission_id='171' winner='1' />
+		<number>1</number>
+		<desc>Defeat Night of Terror 4 after playing 10 Bloodthirsty Cards (Commander does not count)</desc>
+		<gold_reward>2000</gold_reward>
+		<card_reward>509</card_reward>
+	</achievement>
+	<achievement>
+		<id>199</id>
+		<name>Trick or Treat 1</name>
+		<type faction_war_id='*' winner='1' />
+		<number>50</number>
+		<desc>Gain 50 Loyalty</desc>
+		<gold_reward>1000</gold_reward>
+		<card_reward>510</card_reward>
+	</achievement>
+	<achievement>
+		<id>200</id>
+		<name>Trick or Treat 2</name>
+		<type faction_war_id='*' winner='1' />
+		<number>100</number>
+		<desc>Gain 100 Loyalty</desc>
+		<gold_reward>2500</gold_reward>
+		<card_reward>512</card_reward>
+	</achievement>
+	<achievement>
+		<id>201</id>
+		<name>Homeworld Conqueror</name>
+		<type mission_id='196' winner='1' />
+		<number>10</number>
+		<desc>Complete all missions associated with the Homeworld set (through Mission 144)</desc>
+		<card_reward>498</card_reward>
+	</achievement>
+	<achievement>
+		<id>202</id>
+		<name>Dust Off</name>
+  		<req skill_id='refresh' num_used='10' />
+  		<type mission_id='172' compare='great_equal' winner='1' />
+		<number>1</number>
+		<desc>Defeat Mission 120 or higher after using Refresh at least 10 times</desc>
+		<gold_reward>2000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>203</id>
+		<name>Vaccinate</name>
+  		<req skill_id='cleanse' num_used='5' />
+  		<type mission_id='172' compare='great_equal' winner='1' />
+		<number>1</number>
+		<desc>Defeat Mission 120 or higher after using Cleanse at least 5 times</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>204</id>
+		<name>Spread the Infection</name>
+  		<req skill_id='disease' num_used='5' status='1' />
+  		<type mission_id='172' compare='great_equal' winner='1' />
+		<number>1</number>
+		<desc>Defeat Mission 120 or higher after using Disease at least 5 times</desc>
+		<gold_reward>2000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>205</id>
+		<name>Induce Chaos</name>
+  		<req skill_id='chaos' num_used='10' />
+  		<type mission_id='172' compare='great_equal' winner='1' />
+		<number>1</number>
+		<desc>Defeat Mission 120 or higher after using Chaos at least 10 times</desc>
+		<gold_reward>2500</gold_reward>
+	</achievement>
+	<achievement>
+		<id>206</id>
+		<name>Raider Revenge</name>
+		<type mission_id='195' winner='1' />
+		<req unit_race='9' num_played='10' />
+		<number>1</number>
+		<desc>Defeat Mission 143 after playing 10 Raider Units (Commander doesn't count)</desc>
+		<card_reward>495</card_reward>
+		<gold_reward>1000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>207</id>
+		<name>Enemy Misfire</name>
+  		<req skill_id='mimic' num_used='3' />
+		<req skill_id='payback' num_used='3' />
+		<req skill_id='chaos' num_used='3' />
+  		<type mission_id='172' compare='great_equal' winner='1' />
+		<number>1</number>
+		<desc>Defeat Mission 120 or higher after using Mimic, Chaos, and Payback at least 3 times each.</desc>
+		<card_reward>493</card_reward>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>208</id>
+		<name>Anti-Cleanse</name>
+  		<req skill_id='enfeeble' num_used='1' />
+		<req skill_id='jam' num_used='1' />
+		<req skill_id='immobilize' num_used='1' />
+		<req skill_id='poison' num_used='1' status='1' />
+		<req skill_id='disease' num_used='1' status='1' />
+  		<type mission_id='172' compare='great_equal' winner='1' />
+		<number>1</number>
+		<desc>Defeat Mission 120 or higher after using Enfeeble, Jam, Immobilize, Poison, and Disease at least once each.</desc>
+		<card_reward>497</card_reward>
+		<gold_reward>2000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>209</id>
+		<name>Blight Support</name>
+		<type mission_id='188' winner='1' />
+		<req unit_race='3' num_played='3' />
+		<req unit_race='4' num_played='3' />
+		<req unit_race='9' num_played='3' />
+		<number>1</number>
+		<desc>Defeat Mission 136 after playing at least 3 Bloodthirsty, 3 Raiders, and 3 Xeno. (Commander doesn't count)</desc>
+		<gold_reward>5000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>210</id>
+		<name>Unlikely Fear</name>
+		<type mission_id='172' compare='great_equal' winner='1' />
+		<req unit_race='8' num_played='8' />
+		<req skill_id='fear' num_used='5' />
+		<number>1</number>
+		<desc>Defeat Mission 120 or higher after playing at least 8 Righteous units (Commmander doesn't count) and using Fear at least 5 times.</desc>
+		<card_reward>496</card_reward>
+		<gold_reward>2000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>211</id>
+		<name>Honored Heretic</name>
+  		<req unit_id='515' num_played='1' />
+  		<req unit_id='3043' num_played='1' />
+		<req unit_id='516' num_played='1' />
+  		<type mission_id='179' winner='1' />
+		<number>1</number>
+		<desc>Play the cards "Microgen" and "Induce Madness" and "Kor Challenger" in Mission 127 and win.</desc>
+		<gold_reward>27000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>212</id>
+		<name>Honored Chaos</name>
+  		<req unit_id='464' num_played='1' />
+  		<req unit_id='500' num_played='1' />
+		<req unit_id='514' num_played='1' />
+  		<type mission_id='187' winner='1' />
+		<number>1</number>
+		<desc>Play the cards "Pandemonium" "Sundering Ogre" and "Cloaked Exarch" in Mission 135 and win.</desc>
+		<gold_reward>27000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>213</id>
+		<name>Honored Beginnings</name>
+  		<req unit_id='517' num_played='1' />
+		<req unit_id='532' num_played='1' />
+  		<req unit_id='1120' num_played='1' />
+  		<type mission_id='196' winner='1' />
+		<number>1</number>
+		<desc>Play the card "Ectoplasm" and "Revered Monk" with "Emanuel" as your Commander in Mission 144 and win.</desc>
+		<gold_reward>27000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>214</id>
+		<name>Blight Annihilator</name>
+		<type mission_id='199' winner='1' />
+		<req unit_type='2' num_killed='11' compare='equal' />
+		<req unit_type='4' num_killed='1' compare='equal' />
+		<number>1</number>
+		<desc>Beat the mission "Blight Assault 3" and destroy all Assault cards and Structures in opponent's deck</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>215</id>
+		<name>Home Annihilator</name>
+		<type mission_id='203' winner='1' />
+		<req unit_type='2' num_killed='10' compare='equal' />
+		<req unit_type='4' num_killed='1' compare='equal' />
+		<number>1</number>
+		<desc>Beat the mission "Voyage Home 3" and destroy all Assault cards and Structures in opponent's deck</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>216</id>
+		<name>Fusion Annihilator</name>
+		<type mission_id='207' winner='1' />
+		<req unit_type='2' num_killed='10' compare='equal' />
+		<req unit_type='4' num_killed='2' compare='equal' />
+		<number>1</number>
+		<desc>Beat the mission "Ancient Fusion 3" and destroy all Assault cards and Structures in opponent's deck</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>217</id>
+		<name>Speedy Sands 2</name>
+		<type mission_id='189' winner='1' />
+		<req num_turns='11' compare='less_equal'/>
+		<number>1</number>
+		<desc>Beat Mission 137 by turn 11</desc>
+		<gold_reward>2500</gold_reward>
+	</achievement>
+	<achievement>
+		<id>218</id>
+		<name>Speedy Wasteland 2</name>
+		<type mission_id='196' winner='1' />
+		<req num_turns='9' compare='less_equal'/>
+		<number>1</number>
+		<desc>Beat Mission 144 by turn 9</desc>
+		<gold_reward>5000</gold_reward>
+		<card_reward>538</card_reward>
+	</achievement>
+	<achievement>
+		<id>219</id>
+		<name>Limited Support 2</name>
+		<type mission_id='172' compare='great_equal' winner='1' />
+		<req unit_type='2' num_played='1' compare='equal' />
+		<number>1</number>
+		<desc>Defeat Mission 120 or higher playing only 1 Assault card</desc>
+		<card_reward>377</card_reward>
+	</achievement>
+	<achievement>
+		<id>220</id>
+		<name>Gift of Giving 1</name>
+		<type mission_id='215' winner='1' />
+  		<req skill_id='heal' num_used='8' />
+  		<req skill_id='refresh' num_used='8' />
+  		<req skill_id='supply' num_used='8' />
+		<number>1</number>
+		<desc>Defeat Winter Solstice 7 after using 'Heal' 'Refresh' and 'Supply' 8 times each.</desc>
+		<card_reward>537</card_reward>
+	</achievement>
+	<achievement>
+		<id>221</id>
+		<name>Gift of Giving 2</name>
+		<type mission_id='214' winner='1' />
+  		<req skill_id='fear' num_used='5' />
+  		<req skill_id='crush' num_used='5' />
+  		<req skill_id='strike' num_used='5' />
+		<number>1</number>
+		<desc>Defeat Winter Solstice 6 after using 'Fear' 'Crush' and 'Strike' 5 times each.</desc>
+		<card_reward>536</card_reward>
+	</achievement>
+	<achievement>
+		<id>222</id>
+		<name>Live and Let Live</name>
+  		<type mission_id='217' compare='great_equal' winner='1' />
+		<req unit_type='2' num_killed='0' compare='equal' />
+  		<req skill_id='strike' num_used='10' />
+		<number>1</number>
+		<desc>Defeat Mission 145 or higher after using Strike 10 times and not killing an Assault card</desc>
+		<gold_reward>3000</gold_reward>
+		<card_reward>626</card_reward>
+	</achievement>
+	<achievement>
+		<id>223</id>
+		<name>Misdirection</name>
+  		<req skill_id='intercept' num_used='10' />
+  		<type mission_id='217' compare='great_equal' winner='1' />
+		<number>1</number>
+		<desc>Defeat Mission 145 or higher after using Intercept 10 times.</desc>
+		<gold_reward>2000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>224</id>
+		<name>Exploit Weakness</name>
+  		<req skill_id='burst' num_used='5' />
+  		<type mission_id='217' compare='great_equal' winner='1' />
+		<number>1</number>
+		<desc>Defeat Mission 145 or higher after using Burst 5 times.</desc>
+		<gold_reward>2000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>225</id>
+		<name>Phobos Conqueror</name>
+		<type mission_id='241' winner='1' />
+		<number>10</number>
+		<desc>Complete all missions associated with the Phobos set (through Mission 169)</desc>
+		<card_reward>624</card_reward>
+	</achievement>
+	<achievement>
+		<id>226</id>
+		<name>Misfire</name>
+  		<type mission_id='217' compare='great_equal' winner='1' />
+  		<req skill_id='burst' num_used='10' />
+		<req skill_id='strike' num_used='10' />
+		<number>1</number>
+		<desc>Defeat Mission 145 or higher after using Burst and Strike 10 times each</desc>
+		<gold_reward>3000</gold_reward>
+		<card_reward>621</card_reward>
+	</achievement>
+	<achievement>
+		<id>227</id>
+		<name>Lousy Aim</name>
+  		<type mission_id='217' compare='great_equal' winner='1' />
+  		<req skill_id='intercept' num_used='5' />
+		<req skill_id='payback' num_used='5' />
+		<req skill_id='evade' num_used='5' />
+		<number>1</number>
+		<desc>Defeat Mission 145 or higher after using Intercept, Evade, and Payback 5 times each.</desc>
+		<gold_reward>3000</gold_reward>
+		<card_reward>606</card_reward>
+	</achievement>
+	<achievement>
+		<id>228</id>
+		<name>Return to Imperials</name>
+		<type mission_id='234' winner='1'  />
+		<req unit_race='1' num_played='10' />
+		<number>1</number>
+		<desc>Defeat Mission 162 after playing 10 Imperials (Commander doesn't count).</desc>
+		<card_reward>1153</card_reward>
+	</achievement>
+	<achievement>
+		<id>229</id>
+		<name>Honored Sovereign</name>
+  		<req unit_id='613' num_played='1' />
+  		<req unit_id='2102' num_played='1' />
+		<req unit_id='631' num_played='1' />
+  		<type mission_id='241' winner='1' />
+		<number>1</number>
+		<desc>Play the cards "Dark Wings" and "Crumbling Remains" and "Rugged Nomad" in Mission 169 and win.</desc>
+		<gold_reward>27000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>230</id>
+		<name>Honored Vicars</name>
+  		<req unit_id='627' num_played='1' />
+  		<req unit_id='628' num_played='1' />
+		<req unit_id='625' num_played='1' />
+  		<type mission_id='235' winner='1' />
+		<number>1</number>
+		<desc>Play the cards "Beta Zoid" "Fate Herald" and "Tormentor" in Mission 163 and win.</desc>
+		<gold_reward>27000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>231</id>
+		<name>Righteous Annihilator</name>
+		<type mission_id='244' winner='1' />
+		<req unit_type='2' num_killed='12' compare='equal' />
+		<number>1</number>
+		<desc>Beat the mission "Pagan Righteous 3" and destroy all Assault cards in opponent's deck</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>232</id>
+		<name>Trouble Annihilator</name>
+		<type mission_id='248' winner='1' />
+		<req unit_type='2' num_killed='11' compare='equal' />
+		<req unit_type='4' num_killed='1' compare='equal' />
+		<number>1</number>
+		<desc>Beat the mission "Double Trouble 3" and destroy all Assault cards and Structures in opponent's deck</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>233</id>
+		<name>Boarded Annihilator</name>
+		<type mission_id='252' winner='1' />
+		<req unit_type='2' num_killed='11' compare='equal' />
+		<req unit_type='4' num_killed='1' compare='equal' />
+		<number>1</number>
+		<desc>Beat the mission "Boarded Xeno 3" and destroy all Assault cards and Structures in opponent's deck</desc>
+		<gold_reward>3000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>234</id>
+		<name>Speedy Vistik</name>
+		<type mission_id='235' winner='1' />
+		<req num_turns='11' compare='less_equal'/>
+		<number>1</number>
+		<desc>Beat Mission 163 by turn 11</desc>
+		<gold_reward>2500</gold_reward>
+	</achievement>
+	<achievement>
+		<id>235</id>
+		<name>Speedy Phobos</name>
+		<type mission_id='241' winner='1' />
+		<req num_turns='9' compare='less_equal'/>
+		<number>1</number>
+		<desc>Beat Mission 169 by turn 9</desc>
+		<gold_reward>5000</gold_reward>
+		<card_reward>633</card_reward>
+	</achievement>
+	<achievement>
+		<id>236</id>
+		<name>Space Wars</name>
+  		<req skill_id='flying' num_used='10' block='1' />
+  		<type mission_id='236' winner='1' />
+		<number>1</number>
+		<desc>Defeat Mission 164 after activating the Flying skill 10 times</desc>
+		<card_reward>635</card_reward>
+	</achievement>
+	
+	<!-- buypack achievements -->
+	<achievement>
+		<id>300</id>
+		<name>Advancement</name>
+  		<req buypack='1' />
+		<number>1</number>
+		<desc>Buy a Bronze Pack</desc>
+		<gold_reward>50</gold_reward>
+		<order>4</order>
+	</achievement>
+	<achievement>
+		<id>301</id>
+		<name>Advancement</name>
+  		<req buypack='2' />
+		<number>1</number>
+		<desc>Buy a Silver Pack</desc>
+		<gold_reward>50</gold_reward>
+		<achievement_req>300</achievement_req>
+		<order>6</order>
+	</achievement>
+	<achievement>
+		<id>302</id>
+		<name>Advancement</name>
+  		<req buypack='3' />
+		<number>1</number>
+		<desc>Buy an Gold Pack</desc>
+		<gold_reward>50</gold_reward>
+		<achievement_req>301</achievement_req>
+		<order>8</order>
+	</achievement>
+	<achievement>
+		<id>303</id>
+		<name>Advancement</name>
+  		<req buypack='4' />
+		<number>1</number>
+		<desc>Buy an Enclave Pack</desc>
+		<gold_reward>50</gold_reward>
+		<achievement_req>302</achievement_req>
+		<order>10</order>
+	</achievement>
+	
+	<!-- leveling achievements -->
+	<achievement>
+		<id>310</id>
+		<name>Rise to Power</name>
+  		<req level='4' />
+		<number>1</number>
+		<desc>Reach Level 4</desc>
+		<gold_reward>1000</gold_reward>
+		<order>5</order>
+	</achievement>
+	<achievement>
+		<id>311</id>
+		<name>Rise to Power 2</name>
+  		<req level='6' />
+		<number>1</number>
+		<desc>Reach Level 6</desc>
+		<gold_reward>2500</gold_reward>
+		<achievement_req>310</achievement_req>
+		<order>7</order>
+	</achievement>
+	<achievement>
+		<id>312</id>
+		<name>Rise to Power 3</name>
+  		<req level='10' />
+		<number>1</number>
+		<desc>Reach Level 10</desc>
+		<gold_reward>5000</gold_reward>
+		<achievement_req>311</achievement_req>
+		<order>9</order>
+	</achievement>
+	
+	<achievement> 
+		<id>401</id>
+		<name>Tournament Amateur</name>
+		<type tournament_id='*' />
+		<req entered='1' />
+		<number>1</number>
+		<desc>Enter a Tournament</desc>
+		<gold_reward>500</gold_reward>
+	</achievement>
+	<achievement> 
+		<id>402</id>
+		<name>Tournament Regular</name>
+		<type tournament_id='*' />
+		<req entered='1' />
+		<number>20</number>
+		<desc>Enter 20 Tournaments</desc>
+		<gold_reward>2500</gold_reward>
+	</achievement>
+	<achievement> 
+		<id>403</id>
+		<name>Tournament Pro</name>
+		<type tournament_id='*' />
+		<req entered='1' />
+		<number>100</number>
+		<desc>Enter 100 Tournaments</desc>
+		<gold_reward>5000</gold_reward>
+		<card_reward>427</card_reward>
+	</achievement>
+	<!-- <achievement> 
+		<id>411</id>
+		<name>TTTaskmaster</name>
+		<type tournament_id='*' />
+		<req final_rating='1100' />
+		<number>1</number>
+		<desc>Achieve a final rating of 1100 in a Tournament</desc>
+		<gold_reward>4000</gold_reward>
+	</achievement> -->
+	<achievement> 
+		<id>421</id>
+		<name>Good Finish</name>
+		<type tournament_id='*' />
+		<req top='10' compare='less_equal' />
+		<number>1</number>
+		<desc>Place in the top 10% of a Tournament (min 10 Players)</desc>
+		<gold_reward>2500</gold_reward>
+	</achievement>
+	<achievement> 
+		<id>422</id>
+		<name>Great Finish</name>
+		<type tournament_id='*' />
+		<req top='5' compare='less_equal' />
+		<number>1</number>
+		<desc>Place in the top 5% of a Tournament (min 20 Players)</desc>
+		<gold_reward>5000</gold_reward>
+	</achievement>
+	<achievement> 
+		<id>423</id>
+		<name>Excellent Finish!</name>
+		<type tournament_id='*' />
+		<req top='1' compare='less_equal' />
+		<number>1</number>
+		<desc>Place in the top 1% of a Tournament (min 100 Players)</desc>
+		<gold_reward>5000</gold_reward>
+		<card_reward>426</card_reward>
+	</achievement>
+	<achievement> 
+		<id>424</id>
+		<name>Freaky Good Finish</name>
+		<type tournament_id='*' />
+		<req top='10' compare='less_equal' />
+		<number>1</number>
+		<desc>Place in the top 10% of a Tournament (min 10 Players)</desc>
+		<gold_reward>2500</gold_reward>
+		<card_reward>511</card_reward>
+	</achievement>
+	<achievement> 
+		<id>425</id>
+		<name>Freaky Excellent Finish!</name>
+		<type tournament_id='*' />
+		<hard_req>423</hard_req>
+		<req top='1' compare='less_equal' />
+		<number>1</number>
+		<desc>Place in the top 1% of a Tournament (min 100 Players; Unlocked by completing "Excellent Finish")</desc>
+		<gold_reward>5000</gold_reward>
+		<card_reward>519</card_reward>
+	</achievement>
+	 
+	 <!-- tutorial achievements -->
+	 <!-- <achievement>
+		<id>500</id>
+		<name>Collector Initiate</name>
+		<tutorial_id>3</tutorial_id>
+		<desc>Complete the Pack Tutorial</desc>
+	</achievement> -->
+</root>
