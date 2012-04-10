@@ -740,4 +740,5 @@ struct EVAL_PARAMS
 	bool SurrenderAtLoss;
 	//
 	int AchievementIndex;
+	DWORD SecondPassMultiplier;
 };

@@ -147,6 +147,7 @@ type
     Annihilator: boolean;
     SurrenderAtLoss: boolean;
     AchievementIndex: integer;
+    SecondPassMultiplier: DWORD;
   end;
 
 type
@@ -507,6 +508,8 @@ type
     cbAchievement: TcxComboBox;
     lAchDesc: TcxLabel;
     cbUseAchievement: TcxCheckBox;
+    cbDoublePass: TcxCheckBox;
+    seSecondPassMultiplier: TcxSpinEdit;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -1066,6 +1069,11 @@ begin
     pEP.AchievementIndex := EvaluateDecksForm.cbAchievement.ItemIndex
   else
     pEP.AchievementIndex := -1;
+
+  if EvaluateDecksForm.cbDoublePass.Checked then
+    pEP.SecondPassMultiplier := EvaluateDecksForm.seSecondPassMultiplier.Value
+  else
+    pEP.SecondPassMultiplier := 0;
 
   pEP.MaxTurn := MaxTurn;
 
@@ -3355,6 +3363,9 @@ begin
       ms.Position := 0;
       IdHttp.Get(Format(sAssetsFolder,[cbAssetsSource.Text]) + sMissionsFile, ms);
       ms.SaveToFile(sLocalDir + sMissionsFile);
+      ms.Position := 0;
+      IdHttp.Get(Format(sAssetsFolder,[cbAssetsSource.Text]) + sAchievementsFile, ms);
+      ms.SaveToFile(sLocalDir + sAchievementsFile); 
       fileDate := FileAge(sLocalDir + sCardsFile);
       if fileDate > -1 then
         ceLastDate.Date := FileDateToDateTime(fileDate);
@@ -3919,7 +3930,7 @@ begin
         ff := 0;
       end;
 
-      bClearHash = false;
+      bClearHash := false;
       if (((mDefDeckName <> '') and (not bImages)) OR
           ((vDefDeckName <> '') and (bImages))) and
           (not cbUseComplexDefence.checked) then
@@ -3942,7 +3953,7 @@ begin
         begin
           ShowMessage('This is a wrong mission to test selected achievement.');
           MissionID := 0;
-          bClearHash = true;
+          bClearHash := true;
         end;
       end
       else

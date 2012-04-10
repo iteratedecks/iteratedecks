@@ -430,9 +430,34 @@ int _tmain(int argc, char* argv[])
 			RID.insert(PRID(lresult.Win,*si));
 			pEvalParams->FullAmountOfGames += lresult.Games;
 		}
+		UCHAR i = 0;
+		// second pass
+		if (pEvalParams->SecondPassMultiplier > 0)
+		{
+			for (MRID::iterator mi = RID.begin(); (mi != RID.end()) && (i < DEFAULT_DECK_RESERVE_SIZE+1 /* amount of wildcards for extended test */); mi++)
+			{
+				ActiveDeck x(X);
+				if (pEvalParams->WildcardId < 0)
+					x.Commander = PlayedCard(&DB.GetCard(mi->second));
+				else
+					x.Deck.push_back(&DB.GetCard(mi->second));
+				RESULTS lresult;
+				RESULT_BY_CARD lrbc[DEFAULT_DECK_RESERVE_SIZE+1];
+				EvaluateInThreads(pEvalParams->Seed,x,Y,pEvalParams->RaidID,lresult,lrbc,pEvalParams->State,pEvalParams->SecondPassMultiplier * pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode,pEvalParams->Req,pEvalParams->SkillProcs,pEvalParams->Annihilator,pEvalParams->SurrenderAtLoss);
+				if (lresult.Win > pEvalParams->Result.Win)
+				{
+					pEvalParams->Result = lresult;
+					memcpy(pEvalParams->ResultByCard,lrbc,sizeof(lrbc));
+					BestCard = mi->second;
+				}
+				RID.insert(PRID(lresult.Win,mi->second));
+				pEvalParams->FullAmountOfGames += lresult.Games;
+				i++;
+			}
+			i = 0;
+		}
 		if (BestCard)
 			pEvalParams->WildcardId = BestCard;
-		UCHAR i = 0;
 		for (MRID::iterator mi = RID.begin(); (mi != RID.end()) && (i < DEFAULT_DECK_RESERVE_SIZE /* amount of wildcards to dump */); mi++)
 			if (mi->second != BestCard)
 			{
