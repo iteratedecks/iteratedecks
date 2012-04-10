@@ -147,6 +147,7 @@ public:
 		//
 		UINT UnitID;
 		UINT UnitRace;
+		UINT UnitRarity;
 		UCHAR NumPlayed;
 		//
 		UCHAR UnitType;
@@ -158,11 +159,12 @@ public:
 		bool Status; // ???
 		//
 		UCHAR Compare;
-		AchievementRequirement(UCHAR numTurns, UINT unitId, UINT unitRace, UCHAR numPlayed, UCHAR unitType, UCHAR numKilled, UINT skillID, UCHAR numUsed, UCHAR numKilledWith, bool status, UCHAR compare)
+		AchievementRequirement(UCHAR numTurns, UINT unitId, UINT unitRace, UINT unitRarity, UCHAR numPlayed, UCHAR unitType, UCHAR numKilled, UINT skillID, UCHAR numUsed, UCHAR numKilledWith, bool status, UCHAR compare)
 		{
 			NumTurns = numTurns;
 			UnitID = unitId;
 			UnitRace = unitRace;
+			UnitRarity = unitRarity;
 			NumPlayed = numPlayed;
 			UnitType = RemapUnitType(unitType);
 			NumKilled = numKilled;
@@ -194,9 +196,9 @@ public:
 		Type.Winner = winner;
 		Type.Compare = compare;
 	}
-	void AddRequirement(UCHAR NumTurns, UINT UnitId, UINT UnitRace, UCHAR NumPlayed, UCHAR UnitType, UCHAR NumKilled, UINT SkillID, UCHAR NumUsed, UCHAR NumKilledWith, bool Status, UCHAR Compare)
+	void AddRequirement(UCHAR NumTurns, UINT UnitId, UINT UnitRace, UINT UnitRarity, UCHAR NumPlayed, UCHAR UnitType, UCHAR NumKilled, UINT SkillID, UCHAR NumUsed, UCHAR NumKilledWith, bool Status, UCHAR Compare)
 	{
-		Reqs.push_back(AchievementRequirement(NumTurns,UnitId,UnitRace,NumPlayed,UnitType,NumKilled,SkillID,NumUsed,NumKilledWith,Status,Compare));
+		Reqs.push_back(AchievementRequirement(NumTurns,UnitId,UnitRace,UnitRarity,NumPlayed,UnitType,NumKilled,SkillID,NumUsed,NumKilledWith,Status,Compare));
 	};
 	const bool IsValid()
 	{
@@ -690,6 +692,7 @@ public:
 							di->attribute("num_turns").as_uint(),
 							di->attribute("unit_id").as_uint(),
 							di->attribute("unit_race").as_uint(),
+							di->attribute("unit_rarity").as_uint(),
 							di->attribute("num_played").as_uint(),
 							di->attribute("unit_type").as_uint(),
 							di->attribute("num_killed").as_uint(),
@@ -1737,6 +1740,31 @@ public:
 						if (Def.CardDeaths[i])
 						{
 							if (CDB[Def.CardDeaths[i]].GetType() == vi->UnitType) cnt++;
+						}
+						else break;
+				}
+			}
+			// cards of a rarity
+			if (vi->UnitRarity)
+			{
+				if (vi->NumPlayed)
+				{
+					rcnt = vi->NumPlayed;
+					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+						if (Atk.CardPicks[i])
+						{
+							if (CDB[Atk.CardPicks[i]].GetRarity() == RemapRarity(vi->UnitRarity)) cnt++;
+						}
+						else break;
+					bMoreAlsoWorks = true;
+				}
+				if (vi->NumKilled)
+				{
+					rcnt = vi->NumKilled;
+					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+						if (Def.CardDeaths[i])
+						{
+							if (CDB[Def.CardDeaths[i]].GetRarity() == RemapRarity(vi->UnitRarity)) cnt++;
 						}
 						else break;
 				}
