@@ -1956,12 +1956,12 @@ procedure TEvaluateDecksForm.UpdateFilter;
   end;
   function SkillHasTarget(ID: integer): boolean;
   begin
-    result := (ID < 18) OR (ID = 23) OR (ID = 25)
-      OR (ID = 21); // !!!
+    result := (ID < 21) OR (ID = 27) OR (ID = 29)
+      OR (ID = 25); // !!!
   end;
   function SkillIsSiege(ID: integer): boolean;
   begin
-    result := (ID = 21);
+    result := (ID = 25);
   end;
 var
   i, k, z, turns: integer;

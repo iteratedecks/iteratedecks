@@ -34,7 +34,7 @@ typedef	unsigned int UINT;
 
 #define CARD_MAX_ID				4000 // size of storage array
 #define MISSION_MAX_ID			350  // size of storage array
-#define ACHIEVEMENT_MAX_COUNT	150  // size of storage array
+#define ACHIEVEMENT_MAX_COUNT	250  // size of storage array
 #define RAID_MAX_ID				20  // size of storage array
 
 #define RARITY_COMMON			0
@@ -69,6 +69,8 @@ char FACTIONS[6][CARD_NAME_MAX_LENGTH] = {0,"Imperial","Raider","Bloodthirsty","
 #define TYPE_ACTION				4
 
 #define ABILITY_ENABLED			1  // just a helper, no use
+
+#define SPECIAL_ATTACK			0
 
 #define ACTIVATION_CHAOS		11
 #define ACTIVATION_CLEANSE		12
@@ -916,6 +918,8 @@ public:
 	UINT CardDeaths[DEFAULT_DECK_RESERVE_SIZE];
 	//
 	UINT DamageToCommander; // for points calculation - damage dealt to ENEMY commander
+	UINT FullDamageToCommander;
+	UINT StrongestAttack;
 	// logging related stuff
 	UCHAR LogDeckID;
 	VLOG *Log;
@@ -988,10 +992,15 @@ private:
 				}
 				UCHAR overkill = 0;
 				UCHAR cdmg = SRC.GetAttack()+valor;
+				if (cdmg > StrongestAttack)
+					StrongestAttack = cdmg;
 				if (Def.Commander.HitCommander(cdmg,SRC,Def.Structures,true,&overkill,
 					Log, LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),0,cdmg)))
+				{
 					DamageToCommander += cdmg;
-
+					FullDamageToCommander += cdmg;
+				}
+				SRC.CardSkillProc(SPECIAL_ATTACK); // attack counter
 				// gotta check walls & source onDeath here
 				for (UCHAR z=0;z<Def.Structures.size();z++)
 					Def.CheckDeathEvents(Def.Structures[z],*this);
@@ -1036,6 +1045,8 @@ private:
 			{
 				bool bGoBerserk = false;
 				UCHAR iSwiped = 0;
+				//
+				SRC.CardSkillProc(SPECIAL_ATTACK); // attack counter
 				// swipe
 				for (UCHAR s=0;s<swipe;s++)
 				{
@@ -1069,9 +1080,14 @@ private:
 						}
 						UCHAR cdmg = SRC.GetAttack()+valor;		
 						UCHAR overkill = 0;
+						if (cdmg > StrongestAttack)
+							StrongestAttack = cdmg;
 						if (Def.Commander.HitCommander(cdmg,SRC,Def.Structures,true,&overkill,
 							Log, LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),0,cdmg)))
+						{
 							DamageToCommander += cdmg;
+							FullDamageToCommander += cdmg;
+						}
 
 						// gotta check walls & source onDeath here
 						for (UCHAR z=0;z<Def.Structures.size();z++)
@@ -1179,6 +1195,7 @@ private:
 						{
 							Def.Commander.SufferDmg(targets[s]->GetAbility(SPECIAL_BACKFIRE));
 							DamageToCommander += SRC.GetAbility(SPECIAL_BACKFIRE);
+							FullDamageToCommander += SRC.GetAbility(SPECIAL_BACKFIRE);
 							Def.SkillProcs[SPECIAL_BACKFIRE]++;
 							LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),SPECIAL_BACKFIRE,SRC.GetAbility(SPECIAL_BACKFIRE));
 						}
@@ -1188,7 +1205,10 @@ private:
 							UCHAR overkill = 0;
 							if (Def.Commander.HitCommander(SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def.Structures,false,&overkill,
 								Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),DMGDEPENDANT_CRUSH,SRC.GetAbility(DMGDEPENDANT_CRUSH))))
+							{
 								DamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
+								FullDamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
+							}
 
 							// gotta check walls onDeath here
 							for (UCHAR z=0;z<Def.Structures.size();z++)
@@ -1209,6 +1229,8 @@ private:
 						Def.SkillProcs[DEFENSIVE_COUNTER]++;
 						CheckDeathEvents(SRC,Def);
 					}
+					if (dmg > StrongestAttack)
+						StrongestAttack = dmg;
 					// berserk
 					if ((dmg > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
 						bGoBerserk = true;
@@ -1301,6 +1323,8 @@ public:
 		CSIndex = 0; 
 		CSResult = 0; 
 		DamageToCommander = 0; 
+		FullDamageToCommander = 0;
+		StrongestAttack = 0;
 		memset(SkillProcs,0,CARD_ABILITIES_MAX*sizeof(UCHAR)); 
 		memset(CardPicks,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 		memset(CardDeaths,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
@@ -1351,6 +1375,8 @@ public:
 		CSIndex = 0;
 		CSResult = 0;
 		DamageToCommander = 0;
+		FullDamageToCommander = 0;
+		StrongestAttack = 0;
 		bOrderMatters = false; 
 		bDelayFirstCard = false;
 		unsigned short tid = 0, lastid = 0;
@@ -1400,6 +1426,8 @@ public:
 		CSIndex = 0; 
 		CSResult = 0;
 		DamageToCommander = 0; 
+		FullDamageToCommander = 0;
+		StrongestAttack = 0;
 		Commander = PlayedCard(Cmd); 
 		Commander.SetCardSkillProcBuffer(SkillProcs); 
 		Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); 
@@ -1441,6 +1469,8 @@ public:
 		CSIndex = D.CSIndex;
 		CSResult = D.CSResult;
 		DamageToCommander = D.DamageToCommander;
+		FullDamageToCommander = D.FullDamageToCommander;
+		StrongestAttack = D.StrongestAttack;
 		if (D.bOrderMatters)
 		{
 			Hand.clear();
@@ -2322,6 +2352,7 @@ public:
 				{
 					Src.fsDmgDealt += Dest.Commander.SufferDmg(effect);
 					DamageToCommander += effect;
+					FullDamageToCommander += effect;
 				}
 			}
 			// siege

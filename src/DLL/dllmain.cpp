@@ -459,8 +459,7 @@ extern "C"
 	IDAPI bool CheckAchievementMission(UINT AchievementIndex, UINT MissionID)
 	{
 		return DB.CheckAchievementMission(AchievementIndex,MissionID);
-	}
-	
+	}	
 	IDAPI const char *GetSkillName(DWORD Id)
 	{
 		return DB.Skills[Id].SkillName;

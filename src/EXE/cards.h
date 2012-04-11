@@ -82,14 +82,16 @@ struct CardSet
 		Visible = visible;
 	}
 };
-#define EQUAL			0
-#define LESS			1
-#define LESSEQUAL		2
-#define GREATER			3
-#define GREATEREQUAL	4
+#define UNDEFINED		0
+#define EQUAL			1
+#define LESS			2
+#define LESSEQUAL		3
+#define GREATER			4
+#define GREATEREQUAL	5
 UCHAR DetectCompare(const char *compare)
 {
-	if (!compare) return EQUAL;
+	if (!compare) return UNDEFINED;
+	if (!compare[0]) return UNDEFINED;
 	if (!stricmp(compare,"less")) return LESS;
 	if (!stricmp(compare,"less_equal")) return LESSEQUAL;
 	if (!stricmp(compare,"great")) return GREATER;
@@ -100,6 +102,7 @@ class AchievementInfo
 {
 	struct AchievementType
 	{
+		char EnemyID;
 		UINT MissionID;
 		bool Winner;
 		UCHAR Compare;
@@ -111,10 +114,12 @@ class AchievementInfo
 		};
 		const bool IsValid() const
 		{
-			return (MissionID != 0);
+			return (!EnemyID);//(MissionID != 0);
 		}
 		const bool CheckMissionID(UINT missionID) const
 		{
+			if (!MissionID) return true; // skip if mission ID is undefined
+			if (Compare == UNDEFINED) return true; // ???
 			// checks
 			if ((Compare == EQUAL) && (missionID != MissionID)) return false;
 			if ((Compare == GREATEREQUAL) && (missionID < MissionID)) return false;
@@ -128,6 +133,7 @@ private:
 	UINT Id;
 	string Name;
 	string Description;
+	UINT Number;
 	AchievementType Type;
 	static const UCHAR RemapUnitType(const UCHAR unitType)
 	{
@@ -158,8 +164,10 @@ public:
 		UCHAR NumKilledWith;
 		bool Status; // ???
 		//
+		UCHAR Damage;
+		UCHAR ComTotal;
 		UCHAR Compare;
-		AchievementRequirement(UCHAR numTurns, UINT unitId, UINT unitRace, UINT unitRarity, UCHAR numPlayed, UCHAR unitType, UCHAR numKilled, UINT skillID, UCHAR numUsed, UCHAR numKilledWith, bool status, UCHAR compare)
+		AchievementRequirement(UCHAR numTurns, UINT unitId, UINT unitRace, UINT unitRarity, UCHAR numPlayed, UCHAR unitType, UCHAR numKilled, UINT skillID, UCHAR numUsed, UCHAR numKilledWith, bool status, UCHAR damage, UCHAR comTotal, UCHAR compare)
 		{
 			NumTurns = numTurns;
 			UnitID = unitId;
@@ -172,6 +180,8 @@ public:
 			NumUsed = numUsed;
 			NumKilledWith = numKilledWith;
 			Status = status;
+			Damage = damage;
+			ComTotal = comTotal;
 			Compare = compare;
 		};
 	};
@@ -181,7 +191,7 @@ public:
 	{
 		Id = 0;
 	};
-	AchievementInfo(const UINT id, const char *name = 0, const char *desc = 0)
+	AchievementInfo(const UINT id, const char *name = 0, const char *desc = 0, const UINT number = 0)
 	{
 		Id = id;
 		if (name)
@@ -189,20 +199,25 @@ public:
 		if (desc)
 			Description = string(desc);
 		Reqs.clear();
+		Number = number;
 	}
-	void SetType(UINT missionID, bool winner, UCHAR compare)
+	void SetType(const char *enemyID, UINT missionID, bool winner, UCHAR compare)
 	{
+		if (enemyID && enemyID[0])
+			Type.EnemyID = enemyID[0];
+		else
+			Type.EnemyID = 0;
 		Type.MissionID = missionID;
 		Type.Winner = winner;
 		Type.Compare = compare;
 	}
-	void AddRequirement(UCHAR NumTurns, UINT UnitId, UINT UnitRace, UINT UnitRarity, UCHAR NumPlayed, UCHAR UnitType, UCHAR NumKilled, UINT SkillID, UCHAR NumUsed, UCHAR NumKilledWith, bool Status, UCHAR Compare)
+	void AddRequirement(UCHAR NumTurns, UINT UnitId, UINT UnitRace, UINT UnitRarity, UCHAR NumPlayed, UCHAR UnitType, UCHAR NumKilled, UINT SkillID, UCHAR NumUsed, UCHAR NumKilledWith, bool Status, UCHAR Damage, UCHAR ComTotal, UCHAR Compare)
 	{
-		Reqs.push_back(AchievementRequirement(NumTurns,UnitId,UnitRace,UnitRarity,NumPlayed,UnitType,NumKilled,SkillID,NumUsed,NumKilledWith,Status,Compare));
+		Reqs.push_back(AchievementRequirement(NumTurns,UnitId,UnitRace,UnitRarity,NumPlayed,UnitType,NumKilled,SkillID,NumUsed,NumKilledWith,Status,Damage,ComTotal,Compare));
 	};
 	const bool IsValid()
 	{
-		return (Id && Type.IsValid() && (Reqs.size() > 0));
+		return (Id && Type.IsValid() && (Reqs.size() > 0) && (Number <= 1));
 	}
 	const char *GetName() const
 	{
@@ -656,16 +671,23 @@ public:
 				const char *Name = it->child("name").child_value();
 				UINT Id = atoi(it->child("id").child_value());
 				const char *Desc = it->child("desc").child_value();
+				UINT Number = atoi(it->child("number").child_value());
+				UINT Order = atoi(it->child("order").child_value());
 				
+				if (Order > 1) continue;
+				if (!it->child("type").attribute("tournament_id").empty()) continue; // skip <type tournament_id='*' />
+
 				UINT index = AIIndex.size();
 				_ASSERT(index < ACHIEVEMENT_MAX_COUNT);
+
 				
-				AchievementInfo ai(Id,Name,Desc);
+				AchievementInfo ai(Id,Name,Desc,Number);
 				// <type enemy_id="*" winner="1"/> - we don't really need those
 				// <type mission_id="166" winner="1"/>
 				// <type mission_id="172" compare="great_equal" winner="1"/>
 				if (!it->child("type").empty())
 					ai.SetType(
+						it->child("type").attribute("enemy_id").value(),
 						it->child("type").attribute("mission_id").as_uint(),
 						it->child("type").attribute("winner").as_bool(),
 						DetectCompare(it->child("type").attribute("compare").value()));
@@ -678,9 +700,12 @@ public:
 							MSKILLS::iterator si = SIndex.find(di->attribute("skill_id").value());
 							if (si == SIndex.end())
 							{
-								if (bConsoleOutput)
-									printf("Skill \"%s\" not found in index!\n",di->attribute("skill_id").value());
-								continue;
+								if (strcmp(di->attribute("skill_id").value(),"0"))
+								{
+									if (bConsoleOutput)
+										printf("Skill \"%s\" not found in index!\n",di->attribute("skill_id").value());
+									continue;
+								}
 							}
 							else
 								sid = si->second;
@@ -700,6 +725,8 @@ public:
 							di->attribute("num_used").as_uint(),
 							di->attribute("num_killed_with").as_uint(),
 							di->attribute("status").as_bool(),
+							di->attribute("damage").as_uint(),
+							di->attribute("com_total").as_uint(),
 							DetectCompare(di->attribute("compare").value()));
 					}
 				if (ai.IsValid())
@@ -1667,9 +1694,20 @@ public:
 		{
 			UINT cnt = 0;
 			UINT rcnt = 0;
-			bool bMoreAlsoWorks = false;
+			// attack damage
+			if (vi->Damage)
+			{
+				cnt = Atk.StrongestAttack;
+				rcnt = vi->Damage;
+			}
+			// damage to commander
+			if (vi->ComTotal)
+			{
+				cnt = Atk.FullDamageToCommander;
+				rcnt = vi->ComTotal;
+			}
 			// skill procs
-			if (vi->SkillID)
+			if (vi->SkillID || vi->NumUsed)
 			{				
 				if (vi->NumUsed)
 				{
@@ -1686,7 +1724,6 @@ public:
 						else break;
 					rcnt = vi->NumKilledWith;
 				}
-				bMoreAlsoWorks = true;
 			}
 			// turns
 			if (vi->NumTurns)
@@ -1706,7 +1743,7 @@ public:
 							if (Atk.CardPicks[i] == vi->UnitID) cnt++;
 						}
 						else break;
-					bMoreAlsoWorks = true;
+					if (Atk.Commander.GetId() == vi->UnitID) cnt++;
 				}
 				if (vi->NumKilled)
 				{
@@ -1731,7 +1768,6 @@ public:
 							if (CDB[Atk.CardPicks[i]].GetType() == vi->UnitType) cnt++;
 						}
 						else break;
-					bMoreAlsoWorks = true;
 				}
 				if (vi->NumKilled)
 				{
@@ -1756,7 +1792,6 @@ public:
 							if (CDB[Atk.CardPicks[i]].GetRarity() == RemapRarity(vi->UnitRarity)) cnt++;
 						}
 						else break;
-					bMoreAlsoWorks = true;
 				}
 				if (vi->NumKilled)
 				{
@@ -1781,7 +1816,6 @@ public:
 							if (CDB[Atk.CardPicks[i]].GetFaction() == RemapFaction(vi->UnitRace)) cnt++;
 						}
 						else break;
-					bMoreAlsoWorks = true;
 				}
 				if (vi->NumKilled)
 				{
@@ -1795,7 +1829,8 @@ public:
 				}
 			}
 			// checks
-			if ((vi->Compare == EQUAL) && (cnt != rcnt) && ((!bMoreAlsoWorks) || (cnt < rcnt))) return false;
+			if ((vi->Compare == UNDEFINED) && (cnt < rcnt)) return false;
+			if ((vi->Compare == EQUAL) && (cnt != rcnt)) return false;
 			if ((vi->Compare == GREATEREQUAL) && (cnt < rcnt)) return false;
 			if ((vi->Compare == GREATER) && (cnt <= rcnt)) return false;
 			if ((vi->Compare == LESSEQUAL) && (cnt > rcnt)) return false;
