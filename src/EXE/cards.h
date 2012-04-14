@@ -1709,7 +1709,7 @@ public:
 			// skill procs
 			if (vi->SkillID || vi->NumUsed)
 			{				
-				if (vi->NumUsed)
+				if (!vi->NumKilledWith)
 				{
 					cnt = Atk.SkillProcs[vi->SkillID];
 					rcnt = vi->NumUsed;
