@@ -1183,7 +1183,6 @@ private:
 							Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),0,dmg));
 						SRC.fsDmgDealt += actualdamagedealt;
 						SRC.fsOverkill += overkill;
-						Def.CheckDeathEvents(*targets[s],*this);
 					}
 					if (bPierce)
 						SkillProcs[COMBAT_PIERCE]++;
@@ -1302,6 +1301,8 @@ private:
 							LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_BERSERK,SRC.GetAbility(DMGDEPENDANT_BERSERK));
 						}
 					}
+
+					Def.CheckDeathEvents(*targets[s],*this);
 
 					if (!SRC.IsAlive()) // died from counter? during swipe
 						break;
