@@ -1169,6 +1169,14 @@ begin
         end;
       end;
 
+    if pEP.Result.Games = 0 then
+    begin
+      if pEP.WildCardId <> 0 then
+        raise Exception.Create('No wildcard that matches selected criteria.'#13'In other words, all cards have ZERO chance of winning.')
+      else
+        raise Exception.Create('For some reason, result is incorrect. :(');
+    end;
+    
     if pEP.WildCardId <> 0 then
     begin
       EvaluateDecksForm.vWildCards.DataController.RecordCount := 0;

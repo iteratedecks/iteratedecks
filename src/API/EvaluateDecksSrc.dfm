@@ -3136,6 +3136,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Left = 304
             Top = 168
             Properties.MaxValue = 1000.000000000000000000
+            Properties.MinValue = 2.000000000000000000
             TabOrder = 11
             Value = 10
             Width = 65
