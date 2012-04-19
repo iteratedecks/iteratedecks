@@ -277,7 +277,7 @@ int _tmain(int argc, char* argv[])
 			return a > b;
 		  }
 		};
-		typedef map<UINT,UINT, more> MRID;
+		typedef multimap<UINT,UINT, more> MRID;
 		typedef pair<UINT,UINT> PRID;
 		MRID RID;
 		if (pEvalParams->WildFilterSpecific)
@@ -420,6 +420,7 @@ int _tmain(int argc, char* argv[])
 				continue;
 			RESULTS lresult;
 			RESULT_BY_CARD lrbc[DEFAULT_DECK_RESERVE_SIZE+1];
+			//p = find_upper_bound_on_p(trials, successes, 0.01)
 			EvaluateInThreads(pEvalParams->Seed,x,Y,pEvalParams->RaidID,lresult,lrbc,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode,pEvalParams->Req,pEvalParams->SkillProcs,pEvalParams->Annihilator,pEvalParams->SurrenderAtLoss);
 			if (lresult.Win > pEvalParams->Result.Win)
 			{
@@ -434,7 +435,7 @@ int _tmain(int argc, char* argv[])
 		// second pass
 		if (pEvalParams->SecondPassMultiplier > 0)
 		{
-			for (MRID::iterator mi = RID.begin(); (mi != RID.end()) && (i < DEFAULT_DECK_RESERVE_SIZE+1 /* amount of wildcards for extended test */); mi++)
+			for (MRID::iterator mi = RID.begin(); (mi != RID.end()) && (i < DEFAULT_DECK_RESERVE_SIZE+1 /* amount of wildcards for extended test */);)
 			{
 				ActiveDeck x(X);
 				if (pEvalParams->WildcardId < 0)
@@ -452,6 +453,7 @@ int _tmain(int argc, char* argv[])
 				}
 				RID.insert(PRID(lresult.Win,mi->second));
 				pEvalParams->FullAmountOfGames += lresult.Games;
+				mi = RID.erase(mi); // insert then erase?
 				i++;
 			}
 			i = 0;
@@ -520,12 +522,12 @@ int _tmain(int argc, char* argv[])
 	DB.LoadMissionXML("missions.xml");
 	DB.LoadRaidXML("raids.xml");
 	//DB.SaveMissionDecks("c:\\pun.txt");
-	ActiveDeck x("Poggg1AF",DB.GetPointer());
-	ActiveDeck z("PoHt",DB.GetPointer());
+	ActiveDeck x("P3FRfY",DB.GetPointer());
+	ActiveDeck z("QyAqAPBqfxvICcDVCYB+Cj",DB.GetPointer());
 	x.SetOrderMatters(true);
 
 	//DB.LoadDecks("C:\\Users\\NT\\Documents\\Visual Studio 2008\\Projects\\EvaluateDecks\\bin\\decks\\batcheval\\New Missions.txt");
-	//AchievementIndex = 56; // index, not id
+	AchievementIndex = 64; // index, not id
 	bConsoleOutput = true;
 	{
 	RESULTS r;
