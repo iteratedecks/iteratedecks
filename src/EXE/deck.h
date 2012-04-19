@@ -1685,6 +1685,13 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
+						if (!targets.empty())
+						{
+							if ((!IsMimiced) || bIsSelfMimic)
+								SkillProcs[aid]++;
+							else
+								Dest.SkillProcs[aid]++;
+						}
 						for (vi = targets.begin();vi != targets.end();vi++)
 						{
 							if (bConsoleOutput)
@@ -1706,10 +1713,6 @@ public:
 								Mimicer->fsSpecial += effect;
 								LogAdd(LOG_CARD(LogDeckID,Mimicer->GetType(),SrcPos),lc,aid);
 							}
-							if ((!IsMimiced) || bIsSelfMimic)
-								SkillProcs[aid]++;
-							else
-								Dest.SkillProcs[aid]++;
 							if (vi->first->GetAbility(DEFENSIVE_TRIBUTE) && bTributable)
 							{
 								if (IsMimiced)
@@ -1772,6 +1775,13 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
+						if (!targets.empty())
+						{
+							if ((!IsMimiced) || bIsSelfMimic)
+								SkillProcs[aid]++;
+							else
+								Dest.SkillProcs[aid]++;
+						}
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
 							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (!chaos) && (PROC50))
 							{
@@ -1793,10 +1803,6 @@ public:
 									Mimicer->fsSpecial += effect;
 									LogAdd(LOG_CARD(Dest.LogDeckID,Mimicer->GetType(),SrcPos),lc,aid,effect);
 								}
-								if ((!IsMimiced) || bIsSelfMimic)
-									SkillProcs[aid]++;
-								else
-									Dest.SkillProcs[aid]++;
 								if (Src.IsAlive() && (EffectType != EVENT_DIED))
 									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback
 									{
@@ -1844,6 +1850,13 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
+						if (!targets.empty())
+						{
+							if ((!IsMimiced) || bIsSelfMimic)
+								SkillProcs[aid]++;
+							else
+								Dest.SkillProcs[aid]++;
+						}
 						for (vi = targets.begin();vi != targets.end();vi++)
 						{
 							if (bConsoleOutput)
@@ -1857,10 +1870,6 @@ public:
 								Src.fsHealed += vi->first->Heal(effect);
 							else
 								Mimicer->fsHealed += vi->first->Heal(effect);
-							if ((!IsMimiced) || bIsSelfMimic)
-								SkillProcs[aid]++;
-							else
-								Dest.SkillProcs[aid]++;
 							if (vi->first->GetAbility(DEFENSIVE_TRIBUTE) && bTributable && PROC50)
 							{
 								if (IsMimiced)
@@ -1980,6 +1989,13 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
+						if (!targets.empty())
+						{
+							if ((!IsMimiced) || bIsSelfMimic)
+								SkillProcs[aid]++;
+							else
+								Dest.SkillProcs[aid]++;
+						}
 						for (vi = targets.begin();vi != targets.end();vi++)
 						{
 							if (bConsoleOutput)
@@ -1994,10 +2010,6 @@ public:
 								Src.fsSpecial += effect;
 							else
 								Mimicer->fsSpecial += effect;
-							if ((!IsMimiced) || bIsSelfMimic)
-								SkillProcs[aid]++;
-							else
-								Dest.SkillProcs[aid]++;
 							if (vi->first->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
 							{
 								if (IsMimiced)
@@ -2128,6 +2140,13 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
+						if (!targets.empty())
+						{
+							if ((!IsMimiced) || bIsSelfMimic)
+								SkillProcs[aid]++;
+							else
+								Dest.SkillProcs[aid]++;
+						}
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
 							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
 							{
@@ -2142,10 +2161,6 @@ public:
 									Src.fsSpecial += effect;
 								else
 									Mimicer->fsSpecial += effect;
-								if ((!IsMimiced) || bIsSelfMimic)
-									SkillProcs[aid]++;
-								else
-									Dest.SkillProcs[aid]++;
 								if (Src.IsAlive() && (EffectType != EVENT_DIED))
 									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos)) 
 									{
@@ -2191,6 +2206,8 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
+						if (!targets.empty())
+							SkillProcs[aid]++;
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
 							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
 							{
@@ -2206,7 +2223,6 @@ public:
 									vi->first->PrintDesc();
 									printf("\n");
 								}
-								SkillProcs[aid]++;
 								if (chaos > 0)
 									ApplyEffects(EVENT_EMPTY,*vi->first,Position,*this,true,false,&Src);
 								else
@@ -2251,6 +2267,13 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
+						if (!targets.empty())
+						{
+							if ((!IsMimiced) || bIsSelfMimic)
+								SkillProcs[aid]++;
+							else
+								Dest.SkillProcs[aid]++;
+						}
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
 						{
 							if (bConsoleOutput)
@@ -2265,10 +2288,6 @@ public:
 								Src.fsSpecial += effect;
 							else
 								Mimicer->fsSpecial += effect;
-							if ((!IsMimiced) || bIsSelfMimic)
-								SkillProcs[aid]++;
-							else
-								Dest.SkillProcs[aid]++;
 							if (vi->first->GetAbility(DEFENSIVE_TRIBUTE) && bTributable && PROC50)
 							{
 								if (IsMimiced)
@@ -2329,6 +2348,13 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
+						if (!targets.empty())
+						{
+							if ((!IsMimiced) || bIsSelfMimic)
+								SkillProcs[aid]++;
+							else
+								Dest.SkillProcs[aid]++;
+						}
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
 						{
 							vi->first->Heal(effect);
@@ -2336,10 +2362,6 @@ public:
 								Src.fsHealed += effect;
 							else
 								Mimicer->fsHealed += effect;
-							if ((!IsMimiced) || bIsSelfMimic)
-								SkillProcs[aid]++;
-							else
-								Dest.SkillProcs[aid]++;
 						}
 					}
 					targets.clear();
@@ -2379,6 +2401,13 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
+						if (!targets.empty())
+						{
+							if ((!IsMimiced) || bIsSelfMimic)
+								SkillProcs[aid]++;
+							else
+								Dest.SkillProcs[aid]++;
+						}
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
 					
 							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
@@ -2402,10 +2431,6 @@ public:
 									Mimicer->fsDmgDealt += sdmg;
 									Mimicer->fsOverkill += overkill;
 								}
-								if ((!IsMimiced) || bIsSelfMimic)
-									SkillProcs[aid]++;
-								else
-									Dest.SkillProcs[aid]++;
 							}
 					}
 					targets.clear();
@@ -2449,6 +2474,13 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
+						if (!targets.empty())
+						{
+							if ((!IsMimiced) || bIsSelfMimic)
+								SkillProcs[aid]++;
+							else
+								Dest.SkillProcs[aid]++;
+						}
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
 							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
 							{
@@ -2478,10 +2510,6 @@ public:
 									Mimicer->fsDmgDealt += sdmg;
 									Mimicer->fsOverkill += overkill;
 								}
-								if ((!IsMimiced) || bIsSelfMimic)
-									SkillProcs[aid]++;
-								else
-									Dest.SkillProcs[aid]++;
 								if (Src.IsAlive() && (EffectType != EVENT_DIED))
 									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback
 									{
@@ -2541,6 +2569,13 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
+						if (!targets.empty())
+						{
+							if ((!IsMimiced) || bIsSelfMimic)
+								SkillProcs[aid]++;
+							else
+								Dest.SkillProcs[aid]++;
+						}
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
 							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
 							{
@@ -2561,10 +2596,6 @@ public:
 									Src.fsSpecial += we;
 								else
 									Mimicer->fsSpecial += we;
-								if ((!IsMimiced) || bIsSelfMimic)
-									SkillProcs[aid]++;
-								else
-									Dest.SkillProcs[aid]++;
 								if (Src.IsAlive() && (EffectType != EVENT_DIED))
 									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50 && (!chaos))  // payback
 									{
@@ -2601,6 +2632,8 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
+						if (!targets.empty())
+							SkillProcs[aid]++;
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
 						{
 							if (bConsoleOutput)
@@ -2612,7 +2645,6 @@ public:
 							}
 							vi->first->Rush(effect);		
 							Src.fsSpecial += effect;
-							SkillProcs[aid]++;
 						}
 					}
 					targets.clear();
@@ -2655,6 +2687,13 @@ public:
 							targets.clear();
 							targets.push_back(tmp);
 						}
+						if (!targets.empty())
+						{
+							if ((!IsMimiced) || bIsSelfMimic)
+								SkillProcs[aid]++;
+							else
+								Dest.SkillProcs[aid]++;
+						}
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
 							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
 							{
@@ -2676,10 +2715,6 @@ public:
 									Src.fsSpecial += we;
 								else
 									Mimicer->fsSpecial += we;
-								if ((!IsMimiced) || bIsSelfMimic)
-									SkillProcs[aid]++;
-								else
-									Dest.SkillProcs[aid]++;
 								if (Src.IsAlive() && (EffectType != EVENT_DIED))
 									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50 && (!chaos))  // payback
 									{
