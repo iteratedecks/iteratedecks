@@ -1958,9 +1958,9 @@ object EvaluateDecksForm: TEvaluateDecksForm
         TabOrder = 0
         object sbRight: TScrollBox
           Left = 1
-          Top = 123
+          Top = 145
           Width = 348
-          Height = 541
+          Height = 519
           HorzScrollBar.Visible = False
           VertScrollBar.Smooth = True
           VertScrollBar.Tracking = True
@@ -1971,22 +1971,24 @@ object EvaluateDecksForm: TEvaluateDecksForm
           TabOrder = 0
           TabStop = True
           OnMouseWheel = sbRightMouseWheel
+          ExplicitTop = 123
+          ExplicitHeight = 541
         end
         object pLibTop: TPanel
           Left = 1
           Top = 1
           Width = 348
-          Height = 122
+          Height = 144
           Align = alTop
           BevelOuter = bvSpace
           TabOrder = 1
           object ceFilter: TcxTextEdit
-            Left = 205
+            Left = 185
             Top = 35
             Properties.OnChange = UpdateFilterEvent
             TabOrder = 0
             OnKeyDown = ceFilterKeyDown
-            Width = 131
+            Width = 151
           end
           object ccbSets: TcxCheckComboBox
             Left = 43
@@ -2186,27 +2188,40 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Width = 39
           end
           object cbInstant: TcxCheckBox
-            Left = 146
-            Top = 35
-            Hint = 'Instant filter update'
-            Caption = 'Instant'
-            ParentShowHint = False
-            Properties.Alignment = taRightJustify
-            ShowHint = True
+            Left = 5
+            Top = 116
+            Caption = 'Instant filter update'
+            Properties.Alignment = taLeftJustify
             TabOrder = 11
-            Width = 59
+            Width = 124
           end
           object bRefreshFilters: TcxButton
-            Left = 119
-            Top = 35
-            Width = 21
+            Left = 135
+            Top = 116
+            Width = 61
             Height = 21
-            Hint = 'Refresh'
-            Caption = '[R]'
-            ParentShowHint = False
-            ShowHint = True
+            Caption = 'Update'
             TabOrder = 12
             OnClick = bRefreshFiltersClick
+          end
+          object lCardName: TcxLabel
+            Left = 119
+            Top = 36
+            Caption = 'Card name:'
+          end
+          object cbOwnedCardsFilter: TcxComboBox
+            Left = 202
+            Top = 116
+            Properties.DropDownListStyle = lsFixedList
+            Properties.Items.Strings = (
+              'All cards'
+              'Only cards I have'
+              'Only cards I don'#39't have')
+            Properties.OnChange = GenericFilterChange
+            Properties.OnCloseUp = UpdateFilterEvent
+            TabOrder = 14
+            Text = 'All cards'
+            Width = 140
           end
         end
       end
@@ -2510,7 +2525,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
         Top = 0
         Width = 780
         Height = 665
-        ActivePage = tsEEvaluate
+        ActivePage = tsEWildcard
         Align = alClient
         TabOrder = 0
         ClientRectBottom = 665
@@ -7509,15 +7524,15 @@ object EvaluateDecksForm: TEvaluateDecksForm
   object tLoad: TTimer
     Interval = 100
     OnTimer = tLoadTimer
-    Left = 648
-    Top = 216
+    Left = 792
+    Top = 392
   end
   object tCancelHover: TTimer
     Enabled = False
     Interval = 100
     OnTimer = tCancelHoverTimer
-    Left = 648
-    Top = 264
+    Left = 792
+    Top = 440
   end
   object IdHTTP: TIdHTTP
     OnWork = IdHTTPWork
@@ -7536,15 +7551,15 @@ object EvaluateDecksForm: TEvaluateDecksForm
     Request.Ranges.Units = 'bytes'
     Request.Ranges = <>
     HTTPOptions = [hoForceEncodeParams]
-    Left = 544
-    Top = 216
+    Left = 688
+    Top = 392
   end
   object IL: TcxImageList
     DrawingStyle = dsTransparent
     Height = 220
     Width = 160
     FormatVersion = 1
-    DesignInfo = 14156368
+    DesignInfo = 25690848
     ImageInfo = <
       item
         Image.Data = {
@@ -33981,11 +33996,11 @@ object EvaluateDecksForm: TEvaluateDecksForm
     Height = 105
     Width = 75
     FormatVersion = 1
-    DesignInfo = 17302096
+    DesignInfo = 28836576
   end
   object pmGrid: TPopupMenu
-    Left = 584
-    Top = 160
+    Left = 728
+    Top = 336
     object bDeleteSelected: TMenuItem
       Caption = 'Delete selected'
       OnClick = bDeleteSelectedClick
@@ -33996,8 +34011,8 @@ object EvaluateDecksForm: TEvaluateDecksForm
     end
   end
   object pmBatchEval: TPopupMenu
-    Left = 544
-    Top = 160
+    Left = 688
+    Top = 336
     object MenuItem1: TMenuItem
       Caption = 'Select All'
       OnClick = MenuItem1Click
@@ -34020,7 +34035,7 @@ object EvaluateDecksForm: TEvaluateDecksForm
     Height = 24
     Width = 24
     FormatVersion = 1
-    DesignInfo = 11010688
+    DesignInfo = 22545168
     ImageInfo = <
       item
         Image.Data = {
