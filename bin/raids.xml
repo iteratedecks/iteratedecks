@@ -11,6 +11,7 @@
 		<x>270</x>
 		<y>85</y>
 		<time>12</time>
+		<item>53</item>
 		<thumb>arctisraid150.jpg</thumb>
 		<layers>
 			<layer start='-50' end='40'>arctisraid1.png</layer>
@@ -48,7 +49,6 @@
 				<card>16</card>
 			</card_pool>
 		</deck>
-		<item>1</item>
 		<honor_reward>
 			<req>0</req>
 			<honor>0</honor>
@@ -87,6 +87,7 @@
 		<location_id>7</location_id>
 		<num_players>50</num_players>
 		<mission_req>41</mission_req> <!-- TODO Mission 41 -->
+		<item>53</item>
 		<x>260</x>
 		<y>260</y>
 		<time>24</time>
@@ -187,38 +188,56 @@
 		<honor_reward>
 			<req>250</req>
 			<honor>25</honor>
+			<item_num>0</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>300</req>
 			<honor>30</honor>
+			<item_num>1</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>400</req>
 			<honor>40</honor>
+			<item_num>1</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>500</req>
 			<honor>55</honor>
+			<item_num>2</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>600</req>
 			<honor>65</honor>
+			<item_num>2</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>700</req>
 			<honor>75</honor>
+			<item_num>3</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>800</req>
 			<honor>85</honor>
+			<item_num>3</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>900</req>
 			<honor>95</honor>
+			<item_num>4</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1000</req>
 			<honor>110</honor>
+			<item_num>4</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<reward>
 			<id>1</id>
@@ -239,6 +258,7 @@
 		<location_id>8</location_id>
 		<num_players>75</num_players>
 		<mission_req>57</mission_req> <!-- TODO Mission 45 -->
+		<item>53</item>
 		<x>275</x>
 		<y>110</y>
 		<time>24</time>
@@ -339,38 +359,56 @@
 		<honor_reward>
 			<req>250</req>
 			<honor>25</honor>
+			<item_num>0</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>300</req>
 			<honor>30</honor>
+			<item_num>1</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>400</req>
 			<honor>40</honor>
+			<item_num>1</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>500</req>
 			<honor>55</honor>
+			<item_num>2</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>600</req>
 			<honor>65</honor>
+			<item_num>2</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>700</req>
 			<honor>75</honor>
+			<item_num>3</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>800</req>
 			<honor>85</honor>
+			<item_num>3</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>900</req>
 			<honor>95</honor>
+			<item_num>4</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1000</req>
 			<honor>110</honor>
+			<item_num>4</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<reward>
 			<id>1</id>
@@ -391,6 +429,7 @@
 		<location_id>8</location_id>
 		<num_players>15</num_players>
 		<mission_req>60</mission_req> <!-- TODO Mission 48 -->
+		<item>53</item>
 		<x>380</x>
 		<y>80</y>
 		<time>48</time>
@@ -503,78 +542,116 @@
 		<honor_reward>
 			<req>250</req>
 			<honor>25</honor>
+			<item_num>0</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>300</req>
 			<honor>30</honor>
+			<item_num>1</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>400</req>
 			<honor>40</honor>
+			<item_num>1</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>500</req>
 			<honor>55</honor>
+			<item_num>2</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>600</req>
 			<honor>65</honor>
+			<item_num>2</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>700</req>
 			<honor>75</honor>
+			<item_num>3</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>800</req>
 			<honor>85</honor>
+			<item_num>3</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>900</req>
 			<honor>95</honor>
+			<item_num>4</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1000</req>
 			<honor>110</honor>
-		</honor_reward>
+			<item_num>4</item_num>
+			<add_prob>.5</add_prob>
+		</honor_reward>	
 		<honor_reward>
 			<req>1100</req>
 			<honor>120</honor>
+			<item_num>4</item_num>
+			<add_prob>.9</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1200</req>
 			<honor>130</honor>
+			<item_num>5</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1300</req>
 			<honor>140</honor>
+			<item_num>5</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1400</req>
 			<honor>150</honor>
+			<item_num>5</item_num>
+			<add_prob>.9</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1500</req>
 			<honor>160</honor>
+			<item_num>6</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1600</req>
 			<honor>170</honor>
+			<item_num>6</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1700</req>
 			<honor>180</honor>
+			<item_num>6</item_num>
+			<add_prob>.9</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1800</req>
 			<honor>190</honor>
+			<item_num>7</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1900</req>
 			<honor>200</honor>
+			<item_num>7</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>2000</req>
 			<honor>225</honor>
+			<item_num>7</item_num>
+			<add_prob>.9</add_prob>
 		</honor_reward>
 		<reward>
 			<id>1</id>
@@ -601,6 +678,7 @@
 		<location_id>11</location_id>
 		<num_players>25</num_players>
 		<mission_req>72</mission_req> <!-- TODO Mission 60 -->
+		<item>53</item>
 		<x>75</x>
 		<y>300</y>
 		<time>24</time>
@@ -684,38 +762,56 @@
 		<honor_reward>
 			<req>250</req>
 			<honor>25</honor>
+			<item_num>0</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>300</req>
 			<honor>30</honor>
+			<item_num>1</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>400</req>
 			<honor>40</honor>
+			<item_num>1</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>500</req>
 			<honor>55</honor>
+			<item_num>2</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>600</req>
 			<honor>65</honor>
+			<item_num>2</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>700</req>
 			<honor>75</honor>
+			<item_num>3</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>800</req>
 			<honor>85</honor>
+			<item_num>3</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>900</req>
 			<honor>95</honor>
+			<item_num>4</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1000</req>
 			<honor>110</honor>
+			<item_num>4</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<reward>
 			<id>1</id>
@@ -742,6 +838,7 @@
 		<location_id>11</location_id>
 		<num_players>20</num_players>
 		<mission_req>78</mission_req> <!-- Mission 66 -->
+		<item>53</item>
 		<x>90</x>
 		<y>115</y>
 		<time>6</time>
@@ -849,38 +946,56 @@
 		<honor_reward>
 			<req>250</req>
 			<honor>25</honor>
+			<item_num>0</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>300</req>
 			<honor>30</honor>
+			<item_num>1</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>400</req>
 			<honor>40</honor>
+			<item_num>1</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>500</req>
 			<honor>55</honor>
+			<item_num>2</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>600</req>
 			<honor>65</honor>
+			<item_num>2</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>700</req>
 			<honor>75</honor>
+			<item_num>3</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>800</req>
 			<honor>85</honor>
+			<item_num>3</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>900</req>
 			<honor>95</honor>
+			<item_num>4</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1000</req>
 			<honor>110</honor>
+			<item_num>4</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<reward>
 			<id>1</id>
@@ -907,6 +1022,7 @@
 		<location_id>11</location_id>
 		<num_players>100</num_players>
 		<mission_req>78</mission_req> <!-- Mission 66 -->
+		<item>53</item>
 		<x>280</x>
 		<y>120</y>
 		<time>72</time>
@@ -1010,78 +1126,116 @@
 		<honor_reward>
 			<req>250</req>
 			<honor>25</honor>
+			<item_num>0</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>300</req>
 			<honor>30</honor>
+			<item_num>1</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>400</req>
 			<honor>40</honor>
+			<item_num>1</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>500</req>
 			<honor>55</honor>
+			<item_num>2</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>600</req>
 			<honor>65</honor>
+			<item_num>2</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>700</req>
 			<honor>75</honor>
+			<item_num>3</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>800</req>
 			<honor>85</honor>
+			<item_num>3</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>900</req>
 			<honor>95</honor>
+			<item_num>4</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1000</req>
 			<honor>110</honor>
-		</honor_reward>
+			<item_num>4</item_num>
+			<add_prob>.5</add_prob>
+		</honor_reward>	
 		<honor_reward>
 			<req>1100</req>
 			<honor>120</honor>
+			<item_num>4</item_num>
+			<add_prob>.9</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1200</req>
 			<honor>130</honor>
+			<item_num>5</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1300</req>
 			<honor>140</honor>
+			<item_num>5</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1400</req>
 			<honor>150</honor>
+			<item_num>5</item_num>
+			<add_prob>.9</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1500</req>
 			<honor>160</honor>
+			<item_num>6</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1600</req>
 			<honor>170</honor>
+			<item_num>6</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1700</req>
 			<honor>180</honor>
+			<item_num>6</item_num>
+			<add_prob>.9</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1800</req>
 			<honor>190</honor>
+			<item_num>7</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1900</req>
 			<honor>200</honor>
+			<item_num>7</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>2000</req>
 			<honor>225</honor>
+			<item_num>7</item_num>
+			<add_prob>.9</add_prob>
 		</honor_reward>
 		<reward>
 			<id>1</id>
@@ -1108,6 +1262,7 @@
 		<location_id>12</location_id>
 		<num_players>40</num_players>
 		<mission_req>93</mission_req> <!-- TODO Mission 69 -->
+		<item>53</item>
 		<x>220</x>
 		<y>140</y>
 		<time>24</time>
@@ -1221,38 +1376,56 @@
 		<honor_reward>
 			<req>250</req>
 			<honor>25</honor>
+			<item_num>0</item_num>
+			<add_prob>.25</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>300</req>
 			<honor>30</honor>
+			<item_num>0</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>400</req>
 			<honor>40</honor>
+			<item_num>0</item_num>
+			<add_prob>.75</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>500</req>
 			<honor>55</honor>
+			<item_num>1</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>600</req>
 			<honor>65</honor>
+			<item_num>1</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>700</req>
 			<honor>75</honor>
+			<item_num>2</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>800</req>
 			<honor>85</honor>
+			<item_num>2</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>900</req>
 			<honor>95</honor>
+			<item_num>3</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1000</req>
 			<honor>110</honor>
+			<item_num>3</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<reward>
 			<id>1</id>
@@ -1279,6 +1452,7 @@
 		<location_id>14</location_id>
 		<num_players>25</num_players>
 		<mission_req>107</mission_req> <!-- Mission 83 -->
+		<item>53</item>
 		<x>75</x>
 		<y>300</y>
 		<time>6</time>
@@ -1403,38 +1577,56 @@
 		<honor_reward>
 			<req>250</req>
 			<honor>25</honor>
+			<item_num>0</item_num>
+			<add_prob>.25</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>300</req>
 			<honor>30</honor>
+			<item_num>0</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>400</req>
 			<honor>40</honor>
+			<item_num>0</item_num>
+			<add_prob>.75</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>500</req>
 			<honor>55</honor>
+			<item_num>1</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>600</req>
 			<honor>65</honor>
+			<item_num>1</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>700</req>
 			<honor>75</honor>
+			<item_num>2</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>800</req>
 			<honor>85</honor>
+			<item_num>2</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>900</req>
 			<honor>95</honor>
+			<item_num>3</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1000</req>
 			<honor>110</honor>
+			<item_num>3</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<reward>
 			<id>1</id>
@@ -1461,6 +1653,7 @@
 		<location_id>15</location_id>
 		<num_players>80</num_players>
 		<mission_req>114</mission_req> <!-- TODO Mission 90 -->
+		<item>53</item>
 		<x>240</x>
 		<y>300</y>
 		<time>48</time>
@@ -1569,78 +1762,116 @@
 		<honor_reward>
 			<req>250</req>
 			<honor>25</honor>
+			<item_num>0</item_num>
+			<add_prob>.25</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>300</req>
 			<honor>30</honor>
+			<item_num>0</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>400</req>
 			<honor>40</honor>
+			<item_num>0</item_num>
+			<add_prob>.75</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>500</req>
 			<honor>55</honor>
+			<item_num>1</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>600</req>
 			<honor>65</honor>
+			<item_num>1</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>700</req>
 			<honor>75</honor>
+			<item_num>2</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>800</req>
 			<honor>85</honor>
+			<item_num>2</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>900</req>
 			<honor>95</honor>
+			<item_num>3</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1000</req>
 			<honor>110</honor>
+			<item_num>3</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1100</req>
 			<honor>120</honor>
+			<item_num>3</item_num>
+			<add_prob>.75</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1200</req>
 			<honor>130</honor>
+			<item_num>4</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1300</req>
 			<honor>140</honor>
+			<item_num>4</item_num>
+			<add_prob>.2</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1400</req>
 			<honor>150</honor>
+			<item_num>4</item_num>
+			<add_prob>.3</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1500</req>
 			<honor>160</honor>
+			<item_num>4</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1600</req>
 			<honor>170</honor>
+			<item_num>4</item_num>
+			<add_prob>.75</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1700</req>
 			<honor>180</honor>
+			<item_num>5</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1800</req>
 			<honor>190</honor>
+			<item_num>5</item_num>
+			<add_prob>.25</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1900</req>
 			<honor>200</honor>
+			<item_num>5</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>2000</req>
 			<honor>225</honor>
+			<item_num>5</item_num>
+			<add_prob>.75</add_prob>
 		</honor_reward>
 		<reward>
 			<id>1</id>
@@ -1667,6 +1898,7 @@
 		<location_id>15</location_id>
 		<num_players>75</num_players>
 		<mission_req>114</mission_req> <!-- TODO Mission 90 -->
+		<item>53</item>
 		<x>375</x>
 		<y>120</y>
 		<time>12</time>
@@ -1786,38 +2018,56 @@
 		<honor_reward>
 			<req>250</req>
 			<honor>25</honor>
+			<item_num>0</item_num>
+			<add_prob>.25</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>300</req>
 			<honor>30</honor>
+			<item_num>0</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>400</req>
 			<honor>40</honor>
+			<item_num>0</item_num>
+			<add_prob>.75</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>500</req>
 			<honor>55</honor>
+			<item_num>1</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>600</req>
 			<honor>65</honor>
+			<item_num>1</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>700</req>
 			<honor>75</honor>
+			<item_num>2</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>800</req>
 			<honor>85</honor>
+			<item_num>2</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>900</req>
 			<honor>95</honor>
+			<item_num>3</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1000</req>
 			<honor>110</honor>
+			<item_num>3</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<reward>
 			<id>1</id>
@@ -1844,6 +2094,7 @@
 		<location_id>24</location_id>
 		<num_players>40</num_players>
 		<mission_req>212</mission_req>
+		<item>53</item>
 		<x>400</x>
 		<y>100</y>
 		<time>24</time>
@@ -1960,58 +2211,86 @@
 		<honor_reward>
 			<req>250</req>
 			<honor>25</honor>
+			<item_num>0</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>300</req>
 			<honor>30</honor>
+			<item_num>0</item_num>
+			<add_prob>.2</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>400</req>
 			<honor>40</honor>
+			<item_num>0</item_num>
+			<add_prob>.3</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>500</req>
 			<honor>55</honor>
+			<item_num>0</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>600</req>
 			<honor>65</honor>
+			<item_num>1</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>700</req>
 			<honor>75</honor>
+			<item_num>1</item_num>
+			<add_prob>.25</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>800</req>
 			<honor>85</honor>
+			<item_num>1</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>900</req>
 			<honor>95</honor>
+			<item_num>2</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1000</req>
 			<honor>110</honor>
-		</honor_reward>
+			<item_num>2</item_num>
+			<add_prob>.5</add_prob>
+		</honor_reward>	
 		<honor_reward>
 			<req>1100</req>
 			<honor>120</honor>
+			<item_num>2</item_num>
+			<add_prob>.75</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1200</req>
 			<honor>130</honor>
+			<item_num>3</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1300</req>
 			<honor>140</honor>
+			<item_num>3</item_num>
+			<add_prob>.25</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1400</req>
 			<honor>150</honor>
+			<item_num>3</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1500</req>
 			<honor>175</honor>
+			<item_num>3</item_num>
+			<add_prob>.9</add_prob>
 		</honor_reward>
 		<reward>
 			<id>1</id>
@@ -2038,6 +2317,7 @@
 		<location_id>19</location_id>
 		<num_players>60</num_players>
 		<mission_req>154</mission_req> <!-- Mission 118 -->
+		<item>53</item>
 		<x>320</x>
 		<y>270</y>
 		<time>48</time>
@@ -2154,78 +2434,116 @@
 		<honor_reward>
 			<req>250</req>
 			<honor>25</honor>
+			<item_num>0</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>300</req>
 			<honor>30</honor>
+			<item_num>0</item_num>
+			<add_prob>.2</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>400</req>
 			<honor>40</honor>
+			<item_num>0</item_num>
+			<add_prob>.3</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>500</req>
 			<honor>55</honor>
+			<item_num>0</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>600</req>
 			<honor>65</honor>
+			<item_num>1</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>700</req>
 			<honor>75</honor>
+			<item_num>1</item_num>
+			<add_prob>.25</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>800</req>
 			<honor>85</honor>
+			<item_num>1</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>900</req>
 			<honor>95</honor>
+			<item_num>2</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1000</req>
 			<honor>110</honor>
-		</honor_reward>
+			<item_num>2</item_num>
+			<add_prob>.5</add_prob>
+		</honor_reward>	
 		<honor_reward>
 			<req>1100</req>
 			<honor>120</honor>
+			<item_num>2</item_num>
+			<add_prob>.75</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1200</req>
 			<honor>130</honor>
+			<item_num>3</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1300</req>
 			<honor>140</honor>
+			<item_num>3</item_num>
+			<add_prob>.25</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1400</req>
 			<honor>150</honor>
+			<item_num>3</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1500</req>
 			<honor>160</honor>
+			<item_num>3</item_num>
+			<add_prob>.75</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1600</req>
 			<honor>170</honor>
+			<item_num>4</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1700</req>
 			<honor>180</honor>
+			<item_num>4</item_num>
+			<add_prob>.25</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1800</req>
 			<honor>190</honor>
+			<item_num>4</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1900</req>
 			<honor>200</honor>
+			<item_num>4</item_num>
+			<add_prob>.75</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>2000</req>
 			<honor>225</honor>
+			<item_num>4</item_num>
+			<add_prob>.9</add_prob>
 		</honor_reward>
 		<reward>
 			<id>1</id>
@@ -2252,6 +2570,7 @@
 		<location_id>19</location_id>
 		<num_players>30</num_players>
 		<mission_req>155</mission_req> <!-- Mission 119 -->
+		<item>53</item>
 		<x>300</x>
 		<y>200</y>
 		<time>12</time>
@@ -2358,38 +2677,56 @@
 		<honor_reward>
 			<req>250</req>
 			<honor>25</honor>
+			<item_num>0</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>300</req>
 			<honor>30</honor>
+			<item_num>0</item_num>
+			<add_prob>.2</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>400</req>
 			<honor>40</honor>
+			<item_num>0</item_num>
+			<add_prob>.3</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>500</req>
 			<honor>55</honor>
+			<item_num>0</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>600</req>
 			<honor>65</honor>
+			<item_num>1</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>700</req>
 			<honor>75</honor>
+			<item_num>1</item_num>
+			<add_prob>.25</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>800</req>
 			<honor>85</honor>
+			<item_num>1</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>900</req>
 			<honor>95</honor>
+			<item_num>2</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1000</req>
 			<honor>110</honor>
+			<item_num>2</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<reward>
 			<id>1</id>
@@ -2416,6 +2753,7 @@
 		<location_id>20</location_id>
 		<num_players>25</num_players>
 		<mission_req>176</mission_req>
+		<item>53</item>
 		<x>370</x>
 		<y>220</y>
 		<time>72</time>
@@ -2534,78 +2872,116 @@
 		<honor_reward>
 			<req>250</req>
 			<honor>25</honor>
+			<item_num>0</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>300</req>
 			<honor>30</honor>
+			<item_num>0</item_num>
+			<add_prob>.2</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>400</req>
 			<honor>40</honor>
+			<item_num>0</item_num>
+			<add_prob>.3</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>500</req>
 			<honor>55</honor>
+			<item_num>0</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>600</req>
 			<honor>65</honor>
+			<item_num>1</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>700</req>
 			<honor>75</honor>
+			<item_num>1</item_num>
+			<add_prob>.25</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>800</req>
 			<honor>85</honor>
+			<item_num>1</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>900</req>
 			<honor>95</honor>
+			<item_num>2</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1000</req>
 			<honor>110</honor>
-		</honor_reward>
+			<item_num>2</item_num>
+			<add_prob>.5</add_prob>
+		</honor_reward>	
 		<honor_reward>
 			<req>1100</req>
 			<honor>120</honor>
+			<item_num>2</item_num>
+			<add_prob>.75</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1200</req>
 			<honor>130</honor>
+			<item_num>3</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1300</req>
 			<honor>140</honor>
+			<item_num>3</item_num>
+			<add_prob>.25</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1400</req>
 			<honor>150</honor>
+			<item_num>3</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1500</req>
 			<honor>160</honor>
+			<item_num>3</item_num>
+			<add_prob>.75</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1600</req>
 			<honor>170</honor>
+			<item_num>4</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1700</req>
 			<honor>180</honor>
+			<item_num>4</item_num>
+			<add_prob>.25</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1800</req>
 			<honor>190</honor>
+			<item_num>4</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1900</req>
 			<honor>200</honor>
+			<item_num>4</item_num>
+			<add_prob>.75</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>2000</req>
 			<honor>225</honor>
+			<item_num>4</item_num>
+			<add_prob>.9</add_prob>
 		</honor_reward>
 		<reward>
 			<id>1</id>
@@ -2632,6 +3008,7 @@
 		<location_id>21</location_id>
 		<num_players>50</num_players>
 		<mission_req>183</mission_req>
+		<item>53</item>
 		<x>220</x>
 		<y>200</y>
 		<time>8</time>
@@ -2759,38 +3136,56 @@
 		<honor_reward>
 			<req>250</req>
 			<honor>25</honor>
+			<item_num>0</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>300</req>
 			<honor>30</honor>
+			<item_num>0</item_num>
+			<add_prob>.2</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>400</req>
 			<honor>40</honor>
+			<item_num>0</item_num>
+			<add_prob>.3</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>500</req>
 			<honor>55</honor>
+			<item_num>0</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>600</req>
 			<honor>65</honor>
+			<item_num>1</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>700</req>
 			<honor>75</honor>
+			<item_num>1</item_num>
+			<add_prob>.25</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>800</req>
 			<honor>85</honor>
+			<item_num>1</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>900</req>
 			<honor>95</honor>
+			<item_num>2</item_num>
+			<add_prob>.1</add_prob>
 		</honor_reward>
 		<honor_reward>
 			<req>1000</req>
 			<honor>110</honor>
+			<item_num>2</item_num>
+			<add_prob>.5</add_prob>
 		</honor_reward>
 		<reward>
 			<id>1</id>

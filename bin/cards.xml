@@ -2633,7 +2633,7 @@
 	<unit>
 		<id>2033</id>
 		<name>Xeno Forcefield</name>
-		<picture>xenoforcefield.jpg</picture>
+		<picture>detentioncube.jpg</picture>
 		<health>3</health>
 		<cost>0</cost>
 		<rarity>2</rarity> <gold_cost>2000</gold_cost>
@@ -2963,6 +2963,38 @@
 		<skill id='strike' x='2' />
 		<skill id='weaken' x='1' all='1' />
 		<type>9</type>
+		<set>5000</set>
+	</unit>
+	
+	<unit>
+		<id>655</id>
+		<name>Thunder Crag</name>
+		<picture>rightomecho.jpg</picture>
+		<attack>3</attack>
+		<health>6</health>
+		<cost>3</cost>
+		<unique>1</unique>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='armored' x='2' />
+		<skill id='burst' x='3' />
+		<skill id='immobilize' />
+		<type>8</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>656</id>
+		<name>Scarab</name>
+		<picture>splinter.jpg</picture>
+		<attack>2</attack>
+		<health>6</health>
+		<cost>2</cost>
+		<unique>1</unique>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='payback' />
+		<skill id='rally' x='1' y='3' all='1' />
+		<skill id='disease' />
+		<type>3</type>
 		<set>5000</set>
 	</unit>
 
@@ -9896,9 +9928,83 @@
 		<set>5000</set>
 	</unit>
 	
+	<!-- Levels 16-20 -->
+	
+	<unit>
+		<id>382</id>
+		<name>Mongrel</name>
+		<picture>batsyBT.jpg</picture>
+		<attack>0</attack>
+		<health>9</health>
+		<cost>3</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='rally' x='1' y='3' />
+		<skill id='burst' x='3' />
+		<skill id='berserk' x='1' />
+		<type>3</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>643</id>
+		<name>Rampage</name>
+		<picture>raiderprowlertank.jpg</picture>
+		<attack>3</attack>
+		<health>10</health>
+		<cost>4</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='protect' x='1' y='9' all='1' />
+		<skill id='enfeeble' x='1' all='1' />
+		<type>9</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>644</id>
+		<name>Widowmaker</name>
+		<picture>snazzyxeno.jpg</picture>
+		<attack>2</attack>
+		<health>5</health>
+		<cost>1</cost>
+		<unique>1</unique>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='enfeeble' x='2' />
+		<type>4</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>645</id>
+		<name>Assailant</name>
+		<picture>imperialslugger.jpg</picture>
+		<attack>2</attack>
+		<health>5</health>
+		<cost>2</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='siege' x='4' played='1' />
+		<skill id='cleanse' />
+		<skill id='fear' />
+		<type>1</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>646</id>
+		<name>Divinator</name>
+		<picture>rightgrounder.jpg</picture>
+		<attack>2</attack>
+		<health>4</health>
+		<cost>1</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='valor' x='2' />
+		<skill id='crush' x='2' />
+		<type>8</type>
+		<set>5000</set>
+	</unit>
+	
 	<!-- Reward Update -->
 	
-	<unit> <!-- Might add another health -->
+	<unit>
 		<id>529</id>
 		<name>Solitary Mech</name>
 		<picture>bob.jpg</picture>
@@ -10843,6 +10949,52 @@
 
 <!-- END Block 17 -->
 
+<!-- Block 18 -->
+
+	<unit>
+		<id>380</id>
+		<name>Guardian Mech</name>
+		<picture>imperialprotecto.jpg</picture>
+		<attack>3</attack>
+		<health>6</health>
+		<cost>3</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='intercept' />
+		<skill id='armored' x='2' />
+		<skill id='protect' x='3' played='1' />
+		<type>1</type>
+		<set>5001</set>
+	</unit>
+	
+	<unit>
+		<id>381</id>
+		<name>Stinger</name>
+		<picture>imperialmobillauncher.jpg</picture>
+		<attack>2</attack>
+		<health>4</health>
+		<cost>1</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='evade' />
+		<skill id='siege' x='2' />
+		<type>1</type>
+		<set>5001</set>
+	</unit>
+	
+	<unit>
+		<id>2068</id>
+		<name>Orbital Shield</name>
+		<picture>orbitalshield.jpg</picture>
+		<health>5</health>
+		<cost>2</cost>
+		<rarity>3</rarity>
+		<skill id='cleanse' all='1' played='1' />
+		<skill id='protect' x='1' all='1' y='1' />
+		<type>1</type>
+		<set>5001</set>
+	</unit>
+
+<!-- END Block 18 -->
+
 <!-- END PROMO Cards -->
 	<!-- Distraction -->
 	
@@ -10864,7 +11016,7 @@
 	</unit>
 	
 	<unit>
-		<id>639</id>
+		<id>657</id>
 		<name>Use This One</name>
 		<picture>alex.jpg</picture>
 		<attack>1</attack>
@@ -10875,7 +11027,7 @@
 	</unit>
 	
 	<unit>
-		<id>1171</id>
+		<id>1172</id>
 		<name>Use This One Commander</name>
 		<picture>alex.jpg</picture>
 		<attack>0</attack>
@@ -10885,7 +11037,7 @@
 	</unit>
 	
 	<unit>
-		<id>2105</id>
+		<id>2106</id>
 		<name>Use This One Structure</name>
 		<picture>alex.jpg</picture>
 		<health>1</health>
@@ -10909,13 +11061,11 @@
 		<id>182</id>
 		<name>TEST</name>
 		<picture>alex.jpg</picture>
-		<attack>1</attack>
-		<health>8</health>
+		<attack>0</attack>
+		<health>3</health>
 		<cost>1</cost>
 		<rarity>1</rarity> <gold_cost>10000</gold_cost>
-		<skill id='pierce' x='1' />
-		<skill id='burst' x='1' />
-		<skill id='valor' x='1' />
+		<skill id='cleanse' all='1' died='1' />
 		<type>8</type>
 	</unit>
 	
@@ -12400,9 +12550,88 @@
 	
 <!-- END Tournament Rewards -->
 
+<!-- Cards to Craft -->
+
+	<unit>
+		<id>518</id>
+		<name>Heracles</name>
+		<picture>raiderdoublegunner.jpg</picture>
+		<attack>2</attack>
+		<health>5</health>
+		<cost>1</cost>
+		<rarity>4</rarity> <gold_cost>10000</gold_cost>
+		<skill id='evade' />
+		<skill id='swipe' />
+		<skill id='burst' x='1' />
+		<type>9</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>136</id>
+		<name>Longshot</name>
+		<picture>spearheader.jpg</picture>
+		<attack>3</attack>
+		<health>8</health>
+		<cost>3</cost>
+		<unique>1</unique>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='refresh' />
+		<skill id='intercept' />
+		<skill id='antiair' x='2' />
+		<type>8</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>548</id>
+		<name>Forsaken</name>
+		<picture>xenohovertankette.jpg</picture>
+		<attack>3</attack>
+		<health>5</health>
+		<cost>2</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='chaos' />
+		<skill id='immobilize' />
+		<type>4</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>641</id>
+		<name>Diablo</name>
+		<picture>infectedrighteous.jpg</picture>
+		<attack>3</attack>
+		<health>6</health>
+		<cost>3</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='counter' x='2' />
+		<skill id='strike' x='2' died='1' />
+		<type>3</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>551</id>
+		<name>Obliterator</name>
+		<picture>gatlingtank.jpg</picture>
+		<attack>3</attack>
+		<health>9</health>
+		<cost>4</cost>
+		<unique>1</unique>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='weaken' x='2' all='1' played='1' />
+		<skill id='evade' />
+		<skill id='swipe' />
+		<type>1</type>
+		<set>5000</set>
+	</unit>
+
+<!-- END Cards to Craft -->
+
 <!-- Halloween Promotion 2011 -->
 
-<unit>
+	<unit>
 		<id>494</id>
 		<name>Guerilla Leader</name>
 		<picture>phalanxbreaker.jpg</picture>

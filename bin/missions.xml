@@ -4601,6 +4601,7 @@
 		<xp>26</xp>
 		<energy>11</energy>
 		<money>500</money>
+		<item id='4' p='.01' />
 		<rep faction='10' amount='7' />
 		<commander>1114</commander>
 		<desc>The Raiders are highly coordinated under Cassandra.</desc>
@@ -4642,6 +4643,7 @@
 		<xp>28</xp>
 		<energy>12</energy>
 		<money>550</money>
+		<item id='4' p='.01' />
 		<rep faction='10' amount='8' />
 		<commander>1107</commander>
 		<desc>The Blight in Acheron is powering the Bloodthirsty and they are working together.</desc>
@@ -4681,6 +4683,7 @@
 		<xp>29</xp>
 		<energy>12</energy>
 		<money>575</money>
+		<item id='4' p='.01' />
 		<rep faction='10' amount='10' />
 		<commander>1107</commander>
 		<desc>The Bloodthirsty are hitting hard to try and overcome the Righteous.</desc>
@@ -4720,6 +4723,7 @@
 		<xp>31</xp>
 		<energy>13</energy>
 		<money>625</money>
+		<item id='4' p='.01' />
 		<rep faction='10' amount='12' />
 		<commander>1111</commander>
 		<desc>It will be hard to break through the Righteous defenses, they protect each other.</desc>
@@ -4759,6 +4763,7 @@
 		<xp>34</xp>
 		<energy>14</energy>
 		<money>675</money>
+		<item id='4' p='.01' />
 		<rep faction='10' amount='13' />
 		<commander>1111</commander>
 		<desc>Alaric acknowledges your power and decided to focus on you as a threat.</desc>
@@ -4794,6 +4799,7 @@
 		<xp>34</xp>
 		<energy>14</energy>
 		<money>700</money>
+		<item id='4' p='.01' />
 		<rep faction='10' amount='15' />
 		<commander>1109</commander>
 		<desc>They are seething with anger at your presence and will strike aggressively.</desc>
@@ -4832,6 +4838,7 @@
 		<xp>36</xp>
 		<energy>15</energy>
 		<money>750</money>
+		<item id='4' p='.012' />
 		<rep faction='11' amount='5' />
 		<commander>1111</commander>
 		<desc>Their proximity to each other and to the Pantheon empowers the Righteous.</desc>
@@ -4871,6 +4878,7 @@
 		<xp>39</xp>
 		<energy>16</energy>
 		<money>800</money>
+		<item id='4' p='.015' />
 		<rep faction='11' amount='7' />
 		<commander>1111</commander>
 		<desc>They will lay down their lives to protect the Pantheon.</desc>
@@ -4915,6 +4923,7 @@
 		<xp>32</xp>
 		<energy>13</energy>
 		<money>625</money>
+		<item id='4' p='.01' />
 		<rep faction='11' amount='7' />
 		<commander>1110</commander>
 		<desc>They may just be scouts but they are ready to fight</desc>
@@ -4952,6 +4961,7 @@
 		<xp>35</xp>
 		<energy>14</energy>
 		<money>700</money>
+		<item id='4' p='.01' />
 		<rep faction='11' amount='8' />
 		<commander>1108</commander>
 		<desc>Attalia says Opak can be highly aggressive, but he is a smart Commander.</desc>
@@ -4987,6 +4997,7 @@
 		<xp>37</xp>
 		<energy>15</energy>
 		<money>750</money>
+		<item id='4' p='.01' />
 		<rep faction='11' amount='9' />
 		<commander>1106</commander>
 		<desc>Cassandra has brought a much larger force to vanquish you with.</desc>
@@ -5024,6 +5035,7 @@
 		<xp>40</xp>
 		<energy>16</energy>
 		<money>825</money>
+		<item id='4' p='.01' />
 		<rep faction='11' amount='9' />
 		<commander>1108</commander>
 		<desc>Opak has brought in aerial support to stop you.</desc>
@@ -5061,6 +5073,7 @@
 		<xp>43</xp>
 		<energy>17</energy>
 		<money>900</money>
+		<item id='4' p='.017' />
 		<rep faction='11' amount='10' />
 		<commander>1108</commander>
 		<desc>The power of the Righteous troops indicates how much more powerful this Pantheon is than the last.</desc>
@@ -5100,6 +5113,7 @@
 		<xp>46</xp>
 		<energy>18</energy>
 		<money>950</money>
+		<item id='4' p='.02' />
 		<rep faction='11' amount='12' />
 		<commander>1108</commander>
 		<desc>Destroy the Pantheon before its power overwhelms you.</desc>
@@ -5139,6 +5153,7 @@
 		<xp>35</xp>
 		<energy>14</energy> <!-- 14 -->
 		<money>725</money>
+		<item id='4' p='.01' />
 		<rep faction='11' amount='14' />
 		<commander>1106</commander>
 		<desc>The Raiders won't stop until they have destroyed you.</desc>
@@ -5178,6 +5193,7 @@
 		<xp>38</xp>
 		<energy>15</energy>
 		<money>800</money>
+		<item id='4' p='.01' />
 		<rep faction='11' amount='15' />
 		<commander>1112</commander>
 		<desc>The Righteous are much more ground in. Protection of the Oracle is a top priority for them.</desc>
@@ -5215,6 +5231,7 @@
 		<xp>43</xp>
 		<energy>17</energy>
 		<money>925</money>
+		<item id='4' p='.01' />
 		<rep faction='12' amount='4' />
 		<commander>1112</commander>
 		<desc>The Oracle has trained her units to defend each other.</desc>
@@ -5250,6 +5267,7 @@
 		<xp>47</xp>
 		<energy>18</energy>
 		<money>1000</money>
+		<item id='4' p='.01' />
 		<rep faction='12' amount='5' />
 		<commander>1112</commander>
 		<desc>The Righteous are finally prepping for the Xeno invasion.</desc>
@@ -5288,6 +5306,7 @@
 		<xp>50</xp>
 		<energy>19</energy>
 		<money>1050</money>
+		<item id='4' p='.022' />
 		<rep faction='12' amount='6' />
 		<commander>1110</commander>
 		<desc>The Xeno are trying to overrun the entire island.</desc>
@@ -5325,6 +5344,7 @@
 		<xp>54</xp>
 		<energy>20</energy>
 		<money>1125</money>
+		<item id='4' p='.025' />
 		<rep faction='12' amount='7' />
 		<commander>1112</commander>
 		<desc>The Oracle took advantage of the distracting Xenos to continue powering the Pantheon.</desc>
@@ -5369,6 +5389,7 @@
 		<xp>40</xp>
 		<energy>15</energy>
 		<money>825</money>
+		<item id='4' p='.01' />
 		<rep faction='12' amount='9' />
 		<commander>1113</commander>
 		<desc>The Righteous have been anticipating us for awhile now.</desc>
@@ -5404,6 +5425,7 @@
 		<xp>46</xp>
 		<energy>17</energy>
 		<money>950</money>
+		<item id='4' p='.01' />
 		<rep faction='12' amount='10' />
 		<commander>1109</commander>
 		<desc>The Imperials have learned their tactics from the Righteous.</desc>
@@ -5444,6 +5466,7 @@
 		<xp>49</xp>
 		<energy>18</energy>
 		<money>1025</money>
+		<item id='4' p='.01' />
 		<rep faction='12' amount='11' />
 		<commander>1107</commander>
 		<desc>The Bloodthirsty are starting to attack Righteous to preserve the Blight.</desc>
@@ -5484,6 +5507,7 @@
 		<xp>53</xp>
 		<energy>19</energy>
 		<money>1100</money>
+		<item id='4' p='.025' />
 		<rep faction='12' amount='13' />
 		<commander>1113</commander>
 		<desc>The Empress holds the highest command over the Righteous. She will be difficult to defeat.</desc>
@@ -5524,6 +5548,7 @@
 		<xp>59</xp>
 		<energy>21</energy>
 		<money>1225</money>
+		<item id='4' p='.027' />
 		<rep faction='12' amount='14' />
 		<commander>1113</commander>
 		<desc>The Pantheon is on the brink of reaching full power!</desc>
@@ -5564,6 +5589,7 @@
 		<xp>62</xp> <!-- 2.82 -->
 		<energy>22</energy>
 		<money>1300</money> <!-- 14.8 -->
+		<item id='4' p='.03' />
 		<rep faction='12' amount='15' />
 		<commander>1113</commander>
 		<desc>The Pantheon is at full power! If you don't destroy it soon a Sentinel will be summoned and all will be lost!</desc>
@@ -6200,6 +6226,7 @@
 		<xp>26</xp> <!-- 2.4 -->
 		<energy>11</energy>
 		<money>525</money> <!-- 12 -->
+		<item id='4' p='.01' />
 		<rep faction='13' amount='5' />
 		<commander>1109</commander>
 		<desc>They have learned to counter some of our strategies.</desc>
@@ -6241,6 +6268,7 @@
 		<xp>29</xp>
 		<energy>12</energy>
 		<money>600</money>
+		<item id='4' p='.01' />
 		<rep faction='13' amount='6' />
 		<commander>1125</commander>
 		<desc>The Imperials don't look like they are here to welcome you.</desc>
@@ -6277,6 +6305,7 @@
 		<xp>32</xp>
 		<energy>13</energy>
 		<money>650</money>
+		<item id='4' p='.01' />
 		<rep faction='13' amount='8' /> 
 		<commander>1133</commander>
 		<desc>The Raiders are trying to cause as much destruction and panic as quickly as possible before they move on.</desc>
@@ -6313,6 +6342,7 @@
 		<xp>38</xp>
 		<energy>15</energy>
 		<money>775</money>
+		<item id='4' p='.032' />
 		<rep faction='13' amount='9' /> 
 		<commander>1127</commander>
 		<desc>The Disease caused by the Blight is being spread by the Bloodthirsty.</desc>
@@ -6349,6 +6379,7 @@
 		<xp>40</xp>
 		<energy>16</energy>
 		<money>850</money>
+		<item id='4' p='.035' />
 		<rep faction='13' amount='11' /> 
 		<commander>1125</commander>
 		<desc>Halcyon has outfitted the Imperials to defend against all forms of attack.</desc>
@@ -6397,6 +6428,7 @@
 		<xp>32</xp>
 		<energy>13</energy>
 		<money>675</money>
+		<item id='4' p='.01' />
 		<rep faction='13' amount='12' />
 		<commander>1131</commander>
 		<desc>The Righteous have brought powerful forces and are prepared to stave off the Blight.</desc>
@@ -6433,6 +6465,7 @@
 		<xp>35</xp>
 		<energy>14</energy>
 		<money>750</money>
+		<item id='4' p='.01' />
 		<rep faction='13' amount='13' /> 
 		<commander>1127</commander>
 		<desc>The Blight is giving the Bloodthirsty new tactics to fight with.</desc>
@@ -6472,6 +6505,7 @@
 		<xp>36</xp>
 		<energy>14</energy>
 		<money>775</money>
+		<item id='4' p='.01' />
 		<rep faction='13' amount='15' /> 
 		<commander>1127</commander>
 		<desc>They will grind you down and let the Disease destroy you.</desc>
@@ -6509,6 +6543,7 @@
 		<xp>39</xp>
 		<energy>15</energy>
 		<money>825</money>
+		<item id='4' p='.01' />
 		<rep faction='14' amount='5' /> 
 		<commander>1129</commander>
 		<desc>The Xeno are spreading Chaos, don't let your units get caught in the madness.</desc>
@@ -6546,6 +6581,7 @@
 		<xp>42</xp>
 		<energy>16</energy>
 		<money>900</money>
+		<item id='4' p='.01' />
 		<rep faction='14' amount='6' />
 		<commander>1129</commander>
 		<desc>Their forces are trying to sneak past ours while we are distracted by the Chaos.</desc>
@@ -6581,6 +6617,7 @@
 		<xp>45</xp>
 		<energy>17</energy>
 		<money>975</money>
+		<item id='4' p='.037' />
 		<rep faction='14' amount='7' /> 
 		<commander>1126</commander>
 		<desc>These are some of the most well coordinated Imperials we have ever faced, and they are able to heal themselves.</desc>
@@ -6619,6 +6656,7 @@
 		<xp>48</xp>
 		<energy>18</energy>
 		<money>1050</money>
+		<item id='4' p='.04' />
 		<rep faction='14' amount='8' /> 
 		<commander>1131</commander>
 		<desc>They are going to hit hard and be able to protect their heavy hitters.</desc>
@@ -6665,6 +6703,7 @@
 		<xp>34</xp>
 		<energy>13</energy>
 		<money>725</money>
+		<item id='4' p='.01' />
 		<rep faction='14' amount='10' /> 
 		<commander>1133</commander>
 		<desc>Don't be fooled if the Raiders appear unorganized, they have brought powerful units to this fight.</desc>
@@ -6701,6 +6740,7 @@
 		<xp>37</xp>
 		<energy>14</energy>
 		<money>800</money>
+		<item id='4' p='.01' />
 		<rep faction='14' amount='12' />
 		<commander>1134</commander>
 		<desc>Your threat has caused the Raiders to band together against you.</desc>
@@ -6736,6 +6776,7 @@
 		<xp>40</xp>
 		<energy>15</energy>
 		<money>875</money>
+		<item id='4' p='.01' />
 		<rep faction='14' amount='13' /> 
 		<commander>1130</commander>
 		<desc>Without Imperial interference, the Xeno's have become more dug-in.</desc>
@@ -6774,6 +6815,7 @@
 		<xp>46</xp>
 		<energy>17</energy>
 		<money>1025</money>
+		<item id='4' p='.01' />
 		<rep faction='14' amount='15' /> 
 		<commander>1126</commander>
 		<desc>The Imperials appear to be fleeing rather than helping anyone.</desc>
@@ -6809,6 +6851,7 @@
 		<xp>52</xp>
 		<energy>19</energy>
 		<money>1150</money>
+		<item id='4' p='.042' />
 		<rep faction='15' amount='5' /> 
 		<commander>1132</commander>
 		<desc>Although they were not looking for a fight. The Righteous are ready to battle.</desc>
@@ -6848,6 +6891,7 @@
 		<xp>56</xp>
 		<energy>20</energy>
 		<money>1250</money>
+		<item id='4' p='.045' />
 		<rep faction='15' amount='6' /> 
 		<commander>1128</commander>
 		<desc>The Red Sands have practically become home to the Bloodthirsty.</desc>
@@ -6887,6 +6931,7 @@
 		<xp>39</xp>
 		<energy>14</energy>
 		<money>775</money>
+		<item id='4' p='.01' />
 		<rep faction='15' amount='7' /> 
 		<commander>1128</commander>
 		<desc>You are surrounded by some of the largest Bloodthirsty you have ever faced.</desc>
@@ -6923,6 +6968,7 @@
 		<xp>42</xp>
 		<energy>15</energy>
 		<money>850</money>
+		<item id='4' p='.01' />
 		<rep faction='15' amount='9' /> 
 		<commander>1128</commander>
 		<desc>You must break through the Bloodthirsty to continue forward.</desc>
@@ -6958,6 +7004,7 @@
 		<xp>45</xp>
 		<energy>16</energy>
 		<money>950</money>
+		<item id='4' p='.01' />
 		<rep faction='15' amount='10' /> 
 		<commander>1130</commander>
 		<desc>This is one of the largest invasions by the Xeno in the Wasteland.</desc>
@@ -6993,6 +7040,7 @@
 		<xp>51</xp>
 		<energy>18</energy>
 		<money>1075</money>
+		<item id='4' p='.01' />
 		<rep faction='15' amount='12' />
 		<commander>1134</commander>
 		<desc>Either the blast from the Nexus will remove these Raiders from the Wasteland, or you will have to.</desc>
@@ -7032,6 +7080,7 @@
 		<xp>58</xp>
 		<energy>20</energy>
 		<money>1225</money>
+		<item id='4' p='.045' />
 		<rep faction='15' amount='13' /> 
 		<commander>1128</commander>
 		<desc>Our proximity to the Nexus is raising the Bloodthirsty's aggressiveness.</desc>
@@ -7068,6 +7117,7 @@
 		<xp>61</xp>
 		<energy>21</energy>
 		<money>1325</money>
+		<item id='4' p='.047' />
 		<rep faction='15' amount='14' />
 		<commander>1126</commander>
 		<desc>The Imperials will use a range of tactics to prevent you from reaching the Nexus.</desc>
@@ -7105,6 +7155,7 @@
 		<xp>65</xp> <!-- 2.95 -->
 		<energy>22</energy>
 		<money>1400</money> <!-- 16.0 -->
+		<item id='4' p='.05' />
 		<rep faction='15' amount='15' />
 		<commander>1126</commander>
 		<desc>You will survive the blast underground but you still have to worry about the Imperials.</desc>
@@ -7883,6 +7934,7 @@
 		<xp>31</xp> <!-- 2.6 -->
 		<energy>12</energy>
 		<money>675</money> <!-- 14.0 -->
+		<item id='4' p='.01' />
 		<rep faction='16' amount='5' />
 		<commander>1158</commander>
 		<desc>It has been awhile since you have faced the Bloodthirsty and they are more ferocious then ever.</desc>
@@ -7926,6 +7978,7 @@
 		<xp>34</xp>
 		<energy>13</energy>
 		<money>750</money>
+		<item id='4' p='.01' />
 		<rep faction='16' amount='6' />
 		<commander>1158</commander>
 		<desc>You are being swarmed by the Bloodthirsty as they claim more of the island for the Blight.</desc>
@@ -7963,6 +8016,7 @@
 		<xp>37</xp>
 		<energy>14</energy>
 		<money>800</money>
+		<item id='4' p='.01' />
 		<rep faction='16' amount='6' />
 		<commander>1158</commander>
 		<desc>The stronger you are, The stronger the Bloodthirsty become.</desc>
@@ -8000,6 +8054,7 @@
 		<xp>41</xp>
 		<energy>15</energy>
 		<money>875</money>
+		<item id='4' p='.01' />
 		<rep faction='16' amount='7' />
 		<commander>1158</commander>
 		<desc>This island now belongs to the Bloodthirsty. You must fight to escape.</desc>
@@ -8038,6 +8093,7 @@
 		<xp>44</xp>
 		<energy>16</energy>
 		<money>950</money>
+		<item id='4' p='.01' />
 		<rep faction='16' amount='8' />
 		<commander>1159</commander>
 		<desc>The distraction should help, but the Xeno are still a challenging opponent.</desc>
@@ -8074,6 +8130,7 @@
 		<xp>48</xp>
 		<energy>17</energy>
 		<money>1025</money>
+		<item id='4' p='.052' />
 		<rep faction='16' amount='9' />
 		<commander>1159</commander>
 		<desc>The Xeno will attempt to divert our tactics.</desc>
@@ -8110,6 +8167,7 @@
 		<xp>51</xp> <!-- 2.85 -->
 		<energy>18</energy>
 		<money>1125</money> <!-- 15.5 -->
+		<item id='4' p='.055' />
 		<rep faction='16' amount='9' />
 		<commander>1160</commander>
 		<desc>You are not leaving without dispatching the Raiders.</desc>
@@ -8152,6 +8210,7 @@
 		<xp>34</xp> <!-- 2.6 -->
 		<energy>13</energy>
 		<money>725</money> <!-- 14.0 -->
+		<item id='4' p='.01' />
 		<rep faction='17' amount='5' />
 		<commander>1159</commander>
 		<desc>The Xeno have inhabitated the islands long enough to be stronger than scouts.</desc>
@@ -8188,6 +8247,7 @@
 		<xp>37</xp>
 		<energy>14</energy>
 		<money>800</money>
+		<item id='4' p='.01' />
 		<rep faction='17' amount='6' />
 		<commander>1158</commander>
 		<desc>Your power is no longer unmatched by the Bloodthirsty.</desc>
@@ -8224,6 +8284,7 @@
 		<xp>41</xp> <!-- 2.71 -->
 		<energy>15</energy>
 		<money>875</money> <!-- 14.7 -->
+		<item id='4' p='.01' />
 		<rep faction='17' amount='7' />
 		<commander>1158</commander>
 		<desc>Now that they have your scent, the Bloodthirsty will not rest until you are destroyed.</desc>
@@ -8259,6 +8320,7 @@
 		<xp>41</xp> <!-- 2.76 -->
 		<energy>16</energy>
 		<money>875</money> <!-- 15.0 -->
+		<item id='4' p='.01' />
 		<rep faction='17' amount='7' />
 		<commander>1160</commander>
 		<desc>The Raiders have regrouped since the Blight takeover and are stronger than ever.</desc>
@@ -8294,6 +8356,7 @@
 		<xp>48</xp> <!-- 2.8 -->
 		<energy>17</energy>
 		<money>1050</money> <!-- 15.3 -->
+		<item id='4' p='.052' />
 		<rep faction='17' amount='7' />
 		<commander>1160</commander>
 		<desc>Even with the spread of the Blight, the Raiders want to claim the territory as their own.</desc>
@@ -8331,6 +8394,7 @@
 		<xp>51</xp> <!-- 2.85 -->
 		<energy>18</energy>
 		<money>1125</money> <!-- 15.5 -->
+		<item id='4' p='.055' />
 		<rep faction='17' amount='8' />
 		<commander>1159</commander>
 		<desc>The Xeno realize you were weakened by the Raiders and are taking advantage to attack you.</desc>
@@ -8376,6 +8440,7 @@
 		<xp>50</xp> <!-- 2.8 -->
 		<energy>18</energy>
 		<money>1075</money> <!-- 15.0 -->
+		<item id='4' p='.01' />
 		<rep faction='17' amount='10' />
 		<commander>1163</commander>
 		<desc>The Bloodthirsty do not take kindly to your trespassing.</desc>
@@ -8412,6 +8477,7 @@
 		<xp>54</xp> <!-- 2.86 -->
 		<energy>19</energy>
 		<money>1175</money> <!-- 15.4 -->
+		<item id='4' p='.01' />
 		<rep faction='17' amount='11' />
 		<commander>1162</commander>
 		<desc>It is just the scout team, but these Raiders are still a serious threat.</desc>
@@ -8447,6 +8513,7 @@
 		<xp>58</xp> <!-- 2.92 -->
 		<energy>20</energy>
 		<money>1250</money> <!-- 15.8 -->
+		<item id='4' p='.01' />
 		<rep faction='17' amount='12' />
 		<commander>1162</commander>
 		<desc>The Raiders will attempt to destroy you regardless of your intention.</desc>
@@ -8485,6 +8552,7 @@
 		<xp>63</xp> <!-- 2.98 -->
 		<energy>21</energy>
 		<money>1350</money> <!-- 16.2 -->
+		<item id='4' p='.055' />
 		<rep faction='17' amount='13' />
 		<commander>1164</commander>
 		<desc>You may have an advantage, but these Imperials are not to be taken lightly.</desc>
@@ -8523,6 +8591,7 @@
 		<xp>67</xp> <!-- 3.04 -->
 		<energy>22</energy>
 		<money>1450</money> <!-- 16.6 -->
+		<item id='4' p='.057' />
 		<rep faction='17' amount='14' />
 		<commander>1163</commander>
 		<desc>The Nexus seems to be calling to the Bloodthirsty, they will swarm you endlessly.</desc>
@@ -8560,6 +8629,7 @@
 		<xp>71</xp> <!-- 3.1 -->
 		<energy>23</energy>
 		<money>1550</money> <!-- 17.0 -->
+		<item id='4' p='.06' />
 		<rep faction='17' amount='15' />
 		<commander>1163</commander>
 		<desc>You must hold off the Bloodthirsty longer, or else all will be lost.</desc>
@@ -8604,6 +8674,7 @@
 		<xp>48</xp> <!-- 2.8 -->
 		<energy>17</energy>
 		<money>1025</money> <!-- 15.0 -->
+		<item id='4' p='.01' />
 		<rep faction='16' amount='10' />
 		<commander>1161</commander>
 		<desc>The Xeno guards are not well equipped for invaders but still need to be dealt with.</desc>
@@ -8646,6 +8717,7 @@
 		<xp>51</xp> <!-- 2.86 -->
 		<energy>18</energy>
 		<money>1100</money> <!-- 15.4 -->
+		<item id='4' p='.01' />
 		<rep faction='16' amount='11' />
 		<commander>1161</commander>
 		<desc>Xeno ships are docking to assist in fighting you off.</desc>
@@ -8684,6 +8756,7 @@
 		<xp>55</xp> <!-- 2.92 -->
 		<energy>19</energy>
 		<money>1100</money> <!-- 15.8 -->
+		<item id='4' p='.01' />
 		<rep faction='16' amount='12' />
 		<commander>1161</commander>
 		<desc>Xeno defenses get tougher as you advance further into the station.</desc>
@@ -8720,6 +8793,7 @@
 		<xp>55</xp> <!-- 2.98 -->
 		<energy>19</energy>
 		<money>1225</money> <!-- 16.2 -->
+		<item id='4' p='.055' />
 		<rep faction='16' amount='13' />
 		<commander>1162</commander>
 		<desc>The Raiders must have put a lot of focus into destroying you if they followed you into orbit.</desc>
@@ -8758,6 +8832,7 @@
 		<xp>61</xp> <!-- 3.04 -->
 		<energy>20</energy>
 		<money>1325</money> <!-- 16.6 -->
+		<item id='4' p='.057' />
 		<rep faction='16' amount='14' />
 		<commander>1162</commander>
 		<desc>The Raiders will not let you give them the slip as easily this time.</desc>
@@ -8796,6 +8871,7 @@
 		<xp>68</xp> <!-- 3.1 -->
 		<energy>22</energy>
 		<money>1500</money> <!-- 17.0 -->
+		<item id='4' p='.06' />
 		<rep faction='16' amount='15' />
 		<commander>1161</commander>
 		<desc>You are surrounded by Xeno but you cannot let them stop you now!</desc>
