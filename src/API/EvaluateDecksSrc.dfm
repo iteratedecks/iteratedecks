@@ -1981,12 +1981,12 @@ object EvaluateDecksForm: TEvaluateDecksForm
           BevelOuter = bvSpace
           TabOrder = 1
           object ceFilter: TcxTextEdit
-            Left = 191
+            Left = 205
             Top = 35
             Properties.OnChange = UpdateFilterEvent
             TabOrder = 0
             OnKeyDown = ceFilterKeyDown
-            Width = 146
+            Width = 131
           end
           object ccbSets: TcxCheckComboBox
             Left = 43
@@ -2186,12 +2186,27 @@ object EvaluateDecksForm: TEvaluateDecksForm
             Width = 39
           end
           object cbInstant: TcxCheckBox
-            Left = 131
+            Left = 146
             Top = 35
+            Hint = 'Instant filter update'
             Caption = 'Instant'
+            ParentShowHint = False
             Properties.Alignment = taRightJustify
+            ShowHint = True
             TabOrder = 11
             Width = 59
+          end
+          object bRefreshFilters: TcxButton
+            Left = 119
+            Top = 35
+            Width = 21
+            Height = 21
+            Hint = 'Refresh'
+            Caption = '[R]'
+            ParentShowHint = False
+            ShowHint = True
+            TabOrder = 12
+            OnClick = bRefreshFiltersClick
           end
         end
       end

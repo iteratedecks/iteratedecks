@@ -510,6 +510,7 @@ type
     cbUseAchievement: TcxCheckBox;
     cbDoublePass: TcxCheckBox;
     seSecondPassMultiplier: TcxSpinEdit;
+    bRefreshFilters: TcxButton;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -690,6 +691,7 @@ type
     procedure cxViewEditValueChanged(Sender: TcxCustomGridTableView;
       AItem: TcxCustomGridTableItem);
     procedure cbAchievementPropertiesEditValueChanged(Sender: TObject);
+    procedure bRefreshFiltersClick(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -1552,6 +1554,11 @@ end;
 procedure TEvaluateDecksForm.bRefreshDefenceClick(Sender: TObject);
 begin
   LoadDefenceLists;
+end;
+
+procedure TEvaluateDecksForm.bRefreshFiltersClick(Sender: TObject);
+begin
+  UpdateFilter;
 end;
 
 procedure TEvaluateDecksForm.cbDisplayNameClick(Sender: TObject);
@@ -4341,7 +4348,8 @@ begin
     bToggle.Tag := 0;
   end;
   if ccbSkill.Value <> 0 then
-    UpdateFilter;
+    if cbInstant.Checked then
+      UpdateFilter;
 end;
 
 procedure TEvaluateDecksForm.bTopCopy64Click(Sender: TObject);
@@ -4692,11 +4700,15 @@ begin
     begin
      if (Length((Sender as TcxTextEdit).Text) > 2) OR cbInstant.Checked
        OR (Length((Sender as TcxTextEdit).Text) = 0) then
-       UpdateFilter;
+        if cbInstant.Checked then
+          UpdateFilter;
     end
     else
-      UpdateFilter;
-    bFilterChanged := false;
+      if cbInstant.Checked then
+      begin
+        UpdateFilter;
+        bFilterChanged := false;
+      end;
   end;
 end;
 
