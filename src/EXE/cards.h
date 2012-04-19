@@ -954,6 +954,8 @@ public:
 		AddSkill(SPECIAL_AUGMENT,"Augment");
 		AddSkill(SPECIAL_MIST,"Mist");
 		AddSkill(SPECIAL_BLIZZARD,"Blizzard");
+
+		AddSkill(SPECIAL_ATTACK,"Attack");
 	}
 	void AddSkill(UCHAR Id, const char *Name)
 	{
