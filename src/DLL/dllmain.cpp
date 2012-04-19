@@ -11,6 +11,7 @@
 CardDB DB;
 ActiveDeck gAtk;
 ActiveDeck gDef;
+MUUINT MyCards;
 /*
 struct RESULTS
 {
@@ -188,6 +189,18 @@ extern "C"
 	IDAPI bool LoadRaidXML(const char *FileName)
 	{
 		return DB.LoadRaidXML(FileName);
+	}
+	IDAPI bool LoadOwnedCards(const char *FileName)
+	{
+		MyCards.clear();
+		return DB.LoadOwnedCards(FileName,MyCards);
+	}
+	IDAPI UINT CheckOwnedCard(const UINT Id)
+	{
+		MUUINT::iterator mi = MyCards.find(Id);
+		if (mi == MyCards.end())
+			return 0;
+		return mi->second;
 	}
 	IDAPI DWORD LoadPointers(Card **Ptr, DWORD MaxCount)
 	{
