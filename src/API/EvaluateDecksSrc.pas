@@ -3232,6 +3232,10 @@ begin
   finally
     ms.Free;
   end;
+
+  if slUpdate.Count > 0 then  
+    ShowMessage('Please restart the application for changes to take effect.')
+  //tLoad.Enabled := true;  // attempt to reload
 end;
 
 procedure TEvaluateDecksForm.bFastThreadedClick(Sender: TObject);
