@@ -699,13 +699,14 @@ public:
 							MSKILLS::iterator si = SIndex.find(di->attribute("skill_id").value());
 							if (si == SIndex.end())
 							{
-								if (strcmp(di->attribute("skill_id").value(),"0"))
+								if (!strcmp(di->attribute("skill_id").value(),"0"))
 								{
 									if (bConsoleOutput)
 										printf("Skill \"%s\" not found in index!\n",di->attribute("skill_id").value());
-									r.SkillID = 0;
-									continue;
+									r.SkillID = SPECIAL_ATTACK;
 								}
+								else
+									continue;
 							}
 							else
 								r.SkillID = si->second;
