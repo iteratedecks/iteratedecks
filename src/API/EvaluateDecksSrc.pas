@@ -3800,7 +3800,8 @@ begin
             sl1[z] := s;
           //sl1.CommaText := StringReplace(sl1.CommaText,cbWildCardName.Text,s,[]);
           s := StringReplace(FormatDeck(sl1.CommaText), '"', '', [rfReplaceAll]);
-          atk := s; // ?
+          //atk := s; // ?
+          atk := StringReplace(sl1.CommaText, '"', '', [rfReplaceAll]);
           cxView.DataController.Values[rec, vcAtk.Index] := StringReplace(s, ',', ', ', [rfReplaceAll]);
         end
         else
