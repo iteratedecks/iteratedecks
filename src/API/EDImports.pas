@@ -14,7 +14,7 @@ const
   FILENAME_MAX_LENGTH = 50;
   REQ_MAX_SIZE = 5;
   CARD_ABILITIES_MAX = 70;
-  cMaxBuffer = 65535;
+  cMaxBuffer = $FFFFFF;//65535;
   cDefaultMaxTurn = 50;
 
 type
