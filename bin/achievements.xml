@@ -8,7 +8,6 @@
 		<number>5</number>
 		<desc>Complete 5 Missions</desc>
 		<gold_reward>50</gold_reward>
-		<chip_reward>1</chip_reward>
 		<order>1</order>
 	</achievement>
 	<achievement>
@@ -18,7 +17,6 @@
 		<number>10</number>
 		<desc>Complete 10 Missions</desc>
 		<gold_reward>100</gold_reward>
-		<chip_reward>2</chip_reward>
 		<achievement_req>1</achievement_req>
 	</achievement>
 	<achievement>
@@ -28,7 +26,6 @@
 		<number>20</number>
 		<desc>Complete 20 Missions</desc>
 		<gold_reward>200</gold_reward>
-		<chip_reward>3</chip_reward>
 		<achievement_req>2</achievement_req>
 	</achievement>
 	<achievement>
@@ -38,7 +35,6 @@
 		<number>50</number>
 		<desc>Complete 50 Missions</desc>
 		<gold_reward>1000</gold_reward>
-		<chip_reward>3</chip_reward>
 		<achievement_req>3</achievement_req>
 	</achievement>
 	<achievement>
@@ -48,7 +44,6 @@
 		<number>100</number>
 		<desc>Complete 100 Missions</desc>
 		<gold_reward>5000</gold_reward>
-		<chip_reward>3</chip_reward>
 		<achievement_req>4</achievement_req>
 	</achievement>
 	<achievement>
@@ -58,7 +53,6 @@
 		<number>500</number>
 		<desc>Complete 500 Missions</desc>
 		<card_reward>40</card_reward>
-		<chip_reward>3</chip_reward>
 		<achievement_req>5</achievement_req>
 	</achievement>
 	<achievement>
@@ -68,66 +62,71 @@
 		<number>1000</number>
 		<desc>Complete 1000 Missions</desc>
 		<card_reward>37</card_reward>
-		<chip_reward>3</chip_reward>
 		<achievement_req>6</achievement_req>
 	</achievement>
 	<achievement>
 		<id>20</id>
-		<name>Victor</name>
-		<type enemy_id='*' winner='1'/>
-		<number>25</number>
-		<desc>Win 25 battles against other players</desc>
-		<chip_reward>3</chip_reward>
+		<name>Fighter</name>
+		<type enemy_id='*' />
+		<req live_battle_id='true' />
+		<live_battle>1</live_battle>
+		<number>5</number>
+		<desc>Participate in 5 Live Battles (Arena or Tournaments)</desc>
 		<gold_reward>500</gold_reward>
 		<order>20</order>
 	</achievement>
 	<achievement>
 		<id>21</id>
-		<name>Veteran</name>
-		<type enemy_id='*' winner='1'/>
-		<number>50</number>
-		<desc>Win 50 battles against other players</desc>
-		<chip_reward>3</chip_reward>
+		<name>Battle Veteran</name>
+		<type enemy_id='*' />
+		<req live_battle_id='true' />
+		<live_battle>1</live_battle>
+		<number>25</number>
+		<desc>Participate in 25 Live Battles (Arena or Tournaments)</desc>
 		<gold_reward>1000</gold_reward>
 		<achievement_req>20</achievement_req>
 	</achievement>
 	<achievement>
 		<id>22</id>
 		<name>Champion</name>
-		<type enemy_id='*' winner='1'/>
-		<number>100</number>
-		<desc>Win 100 battles against other players</desc>
-		<chip_reward>3</chip_reward>
+		<type enemy_id='*' />
+		<req live_battle_id='true' />
+		<live_battle>1</live_battle>
+		<number>50</number>
+		<desc>Participate in 50 Live Battles (Arena or Tournaments)</desc>
 		<gold_reward>3000</gold_reward>
 		<achievement_req>21</achievement_req>
 	</achievement>
 	<achievement>
 		<id>23</id>
 		<name>Destroyer</name>
-		<type enemy_id='*' winner='1'/>
-		<number>500</number>
-		<desc>Win 500 battles against other players</desc>
-		<chip_reward>3</chip_reward>
+		<type enemy_id='*' />
+		<req live_battle_id='true' />
+		<live_battle>1</live_battle>
+		<number>100</number>
+		<desc>Participate in 100 Live Battles (Arena or Tournaments)</desc>
 		<gold_reward>5000</gold_reward>
 		<achievement_req>22</achievement_req>
 	</achievement>
 	<achievement>
 		<id>24</id>
 		<name>Warlord</name>
-		<type enemy_id='*' winner='1'/>
-		<number>1000</number>
-		<desc>Win 1000 battles against other players</desc>
-		<chip_reward>5</chip_reward>
+		<type enemy_id='*' />
+		<req live_battle_id='true' />
+		<live_battle>1</live_battle>
+		<number>500</number>
+		<desc>Participate in 500 Live Battles (Arena or Tournaments)</desc>
 		<card_reward>101</card_reward>
 		<achievement_req>23</achievement_req>
 	</achievement>
 	<achievement>
 		<id>25</id>
 		<name>Emperor</name>
-		<type enemy_id='*' winner='1'/>
-		<number>5000</number>
-		<desc>Win 5000 battles against other players</desc>
-		<chip_reward>5</chip_reward>
+		<type enemy_id='*' />
+		<req live_battle_id='true' />
+		<live_battle>1</live_battle>
+		<number>1000</number>
+		<desc>Participate in 1000 Live Battles (Arena or Tournaments)</desc>
 		<card_reward>23</card_reward>
 		<achievement_req>24</achievement_req>
 	</achievement>
@@ -136,52 +135,47 @@
 	<achievement>
 		<id>100</id>
 		<name>Battlemaster</name>
-		<type winner='1' />
+		<type mission_id='*' winner='1' />
   		<req unit_type='2' num_killed='5' />
 		<number>1</number>
-		<desc>Kill at least 5 Assault units in a battle and win</desc>
+		<desc>Kill at least 5 Assault units in a mission and win</desc>
 		<gold_reward>100</gold_reward>
-		<chip_reward>3</chip_reward>
 	</achievement>
 	<achievement>
 		<id>101</id>
 		<name>Super Structure</name>
-		<type enemy_id='*' winner='1' />
+		<type mission_id='28' compare='great_equal' winner='1' />
   		<req unit_type='4' num_played='5' />
 		<number>1</number>
-		<desc>Defeat a player after you played at least 5 Structures in the battle</desc>
+		<desc>Defeat Mission 28 or higher after you played at least 5 Structures in the battle</desc>
 		<gold_reward>500</gold_reward>
-		<chip_reward>5</chip_reward>
 	</achievement>
 	<achievement>
 		<id>102</id>
 		<name>Battle Medic</name>
   		<req unit_id='14' num_played='3' />
-  		<type enemy_id='*' winner='1' />
+  		<type mission_id='28' compare='great_equal' winner='1' />
 		<number>1</number>
-		<desc>Defeat a player with at least 3 Medics played in the battle</desc>
+		<desc>Defeat Mission 28 or higher with at least 3 Medics played in the battle</desc>
 		<gold_reward>750</gold_reward>
-		<chip_reward>3</chip_reward>
 	</achievement>
 	<achievement>
 		<id>103</id>
 		<name>Air Raid</name>
   		<req skill_id='strike' num_used='5' />
-  		<type enemy_id='*' winner='1' />
+  		<type mission_id='28' compare='great_equal' winner='1' />
 		<number>1</number>
-		<desc>Defeat a player after using Strike at least 5 times in the battle</desc>
+		<desc>Defeat Mission 28 or higher after using Strike at least 5 times in the battle</desc>
 		<gold_reward>500</gold_reward>
-		<chip_reward>3</chip_reward>
 	</achievement>
 	<achievement>
 		<id>104</id>
 		<name>Sky Control</name>
   		<req skill_id='flying' num_killed_with='3' />
-  		<type winner='1' />
+  		<type mission_id='*' winner='1' />
 		<number>1</number>
-		<desc>Kill at least 3 flying units in one battle and win</desc>
+		<desc>Defeat a Mission after killing at least 3 units with Flying</desc>
 		<gold_reward>200</gold_reward>
-		<chip_reward>3</chip_reward>
 	</achievement>
 	<achievement>
 		<id>105</id>
@@ -191,21 +185,19 @@
 		<number>10</number>
 		<desc>Win 10 missions using only the basic attack (No skills can activate)</desc>
 		<gold_reward>200</gold_reward>
-		<chip_reward>3</chip_reward>
 	</achievement>
 	<achievement>
 		<id>106</id>
 		<name>Skill Connoisseur</name>
-		<type winner='1' />
+		<type mission_id='*' winner='1' />
   		<req skill_id='strike' num_used='1' />
   		<req skill_id='heal' num_used='1' />
   		<req skill_id='rally' num_used='1' />
   		<req skill_id='jam' num_used='1' />
   		<req skill_id='weaken' num_used='1' />
 		<number>1</number>
-		<desc>Win a battle using Strike, Heal, Jam, Rally, and Weaken</desc>
+		<desc>Win a mission using Strike, Heal, Jam, Rally, and Weaken</desc>
 		<card_reward>3007</card_reward>
-		<chip_reward>3</chip_reward>
 	</achievement>
 	<achievement>
 		<id>107</id>
@@ -214,7 +206,6 @@
 		<number>7</number>
 		<desc>Complete all missions associated with the Standard set (through Mission 28)</desc>
 		<card_reward>90</card_reward>
-		<chip_reward>3</chip_reward>
 	</achievement>
 	<achievement>
 		<id>108</id>
@@ -223,61 +214,55 @@
 		<number>10</number>
 		<desc>Complete all missions associated with the Enclave set (through Mission 41)</desc>
 		<card_reward>173</card_reward>
-		<chip_reward>3</chip_reward>
 	</achievement>
 	<achievement>
 		<id>109</id>
 		<name>Bloodthirsty Companion</name>
-		<type enemy_id='*' winner='1' />
+		<type mission_id='28' compare='great_equal' winner='1' />
   		<req skill_id='leech' num_used='1' />
   		<req skill_id='siphon' num_used='1' />
 		<number>1</number>
-		<desc>Defeat a player after using Leech and Siphon in the battle</desc>
+		<desc>Defeat Mission 28 or higher after using Leech and Siphon</desc>
 		<card_reward>2032</card_reward>
-		<chip_reward>3</chip_reward>
 	</achievement>
 	<achievement>
 		<id>110</id>
 		<name>Defensive Minded</name>
-		<type winner='1' />
+		<type mission_id='28' compare='great_equal' winner='1' />
   		<req skill_id='counter' num_used='1' />
   		<req skill_id='regenerate' num_used='1' />
 		<number>1</number>
-		<desc>Win a battle using Counter and Regenerate</desc>
+		<desc>Defeat Mission 28 or higher after using Counter and Regenerate</desc>
 		<gold_reward>500</gold_reward>
-		<chip_reward>3</chip_reward>
 	</achievement>
 	<achievement>
 		<id>111</id>
 		<name>Xeno Sympathizer</name>
-		<type winner='1' />
+		<type mission_id='41' compare='great_equal' winner='1' />
   		<req skill_id='mimic' num_used='1' />
   		<req skill_id='immobilize' num_used='1' />
   		<req skill_id='fear' num_used='1' />
 		<number>1</number>
-		<desc>Win a battle using Mimic, Immobilize, and Fear</desc>
+		<desc>Defeat Mission 41 or higher after using Mimic, Immobilize, and Fear</desc>
 		<card_reward>1024</card_reward>
-		<chip_reward>3</chip_reward>
 	</achievement>
 	<achievement>
 		<id>112</id>
 		<name>Spare the Troops</name>
-		<type winner='1' />
+		<type mission_id='*' winner='1' />
 		<req unit_type='2' num_killed='0' compare='equal' />
 		<number>1</number>
-		<desc>Win a battle without killing an Assault card</desc>
+		<desc>Defeat a Mission without killing an Assault card</desc>
 		<gold_reward>300</gold_reward>
-		<chip_reward>3</chip_reward>
 	</achievement>
 	<achievement>
 		<id>113</id>
 		<name>Limited Support</name>
-		<type winner='1' />
+		<type mission_id='*' winner='1' />
 		<req unit_type='2' num_played='1' compare='equal' />
 		<number>1</number>
-		<desc>Win a battle playing only 1 Assault card</desc>
+		<desc>Defeat a Mission playing only 1 Assault card</desc>
 		<card_reward>76</card_reward>
-		<chip_reward>5</chip_reward>
 	</achievement>
 	<achievement>
 		<id>114</id>
@@ -287,63 +272,59 @@
 		<number>1</number>
 		<desc>Play the card "Infantry" during Mission 28 and win</desc>
 		<gold_reward>2000</gold_reward>
-		<chip_reward>3</chip_reward>
 	</achievement>
 	<achievement>
 		<id>115</id>
 		<name>Supply Lines</name>
   		<req skill_id='heal' num_used='5' />
-  		<type enemy_id='*' winner='1' />
+  		<type mission_id='28' compare='great_equal' winner='1' />
 		<number>1</number>
-		<desc>Defeat a player after using Heal at least 5 times in the battle</desc>
+		<desc>Defeat Mission 28 or higher after using Heal at least 5 times in the battle</desc>
 		<gold_reward>500</gold_reward>
-		<chip_reward>3</chip_reward>
 	</achievement>
 	<achievement>
 		<id>116</id>
 		<name>Encouraging War Cry</name>
   		<req skill_id='rally' num_used='5' />
-  		<type enemy_id='*' winner='1' />
+  		<type mission_id='28' compare='great_equal' winner='1' />
 		<number>1</number>
-		<desc>Defeat a player after using Rally at least 5 times in the battle</desc>
+		<desc>Defeat Mission 28 or higher after using Rally at least 5 times in the battle</desc>
 		<gold_reward>500</gold_reward>
-		<chip_reward>3</chip_reward>
 	</achievement>
 	<achievement>
 		<id>117</id>
 		<name>Demolition</name>
-		<type winner='1' />
-  		<req unit_type='4' num_killed='3' />
+		<type mission_id='*' winner='1' />
+  		<req unit_type='4' num_killed='2' />
 		<number>1</number>
-		<desc>Destroy at least 3 Structures in a battle and win</desc>
+		<desc>Defeat a Mission after destroying at least 2 structures</desc>
 		<gold_reward>250</gold_reward>
-		<chip_reward>3</chip_reward>
 	</achievement>
 	<achievement>
 		<id>118</id>
 		<name>Copycat</name>
-  		<type enemy_id='*' winner='1' />
+  		<type mission_id='41' compare='great_equal' winner='1' />
   		<req skill_id='mimic' num_used='5' />
 		<number>1</number>
-		<desc>Defeat a player after using Mimic at least 5 times in the battle</desc>
+		<desc>Defeat Mission 41 or higher after using Mimic at least 5 times</desc>
 		<gold_reward>1000</gold_reward>
 	</achievement>
 	<achievement>
 		<id>119</id>
 		<name>Front-Line Pressure</name>
-  		<type winner='1' />
+  		<type mission_id='*' winner='1' />
   		<req skill_id='0' num_used='25' />
 		<number>10</number>
-		<desc>Win 10 battles attacking at least 25 times in each battle</desc>
+		<desc>Defeat 10 Missions attacking at least 25 times in each battle</desc>
 		<gold_reward>2000</gold_reward>
 	</achievement>
 	<achievement>
 		<id>120</id>
 		<name>Lucky Streak</name>
-  		<type winner='1' />
+  		<type mission_id='28' compare='great_equal' winner='1' />
   		<req skill_id='jam' num_used='5' />
 		<number>1</number>
-		<desc>Use Jam at least 5 times in a battle and win</desc>
+		<desc>Defeat Mission 28 or higher after activating Jam at least 5 times</desc>
 		<gold_reward>750</gold_reward>
 	</achievement>
 	<achievement>
@@ -362,10 +343,10 @@
 	<achievement>
 		<id>122</id>
 		<name>Action Hero</name>
-		<type enemy_id='*' winner='1' />
+		<type mission_id='41' compare='great_equal' winner='1' />
   		<req unit_type='8' num_played='3' />
 		<number>1</number>
-		<desc>Defeat a player after playing at least 3 Action Cards in that battle</desc>
+		<desc>Defeat Mission 41 or higher after playing at least 3 Action Cards</desc>
 		<gold_reward>2000</gold_reward>
 	</achievement>
 	<!-- <achievement>
@@ -528,12 +509,12 @@
 	<achievement>
 		<id>139</id>
 		<name>CHARGE!</name>
-		<type winner='1' />
+		<type mission_id='*' winner='1' />
   		<req skill_id='crush' num_used='1' />
   		<req skill_id='flurry' num_used='1' />
   		<req skill_id='rally' num_used='1' />
 		<number>1</number>
-		<desc>Win a battle using Crush, Flurry, and Rally</desc>
+		<desc>Defeat a Mission using Crush, Flurry, and Rally</desc>
 		<gold_reward>2000</gold_reward>
 	</achievement>
 	<achievement>
@@ -558,19 +539,19 @@
 	<achievement>
 		<id>142</id>
 		<name>Crushing Victory</name>
-		<type winner='1' />
+		<type mission_id='*' winner='1' />
   		<req skill_id='crush' num_used='3' />
 		<number>1</number>
-		<desc>Win a battle after using Crush 3 times</desc>
+		<desc>Defeat a Mission after using Crush 3 times</desc>
 		<gold_reward>3000</gold_reward>
 	</achievement>
 	<achievement>
 		<id>143</id>
 		<name>Can't Touch This</name>
-		<type winner='1' />
+		<type mission_id='*' winner='1' />
   		<req skill_id='evade' num_used='5' />
 		<number>1</number>
-		<desc>Win a battle after using Evade 5 times</desc>
+		<desc>Defeat a Mission after using Evade 5 times</desc>
 		<gold_reward>2500</gold_reward>
 	</achievement>
 	<achievement>
@@ -690,31 +671,31 @@
 	<achievement>
 		<id>155</id>
 		<name>Conserving Ammo</name>
-  		<type enemy_id='*' winner='1' />
+  		<type mission_id='41' compare='great_equal' winner='1' />
   		<req skill_id='0' num_used='5' compare='less_equal' />
 		<number>10</number>
-		<desc>Win 10 battles against players, attacking no more than 5 times in each battle</desc>
+		<desc>Defeat 10 or more Missions higher than 40, attacking no more than 5 times in each battle</desc>
 		<gold_reward>2500</gold_reward>
 	</achievement>
 	<achievement>
 		<id>156</id>
 		<name>Resiliant</name>
-		<type winner='1' />
+		<type mission_id='*' winner='1' />
   		<req skill_id='evade' num_used='1' />
   		<req skill_id='regenerate' num_used='1' />
   		<req skill_id='immobilize' num_used='1' />
   		<req skill_id='jam' num_used='1' />
 		<number>1</number>
-		<desc>Win a battle using Evade, Regenerate, Jam, and Immobilize</desc>
+		<desc>Defeat a Mission using Evade, Regenerate, Jam, and Immobilize</desc>
 		<gold_reward>2000</gold_reward>
 	</achievement>
 	<achievement>
 		<id>157</id>
 		<name>Fear the Reaper</name>
-		<type enemy_id='*' winner='1' />
+		<type mission_id='41' compare='great_equal' winner='1' />
   		<req skill_id='fear' num_used='5' />
 		<number>1</number>
-		<desc>Defeat a player after using Fear 5 times.</desc>
+		<desc>Defeat Mission 41 or higher after using Fear 5 times.</desc>
 		<gold_reward>1000</gold_reward>
 	</achievement>
 	<achievement>
@@ -733,50 +714,50 @@
 	<achievement>
 		<id>159</id>
 		<name>Enfeeblict</name>
-		<type winner='1' />
+		<type mission_id='*' winner='1' />
   		<req skill_id='enfeeble' num_used='10' />
 		<number>1</number>
-		<desc>Win a battle after using Enfeeble 10 times</desc>
+		<desc>Defeat a Mission after using Enfeeble 10 times</desc>
 		<gold_reward>2500</gold_reward>
 	</achievement>
 	<achievement>
 		<id>160</id>
 		<name>Come from Behind</name>
-		<type winner='1' />
+		<type mission_id='*' winner='1' />
   		<req skill_id='valor' num_used='5' />
 		<number>1</number>
-		<desc>Win a battle after using Valor 5 times</desc>
+		<desc>Defeat a Mission after using Valor 5 times</desc>
 		<gold_reward>2000</gold_reward>
 	</achievement>
 	<achievement>
 		<id>161</id>
 		<name>Wide Range</name>
-		<type winner='1' />
+		<type mission_id='*' winner='1' />
   		<req skill_id='swipe' num_used='5' />
 		<number>1</number>
-		<desc>Win a battle after using Swipe 5 times</desc>
+		<desc>Defeat a Mission after using Swipe 5 times</desc>
 		<gold_reward>2000</gold_reward>
 	</achievement>
 	<achievement>
 		<id>162</id>
 		<name>Take That!</name>
-		<type winner='1' />
+		<type mission_id='*' winner='1' />
   		<req skill_id='payback' num_used='5' />
 		<number>1</number>
-		<desc>Win a battle after using Payback 5 times</desc>
+		<desc>Defeat a Mission after using Payback 5 times</desc>
 		<gold_reward>2500</gold_reward>
 	</achievement>
 	<achievement>
 		<id>163</id>
 		<name>Bloodthirsty Pet</name>
-		<type winner='1' />
+		<type mission_id='*' winner='1' />
   		<req skill_id='payback' num_used='1' />
   		<req skill_id='enfeeble' num_used='1' />
   		<req skill_id='swipe' num_used='1' />
   		<req skill_id='leech' num_used='1' />
   		<req skill_id='siphon' num_used='1' />
 		<number>1</number>
-		<desc>Win a battle after using Payback, Enfeeble, Swipe, Leech, and Siphon</desc>
+		<desc>Defeat a Mission after using Payback, Enfeeble, Swipe, Leech, and Siphon</desc>
 		<gold_reward>4000</gold_reward>
 	</achievement>
 	<achievement>
@@ -846,10 +827,10 @@
 	<achievement>
 		<id>171</id>
 		<name>Common Attacker</name>
-		<type player_id='*' winner='1' />
+		<type mission_id='91' compare='great_equal' winner='1' />
 		<req unit_rarity='1' num_played='8' />
 		<number>25</number>
-		<desc>Defeat 25 Players after playing 8 Common cards (Commander doesn't count)</desc>
+		<desc>Defeat Mission 67 or higher after playing 8 Common cards (Commander doesn't count) 25 times</desc>
 		<gold_reward>2000</gold_reward>
 	</achievement>
 	<achievement>
@@ -1009,9 +990,9 @@
 		<name>Damage Sponge</name>
   		<req skill_id='armored' num_used='5' block='1' />
 		<req skill_id='wall' num_used='5' block='1' />
-  		<type winner='1' />
+  		<type mission_id='*' winner='1' />
 		<number>1</number>
-		<desc>Win a battle after using Armored and Wall 5 times each</desc>
+		<desc>Defeat a Mission after using Armored and Wall 5 times each</desc>
 		<gold_reward>2000</gold_reward>
 	</achievement>
 	<achievement>
@@ -1501,6 +1482,29 @@
 		<number>1</number>
 		<desc>Defeat Mission 164 after activating the Flying skill 10 times</desc>
 		<card_reward>635</card_reward>
+	</achievement>
+	<achievement>
+		<id>237</id>
+		<name>Common Imperials</name>
+		<req unit_race='1' num_played='10' />
+		<req unit_rarity='1' num_played='10' />
+  		<type mission_id='254' compare='great_equal' winner='1' />
+		<number>1</number>
+		<desc>Defeat Mission 170 or higher after playing 10 Common Imperial cards (Commander does not count)</desc>
+		<gold_reward>2000</gold_reward>
+		<card_reward>683</card_reward>
+	</achievement>
+	<achievement>
+		<id>238</id>
+		<name>Phobos Valor</name>
+		<type mission_id='265' winner='1' />
+		<req unit_type='2' num_played='5' compare='less_equal' />
+		<req unit_type='4' num_played='0' compare='equal' />
+		<req unit_type='8' num_played='0' compare='equal' />
+		<number>1</number>
+		<desc>Defeat Mission 181 after playing exactly 5 Assault cards, and playing no Actions or Structures</desc>
+		<gold_reward>5000</gold_reward>
+		<card_reward>680</card_reward>
 	</achievement>
 	
 	<!-- buypack achievements -->

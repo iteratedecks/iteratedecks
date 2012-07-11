@@ -8467,8 +8467,652 @@
 	</unit>
 
 <!-- END Phobos Side Rewards -->
+
+<!-- Phobos Aftermath -->
+
+	<!-- Assault -->
+	
+		<!-- Imperials -->
+			
+			<!-- Commons -->
+
+	<unit>
+		<id>684</id>
+		<name>Jungle Savior</name>
+		<picture>deforestertank.jpg</picture>
+		<attack>1</attack>
+		<health>5</health>
+		<cost>2</cost>
+		<rarity>1</rarity> <gold_cost>10000</gold_cost>
+		<skill id='supply' x='1' />
+		<skill id='burst' x='2' />
+		<type>1</type>
+		<set>7</set>
+	</unit>
+
+	<unit>
+		<id>675</id>
+		<name>Shrieker</name>
+		<picture>manticopters.jpg</picture>
+		<attack>4</attack>
+		<health>2</health>
+		<cost>2</cost>
+		<rarity>1</rarity> <gold_cost>10000</gold_cost>
+		<skill id='flying' />
+		<skill id='weaken' x='1' />
+		<type>1</type>
+		<set>7</set>
+	</unit>
+			
+			<!-- Uncommons -->
+
+	<unit>
+		<id>670</id>
+		<name>Plasma Spark</name>
+		<picture>tonkman.jpg</picture>
+		<attack>0</attack>
+		<health>5</health>
+		<cost>1</cost>
+		<rarity>2</rarity> <gold_cost>10000</gold_cost>
+		<skill id='heal' x='3' played='1' />
+		<skill id='jam' />
+		<type>1</type>
+		<set>7</set>
+	</unit>
+			
+			<!-- Rares -->
+
+	<unit>
+		<id>573</id>
+		<name>Steadfast Cannon</name>
+		<picture>tentontank.jpg</picture>
+		<attack>2</attack>
+		<health>7</health>
+		<cost>3</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='payback' />
+		<skill id='refresh' />
+		<skill id='siege' x='3' />
+		<type>1</type>
+		<set>7</set>
+	</unit>
+
+			<!-- Legendary -->
+
+	<unit> <!-- Might give another skill -->
+		<id>685</id>
+		<name>Metatron</name>
+		<picture>kodiak.jpg</picture>
+		<attack>1</attack>
+		<health>10</health>
+		<cost>4</cost>
+		<rarity>4</rarity> <gold_cost>10000</gold_cost>
+		<skill id='tribute' />
+		<skill id='protect' x='2' all='1' y='1' />
+		<type>1</type>
+		<set>7</set>
+	</unit>
+			
+		<!-- Raiders -->
+		
+			<!-- Commons -->
+
+	<unit>
+		<id>650</id>
+		<name>Lead Trooper</name>
+		<picture>rollatank.jpg</picture>
+		<attack>1</attack>
+		<health>4</health>
+		<cost>0</cost>
+		<rarity>1</rarity> <gold_cost>10000</gold_cost>
+		<skill id='rally' x='1' played='1' /> 
+		<type>9</type>
+		<set>7</set>
+	</unit>
+
+	<unit>
+		<id>674</id>
+		<name>Covert Armor</name>
+		<picture>jackal.jpg</picture>
+		<attack>1</attack>
+		<health>6</health>
+		<cost>3</cost>
+		<rarity>1</rarity> <gold_cost>10000</gold_cost>
+		<skill id='payback' />
+		<skill id='armored' x='1' />
+		<skill id='fear' />
+		<type>9</type>
+		<set>7</set>
+	</unit>
+			
+			<!-- Uncommons -->
+
+	<unit>
+		<id>673</id>
+		<name>Bruiser</name>
+		<picture>raiderrewardtank.jpg</picture>
+		<attack>3</attack>
+		<health>8</health>
+		<cost>4</cost>
+		<rarity>2</rarity> <gold_cost>10000</gold_cost>
+		<skill id='siege' x='5' died='1' />
+		<skill id='enfeeble' x='2' />
+		<skill id='weaken' x='2' />
+		<type>9</type>
+		<set>7</set>
+	</unit>
+			
+			<!-- Rares -->
+
+	<unit>
+		<id>637</id>
+		<name>Slayer</name>
+		<picture>rolypoly.jpg</picture>
+		<attack>2</attack>
+		<health>5</health>
+		<cost>2</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='evade' />
+		<skill id='burst' x='3' />
+		<type>9</type>
+		<set>7</set>
+	</unit>
+		
+		<!-- Bloodthirsty -->
+		
+			<!-- Commons -->
+
+	<unit>
+		<id>652</id>
+		<name>Repulsive Pest</name>
+		<picture>wyrmer.jpg</picture>
+		<attack>1</attack>
+		<health>4</health>
+		<cost>1</cost>
+		<rarity>1</rarity> <gold_cost>10000</gold_cost>
+		<skill id='payback' />
+		<skill id='heal' x='1' y='3' />
+		<type>3</type>
+		<set>7</set>
+	</unit>
+
+	<unit>
+		<id>672</id>
+		<name>Razing Madcap</name>
+		<picture>midas.jpg</picture>
+		<attack>5</attack>
+		<health>4</health>
+		<cost>4</cost>
+		<rarity>1</rarity> <gold_cost>10000</gold_cost>
+		<skill id='evade' />
+		<skill id='crush' x='3' />
+		<skill id='siphon' x='3' />
+		<type>3</type>
+		<set>7</set>
+	</unit>
+			
+			<!-- Uncommons -->
+
+	<unit>
+		<id>638</id>
+		<name>Corrupt Archfiend</name>
+		<picture>btseeker.jpg</picture>
+		<attack>3</attack>
+		<health>6</health>
+		<cost>3</cost>
+		<rarity>2</rarity> <gold_cost>10000</gold_cost>
+		<skill id='disease' />
+		<skill id='leech' x='2' />
+		<type>3</type>
+		<set>7</set>
+	</unit>
+			
+			<!-- Rares -->
+
+	<unit>
+		<id>658</id>
+		<name>Graverobber</name>
+		<picture>crowly.jpg</picture>
+		<attack>3</attack>
+		<health>1</health>
+		<cost>1</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='rally' x='2' died='1' />
+		<type>3</type>
+		<set>7</set>
+	</unit>
+		
+		<!-- Xeno -->
+		
+			<!-- Commons -->
+
+	<unit>
+		<id>647</id>
+		<name>Gigagoth</name>
+		<picture>scropo.jpg</picture>
+		<attack>3</attack>
+		<health>7</health>
+		<cost>4</cost>
+		<rarity>1</rarity> <gold_cost>10000</gold_cost>
+		<skill id='intercept' />
+		<skill id='leech' x='3' />
+		<type>4</type>
+		<set>7</set>
+	</unit>
+
+	<unit>
+		<id>653</id>
+		<name>Twister</name>
+		<picture>kiteflyer.jpg</picture>
+		<attack>3</attack>
+		<health>3</health>
+		<cost>2</cost>
+		<rarity>1</rarity> <gold_cost>10000</gold_cost>
+		<skill id='flying' />
+		<skill id='siege' x='1' />
+		<type>4</type>
+		<set>7</set>
+	</unit>
+			
+			<!-- Uncommons -->
+
+	<unit>
+		<id>659</id>
+		<name>Destiny Crafter</name>
+		<picture>xenobabypod.jpg</picture>
+		<attack>2</attack>
+		<health>5</health>
+		<cost>2</cost>
+		<rarity>2</rarity> <gold_cost>10000</gold_cost>
+		<skill id='mimic' />
+		<skill id='poison' x='1' />
+		<type>4</type>
+		<set>7</set>
+	</unit>
+			
+			<!-- Rares -->
+
+	<unit>
+		<id>657</id>
+		<name>Sonar Sentry</name>
+		<picture>xdrone.jpg</picture>
+		<attack>3</attack>
+		<health>7</health>
+		<cost>3</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='protect' x='2' y='4' played='1' />
+		<skill id='rally' x='2' y='4' played='1' />
+		<skill id='intercept' />
+		<type>4</type>
+		<set>7</set>
+	</unit>
+
+		<!-- Righteous -->
+
+			<!-- Commons -->
+
+	<unit>
+		<id>649</id>
+		<name>Fusillade</name>
+		<picture>righttonka.jpg</picture>
+		<attack>1</attack>
+		<health>4</health>
+		<cost>1</cost>
+		<rarity>1</rarity> <gold_cost>10000</gold_cost>
+		<skill id='protect' x='1' played='1' />
+		<skill id='strike' x='1' died='1' />
+		<type>8</type>
+		<set>7</set>
+	</unit>
+
+	<unit>
+		<id>671</id>
+		<name>Rescue Pod</name>
+		<picture>rightrobogunner.jpg</picture>
+		<attack>4</attack>
+		<health>4</health>
+		<cost>3</cost>
+		<rarity>1</rarity> <gold_cost>10000</gold_cost>
+		<skill id='tribute' />
+		<skill id='cleanse' y='8' />
+		<type>8</type>
+		<set>7</set>
+	</unit>
+
+			<!-- Uncommons -->
+
+	<unit>
+		<id>654</id>
+		<name>Burst Hail</name>
+		<picture>rightlegger.jpg</picture>
+		<attack>1</attack>
+		<health>8</health>
+		<cost>4</cost>
+		<rarity>2</rarity> <gold_cost>10000</gold_cost>
+		<skill id='supply' x='2' />
+		<skill id='swipe' />
+		<skill id='valor' x='3' />
+		<type>8</type>
+		<set>7</set>
+	</unit>
+
+			<!-- Rare -->
+
+	<unit>
+		<id>648</id>
+		<name>Hypersonic</name>
+		<picture>rdrone.jpg</picture>
+		<attack>2</attack>
+		<health>7</health>
+		<cost>3</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='intercept' />
+		<skill id='flying' />
+		<skill id='antiair' x='3' />
+		<type>8</type>
+		<set>7</set>
+	</unit>
+
+			<!-- Legendary -->
+
+	<unit>
+		<id>651</id>
+		<name>Theodysseus</name>
+		<picture>shockman.jpg</picture>
+		<attack>2</attack>
+		<health>5</health>
+		<cost>1</cost>
+		<rarity>4</rarity> <gold_cost>10000</gold_cost>
+		<skill id='flurry' x='1' />
+		<skill id='pierce' x='2' />
+		<skill id='immobilize' />
+		<type>8</type>
+		<set>7</set>
+	</unit>
+		
+	<!-- Structures -->
+	
+		<!-- Commons -->
+
+	<unit>
+		<id>2105</id>
+		<name>Web of Madness</name>
+		<picture>xenosinewwall.jpg</picture>
+		<health>7</health>
+		<cost>3</cost>
+		<rarity>1</rarity> <gold_cost>10000</gold_cost>
+		<skill id='wall' />
+		<skill id='chaos' />
+		<skill id='mimic' />
+		<type>4</type>
+		<set>7</set>
+	</unit>
+
+	<unit>
+		<id>2107</id>
+		<name>Sanguinary Stalk</name>
+		<picture>bloodhatchery.jpg</picture>
+		<health>8</health>
+		<cost>4</cost>
+		<rarity>1</rarity> <gold_cost>10000</gold_cost>
+		<skill id='rally' x='1' y='3' all='1' />
+		<skill id='enfeeble' x='1' />
+		<skill id='weaken' x='1' />
+		<type>3</type>
+		<set>7</set>
+	</unit>
+			
+		<!-- Uncommons -->
+
+	<unit>
+		<id>2106</id>
+		<name>Outpost</name>
+		<picture>phobosbase.jpg</picture>
+		<health>5</health>
+		<cost>2</cost>
+		<rarity>2</rarity> <gold_cost>10000</gold_cost>
+		<skill id='chaos' played='1' />
+		<skill id='weaken' x='1' />
+		<skill id='jam' died='1' />
+		<type>9</type>
+		<set>7</set>
+	</unit>
+			
+		<!-- Rares -->
+	<unit>
+		<id>2104</id>
+		<name>Pantheon Shard</name>
+		<picture>pantheonshardstructure.jpg</picture>
+		<health>3</health>
+		<cost>1</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='wall' />
+		<skill id='cleanse' />
+		<skill id='protect' x='2' />
+		<type>8</type>
+		<set>7</set>
+	</unit>
+	
+	<!-- Commanders -->
+			
+		<!-- Uncommons -->
+
+	<unit>
+		<id>1173</id>
+		<name>Jekel</name>
+		<picture>jekel.jpg</picture>
+		<attack>0</attack>
+		<health>12</health>
+		<rarity>2</rarity> <gold_cost>10000</gold_cost>
+		<skill id='cleanse' y='9' />
+		<skill id='siege' x='1' />
+		<type>9</type>
+		<set>7</set>
+	</unit>
+			
+		<!-- Rares -->
+
+	<unit>
+		<id>1171</id> 
+		<name>Nexor</name>
+		<picture>xenoskeletorcommander.jpg</picture>
+		<attack>0</attack>
+		<health>8</health>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='cleanse' y='4' />
+		<skill id='mimic' />
+		<type>4</type>
+		<set>7</set>
+	</unit>
+
+	<unit>
+		<id>1172</id>
+		<name>Teiffa</name>
+		<picture>imperialcommandergirl.jpg</picture>
+		<attack>0</attack>
+		<health>12</health>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='protect' x='1' />
+		<type>1</type>
+		<set>7</set>
+	</unit>
+	
+	<!-- Actions -->
+			
+		<!-- Rares -->
+
+	<unit>
+		<id>3049</id>
+		<name>Radiance</name>
+		<picture>vavoom.jpg</picture>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='protect' x='2' all='1' />
+		<set>7</set>
+	</unit>
+	
+<!-- END Phobos Aftermath -->
+
+<!-- Phobos Aftermath Rewards -->
+
+	<unit> <!-- Common Rep Reward -->
+		<id>679</id>
+		<name>Perplexer</name>
+		<picture>impmech.jpg</picture>
+		<attack>2</attack>
+		<health>8</health>
+		<cost>4</cost>
+		<rarity>1</rarity> <gold_cost>10000</gold_cost>
+		<skill id='intercept' />
+		<skill id='jam' />
+		<skill id='immobilize' />
+		<type>1</type>
+		<set>5000</set>
+	</unit>
+
+	<unit> <!-- Uncommon Rep Reward -->
+		<id>681</id>
+		<name>Sensei</name>
+		<picture>reaper2.jpg</picture>
+		<attack>2</attack>
+		<health>3</health>
+		<cost>1</cost>
+		<rarity>2</rarity> <gold_cost>10000</gold_cost>
+		<skill id='jam' played='1' />
+		<skill id='refresh' />
+		<skill id='siphon' x='1' />
+		<type>8</type>
+		<set>5000</set>
+	</unit>
+
+	<unit> <!-- Rare Rep Reward -->
+		<id>682</id>
+		<name>Blight Tainter</name>
+		<picture>bigmouth.jpg</picture>
+		<attack>2</attack>
+		<health>5</health>
+		<cost>2</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='weaken' x='2' played='1' />
+		<skill id='enfeeble' x='1' />
+		<skill id='burst' x='2' />
+		<type>3</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>680</id>
+		<name>Mobile Fortress</name>
+		<picture>siegetower.jpg</picture>
+		<attack>0</attack>
+		<health>11</health>
+		<cost>4</cost>
+		<unique>1</unique>
+		<reserve>1</reserve>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='protect' x='3' />
+		<skill id='rally' x='3' />
+		<skill id='siege' x='3' />
+		<type>9</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>683</id>
+		<name>Xillafang</name>
+		<picture>xenobugger.jpg</picture>
+		<attack>1</attack>
+		<health>8</health>
+		<cost>3</cost>
+		<unique>1</unique>
+		<reserve>1</reserve>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='rally' x='1' y='4' all='1' />
+		<skill id='weaken' x='1' all='1' />
+		<type>4</type>
+		<set>5000</set>
+	</unit>
+	
+<!-- END Phobos Aftermath Rewards -->
 	
 <!-- MISSION COMMANDERS -->
+
+	<unit>
+		<id>1179</id>
+		<name>Krellus</name>
+		<picture>warlordcommander.jpg</picture>
+		<attack>0</attack>
+		<health>17</health>
+		<rarity>3</rarity>
+		<skill id='cleanse' />
+		<skill id='heal' x='1' all='1' />
+		<skill id='rally' x='1' all='1' />
+		<type>4</type>
+	</unit>
+
+	<unit>
+		<id>1178</id>
+		<name>Svetlana</name>
+		<picture>raiderprincess.jpg</picture>
+		<attack>0</attack>
+		<health>18</health>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='protect' x='2' />
+		<skill id='jam' />
+		<skill id='weaken' all='1' x='1' />
+		<type>9</type>
+	</unit>
+
+	<unit>
+		<id>1177</id>
+		<name>Zander</name>
+		<picture>raiderhomecommander.jpg</picture>
+		<attack>0</attack>
+		<health>19</health>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='enfeeble' x='2' />
+		<skill id='jam' />
+		<skill id='chaos' />
+		<type>9</type>
+	</unit>
+
+	<unit>
+		<id>1176</id>
+		<name>Samantha</name>
+		<picture>imperialphobosgirl.jpg</picture>
+		<attack>0</attack>
+		<health>18</health>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='cleanse' />
+		<skill id='heal' x='1' all='1' />
+		<skill id='protect' x='1' all='1' />
+		<type>1</type>
+	</unit>
+
+	<unit>
+		<id>1175</id>
+		<name>Maion</name>
+		<picture>righteouscommander1.jpg</picture>
+		<attack>0</attack>
+		<health>17</health>
+		<rarity>3</rarity> <gold_cost>50000</gold_cost>
+		<skill id='protect' x='1' all='1' />
+		<skill id='rally' x='1' all='1' />
+		<skill id='mimic' />
+		<type>8</type>
+	</unit>
+
+	<unit>
+		<id>1174</id> 
+		<name>Nexor</name>
+		<picture>xenoskeletorcommander.jpg</picture>
+		<attack>0</attack>
+		<health>18</health>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='cleanse' />
+		<skill id='heal' x='1' all='1' />
+		<skill id='mimic' />
+		<type>4</type>
+	</unit>
 
 	<unit>
 		<id>1165</id>
@@ -8607,7 +9251,7 @@
 		<attack>0</attack>
 		<health>18</health>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
-		<skill id='protect' x='1' all='1' y='9' />
+		<skill id='protect' x='1' all='1' />
 		<skill id='strike' x='1' />
 		<skill id='jam' />
 		<type>9</type>
@@ -8621,7 +9265,7 @@
 		<health>17</health>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
 		<skill id='counter' x='1' />
-		<skill id='rally' x='1' all='1' y='3' />
+		<skill id='rally' x='1' all='1' />
 		<skill id='enfeeble' x='2' />
 		<type>3</type>
 	</unit>
@@ -8756,7 +9400,7 @@
 		<type>9</type>
 	</unit>
 
-<unit>
+	<unit>
 		<id>1136</id>
 		<name>Zander</name>
 		<picture>raiderhomecommander.jpg</picture>
@@ -8917,8 +9561,8 @@
 		<attack>0</attack>
 		<health>18</health>
 		<rarity>3</rarity> <gold_cost>50000</gold_cost>
-		<skill id='protect' x='1' y='8' />
-		<skill id='rally' x='2' y='8' />
+		<skill id='protect' x='1' />
+		<skill id='rally' x='2' />
 		<skill id='weaken' x='2' />
 		<type>8</type>
 	</unit>
@@ -9095,7 +9739,7 @@
 		<health>16</health>
 		<rarity>3</rarity> <gold_cost>100</gold_cost>
 		<skill id='heal' x='2' />
-		<skill id='rally' x='2' y='3' />
+		<skill id='rally' x='2' />
 		<type>3</type>
 	</unit>
 	
@@ -10995,6 +11639,101 @@
 
 <!-- END Block 18 -->
 
+<!-- Block 19 Raider, BT, Xeno -->
+
+	<unit>
+		<id>676</id>
+		<name>Gouger</name>
+		<picture>dunecrawler.jpg</picture>
+		<attack>2</attack>
+		<health>7</health>
+		<cost>3</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='fear' />
+		<skill id='valor' x='2' />
+		<type>9</type>
+		<set>5001</set>
+	</unit>
+
+	<unit>
+		<id>677</id>
+		<name>Hellgazer</name>
+		<picture>goblobster.jpg</picture>
+		<attack>4</attack>
+		<health>7</health>
+		<cost>4</cost>
+		<rarity>4</rarity> <gold_cost>10000</gold_cost>
+		<skill id='refresh' />
+		<skill id='flurry' x='1' />
+		<skill id='weaken' x='3' played='1' />
+		<type>3</type>
+		<set>5001</set>
+	</unit>
+
+	<unit>
+		<id>678</id>
+		<name>Sickle</name>
+		<picture>xtank.jpg</picture>
+		<attack>2</attack>
+		<health>6</health>
+		<cost>2</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='flying' />
+		<skill id='burst' x='2' />
+		<skill id='immobilize' />
+		<type>4</type>
+		<set>5001</set>
+	</unit>
+	
+<!-- END Block 19 -->
+
+<!-- Block 20 Imperial Bloodthirsty Xeno -->
+
+	<unit>
+		<id>688</id>
+		<name>Staticopter</name>
+		<picture>imerialhelidrone.png</picture>
+		<attack>0</attack>
+		<health>8</health>
+		<cost>2</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='flying' />
+		<skill id='counter' x='2' />
+		<skill id='mimic' />
+		<type>1</type>
+		<set>5001</set>
+	</unit>
+
+	<unit>
+		<id>689</id>
+		<name>Molgator</name>
+		<picture>molgator.jpg</picture>
+		<attack>2</attack>
+		<health>9</health>
+		<cost>4</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='tribute' />
+		<skill id='regenerate' x='4' />
+		<skill id='enfeeble' x='4' />
+		<type>4</type>
+		<set>5001</set>
+	</unit>
+
+	<unit>
+		<id>690</id>
+		<name>Abducter</name>
+		<picture>btcentipod.jpg</picture>
+		<attack>2</attack>
+		<health>5</health>
+		<cost>1</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='berserk' x='1' />
+		<type>3</type>
+		<set>5001</set>
+	</unit>
+
+<!-- END Block 21 -->
+
 <!-- END PROMO Cards -->
 	<!-- Distraction -->
 	
@@ -11016,7 +11755,7 @@
 	</unit>
 	
 	<unit>
-		<id>657</id>
+		<id>701</id>
 		<name>Use This One</name>
 		<picture>alex.jpg</picture>
 		<attack>1</attack>
@@ -11027,7 +11766,7 @@
 	</unit>
 	
 	<unit>
-		<id>1172</id>
+		<id>1180</id>
 		<name>Use This One Commander</name>
 		<picture>alex.jpg</picture>
 		<attack>0</attack>
@@ -11037,7 +11776,7 @@
 	</unit>
 	
 	<unit>
-		<id>2106</id>
+		<id>2109</id>
 		<name>Use This One Structure</name>
 		<picture>alex.jpg</picture>
 		<health>1</health>
@@ -11047,7 +11786,7 @@
 	</unit>
 	
 	<unit>
-		<id>3049</id>
+		<id>3050</id>
 		<name>Use This One Action</name>
 		<picture>alex.jpg</picture>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
@@ -11061,12 +11800,12 @@
 		<id>182</id>
 		<name>TEST</name>
 		<picture>alex.jpg</picture>
-		<attack>0</attack>
-		<health>3</health>
+		<attack>3</attack>
+		<health>10</health>
 		<cost>1</cost>
 		<rarity>1</rarity> <gold_cost>10000</gold_cost>
-		<skill id='cleanse' all='1' died='1' />
-		<type>8</type>
+		<skill id='poison' x='2' />
+		<type>1</type>
 	</unit>
 	
 	<unit>
@@ -11083,11 +11822,10 @@
 		<id>2089</id>
 		<name>Test Structure</name>
 		<picture>lambo.jpg</picture>
-		<health>4</health>
+		<health>5</health>
 		<cost>1</cost>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
-		<skill id='wall' />
-		<skill id='weaken' x='1' />
+		<skill id='backfire' x='10' died='1' />
 		<type>9</type>
 	</unit>
 	
@@ -11105,8 +11843,10 @@
 		<picture>xdog.jpg</picture>
 		<attack>0</attack>
 		<health>8</health>
-		<cost>0</cost>
+		<cost>2</cost>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='jam' y='1' />
+		<skill id='strike' x='6' y='8' />
 		<type>4</type> 
 	</unit>
 
@@ -11149,7 +11889,7 @@
 		<picture>raiderbeachcommander.jpg</picture>
 		<health>20</health>
 		<rarity>3</rarity>
-		<skill id='heal' x='2' y='9' />
+		<skill id='heal' x='2' />
 		<skill id='repair' x='1' />
 		<skill id='siege' x='1' />
 		<type>9</type>
@@ -12576,8 +13316,8 @@
 		<cost>3</cost>
 		<unique>1</unique>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
-		<skill id='refresh' />
 		<skill id='intercept' />
+		<skill id='refresh' />
 		<skill id='antiair' x='2' />
 		<type>8</type>
 		<set>5000</set>
@@ -14186,6 +14926,12 @@
 		<id>6</id>
 		<name>Phobos</name>
 		<icon>PhobosSetIcon</icon>
+		<visible>1</visible>
+	</cardSet>
+	<cardSet>
+		<id>7</id>
+		<name>Phobos Aftermath</name>
+		<icon>AftermathSetIcon</icon>
 		<visible>1</visible>
 	</cardSet>
 	<cardSet>

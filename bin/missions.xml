@@ -9338,6 +9338,473 @@
 	</mission>
 
 <!-- END Phobos Side Missions -->
+
+<!-- Phobos Aftermath Missions -->
+
+	<mission>
+		<id>254</id>
+		<name>Mission 170</name>
+		<picture>mission254.jpg</picture>
+		<location_id>28</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>410</x>
+		<y>120</y> 
+		<xp>44</xp> <!-- 2.95 -->
+		<energy>15</energy>
+		<money>925</money> <!-- 15.5 -->
+		<rep faction='18' amount='3' />
+		<item id='4' p='.01' />
+		<commander>1174</commander>
+		<desc>You cannot waste time, destroy the impeding Xenos quickly.</desc>
+		<speech>
+			<line commander='1026'>Katana! The station has become unstable, we have to get off now.</line>
+			<line commander='1042'>Everyone back to the transport, blast through any Xeno or Raiders that get in your way.</line>
+		</speech>
+		<deck>
+			<card>653</card>
+			<card>659</card>
+			<card>657</card>
+			<card>644</card>
+			<card>636</card>
+			<card>441</card>
+			<card>514</card>
+			<card>66</card>
+			<card>232</card>
+			<card>2096</card>
+		</deck>
+		<rewards>
+			<card>653</card>
+		</rewards>
+		<req>241</req>
+	</mission>
+
+	<mission>
+		<id>255</id>
+		<name>Mission 171</name>
+		<picture>mission255.jpg</picture>
+		<location_id>28</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>350</x>
+		<y>70</y> 
+		<xp>48</xp>
+		<energy>16</energy>
+		<money>1000</money>
+		<rep faction='18' amount='4' />
+		<item id='4' p='.01' />
+		<commander>1174</commander>
+		<desc>The Xeno are willing to sacrifice themselves to ensure your demise.</desc>
+		<speech>
+			<line commander='1042'>Daedalus making our way back to the transport now. Daedalus...? Nothing, we will just have to hope he makes it back.</line>
+		</speech>
+		<deck>
+			<card>616</card>
+			<card>605</card>
+			<card>582</card>
+			<card>537</card>
+			<card>647</card>
+			<card>657</card>
+			<card>548</card>
+			<card>397</card>
+			<card>310</card>
+			<card>3048</card>
+		</deck>
+		<rewards>
+			<card>684</card>
+		</rewards>
+		<req>254</req>
+	</mission>
+
+	<mission>
+		<id>256</id>
+		<name>Mission 172</name>
+		<picture>mission256.jpg</picture>
+		<location_id>28</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>320</x>
+		<y>150</y> 
+		<xp>54</xp>
+		<energy>18</energy>
+		<money>1150</money>
+		<rep faction='18' amount='5' />
+		<item id='4' p='.01' />
+		<commander>1162</commander>
+		<desc>Raiders are retreating to their transports but will still attempt to dispatch you.</desc>
+		<speech>
+			<line commander='1026'>The passage ahead is blocked we have to find another way around.</line>
+			<line commander='1026'>Raiders set a trap for us. We have to get through them!</line>
+		</speech>
+		<deck>
+			<card>643</card>
+			<card>536</card>
+			<card>589</card>
+			<card>529</card>
+			<card>183</card>
+			<card>105</card>
+			<card>650</card>
+			<card>637</card>
+			<card>215</card>
+			<card>3041</card>
+		</deck>
+		<rewards>
+			<card>650</card>
+		</rewards>
+		<req>255</req>
+	</mission>
+
+	<mission>
+		<id>257</id>
+		<name>Mission 173</name>
+		<picture>mission257.jpg</picture>
+		<location_id>28</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>280</x>
+		<y>210</y> 
+		<xp>58</xp>
+		<energy>19</energy>
+		<money>1250</money>
+		<rep faction='18' amount='6' />
+		<item id='4' p='.03' />
+		<commander>1162</commander>
+		<desc>Transports carrying Raiders are starting to leave the station. Destroy the Raiders foolish enough to stay behind.</desc>
+		<speech>
+			<line commander='1042'>Did you feel that Commander? We don't have much time. The station is falling apart.</line>
+		</speech>
+		<deck>
+			<card>674</card>
+			<card>673</card>
+			<card>637</card>
+			<card>591</card>
+			<card>618</card>
+			<card>584</card>
+			<card>394</card>
+			<card>327</card>
+			<card>92</card>
+			<card>314</card>
+			<card>3047</card>
+		</deck>
+		<rewards>
+			<card>649</card>
+		</rewards>
+		<req>256</req>
+	</mission>
+
+	<mission>
+		<id>258</id>
+		<name>Mission 174</name>
+		<picture>mission258.jpg</picture>
+		<location_id>28</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>220</x>
+		<y>220</y> 
+		<xp>62</xp>
+		<energy>20</energy>
+		<money>1350</money>
+		<rep faction='18' amount='7' />
+		<item id='4' p='.04' />
+		<commander>1174</commander>
+		<desc>The enemy will attempt to use your tactics against you.</desc>
+		<speech>
+			<line commander='1042'>If we can't get to the transport through this passage we won't make it!</line>
+		</speech>
+		<deck>
+			<card>647</card>
+			<card>659</card>
+			<card>626</card>
+			<card>490</card>
+			<card>240</card>
+			<card>636</card>
+			<card>525</card>
+			<card>261</card>
+			<card>222</card>
+			<card>206</card>
+			<card>2053</card>
+			<card>3028</card>
+		</deck>
+		<rewards>
+			<card>659</card>
+		</rewards>
+		<req>257</req>
+	</mission>
+
+	<mission>
+		<id>259</id>
+		<name>Mission 175</name>
+		<picture>mission259.jpg</picture>
+		<location_id>28</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>170</x>
+		<y>220</y> 
+		<xp>65</xp> <!-- 3.1 -->
+		<energy>21</energy>
+		<money>1425</money> <!-- 17.0 -->
+		<rep faction='18' amount='8' />
+		<item id='4' p='.05' />
+		<commander>1162</commander>
+		<desc>Raiders are firing from their transport while Xeno are accelerating the destruction of the station</desc>
+		<speech>
+			<line commander='1172'>Move it! Xeno are firing on the station, We have to go now!</line>
+		</speech>
+		<speechComplete>
+			<line commander='1172'>I did not think you would make it, Daedalus was right about me underestimating you.</line>
+			<line commander='1042'>Did Daedalus make it?</line>
+			<line commander='1172'>Before the comms went down we were ordered to wait for you then take off. Hopefully he made it on one of the other transports that launched. We will know when we reach the Wasteland.</line>
+		</speechComplete>
+		<deck>
+			<card>674</card>
+			<card>637</card>
+			<card>659</card>
+			<card>653</card>
+			<card>23</card>
+			<card>626</card>
+			<card>587</card>
+			<card>582</card>
+			<card>633</card>
+			<card>568</card>
+			<card>509</card>
+			<card>585</card>
+			<card>2096</card>
+		</deck>
+		<rewards>
+			<card>670</card>
+		</rewards>
+		<req>258</req>
+	</mission>
+
+<!-- Area 2 -->
+
+	<mission>
+		<id>260</id>
+		<name>Mission 176</name>
+		<picture>mission260.jpg</picture>
+		<location_id>29</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>440</x>
+		<y>190</y> 
+		<xp>51</xp> <!-- 3.0 -->
+		<energy>17</energy>
+		<money>1100</money> <!-- 16.0 -->
+		<rep faction='18' amount='9' />
+		<item id='4' p='.01' />
+		<commander>1174</commander>
+		<desc>You can take the Xeno by surprise before they have an oppurtunity to assemble themselves.</desc>
+		<speech>
+			<line commander='1172'>Prepare to land. We have been followed by other Xeno transports so be prepared for a fight as soon as we touch down.</line>
+		</speech>
+		<deck>
+			<card>41</card>
+			<card>647</card>
+			<card>256</card>
+			<card>418</card>
+			<card>452</card>
+			<card>657</card>
+			<card>571</card>
+			<card>425</card>
+			<card>493</card>
+			<card>2105</card>
+		</deck>
+		<rewards>
+			<card>647</card>
+		</rewards>
+		<req>259</req>
+	</mission>
+
+	<mission>
+		<id>261</id>
+		<name>Mission 177</name>
+		<picture>mission261.jpg</picture>
+		<location_id>29</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>400</x>
+		<y>130</y> 
+		<xp>55</xp> <!-- 3.04 -->
+		<energy>18</energy>
+		<money>1175</money> <!-- 16.3 -->
+		<rep faction='18' amount='10' />
+		<item id='4' p='.01' />
+		<commander>1163</commander>
+		<desc>The Bloodthirsty are still startled from the blast and are more aggressive as a result.</desc>
+		<speech>
+			<line commander='1172'>We landed just outside the blast radius of the Ion Cannon. We will need to fight through the Blight and Bloodthirsty til we reach the clearing.</line>
+		</speech>
+		<deck>
+			<card>672</card>
+			<card>638</card>
+			<card>641</card>
+			<card>583</card>
+			<card>467</card>
+			<card>345</card>
+			<card>621</card>
+			<card>496</card>
+			<card>515</card>
+			<card>2031</card>
+		</deck>
+		<rewards>
+			<card>672</card>
+		</rewards>
+		<req>260</req>
+	</mission>
+
+	<mission>
+		<id>262</id>
+		<name>Mission 178</name>
+		<picture>mission262.jpg</picture>
+		<location_id>29</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>340</x>
+		<y>100</y> 
+		<xp>59</xp> <!-- 3.08 -->
+		<energy>19</energy>
+		<money>1250</money> <!-- 16.6 -->
+		<rep faction='18' amount='12' />
+		<item id='4' p='.01' />
+		<commander>1163</commander>
+		<desc>You have to get through the Bloodthirsty to reach Daedalus</desc>
+		<speech>
+			<line commander='1042'>Commander, transports are touching down over the ridge, could be Daedalus.</line>
+			<line commander='1172'>We must be careful, they could also be Raiders. We should check it out regardless.</line>
+		</speech>
+		<deck>
+			<card>635</card>
+			<card>500</card>
+			<card>524</card>
+			<card>113</card>
+			<card>656</card>
+			<card>231</card>
+			<card>512</card>
+			<card>484</card>
+			<card>2099</card>
+			<card>3024</card>
+		</deck>
+		<rewards>
+			<card>638</card>
+		</rewards>
+		<req>261</req>
+	</mission>
+
+	<mission>
+		<id>263</id>
+		<name>Mission 179</name>
+		<picture>mission263.jpg</picture>
+		<location_id>29</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>280</x>
+		<y>80</y> 
+		<xp>65</xp> <!-- 3.12 -->
+		<energy>21</energy>
+		<money>1425</money> <!-- 16.9 -->
+		<rep faction='18' amount='13' />
+		<item id='4' p='.04' />
+		<commander>1162</commander>
+		<desc>Raiders will attack quickly while their larger forces are still preparing from the landing.</desc>
+		<speech>
+			<line commander='1042'>These are all Raider transports, they are disoriented so we should be able to sneak by.</line>
+			<line commander='1172'>Negative. There is a chance the Raiders captured Daedalus, we have to strike while we have the advantage of surprise.</line>
+		</speech>
+		<deck>
+			<card>637</card>
+			<card>566</card>
+			<card>617</card>
+			<card>624</card>
+			<card>529</card>
+			<card>449</card>
+			<card>428</card>
+			<card>383</card>
+			<card>374</card>
+			<card>2088</card>
+			<card>3038</card>
+		</deck>
+		<rewards>
+			<card>673</card>
+		</rewards>
+		<req>262</req>
+	</mission>
+
+	<mission>
+		<id>264</id>
+		<name>Mission 180</name>
+		<picture>mission264.jpg</picture>
+		<location_id>29</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>250</x>
+		<y>120</y> 
+		<xp>69</xp> <!-- 3.15 -->
+		<energy>22</energy>
+		<money>1500</money> <!-- 17.2 -->
+		<rep faction='18' amount='14' />
+		<item id='4' p='.05' />
+		<commander>1162</commander>
+		<desc>The Raiders took you by surprise, now you must fend off a large force.</desc>
+		<speech>
+			<line commander='1042'>Commander! More Raiders are closing on our location. It appears there were more transports than we thought.</line>
+		</speech>
+		<deck>
+			<card>580</card>
+			<card>495</card>
+			<card>460</card>
+			<card>313</card>
+			<card>237</card>
+			<card>247</card>
+			<card>47</card>
+			<card>189</card>
+			<card>373</card>
+			<card>372</card>
+			<card>2106</card>
+			<card>2046</card>
+		</deck>
+		<rewards>
+			<card>3049</card>
+		</rewards>
+		<req>263</req>
+	</mission>
+
+	<mission>
+		<id>265</id>
+		<name>Mission 181</name>
+		<picture>mission265.jpg</picture>
+		<location_id>29</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>230</x>
+		<y>180</y> 
+		<xp>73</xp> <!-- 3.18 -->
+		<energy>23</energy>
+		<money>1600</money> <!-- 17.5 -->
+		<rep faction='18' amount='15' />
+		<item id='4' p='.06' />
+		<commander>1162</commander>
+		<desc>Assistance from Daedalus may not be enough to overcome this massive Raider force.</desc>
+		<speech>
+			<line commander='1153'>Never give up Commander!</line>
+			<line commander='1042'>Daedalus!?</line>
+			<line commander='1153'>Sorry I am late, but it looks like I am just in time to help wipe out these Raider scum.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1153'>We did it Commander.</line>
+			<line commander='1042'>You mean...?</line>
+			<line commander='1153'>Take a look for yourself.</line>
+			<line commander='1042'>There is hope yet.</line>
+		</speechComplete>
+		<deck>
+			<card>637</card>
+			<card>536</card>
+			<card>478</card>
+			<card>394</card>
+			<card>92</card>
+			<card>54</card>
+			<card>245</card>
+			<card>198</card>
+			<card>270</card>
+			<card>73</card>
+			<card>130</card>
+			<card>2058</card>
+			<card>2023</card>
+		</deck>
+		<rewards>
+			<card>637</card>
+		</rewards>
+		<req>264</req>
+	</mission>
+	
+<!-- END Phobos Aftermath Missions -->
 	
 <!-- END MISSIONS -->
 	
@@ -9663,6 +10130,18 @@
 		<effect x='292' y='220'>northpolemapFX.swf</effect>
 		<nav>Nav26</nav>
 		<req>235</req>
+	</location>
+	
+	<location>
+		<id>29</id>
+		<name>Wasteland</name>
+		<picture>WastelandMap</picture>
+		<picture_file>wastelandHD.jpg</picture_file>
+		<effect_file>wastelandHDFX.swf</effect_file>
+		<battlefield>wasteland.png</battlefield>
+		<effect x='292' y='220'>wastelandeffects.swf</effect>
+		<nav>Nav7</nav>
+		<req>259</req>
 	</location>
 	
 	<faction>
@@ -10122,6 +10601,33 @@
 			<rep_req>2000</rep_req>
 			<cost>20000</cost>
 			<card>625</card>
+		</reward>
+	</faction>
+	
+	<faction>
+		<id>18</id>
+		<location_id>28</location_id>
+		<location_id>29</location_id>
+		<name>Champions of Hope</name>
+		<icon>DeadBlightFactionIcon</icon>
+		<repbase>1000</repbase>
+		<reward id='1'>
+			<rep_level>1</rep_level>
+			<rep_req>200</rep_req>
+			<cost>500</cost>
+			<card>679</card>
+		</reward>
+		<reward id='2'>
+			<rep_level>2</rep_level>
+			<rep_req>800</rep_req>
+			<cost>5000</cost>
+			<card>681</card>
+		</reward>
+		<reward id='3'>
+			<rep_level>3</rep_level>
+			<rep_req>2000</rep_req>
+			<cost>20000</cost>
+			<card>682</card>
 		</reward>
 	</faction>
 	
