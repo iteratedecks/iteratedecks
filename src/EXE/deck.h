@@ -32,10 +32,12 @@ typedef	unsigned int UINT;
 
 #define FANCY_STATS_COUNT		5
 
-#define CARD_MAX_ID				4000 // size of storage array
-#define MISSION_MAX_ID			350  // size of storage array
-#define ACHIEVEMENT_MAX_COUNT	250  // size of storage array
-#define RAID_MAX_ID				20  // size of storage array
+#define CARD_MAX_ID				4000 // sizes of storage arrays
+#define MISSION_MAX_ID			400
+#define ACHIEVEMENT_MAX_COUNT	300
+#define RAID_MAX_ID				30
+#define BATTLEGROUND_MAX_ID		20
+#define STEP_MAX_ID				40
 
 #define RARITY_COMMON			0
 #define RARITY_UNCOMMON			1
@@ -126,6 +128,15 @@ char FACTIONS[6][CARD_NAME_MAX_LENGTH] = {0,"Imperial","Raider","Bloodthirsty","
 #define SPECIAL_AUGMENT			63
 #define SPECIAL_MIST			64 // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
 #define SPECIAL_BLIZZARD		65 // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
+
+#define QEFFECT_TIME_SURGE		1
+#define QEFFECT_COPYCAT			2
+#define QEFFECT_QUICKSILVER		3
+#define QEFFECT_DECAY			4
+#define QEFFECT_HIGH_SKIES		5
+#define QEFFECT_IMPENETRABLE	6
+#define QEFFECT_INVIGORATE		7
+#define QEFFECT_CLONE_PROJECT	8
 
 #define UNDEFINED_NAME			"UNDEFINED"
 
@@ -351,7 +362,7 @@ public:
 	const UCHAR GetAbilitiesCount() const { return (UCHAR)AbilitiesOrdered.size(); }
 	const UCHAR GetAbilityInOrder(const UCHAR order) const
 	{
-		_ASSERT(AbilitiesOrdered.size() > order);
+		//_ASSERT(AbilitiesOrdered.size() > order); DISABLED FOR THE PURPOSE OF QUEST EFFECT TIME SURGE
 		if (AbilitiesOrdered.size() <= order)
 			return 0;
 		else
@@ -378,6 +389,7 @@ private:
 	UCHAR Effects[CARD_ABILITIES_MAX];
 	bool bPlayed;
 	bool bActivated;
+	bool bQuestSplit;
 	UCHAR DeathEvents;
 public:
 	// fancy stats
@@ -420,6 +432,14 @@ public:
 	void SetCardSkillProcBuffer(UCHAR *_SkillProcBuffer)
 	{
 		SkillProcBuffer = _SkillProcBuffer;
+	}
+	const bool GetQuestSplit() const
+	{
+		return bQuestSplit;
+	}
+	void SetQuestSplit(bool bSplit)
+	{
+		bQuestSplit = bSplit;
 	}
 	void CardSkillProc(UCHAR aid)
 	{
@@ -554,7 +574,7 @@ Valor: Removed after owner ends his turn.
 				if (bConsoleOutput)
 				{
 					PrintDesc();
-					printf(" regenerated % health\n",Health);
+					printf(" regenerated %d health\n",Health);
 				}
 			}
 			else
@@ -593,7 +613,7 @@ Valor: Removed after owner ends his turn.
 		fsDmgMitigated += dmg;
 		return dmg;
 	}
-	bool HitCommander(const UCHAR Dmg, PlayedCard &Src, VCARDS &Structures, bool bCanBeCountered = true, UCHAR *overkill = 0, VLOG *log = 0, LOG_RECORD *lr = 0)
+	bool HitCommander(UINT QuestEffectId, const UCHAR Dmg, PlayedCard &Src, VCARDS &Structures, bool bCanBeCountered = true, UCHAR *overkill = 0, VLOG *log = 0, LOG_RECORD *lr = 0)
 	{
 		_ASSERT(GetType() == TYPE_COMMANDER); // double check for debug
 		_ASSERT(Dmg); // 0 dmg is pointless and indicates an error
@@ -603,24 +623,27 @@ Valor: Removed after owner ends his turn.
 		{
 			if (vi->GetAbility(DEFENSIVE_WALL) && vi->IsAlive())
 			{
-				vi->CardSkillProc(DEFENSIVE_WALL);
-				if (lr)
+				if (QuestEffectId != QEFFECT_IMPENETRABLE)
 				{
-					lr->Target.CardID = index;
-					lr->Target.RowID = TYPE_STRUCTURE;
-				}
-				// walls can counter and regenerate
-				vi->SufferDmg(Dmg,0,0,0,overkill);
-				if (vi->GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // counter, dmg from crush can't be countered
-				{
-					vi->CardSkillProc(DEFENSIVE_COUNTER);
-					UCHAR cdmg = vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
-					vi->fsDmgDealt += cdmg;
-					UCHAR loverkill = 0;
-					if (lr && log)
-						log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
-					Src.SufferDmg(cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
-					vi->fsOverkill += loverkill;
+					vi->CardSkillProc(DEFENSIVE_WALL);
+					if (lr)
+					{
+						lr->Target.CardID = index;
+						lr->Target.RowID = TYPE_STRUCTURE;
+					}
+					// walls can counter and regenerate
+					vi->SufferDmg(Dmg,0,0,0,overkill);
+					if (vi->GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // counter, dmg from crush can't be countered
+					{
+						vi->CardSkillProc(DEFENSIVE_COUNTER);
+						UCHAR cdmg = vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
+						vi->fsDmgDealt += cdmg;
+						UCHAR loverkill = 0;
+						if (lr && log)
+							log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
+						Src.SufferDmg(cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
+						vi->fsOverkill += loverkill;
+					}
 				}
 				return false;
 			}
@@ -730,6 +753,7 @@ Valor: Removed after owner ends his turn.
 		Health = card->GetHealth();
 		Wait = card->GetWait();
 		Faction = card->GetFaction();
+		bQuestSplit = false;
 		bPlayed = false;
 		bActivated = false;
 		memset(Effects,0,CARD_ABILITIES_MAX);
@@ -752,6 +776,7 @@ Valor: Removed after owner ends his turn.
 		Health = card->GetHealth();
 		Wait = card->GetWait();
 		Faction = card->GetFaction();
+		bQuestSplit = false;
 		bPlayed = false;
 		bActivated = false;
 		memset(Effects,0,CARD_ABILITIES_MAX);
@@ -849,7 +874,7 @@ Valor: Removed after owner ends his turn.
 			return false;
 	}
 	const bool IsDiseased() const	{	return Effects[DMGDEPENDANT_DISEASE] > 0; }
-	UCHAR Heal(UCHAR amount)
+	UCHAR Heal(UCHAR amount,UINT QuestEffectId = 0)
 	{
 		_ASSERT(!IsDiseased()); // disallowed
 		if (IsDiseased()) return 0;
@@ -860,6 +885,8 @@ Valor: Removed after owner ends his turn.
 		}
 		else
 			Health += amount;
+		if (amount && (QuestEffectId == QEFFECT_INVIGORATE))
+			Attack += amount;
 		return amount;
 	}
 	const Card *GetOriginalCard() const { return OriginalCard; }
@@ -870,6 +897,7 @@ Valor: Removed after owner ends his turn.
 		Health = 0;
 		Wait = 0;
 		Faction = 0;
+		bQuestSplit = false;
 		bPlayed = false;
 		bActivated = false;
 		OriginalCard = 0;
@@ -923,6 +951,8 @@ public:
 	// logging related stuff
 	UCHAR LogDeckID;
 	VLOG *Log;
+	// Quest effects
+	UINT QuestEffectId;
 private:
 	void Reserve()
 	{
@@ -994,7 +1024,7 @@ private:
 				UCHAR cdmg = SRC.GetAttack()+valor;
 				if (cdmg > StrongestAttack)
 					StrongestAttack = cdmg;
-				if (Def.Commander.HitCommander(cdmg,SRC,Def.Structures,true,&overkill,
+				if (Def.Commander.HitCommander(QuestEffectId,cdmg,SRC,Def.Structures,true,&overkill,
 					Log, LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),0,cdmg)))
 				{
 					DamageToCommander += cdmg;
@@ -1082,7 +1112,7 @@ private:
 						UCHAR overkill = 0;
 						if (cdmg > StrongestAttack)
 							StrongestAttack = cdmg;
-						if (Def.Commander.HitCommander(cdmg,SRC,Def.Structures,true,&overkill,
+						if (Def.Commander.HitCommander(QuestEffectId,cdmg,SRC,Def.Structures,true,&overkill,
 							Log, LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),0,cdmg)))
 						{
 							DamageToCommander += cdmg;
@@ -1121,7 +1151,7 @@ private:
 					UCHAR antiair = SRC.GetAbility(COMBAT_ANTIAIR);
 					if (targets[s]->GetAbility(DEFENSIVE_FLYING))
 					{
-						if ((!antiair) && (!SRC.GetAbility(DEFENSIVE_FLYING)) && PROC50) // missed
+						if ((!antiair) && (!SRC.GetAbility(DEFENSIVE_FLYING)) && (PROC50 || (QuestEffectId == QEFFECT_HIGH_SKIES))) // missed
 						{
 							targets[s]->fsAvoided += SRC.GetAttack() + valor + burst + targets[s]->GetEffect(ACTIVATION_ENFEEBLE); // note that this IGNORES armor and protect
 							Def.SkillProcs[DEFENSIVE_FLYING]++;
@@ -1202,7 +1232,7 @@ private:
 						if (SRC.GetAbility(DMGDEPENDANT_CRUSH))
 						{								
 							UCHAR overkill = 0;
-							if (Def.Commander.HitCommander(SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def.Structures,false,&overkill,
+							if (Def.Commander.HitCommander(QuestEffectId,SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def.Structures,false,&overkill,
 								Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),DMGDEPENDANT_CRUSH,SRC.GetAbility(DMGDEPENDANT_CRUSH))))
 							{
 								DamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
@@ -1268,7 +1298,7 @@ private:
 						UCHAR leech = (SRC.GetAbility(DMGDEPENDANT_LEECH) < dmg) ? SRC.GetAbility(DMGDEPENDANT_LEECH) : dmg;
 						if (leech && (!SRC.IsDiseased()))
 						{
-							leech = SRC.Heal(leech);
+							leech = SRC.Heal(leech,QuestEffectId);
 							SRC.fsHealed += leech;
 							if (leech > 0)
 							{
@@ -1283,7 +1313,7 @@ private:
 						UCHAR siphon = (SRC.GetAbility(DMGDEPENDANT_SIPHON) < dmg) ? SRC.GetAbility(DMGDEPENDANT_SIPHON) : dmg;
 						if (siphon)
 						{
-							siphon = Commander.Heal(siphon);
+							siphon = Commander.Heal(siphon,QuestEffectId);
 							SRC.fsHealed += siphon;
 							if (siphon > 0)
 							{
@@ -1318,6 +1348,7 @@ private:
 public:
 	ActiveDeck() 
 	{
+		QuestEffectId = 0;
 		Log = 0;
 		bOrderMatters = false; 
 		bDelayFirstCard = false; 
@@ -1367,11 +1398,16 @@ public:
 				c++;
 		return c;
 	}
+	void SetQuestEffect(UINT EffectId)
+	{
+		QuestEffectId = EffectId;
+	}
 	// please note, contructors don't clean up storages, must do it manually and beforehand, even copy constructor
 	ActiveDeck(const char *HashBase64, const Card *pCDB)
 	{
 		_ASSERT(pCDB);
 		_ASSERT(HashBase64);
+		QuestEffectId = 0;
 		Log = 0;
 		CSIndex = 0;
 		CSResult = 0;
@@ -1421,6 +1457,7 @@ public:
 	}
 	ActiveDeck(const Card *Cmd) 
 	{ 
+		QuestEffectId = 0;
 		Log = 0;
 		bOrderMatters = false; 
 		bDelayFirstCard = false; 
@@ -1438,6 +1475,7 @@ public:
 	};
 	ActiveDeck(const ActiveDeck &D) // need copy constructor
 	{
+		QuestEffectId = D.QuestEffectId;
 		Log = 0;
 		Commander = D.Commander;
 		Commander.SetCardSkillProcBuffer(SkillProcs);
@@ -1600,7 +1638,7 @@ public:
 			}
 		return destindex;
 	}
-	void ApplyEffects(UCHAR EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false,PlayedCard *Mimicer=0,UCHAR StructureIndex = 0)
+	void ApplyEffects(UINT QuestEffectId,UCHAR EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false,PlayedCard *Mimicer=0,UCHAR StructureIndex = 0)
 	{
 		UCHAR destindex,aid,faction;
 		PPCIV targets;
@@ -1627,12 +1665,19 @@ public:
 					break;
 				}
 		}
+		if ((QuestEffectId == QEFFECT_CLONE_PROJECT) && (!IsMimiced) && (Src.GetQuestSplit()) && (EffectType == EVENT_EMPTY))
+		{
+			Src.SetQuestSplit(false); // remove mark
+			bSplit = true;
+		}
 		// here is a good question - can paybacked skill be paybacked? - nope
 		// can paybacked skill be evaded? - doubt
 		// in current model, it can't be, payback applies effect right away, without simulationg it's cast
 		// another question is - can paybacked skill be evaded? it is possible, but in this simulator it can't be
 		// both here and in branches
 		UCHAR ac = Src.GetAbilitiesCount();
+		if ((!ac) && (QuestEffectId == QEFFECT_TIME_SURGE) && (!IsMimiced) && (EffectType == EVENT_EMPTY))
+			ac = 1;
 		for (UCHAR aindex=0;aindex<ac;aindex++)
 		{
 			if (!IsMimiced)
@@ -1657,7 +1702,7 @@ public:
 				continue;
 
 			// cleanse
-			if (aid == ACTIVATION_CLEANSE)
+			if ((aid == ACTIVATION_CLEANSE) && (QuestEffectId != QEFFECT_DECAY))
 			{
 				effect = Src.GetAbility(aid) * FusionMultiplier; // will it be fusioned? who knows
 				if (effect > 0)
@@ -1783,7 +1828,7 @@ public:
 								Dest.SkillProcs[aid]++;
 						}
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (!chaos) && (PROC50))
+							if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (!chaos) && (PROC50))
 							{
 								// evaded
 								Dest.SkillProcs[DEFENSIVE_EVADE]++;
@@ -1867,9 +1912,9 @@ public:
 								printf(" for %d\n",effect);
 							}
 							if (!IsMimiced)
-								Src.fsHealed += vi->first->Heal(effect);
+								Src.fsHealed += vi->first->Heal(effect,QuestEffectId);
 							else
-								Mimicer->fsHealed += vi->first->Heal(effect);
+								Mimicer->fsHealed += vi->first->Heal(effect,QuestEffectId);
 							if (vi->first->GetAbility(DEFENSIVE_TRIBUTE) && bTributable && PROC50)
 							{
 								if (IsMimiced)
@@ -1877,7 +1922,7 @@ public:
 									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != vi->first))
 									{
 										Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
-										vi->first->fsHealed += Mimicer->Heal(effect);
+										vi->first->fsHealed += Mimicer->Heal(effect,QuestEffectId);
 									}
 								}
 								else
@@ -1885,7 +1930,7 @@ public:
 									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != vi->first))
 									{
 										SkillProcs[DEFENSIVE_TRIBUTE]++;
-										vi->first->fsHealed += Src.Heal(effect);
+										vi->first->fsHealed += Src.Heal(effect,QuestEffectId);
 									}
 								}
 							}
@@ -1933,9 +1978,9 @@ public:
 								printf(" for %d\n",effect);
 							}
 							if (!IsMimiced)
-								Src.fsHealed += vi->first->Heal(effect);
+								Src.fsHealed += vi->first->Heal(effect,QuestEffectId);
 							else
-								Mimicer->fsHealed += vi->first->Heal(effect);
+								Mimicer->fsHealed += vi->first->Heal(effect,QuestEffectId);
 							if (vi->first->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
 							{
 								if (IsMimiced)
@@ -1943,7 +1988,7 @@ public:
 									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != vi->first))
 									{
 										Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
-										vi->first->fsHealed += Mimicer->Heal(effect);
+										vi->first->fsHealed += Mimicer->Heal(effect,QuestEffectId);
 									}
 								}
 								else
@@ -1951,7 +1996,7 @@ public:
 									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != vi->first))
 									{
 										SkillProcs[DEFENSIVE_TRIBUTE]++;
-										vi->first->fsHealed += Src.Heal(effect);
+										vi->first->fsHealed += Src.Heal(effect,QuestEffectId);
 									}
 								}
 							}
@@ -2072,7 +2117,7 @@ public:
 						}
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
 							if (PROC50)
-								if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
+								if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos))
 								{
 									// evaded
 									// no fancy stats here?!
@@ -2148,7 +2193,7 @@ public:
 								Dest.SkillProcs[aid]++;
 						}
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
+							if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos))
 							{
 								// evaded
 								// no fancy stats here?!
@@ -2190,7 +2235,7 @@ public:
 						faction = FACTION_NONE;
 					else
 						faction = Src.GetTargetFaction(aid);
-					if (chaos > 0)
+					if ((chaos > 0) || (QuestEffectId == QEFFECT_COPYCAT))
 						GetTargets(Units,faction,targets);
 					else
 						GetTargets(Dest.Units,faction,targets);
@@ -2209,7 +2254,7 @@ public:
 						if (!targets.empty())
 							SkillProcs[aid]++;
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
+							if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos))
 							{
 								// evaded
 								Dest.SkillProcs[DEFENSIVE_EVADE]++;
@@ -2224,9 +2269,9 @@ public:
 									printf("\n");
 								}
 								if (chaos > 0)
-									ApplyEffects(EVENT_EMPTY,*vi->first,Position,*this,true,false,&Src);
+									ApplyEffects(QuestEffectId,EVENT_EMPTY,*vi->first,Position,*this,true,false,&Src);
 								else
-									ApplyEffects(EVENT_EMPTY,*vi->first,Position,Dest,true,false,&Src);	
+									ApplyEffects(QuestEffectId,EVENT_EMPTY,*vi->first,Position,Dest,true,false,&Src);	
 							}
 					}
 					targets.clear();
@@ -2357,7 +2402,7 @@ public:
 						}
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
 						{
-							vi->first->Heal(effect);
+							vi->first->Heal(effect,QuestEffectId);
 							if (!IsMimiced)
 								Src.fsHealed += effect;
 							else
@@ -2410,7 +2455,7 @@ public:
 						}
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
 					
-							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
+							if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos))
 							{
 								// evaded
 								vi->first->fsAvoided += effect;
@@ -2482,7 +2527,7 @@ public:
 								Dest.SkillProcs[aid]++;
 						}
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
+							if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos))
 							{
 								// evaded
 								vi->first->fsAvoided += effect;
@@ -2577,7 +2622,7 @@ public:
 								Dest.SkillProcs[aid]++;
 						}
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
+							if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos))
 							{
 								// evaded
 								Dest.SkillProcs[DEFENSIVE_EVADE]++;
@@ -2609,9 +2654,11 @@ public:
 			// rush - not sure yet whether this skill is activation or not
 			// can it be mimiced? it only presents on structures and commanders atm
 			// it shouldn't be tributable
-			if (aid == ACTIVATION_RUSH)
+			if ((aid == ACTIVATION_RUSH) || ((QuestEffectId == QEFFECT_TIME_SURGE) && (!aindex)))
 			{
 				effect = Src.GetAbility(aid);
+				if (aid != ACTIVATION_RUSH)
+					effect = 1;
 				if (effect > 0)
 				{
 					faction = Src.GetTargetFaction(aid);
@@ -2695,7 +2742,7 @@ public:
 								Dest.SkillProcs[aid]++;
 						}
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-							if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
+							if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos))
 							{
 								// evaded
 								Dest.SkillProcs[DEFENSIVE_EVADE]++;
@@ -2869,7 +2916,7 @@ public:
 	void CheckDeathEvents(PlayedCard &src, ActiveDeck &Def)
 	{
 		if (src.OnDeathEvent())
-			ApplyEffects(EVENT_DIED,src,-1,Def);
+			ApplyEffects(QuestEffectId,EVENT_DIED,src,-1,Def);
 	}
 	void AttackDeck(ActiveDeck &Def, bool bSkipCardPicks = false)
 	{
@@ -2882,7 +2929,7 @@ public:
 		//  Moraku: If “Heal on Death” triggers from poison damage, it will NOT be able to heal another unit dying from poison damage on the same turn. (All poison damage takes place before “On Death” skills trigger)
 		for (UCHAR i=0;i<Units.size();i++)
 			if (Units[i].OnDeathEvent())
-				ApplyEffects(EVENT_DIED,Units[i],-1,Def);
+				ApplyEffects(QuestEffectId,EVENT_DIED,Units[i],-1,Def);
 
 		if (!bSkipCardPicks)
 		{
@@ -2890,13 +2937,37 @@ public:
 			if (c)
 			{
 				if (c->GetType() == TYPE_ACTION)
-					ApplyEffects(EVENT_PLAYED,Actions[0],-1,Def);
+					ApplyEffects(QuestEffectId,EVENT_PLAYED,Actions[0],-1,Def);
 				else
 				if (c->GetType() == TYPE_STRUCTURE)
-					ApplyEffects(EVENT_PLAYED,Structures[Structures.size() - 1],-1,Def);			
+					ApplyEffects(QuestEffectId,EVENT_PLAYED,Structures[Structures.size() - 1],-1,Def);			
 				else
 				if (c->GetType() == TYPE_ASSAULT)
-					ApplyEffects(EVENT_PLAYED,Units[Units.size() - 1],-1,Def);
+				{
+					ApplyEffects(QuestEffectId,EVENT_PLAYED,Units[Units.size() - 1],-1,Def);
+					// add quest statuses for decay
+					if (QuestEffectId == QEFFECT_DECAY)
+					{
+						Units[Units.size() - 1].SetEffect(DMGDEPENDANT_POISON,1);
+						Units[Units.size() - 1].SetEffect(DMGDEPENDANT_DISEASE,ABILITY_ENABLED);
+					}
+				}
+			}
+		}
+
+		// Quest split mark
+		if (QuestEffectId == QEFFECT_CLONE_PROJECT)
+		{
+			PPCIV GetTo;
+			for (VCARDS::iterator vi = Units.begin();vi != Units.end();vi++)
+			{
+				if ((vi->IsAlive()) && (vi->GetWait() == 0))
+					GetTo.push_back(PPCARDINDEX(&(*vi),0));
+			}
+			if (!GetTo.empty())
+			{
+				UCHAR rc = UCHAR(rand() % GetTo.size());
+				GetTo[rc].first->SetQuestSplit(true);
 			}
 		}
 
@@ -2911,7 +2982,7 @@ public:
 		for (UCHAR i=0;i<Actions.size();i++)
 		{
 			// apply actions somehow ...
-			ApplyEffects(EVENT_EMPTY,Actions[i],-1,Def);
+			ApplyEffects(QuestEffectId,EVENT_EMPTY,Actions[i],-1,Def);
 		}
 		for (VCARDS::iterator vi = Actions.begin();vi != Actions.end();vi++)
 			SweepFancyStats(*vi);
@@ -2942,7 +3013,7 @@ public:
 				UCHAR i = UCHAR(rand() % targets.size());
 				i = Intercept(targets, i, Def); // we don't know anything about Infuse being interceptable :( I assume, it is
 				PlayedCard *t = targets[i].first;
-				if ((i < defcount) && (t->GetAbility(DEFENSIVE_EVADE)) && PROC50) // we check evade only on our cards, enemy cards don't seem to actually evade infuse since it's rather helpful to them then harmful
+				if ((i < defcount) && (t->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && PROC50) // we check evade only on our cards, enemy cards don't seem to actually evade infuse since it's rather helpful to them then harmful
 				{
 					// evaded infuse
 					//printf("Evaded\n");
@@ -2953,13 +3024,13 @@ public:
 		}
 		// apply actions same way 
 		if (Commander.IsDefined())
-			ApplyEffects(EVENT_EMPTY,Commander,-1,Def);
+			ApplyEffects(QuestEffectId,EVENT_EMPTY,Commander,-1,Def);
 		// structure cards
 		for (UCHAR i=0;i<Structures.size();i++)
 		{
 			// apply actions somehow ...
 			if (Structures[i].BeginTurn())
-				ApplyEffects(EVENT_EMPTY,Structures[i],-1,Def,false,(iFusionCount >= 3),0,i);
+				ApplyEffects(QuestEffectId,EVENT_EMPTY,Structures[i],-1,Def,false,(iFusionCount >= 3),0,i);
 			Structures[i].EndTurn();
 		}
 		// assault cards
@@ -2968,10 +3039,10 @@ public:
 			if (Units[i].BeginTurn())
 			{
 				//if (!Units[i].GetEffect(ACTIVATION_JAM)) // jammed - checked in beginturn
-				ApplyEffects(EVENT_EMPTY,Units[i],i,Def);
+				ApplyEffects(QuestEffectId,EVENT_EMPTY,Units[i],i,Def);
 				if ((!Units[i].GetEffect(DMGDEPENDANT_IMMOBILIZE)) && (!Units[i].GetEffect(ACTIVATION_JAM)) && (!Units[i].GetEffect(ACTIVATION_FREEZE))) // tis funny but I need to check Jam for second time in case it was just paybacked
 				{
-					if (Units[i].IsAlive() && Units[i].GetAttack()) // can't attack with dead unit ;) also if attack = 0 then dont attack at all
+					if (Units[i].IsAlive() && Units[i].GetAttack() && Def.Commander.IsAlive()) // can't attack with dead unit ;) also if attack = 0 then dont attack at all
 						Attack(i,Def);
 				}
 			}
@@ -3023,7 +3094,7 @@ public:
 				}
 				else
 				{
-					if ((!vi->IsDiseased()) && (vi->GetAbility(DEFENSIVE_REFRESH))) // Bench told refresh procs at the end of player's turn
+					if ((!vi->IsDiseased()) && (vi->GetAbility(DEFENSIVE_REFRESH)) && (QuestEffectId != QEFFECT_IMPENETRABLE)) // Bench told refresh procs at the end of player's turn
 						vi->Refresh();
 					vi++;
 				}

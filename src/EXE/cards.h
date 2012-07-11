@@ -294,9 +294,16 @@ void PickACard(Card *pCDB, VID &fromIDpool, VCARDS &topool)
 		for (VCARDS::iterator vi = topool.begin();vi != topool.end();vi++)
 			if (vi->GetRarity() == RARITY_LEGENDARY)
 				bLegendary = true;
+		UINT iPreventLoop = 0;
 		do
 		{
 			indx = UCHAR(rand() % fromIDpool.size());
+			iPreventLoop++;
+			if (iPreventLoop > 1000)
+			{
+				printf("Looping has been prevented...");
+				break;
+			}
 		}
 		while (((pCDB[fromIDpool[indx]].GetRarity() == RARITY_UNIQUE) && IsCardInDeck(fromIDpool[indx],topool))
 			|| (bLegendary && (pCDB[fromIDpool[indx]].GetRarity() == RARITY_LEGENDARY)));   // unique check    
@@ -396,6 +403,79 @@ public:
 		Pools.clear();
 	}
 };
+class BgInfo
+{
+	UINT Id;
+	string Name;
+	string Desc;
+	UINT EffectId;
+public:
+	BgInfo() {};
+	BgInfo(const UINT id,const char *name,const char *desc,const UINT effectid)
+	{
+		Id = id;
+		Name = string(name);
+		Desc = string(desc);
+		EffectId = effectid;
+	}
+	BgInfo(const BgInfo &BI) // copy constructor
+	{
+		Id = BI.Id;
+		Name = BI.Name;
+		Desc = BI.Desc;
+		EffectId = BI.EffectId;
+	}
+	const char *GetName()
+	{
+		return Name.c_str();
+	}
+	const UINT GetEffectId()
+	{
+		return EffectId;
+	}
+};
+class StepInfo
+{
+	UINT Id;
+	UINT BgId;
+	UINT Commander;
+	VCARDPOOL Pools;
+public:
+	StepInfo() {}
+	StepInfo(UINT id, UINT bgid, UINT commander)
+	{
+		Id = id;
+		BgId = bgid;
+		Commander = commander;
+		Pools.reserve(DEFAULT_POOL_COUNT);
+	}
+	StepInfo(StepInfo &SI)
+	{
+		Id = SI.Id;
+		BgId = SI.BgId;
+		Commander = SI.Commander;
+		for (UCHAR i=0;i<SI.Pools.size();i++)
+			Pools.push_back(SI.Pools[i]);
+	}
+	void GetPools(Card *pCDB, VCARDS &Deck) const
+	{
+		for (UCHAR i=0;i<Pools.size();i++)
+		{
+			Pools[i].GetPool(pCDB,Deck);
+		}
+	}
+	const UINT GetCommander() { return Commander; };
+	const UINT GetBGId() { return BgId; };
+	void AddPool(const CardPool &p)
+	{
+		Pools.push_back(p);
+	}
+	bool IsValid() { return (Commander && Id && BgId); }
+	~StepInfo()
+	{ 
+		Pools.clear();
+	}
+};
 struct SKILL
 {
 	char SkillName[CARD_NAME_MAX_LENGTH];
@@ -427,6 +507,8 @@ class CardDB
 	MissionInfo MDB[MISSION_MAX_ID];
 	AchievementInfo ADB[ACHIEVEMENT_MAX_COUNT];
 	RaidInfo RDB[RAID_MAX_ID];
+	BgInfo BGDB[BATTLEGROUND_MAX_ID];
+	StepInfo STDB[STEP_MAX_ID];
 	MSUINT MIIndex;
 	MSUINT AIIndex;
 	MSUINT RIIndex;
@@ -434,6 +516,7 @@ class CardDB
 	MDECKS DIndex;
 	//char SKILLS[CARD_ABILITIES_MAX][CARD_NAME_MAX_LENGTH];
 	MSKILLS SIndex;
+	MSKILLS QuestEffectIndex;
 public://protected:
 	SKILL Skills[CARD_ABILITIES_MAX];
 	MSETS SetIndex;
@@ -832,6 +915,74 @@ public:
 		}
 		return (loaded > 0);
 	}
+	bool LoadQuestXML(const char *FileName)
+	{
+		pugi::xml_document doc;
+		if (!doc.load_file(FileName)) return false;
+
+		size_t loaded = 0;
+		RIIndex.clear(); // clean index, we don't really need to clean array, it doesn't take too much space and cleaning it up will take time
+		pugi::xml_node root = doc.child("root");
+		for (pugi::xml_node_iterator it = root.begin(); it != root.end(); ++it)
+		{
+			if (!_strcmpi(it->name(),"battleground"))
+			{
+				const char *Name = it->child("name").child_value();
+				const char *Desc = it->child("desc").child_value();
+				UINT Id = atoi(it->child("id").child_value());
+				UINT effect = 0;
+				if (!it->child("effect").empty())
+				{
+					MSKILLS::iterator si = QuestEffectIndex.find(it->child("effect").child_value());
+					if (si == QuestEffectIndex.end())
+					{
+						if (bConsoleOutput)
+							printf("Quest effect \"%s\" not found in index!\n",it->child("effect").child_value());
+					}
+					else
+						effect = si->second;
+				}
+				_ASSERT(Id < BATTLEGROUND_MAX_ID);
+				BGDB[Id] = BgInfo(Id,Name,Desc,effect);
+				loaded++;						
+			}
+			else
+				if (!_strcmpi(it->name(),"step"))
+				{
+					UINT Id = atoi(it->child("id").child_value());
+					UINT BgId = atoi(it->child("battleground_id").child_value());
+					UINT Commander = atoi(it->child("commander").child_value());
+
+					_ASSERT(Id < RAID_MAX_ID);
+					STDB[Id] = StepInfo(Id,BgId,Commander);
+					loaded++;
+
+					pugi::xml_node deck = it->child("deck");
+					for (pugi::xml_node_iterator di = deck.begin(); di != deck.end(); ++di)
+						if (!strcmpi(di->name(),"card_pool"))
+						{
+							CardPool p(di->attribute("amount").as_int());
+							for (pugi::xml_node_iterator ti = di->begin(); ti != di->end(); ++ti)
+							{
+								//_ASSERT(!_strcmpi(ti->name(),"card")); // all siblings must be "card", but, i'd better check
+								// ok here can be mistakes, gotta seed them out
+								if (!_strcmpi(ti->name(),"card"))
+									p.Pool.push_back(atoi(ti->child_value()));
+							}
+							STDB[Id].AddPool(p);	
+						}							
+				}
+			
+		}
+		return (loaded > 0);
+	}
+	const UINT GetQuestEffectId(UINT QuestId)
+	{
+		_ASSERT(QuestId < STEP_MAX_ID);
+		UINT bg = STDB[QuestId].GetBGId();
+		_ASSERT(bg < BATTLEGROUND_MAX_ID);
+		return BGDB[bg].GetEffectId();
+	}
 	bool RateCard(const UINT Id, double &OffenceValue, double &DefenceValue, const UCHAR iFormulaVersion = 0)
 	{
 		const Card *c = &CDB[Id];
@@ -886,6 +1037,13 @@ public:
 		D = ActiveDeck(&CDB[RDB[RaidID].GetCommander()]); // replace
 		RDB[RaidID].GetAlways(CDB,D.Deck);
 		RDB[RaidID].GetPools(CDB,D.Deck);
+	}
+	void GenQuestDeck(ActiveDeck &D, UINT QuestID)
+	{
+		_ASSERT(QuestID < STEP_MAX_ID);
+		_ASSERT(STDB[QuestID].IsValid());
+		D = ActiveDeck(&CDB[STDB[QuestID].GetCommander()]); // replace
+		STDB[QuestID].GetPools(CDB,D.Deck);
 	}
 	DWORD LoadPointers(Card **Ptr, DWORD MaxCount)
 	{
@@ -957,6 +1115,15 @@ public:
 		AddSkill(SPECIAL_BLIZZARD,"Blizzard");
 
 		AddSkill(SPECIAL_ATTACK,"Attack");
+
+		AddQuestEffect(QEFFECT_TIME_SURGE,"time_surge");
+		AddQuestEffect(QEFFECT_COPYCAT,"copycat");
+		AddQuestEffect(QEFFECT_QUICKSILVER,"quicksilver");
+		AddQuestEffect(QEFFECT_DECAY,"decay");
+		AddQuestEffect(QEFFECT_HIGH_SKIES,"high_skies");
+		AddQuestEffect(QEFFECT_IMPENETRABLE,"impenetrable");
+		AddQuestEffect(QEFFECT_INVIGORATE,"invigorate");
+		AddQuestEffect(QEFFECT_CLONE_PROJECT,"clone_project");
 	}
 	void AddSkill(UCHAR Id, const char *Name)
 	{
@@ -965,6 +1132,13 @@ public:
 		strlwr(buffer);		
 		strcpy_s(Skills[Id].SkillName,CARD_NAME_MAX_LENGTH,Name);
 		SIndex.insert(PAIRMSKILLS(buffer,Id));
+	}
+	void AddQuestEffect(UCHAR Id, const char *Name)
+	{
+		char buffer[CARD_NAME_MAX_LENGTH];
+		strcpy_s(buffer,CARD_NAME_MAX_LENGTH,Name);
+		strlwr(buffer);		
+		QuestEffectIndex.insert(PAIRMSKILLS(buffer,Id));
 	}
 	const char *GetSkill(UCHAR Indx)
 	{
@@ -1425,7 +1599,7 @@ public:
 	void GetAchievementList(char *Buffer, DWORD MaxBufferSize)
 	{
 		Buffer[0]=0;
-		for (UCHAR i=0;i<ACHIEVEMENT_MAX_COUNT;i++)
+		for (UINT i=0;i<ACHIEVEMENT_MAX_COUNT;i++)
 		{
 			if (ADB[i].IsValid())
 			{
@@ -1656,9 +1830,36 @@ public:
 			}
 		return buffer;
 	}
+	const char* GetQuestDecksList(char *buffer, size_t size)
+	{
+		buffer[0] = 0;
+		for (UCHAR i=0;i<STEP_MAX_ID;i++)
+			if (STDB[i].IsValid())
+			{
+				if (buffer[0] != 0)	
+					strcat_s(buffer,size,","); // commatext :)
+				strcat_s(buffer,size,"\"");
+				strcat_s(buffer,size,BGDB[STDB[i].GetBGId()].GetName());
+				char bu[5];
+				strcat_s(buffer,size,"(");	
+				itoa(i,bu,10);
+				strcat_s(buffer,size,bu);
+				strcat_s(buffer,size,") - ");				
+				strcat_s(buffer,size,CDB[STDB[i].GetCommander()].GetName());
+				strcat_s(buffer,size,"[");	
+				itoa(STDB[i].GetCommander(),bu,10);
+				strcat_s(buffer,size,bu);
+				strcat_s(buffer,size,"]\""); // yep, it's bad, but i dont care since it's called from delphi
+			}
+		return buffer;
+	}
 	const UINT GetRaidCommanderID(UINT RaidIndex)
 	{
 		return RDB[RaidIndex].GetCommander();
+	}
+	const UINT GetQuestCommanderID(UINT QuestIndex)
+	{
+		return STDB[QuestIndex].GetCommander();
 	}
 	void GenRandomDeckFromCard(VCARDS &Deck,size_t i)
 	{

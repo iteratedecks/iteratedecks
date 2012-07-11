@@ -190,10 +190,14 @@ extern "C"
 	{
 		return DB.LoadRaidXML(FileName);
 	}
+	IDAPI bool LoadQuestXML(const char *FileName)
+	{
+		return DB.LoadQuestXML(FileName);
+	}
 	IDAPI bool LoadOwnedCards(const char *FileName)
 	{
 		MyCards.clear();
-		return DB.LoadOwnedCards(FileName,MyCards);
+		return DB.LoadOwnedCards(FileName,MyCards) > 0;
 	}
 	IDAPI UINT CheckOwnedCard(const UINT Id)
 	{
@@ -245,6 +249,14 @@ extern "C"
 	IDAPI const UINT GetRaidCommanderID(UINT RaidIndex)
 	{
 		return DB.GetRaidCommanderID(RaidIndex);
+	};
+	IDAPI const char * GetQuestDecksList(char *buffer, DWORD size)
+	{
+		return DB.GetQuestDecksList(buffer, size);
+	};
+	IDAPI const UINT GetQuestCommanderID(UINT QuestIndex)
+	{
+		return DB.GetQuestCommanderID(QuestIndex);
 	};
 	IDAPI int LoadCustomDecks(const char* FileName)
 	{
@@ -420,6 +432,38 @@ extern "C"
 		ActiveDeck tAtk(gAtk);
 		ActiveDeck tDef;
 		DB.GenRaidDeck(tDef,RaidID);
+					
+		for (UCHAR i=0; (i < 50); i++)
+		{
+			tAtk.AttackDeck(tDef);
+			if (!tDef.Commander.IsAlive())
+			{
+				r.Win++;
+				r.Points+=10; // +10 points for winning 
+				r.AutoPoints+=10;
+				r.Points+=5; // +5 points for killing the enemy commander
+				if (i < 10)
+				{
+					r.Points+=5; // +5 points for winning by turn 10 
+					r.AutoPoints+=5; // +5 points for winning by turn 10 
+				}
+				if (tDef.Deck.empty()) // +5 points for destroying all enemy Assault and Structure cards
+					r.Points+=5;
+				break;
+			}
+			tDef.AttackDeck(tAtk);
+			if (!tAtk.Commander.IsAlive())
+			{
+				r.Loss++;
+				break;
+			}
+		}
+	}
+	IDAPI void EvaluateQuestOnce(RESULTS &r, DWORD QuestID)
+	{
+		ActiveDeck tAtk(gAtk);
+		ActiveDeck tDef;
+		DB.GenQuestDeck(tDef,QuestID);
 					
 		for (UCHAR i=0; (i < 50); i++)
 		{

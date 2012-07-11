@@ -236,6 +236,7 @@ int _tmain(int argc, char* argv[])
 	bConsoleOutput = false;
 	DB.LoadCardXML("cards.xml");
 	DB.LoadRaidXML("raids.xml");
+	DB.LoadQuestXML("quests.xml");
 
 	MaxTurn = pEvalParams->MaxTurn;
 
@@ -421,7 +422,7 @@ int _tmain(int argc, char* argv[])
 			RESULTS lresult;
 			RESULT_BY_CARD lrbc[DEFAULT_DECK_RESERVE_SIZE+1];
 			//p = find_upper_bound_on_p(trials, successes, 0.01)
-			EvaluateInThreads(pEvalParams->Seed,x,Y,pEvalParams->RaidID,lresult,lrbc,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode,pEvalParams->Req,pEvalParams->SkillProcs,pEvalParams->Annihilator,pEvalParams->SurrenderAtLoss);
+			EvaluateInThreads(pEvalParams->Seed,x,Y,pEvalParams->RaidID,pEvalParams->QuestID,lresult,lrbc,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode,pEvalParams->Req,pEvalParams->SkillProcs,pEvalParams->Annihilator,pEvalParams->SurrenderAtLoss);
 			if (lresult.Win > pEvalParams->Result.Win)
 			{
 				pEvalParams->Result = lresult;
@@ -444,7 +445,7 @@ int _tmain(int argc, char* argv[])
 					x.Deck.push_back(&DB.GetCard(mi->second));
 				RESULTS lresult;
 				RESULT_BY_CARD lrbc[DEFAULT_DECK_RESERVE_SIZE+1];
-				EvaluateInThreads(pEvalParams->Seed,x,Y,pEvalParams->RaidID,lresult,lrbc,pEvalParams->State,pEvalParams->SecondPassMultiplier * pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode,pEvalParams->Req,pEvalParams->SkillProcs,pEvalParams->Annihilator,pEvalParams->SurrenderAtLoss);
+				EvaluateInThreads(pEvalParams->Seed,x,Y,pEvalParams->RaidID,pEvalParams->QuestID,lresult,lrbc,pEvalParams->State,pEvalParams->SecondPassMultiplier * pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode,pEvalParams->Req,pEvalParams->SkillProcs,pEvalParams->Annihilator,pEvalParams->SurrenderAtLoss);
 				if (lresult.Win > pEvalParams->Result.Win)
 				{
 					pEvalParams->Result = lresult;
@@ -471,7 +472,7 @@ int _tmain(int argc, char* argv[])
 	else
 	{
 		// simple eval
-		EvaluateInThreads(pEvalParams->Seed,X,Y,pEvalParams->RaidID,pEvalParams->Result,pEvalParams->ResultByCard,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode,pEvalParams->Req,pEvalParams->SkillProcs,pEvalParams->Annihilator,pEvalParams->SurrenderAtLoss);
+		EvaluateInThreads(pEvalParams->Seed,X,Y,pEvalParams->RaidID,pEvalParams->QuestID,pEvalParams->Result,pEvalParams->ResultByCard,pEvalParams->State,pEvalParams->GamesPerThread,pEvalParams->Threads,pEvalParams->Surge,pEvalParams->TournamentMode,pEvalParams->Req,pEvalParams->SkillProcs,pEvalParams->Annihilator,pEvalParams->SurrenderAtLoss);
 		pEvalParams->FullAmountOfGames += pEvalParams->Result.Games;
 	}
 	if (OrderLength > 0)
@@ -521,13 +522,29 @@ int _tmain(int argc, char* argv[])
 	DB.LoadCardXML("cards.xml");
 	DB.LoadMissionXML("missions.xml");
 	DB.LoadRaidXML("raids.xml");
+	DB.LoadQuestXML("quests.xml");
+
+	DB.LoadDecks("C:\\Users\\NT\\Documents\\Visual Studio 2008\\Projects\\EvaluateDecks\\bin\\decks\\custom\\custom.txt");
 	//DB.SaveMissionDecks("c:\\pun.txt");
-	ActiveDeck x("P3FRfY",DB.GetPointer());
-	ActiveDeck z("QyAqAPBqfxvICcDVCYB+Cj",DB.GetPointer());
-	x.SetOrderMatters(true);
+	//ActiveDeck x("Psfc+jIWvS",DB.GetPointer());
+	//ActiveDeck z("Ql",DB.GetPointer());	
+	//x.SetOrderMatters(true);
+
+	ActiveDeck x("P9AeBnEFIMIXIYJeJwJyJ5",DB.GetPointer());
+	ActiveDeck z("PrAN",DB.GetPointer());
+
+	
+	RESULTS llr;
+	RESULT_BY_CARD lbc[50];
+	//EvaluateRaidQuestOnce(x,llr,0,lbc,0,19);
+	int zState = 1;
+	
+	bConsoleOutput = true;
+	EvaluateInThreads(15,x,z,0,6,llr,lbc,zState,100,1); // 6
+		
 
 	//DB.LoadDecks("C:\\Users\\NT\\Documents\\Visual Studio 2008\\Projects\\EvaluateDecks\\bin\\decks\\batcheval\\New Missions.txt");
-	AchievementIndex = 64; // index, not id
+	AchievementIndex = -1; // 31 // index, not id
 	bConsoleOutput = true;
 	{
 	RESULTS r;
@@ -990,7 +1007,7 @@ int _tmain(int argc, char* argv[])
 	for (UINT i=0;10;i++)
 	{
 	ActiveDeck a("QCAXBJDd+nD+",DB.GetPointer());
-	EvaluateRaidOnce(a,res,0,0,7);
+	EvaluateRaidQuestOnce(a,res,0,0,7,0);
 	}
 	}
 
@@ -1142,7 +1159,7 @@ int _tmain(int argc, char* argv[])
 	time_t t;
 
 	time(&t);
-	EvaluateInThreads(100500,X,Y,-1,res,0,State,2500,4);
+	EvaluateInThreads(100500,X,Y,-1,-1,res,0,State,2500,4);
 	time_t t1;
 	time(&t1);
 	printf("Finished in %d sec\n",t1-t);

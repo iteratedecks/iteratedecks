@@ -380,6 +380,7 @@ struct EVAL_THREAD_PARAMS
 	const ActiveDeck *Atk;
 	const ActiveDeck *Def;
 	int RaidID;
+	int QuestID;
 	DWORD gamesperthread;
 	DWORD Seed;
 	RESULTS r;
@@ -394,11 +395,18 @@ struct EVAL_THREAD_PARAMS
 	bool SurrenderAtLoss;
 };
 
-void EvaluateRaidOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* = 0*/, RESULT_BY_CARD *rbc/* = 0*/, DWORD RaidID, REQUIREMENT *Reqs = 0, UINT *SkillProcs = 0, bool bAnnihilator = false, bool bSurrenderAtLoss = false)
+void EvaluateRaidQuestOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSIndex/* = 0*/, RESULT_BY_CARD *rbc/* = 0*/, DWORD RaidID, DWORD QuestID, REQUIREMENT *Reqs = 0, UINT *SkillProcs = 0, bool bAnnihilator = false, bool bSurrenderAtLoss = false)
 {
 	ActiveDeck tAtk(gAtk);
 	ActiveDeck tDef;
-	DB.GenRaidDeck(tDef,RaidID);
+	if (RaidID)
+		DB.GenRaidDeck(tDef,RaidID);
+	else
+	{
+		DB.GenQuestDeck(tDef,QuestID);
+		//tAtk.SetQuestEffect(DB.GetQuestEffectId(QuestID));
+		//tDef.SetQuestEffect(DB.GetQuestEffectId(QuestID));
+	}
 
 	if (CSIndex && rbc)
 		tAtk.SetFancyStatsBuffer(CSIndex,rbc);
@@ -538,7 +546,7 @@ static unsigned int __stdcall ThreadFunc(void *pvParam)
 	if (p->Atk->IsValid(true))
 		for (DWORD i=0;(i<p->gamesperthread) && (*(p->pState) >= 0);i++)
 		{
-			if (p->RaidID < 0)
+			if ((p->RaidID < 0) && (p->QuestID < 0))
 			{
 				ActiveDeck Atk(*p->Atk);
 				ActiveDeck Def(*p->Def);
@@ -562,7 +570,10 @@ static unsigned int __stdcall ThreadFunc(void *pvParam)
 				Simulate(Atk,Def,lr,p->CSIndex,p->rbc,p->bSurge,p->Req,p->SkillProcs,p->Annihilator,p->SurrenderAtLoss);
 			}
 			else
-				EvaluateRaidOnce(*(p->Atk),lr,p->CSIndex,p->rbc,(DWORD)p->RaidID,p->Req,p->SkillProcs,p->Annihilator,p->SurrenderAtLoss);
+				if (p->QuestID < 0)
+					EvaluateRaidQuestOnce(*(p->Atk),lr,p->CSIndex,p->rbc,(DWORD)p->RaidID,0,p->Req,p->SkillProcs,p->Annihilator,p->SurrenderAtLoss);
+				else
+					EvaluateRaidQuestOnce(*(p->Atk),lr,p->CSIndex,p->rbc,0,(DWORD)p->QuestID,p->Req,p->SkillProcs,p->Annihilator,p->SurrenderAtLoss);
 		}
 	//_endthread();
 	p->r.Add(lr);
@@ -571,7 +582,7 @@ static unsigned int __stdcall ThreadFunc(void *pvParam)
 	return (UINT)p;
 }
 
-void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDef, int RaidID, RESULTS &ret, RESULT_BY_CARD *rbc, int &State, DWORD gamesperthread, DWORD threadscount = 1, bool bSurge = false, UCHAR TournamentMode = 0, REQUIREMENT *Req = 0, UINT *pSkillProcs = 0, bool bAnnihilator = false, bool bSurrenderAtLoss = false)
+void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDef, int RaidID, int QuestID, RESULTS &ret, RESULT_BY_CARD *rbc, int &State, DWORD gamesperthread, DWORD threadscount = 1, bool bSurge = false, UCHAR TournamentMode = 0, REQUIREMENT *Req = 0, UINT *pSkillProcs = 0, bool bAnnihilator = false, bool bSurrenderAtLoss = false)
 {
 	// create Index
 	UCHAR CSIndex[CARD_MAX_ID];
@@ -607,7 +618,7 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 			InitializeCriticalSection(&cs); // this critical section is used to manage shared object calculating best card order
 		for (DWORD i=0;(i<gamesperthread) && (State >= 0);i++)
 		{
-			if (RaidID < 0)
+			if ((RaidID < 0) && (QuestID < 0))
 			{
 				ActiveDeck tAtk(gAtk);
 				ActiveDeck tDef(gDef);
@@ -632,7 +643,10 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 				Simulate(tAtk,tDef,ret,(rbc)?CSIndex:0,rbc,bSurge,Req,pSkillProcs,bAnnihilator,bSurrenderAtLoss);
 			}
 			else
-				EvaluateRaidOnce(gAtk,ret,(rbc)?CSIndex:0,rbc,(DWORD)RaidID,Req,pSkillProcs,bAnnihilator,bSurrenderAtLoss);
+				if (QuestID < 0)
+					EvaluateRaidQuestOnce(gAtk,ret,(rbc)?CSIndex:0,rbc,(DWORD)RaidID,0,Req,pSkillProcs,bAnnihilator,bSurrenderAtLoss);
+				else
+					EvaluateRaidQuestOnce(gAtk,ret,(rbc)?CSIndex:0,rbc,0,(DWORD)QuestID,Req,pSkillProcs,bAnnihilator,bSurrenderAtLoss);
 		}
 		if (OrderLength >= 0)
 			DeleteCriticalSection(&cs);
@@ -656,6 +670,7 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 				for (UCHAR k=0;k<DEFAULT_DECK_RESERVE_SIZE+1;k++)
 					parms[i].rbc[k].Id = rbc[k].Id;
 			parms[i].RaidID = RaidID;
+			parms[i].QuestID = QuestID;
 			parms[i].gamesperthread = gamesperthread;
 			parms[i].Seed = Seed + i; // offset seed or we will have same results for all threads
 			parms[i].bSurge = bSurge;
@@ -709,6 +724,7 @@ struct EVAL_PARAMS
 	RESULT_BY_CARD ResultByCard[DEFAULT_DECK_RESERVE_SIZE+1];
 	DWORD Seconds;
 	int RaidID;
+	int QuestID;
 	bool Surge;
 	bool OrderMatters;
 	// wildcard
