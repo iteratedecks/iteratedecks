@@ -110,6 +110,7 @@ type
     ResultByCard: array[0..DECK_MAX_SIZE] of RESULT_BY_CARD;
     Seconds: DWORD;
     RaidID: integer;
+    QuestID: integer;
     Surge: boolean;
     OrderMatters: boolean;
     WildCardId: integer;
@@ -158,6 +159,11 @@ function GetRaidDecksList(buffer: PChar; size: DWORD): PChar; cdecl; external
 
 function GetRaidCommanderID(RaidIndex: UINT): UINT; cdecl; external DLLFILE;
 
+function GetQuestDecksList(buffer: PChar; size: DWORD): PChar; cdecl; external
+  DLLFILE;
+
+function GetQuestCommanderID(QuestIndex: UINT): UINT; cdecl; external DLLFILE;
+
 function Evaluate(AtkDeck: string; DefDeck: string; gamescount: DWORD): DWORD;
   cdecl; external DLLFILE;
 
@@ -177,6 +183,8 @@ procedure EvaluateOnce(var r: RESULTS; bSurge: boolean = false); cdecl; external
 
 function EvaluateRaidOnce(var r: RESULTS; RaidID: DWORD): boolean; cdecl;
   external DLLFILE;
+function EvaluateQuestOnce(var r: RESULTS; QuestID: DWORD): boolean; cdecl;
+  external DLLFILE;
 
 function GetCardSize(): integer; cdecl; external DLLFILE;
 
@@ -188,6 +196,8 @@ function LoadMissionXML(FileName: string): boolean; cdecl; external DLLFILE;
 function LoadAchievementXML(FileName: string): boolean; cdecl; external DLLFILE;
 
 function LoadRaidXML(FileName: string): boolean; cdecl; external DLLFILE;
+
+function LoadQuestXML(FileName: string): boolean; cdecl; external DLLFILE;
 
 function GetDBSize(): DWORD; cdecl; external DLLFILE;
 

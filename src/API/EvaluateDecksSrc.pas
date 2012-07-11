@@ -382,6 +382,10 @@ type
     bRefreshFilters: TcxButton;
     lCardName: TcxLabel;
     cbOwnedCardsFilter: TcxComboBox;
+    cbmUseQuest: TcxCheckBox;
+    cbmQuest: TcxComboBox;
+    cbUseQuest: TcxCheckBox;
+    cbQuest: TcxComboBox;
     procedure FormCreate(Sender: TObject);
     procedure sbRightMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
@@ -410,6 +414,7 @@ type
     procedure ClearDeck(var Deck: array of TcxImage);
     procedure cbRaidPropertiesChange(Sender: TObject);
     procedure LoadRaidCommander;
+    procedure LoadQuestCommander;
     procedure LoadCustomDeck(DeckName: string; var Deck: array of TcxImage;
       bIsTopDeck: boolean; bIsMission: boolean = false; bAlwaysUseId: boolean =
       false);
@@ -563,6 +568,7 @@ type
       AItem: TcxCustomGridTableItem);
     procedure cbAchievementPropertiesEditValueChanged(Sender: TObject);
     procedure bRefreshFiltersClick(Sender: TObject);
+    procedure cbmUseQuestClick(Sender: TObject);
   private
     { Private declarations }
     Images: array[0..MAX_CARD_COUNT] of TcxImage;
@@ -634,6 +640,7 @@ const
   sRaidsFile = 'raids.xml';
   sMissionsFile = 'missions.xml';
   sAchievementsFile = 'achievements.xml';
+  sQuestsFile = 'quests.xml';
   sCardsFile = 'cards.xml';
   sCardsDir = 'cards\';
   sTyrantAPI = 'http://kg.tyrantonline.com/api.php';
@@ -765,7 +772,7 @@ begin
 end;
 
 function IterateDecks(Cwd: string; Seed: DWORD; AtkDeck: string;
-  DefDeck: string; RaidID: integer; GamesPerThread: DWORD; Threads: DWORD;
+  DefDeck: string; RaidID: integer; QuestID: integer; GamesPerThread: DWORD; Threads: DWORD;
   bIsSurge: boolean; MaxTurn: DWORD; bOrderMatters: boolean; TournamentMode: boolean; bAnnihilator: boolean; var iWildCard: integer;
   iWildFilterType: integer = 0; iWildFilterRarity: integer = 0;
   iWildFilterFaction: integer = 0): FULLRESULT;
@@ -829,6 +836,7 @@ begin
       pEP.Reqs[i].SkillID := 0;
 
   pEP.RaidID := RaidID;
+  pEP.QuestID := QuestID;
   pEP.State := 0;
   StrPCopy(pEP.AtkDeck, AtkDeck);
   StrPCopy(pEP.DefDeck, DefDeck);
@@ -1015,6 +1023,28 @@ begin
 end;
 
 function TEvaluateDecksForm.GenerateRequestHeader;
+ function LocalTimeToUTC(AValue: TDateTime): TDateTime;
+ // AValue - локальное время
+ // Result - время UTC
+ var
+  ST1, ST2: TSystemTime;
+  TZ: TTimeZoneInformation;
+ begin
+  // TZ - локальные (Windows) настройки
+  GetTimeZoneInformation(TZ);
+  // т.к. надо будет делать обратное преобразование - инвертируем bias
+  TZ.Bias := -TZ.Bias;
+  TZ.StandardBias := -TZ.StandardBias;
+  TZ.DaylightBias := -TZ.DaylightBias;
+ 
+  DateTimeToSystemTime(AValue, ST1);
+ 
+  // Применение локальных настроек ко времени
+  SystemTimeToTzSpecificLocalTime(@TZ, ST1, ST2);
+ 
+  // Приведение WindowsSystemTime к TDateTime
+  Result := SystemTimeToDateTime(ST2);
+ end;
 const
   cBaseTime = 25569; // StrToDate('1.01.1970')
   time_hash = 'fgjk380vf34078oi37890ioj43';
@@ -1022,7 +1052,7 @@ var
   t: integer;
   userid: string;
 begin
-  t := round((Now - cBaseTime) * 24 * 4) - 12;     // -12 ????
+  t := round((LocalTimeToUTC(Now) - cBaseTime) * 24 * 4);
   userid := slAuth.Values['user_id'];
   result := sTyrantAPI + '?user_id=' + userid;
   result := result + '&message=' + msg;
@@ -1443,6 +1473,30 @@ begin
   GetMem(p1, cMaxBuffer); // initialize
   try
     id := GetIndexFromID(GetRaidCommanderID(cbRaid.ItemIndex + 1));
+    if id >= 0 then
+      CopyCard(Images[id], imgBot)
+    else
+    begin
+      ShowMessage(Format(sCardNotFound, [p1]));
+      inc(cnt);
+      if (cnt >= MAX_CARD_ERRORS) then
+        exit; // cancelled
+    end;
+  finally
+    FreeMem(p1);
+  end;
+end;
+
+procedure TEvaluateDecksForm.LoadQuestCommander;
+var
+  p1: pchar;
+  id,cnt: integer;
+begin
+  cnt := 0;
+  // LoadDeck
+  GetMem(p1, cMaxBuffer); // initialize
+  try
+    id := GetIndexFromID(GetQuestCommanderID(cbQuest.ItemIndex + 1));
     if id >= 0 then
       CopyCard(Images[id], imgBot)
     else
@@ -2853,7 +2907,7 @@ begin
         end;
 
         wildcard := 0;
-        r := IterateDecks(sLocalDir, seed, atk, def, -1, games
+        r := IterateDecks(sLocalDir, seed, atk, def, -1, -1, games
           div tc, tc, false, cDefaultMaxTurn, cbBOrderMatters.Checked, cbBTourney.Checked, false, wildcard);
 
         with vBatchResult.DataController do
@@ -2877,7 +2931,7 @@ begin
         Application.ProcessMessages;
 
         wildcard := 0;
-        r := IterateDecks(sLocalDir, seed, atk, def, -1, games
+        r := IterateDecks(sLocalDir, seed, atk, def, -1, -1, games
           div tc, tc, true, cDefaultMaxTurn, cbBOrderMatters.Checked, cbBTourney.Checked, false, wildcard);
 
         with vBatchResult.DataController do
@@ -3168,6 +3222,9 @@ begin
       IdHttp.Get(Format(sAssetsFolder,[cbAssetsSource.Text]) + sMissionsFile, ms);
       ms.SaveToFile(sLocalDir + sMissionsFile);
       ms.Position := 0;
+      IdHttp.Get(Format(sAssetsFolder,[cbAssetsSource.Text]) + sQuestsFile, ms);
+      ms.SaveToFile(sLocalDir + sQuestsFile);
+      ms.Position := 0;
       IdHttp.Get(Format(sAssetsFolder,[cbAssetsSource.Text]) + sAchievementsFile, ms);
       ms.SaveToFile(sLocalDir + sAchievementsFile); 
       fileDate := FileAge(sLocalDir + sCardsFile);
@@ -3179,6 +3236,7 @@ begin
       try
         LoadMissionXML(sLocalDir + sMissionsFile);
         LoadRaidXML(sLocalDir + sRaidsFile);
+        LoadQuestXML(sLocalDir + sQuestsFile);
         ReLoadAchievements;
 
         slUpdate.Clear;
@@ -3500,9 +3558,9 @@ begin
   CloseHandle(BeginThread(nil, 0, Addr(EvaluateThread),
     Addr(Self), 0, ret));}
 var
-  i, z, zzz, games, rec, raid, seed, id, wildcard, wcid, lrec, ft, fr, ff: integer;
+  i, z, zzz, games, rec, raid, quest, seed, id, wildcard, wcid, lrec, ft, fr, ff: integer;
   sl1, sl2: TStringList;
-  bIsRaid, bIsSurge: boolean;
+  bIsRaid, bIsQuest, bIsSurge: boolean;
   r: FULLRESULT;
   tc: DWORD;
 
@@ -3560,9 +3618,10 @@ begin
     end;
 
     bIsRaid := (cbUseRaid.Checked and bImages) or cbmUseRaid.Checked;
+    bIsQuest := (cbUseQuest.Checked and bImages) or cbmUseQuest.Checked;
     bIsSurge := cbSurge.Checked;
 
-    if not bIsRaid then
+    if (not bIsRaid) and (not bIsQuest) then
     begin
       if bImages then
       begin
@@ -3590,10 +3649,21 @@ begin
             end;
       end;
     end
-    else if bImages then
-      sl2.Add(cbRaid.Text)
     else
-      sl2.Add(cbmRaid.Text);
+    if bImages then
+    begin
+      if bIsRaid then
+        sl2.Add(cbRaid.Text)
+      else
+        sl2.Add(cbQuest.Text);
+    end
+    else
+    begin
+      if bIsRaid then      
+        sl2.Add(cbmRaid.Text)
+      else
+        sl2.Add(cbmQuest.Text);
+    end;
     //cxmemo1.Lines.Add(sl1.CommaText);
     //cxmemo1.Lines.Add(sl2.CommaText);
     games := StrToInt(cbIterations.Text);
@@ -3603,7 +3673,7 @@ begin
       r.Result.Loss := 0;
       r.Result.Points := 0;
       r.Result.AutoPoints := 0;
-      if not bIsRaid then
+      if (not bIsRaid) and (not bIsQuest) then
         PrepareDecks(sl1.CommaText, sl2.CommaText)
       else
         PrepareDeck(sl1.CommaText);
@@ -3614,7 +3684,7 @@ begin
        def := sLocalDir + cDefenceFolder + cbComplexDefence.Text
     else
        def := StringReplace(sl2.CommaText, '"', '', [rfReplaceAll]);
-    if (atk = '') or ((def = '') and (not bIsRaid)) then
+    if (atk = '') or ((def = '') and (not bIsRaid) and (not bIsQuest)) then
     begin
       Exception.Create('One of the decks is empty, can''t continue');
       exit;
@@ -3623,7 +3693,9 @@ begin
     begin
       AppendRecord;
       rec := RecordCount - 1;
-      if bIsRaid then
+      if bIsQuest then
+        Values[rec, vcType.Index] := 'Quest'
+      else if bIsRaid then
         Values[rec, vcType.Index] := 'Raid'
       else if bIsSurge then
         Values[rec, vcType.Index] := 'Surge'
@@ -3654,7 +3726,7 @@ begin
           s := mAtkDeckName;
       end;
       Values[rec, vcAtk.Index] := StringReplace(s, ',', ', ', [rfReplaceAll]);
-      if not bIsRaid then
+      if (not bIsRaid) and (not bIsQuest) then
       begin
         if bImages then
         begin
@@ -3679,12 +3751,15 @@ begin
       i := 0;
       while i < games do
       begin
-        if not bIsRaid then
+        if (not bIsRaid) and (not bIsQuest) then
         begin
           EvaluateOnce(r.Result, bIsSurge);
         end
         else
-          EvaluateRaidOnce(r.Result, cbRaid.ItemIndex + 1);
+          if bIsQuest then
+            EvaluateQuestOnce(r.Result, cbQuest.ItemIndex + 1)
+          else
+            EvaluateRaidOnce(r.Result, cbRaid.ItemIndex + 1);
 
         inc(i);
         if ProgressUpdate(i + 1, 'Evaluation is in progress, ' + IntToStr(r.Result.Win)
@@ -3702,6 +3777,13 @@ begin
           raid := cbmRaid.ItemIndex + 1
       else
         raid := -1;
+      if bIsQuest then
+        if bImages then
+          quest := cbQuest.ItemIndex + 1
+        else
+          quest := cbmQuest.ItemIndex + 1
+      else
+        quest := -1;
       tc := seThreads.Value;
       if cbRandomSeed.Checked then
       begin
@@ -3765,6 +3847,13 @@ begin
         end;
       end
       else
+        if bIsQuest then
+        begin
+          HashType := 7; // 7 for QUESTS
+          HashID := quest;
+          MissionID := 0;
+        end
+        else
         if bIsRaid then
         begin
           HashType := 2; // 3
@@ -3783,7 +3872,7 @@ begin
       if cbOrderMatters.Checked then
         inc(HashType);
       //
-      r := IterateDecks(sLocalDir, seed, atk, def, raid,
+      r := IterateDecks(sLocalDir, seed, atk, def, raid, quest,
         games div tc, tc, bIsSurge, seMaxTurn.Value, cbOrderMatters.Checked,
         cbTourney.Checked, cbAnnihilator.Checked, wildcard, ft, fr, ff);
       rec := cxView.DataController.RecordCount - 1;
@@ -4440,17 +4529,38 @@ begin
   FreeMem(p1);
 end;
 
-procedure TEvaluateDecksForm.cbmUseRaidClick(Sender: TObject);
+procedure TEvaluateDecksForm.cbmUseQuestClick(Sender: TObject);
 begin
   bmCustomDefence.Enabled := not cbmUseRaid.Checked;
   bmMission.Enabled := not cbmUseRaid.Checked;
   cbSurge.Enabled := not cbmUseRaid.Checked;
   cbTourney.Enabled := not cbmUseRaid.Checked;
   if cbmUseRaid.Checked then
+  begin
     cbSurge.Checked := false;
-  gBot.Enabled := not cbmUseRaid.Checked;
-  if cbmUseRaid.Checked then
     cbTourney.Checked := false;
+    cbmUseQuest.Checked := false;
+  end;
+  gBot.Enabled := not cbmUseRaid.Checked;
+end;
+
+procedure TEvaluateDecksForm.cbmUseRaidClick(Sender: TObject);
+begin
+  bmCustomDefence.Enabled := (not cbmUseRaid.Checked) and (not cbmUseQuest.Checked);
+  bmMission.Enabled := (not cbmUseRaid.Checked) and (not cbmUseQuest.Checked);
+  cbSurge.Enabled := (not cbmUseRaid.Checked) and (not cbmUseQuest.Checked);
+  cbTourney.Enabled := (not cbmUseRaid.Checked) and (not cbmUseQuest.Checked);
+  if (cbmUseRaid.Checked or cbmUseQuest.Checked) then
+  begin
+    cbSurge.Checked := false;
+    cbTourney.Checked := false;
+  end;
+  if cbmUseQuest.Checked and (Sender <> cbmUseRaid) then
+    cbmUseRaid.Checked := false;
+  if cbmUseRaid.Checked and (Sender <> cbmUseQuest) then
+    cbmUseQuest.Checked := false;
+
+  gBot.Enabled := (not cbmUseRaid.Checked) and (not cbmUseQuest.Checked);
 end;
 
 procedure TEvaluateDecksForm.cbOrderMattersClick(Sender: TObject);
@@ -4466,6 +4576,8 @@ procedure TEvaluateDecksForm.cbRaidPropertiesChange(Sender: TObject);
 begin
   if cbUseRaid.Checked then
     LoadRaidCommander;
+  if cbUseQuest.Checked then
+    LoadQuestCommander;
 end;
 
 procedure TEvaluateDecksForm.cbRandomSeedClick(Sender: TObject);
@@ -4521,19 +4633,24 @@ end;
 
 procedure TEvaluateDecksForm.cbUseRaidClick(Sender: TObject);
 begin
-  bCustomDef.Enabled := not cbUseRaid.Checked;
-  bMission.Enabled := not cbUseRaid.Checked;
-  cbSurge.Enabled := not cbUseRaid.Checked;
-  cbTourney.Enabled := not cbmUseRaid.Checked;
-  if cbUseRaid.Checked then
-    cbSurge.Checked := false;
-  if cbUseRaid.Checked then
+  bCustomDef.Enabled := (not cbUseRaid.Checked) and (not cbUseQuest.Checked);
+  bMission.Enabled := (not cbUseRaid.Checked) and (not cbUseQuest.Checked);
+  cbSurge.Enabled := (not cbUseRaid.Checked) and (not cbUseQuest.Checked);
+  cbTourney.Enabled := (not cbUseRaid.Checked) and (not cbUseQuest.Checked);
+  if (cbUseRaid.Checked or cbUseQuest.Checked) then
   begin
-    ClearDeck(BotDeck);
-    LoadRaidCommander;
-  end;
-  if cbUseRaid.Checked then
+    cbSurge.Checked := false;
     cbTourney.Checked := false;
+    ClearDeck(BotDeck);
+    if cbUseRaid.Checked then
+      LoadRaidCommander
+    else
+      LoadQuestCommander;
+  end;
+  if cbUseQuest.Checked and (Sender <> cbUseRaid) then
+    cbUseRaid.Checked := false;
+  if cbUseRaid.Checked and (Sender <> cbUseQuest) then
+    cbUseQuest.Checked := false;
 end;
 
 
@@ -5191,6 +5308,7 @@ begin
 //  Canvas.Lock;
   LoadMissionXML(sLocalDir + sMissionsFile);
   LoadRaidXML(sLocalDir + sRaidsFile);
+  LoadQuestXML(sLocalDir + sQuestsFile);
   ReLoadAchievements;
 
   sl := TStringList.Create;
@@ -5284,6 +5402,14 @@ begin
   begin
     cbMission.ItemIndex := 0;
     cbmMission.ItemIndex := 0;
+  end;
+  GetQuestDecksList(p1, cMaxBuffer);
+  cbQuest.Properties.Items.CommaText := p1;
+  cbmQuest.Properties.Items.CommaText := p1;
+  if cbQuest.Properties.Items.Count > 0 then
+  begin
+    cbQuest.ItemIndex := 0;
+    cbmQuest.ItemIndex := 0;
   end;
   FreeMem(p1);
 
