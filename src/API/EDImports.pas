@@ -220,7 +220,7 @@ function AbilityHasExtendedDesc(AbilityID: Byte): boolean; cdecl; external DLLFI
 
 function GetHashFromDeck(Deck: string; buffer: PChar; size: DWORD): boolean; cdecl; external DLLFILE;
 
-function BuildResultHash(CardList: string; Version: DWORD; Revision: DWORD; HashType: DWORD; HashID: DWORD; MissionID: DWORD; GamesOverall: DWORD; GamesWon: DWORD; buffer: PChar; size: DWORD): boolean; cdecl; external DLLFILE;
+function BuildResultHash(CardList: string; Version: DWORD; Revision: DWORD; HashType: DWORD; HashID: DWORD; MissionID: DWORD; GamesOverall: DWORD; GamesWon: DWORD; ANG: double; buffer: PChar; size: DWORD): boolean; cdecl; external DLLFILE;
 
 function GetDeckFromHash(Hash: string; buffer: PChar; size: DWORD): boolean; cdecl; external DLLFILE;
 function GetDeckFromString(CardList: string; OutputIDList: PChar): boolean; cdecl; external DLLFILE;

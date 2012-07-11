@@ -3849,7 +3849,7 @@ begin
       else
         if bIsQuest then
         begin
-          HashType := 7; // 7 for QUESTS
+          HashType := 6; // 7 for QUESTS
           HashID := quest;
           MissionID := 0;
         end
@@ -3865,7 +3865,7 @@ begin
           HashID := MissionID;
           if MissionID = 0 then
           begin
-            HashType := 6;
+            HashType := 8;
             bClearHash := true; // not yet
           end;
         end;
@@ -3930,14 +3930,14 @@ begin
           end;
         end;
 
-        //if HashType < 6 then // we don't need custom deck hashes yet
+        //if HashType < 8 then // we don't need custom deck hashes yet
         if not bClearHash then        
         begin
           GetMem(p1, cMaxBuffer); // initialize
           try
-            if BuildResultHash(atk,EDVersion,EDRevision,HashType,HashID,MissionID,r.Result.Games,r.Result.Win,p1,cMaxBuffer) then
+            if BuildResultHash(atk,EDVersion,EDRevision,HashType,HashID,MissionID,r.Result.Games,r.Result.Win,(r.Result.Points - r.Result.LPoints)/r.Result.Games,p1,cMaxBuffer) then
               ResultHash := p1;
-            if (HashType >= 6) and GetHashFromDeck(def, p1, cMaxBuffer) then
+            if (HashType >= 8) and GetHashFromDeck(def, p1, cMaxBuffer) then
               ResultHash := ResultHash + '.' + p1;
           finally
             FreeMem(p1);

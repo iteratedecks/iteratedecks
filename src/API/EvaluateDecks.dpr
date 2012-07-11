@@ -6,7 +6,8 @@ uses
   SysUtils,
   EvaluateDecksSrc in 'EvaluateDecksSrc.pas' {EvaluateDecksForm},
   LoadingSrc in 'LoadingSrc.pas' {LoadingForm},
-  Extended in 'Extended.pas';
+  Extended in 'Extended.pas',
+  EDImports in 'EDImports.pas';
 
 {$R *.res}
 

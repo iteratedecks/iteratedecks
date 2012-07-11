@@ -557,9 +557,9 @@ extern "C"
 	{
 		return DB.RateCard(Id, OffenceValue, DefenceValue, iFormulaUsed);
 	}
-	IDAPI bool BuildResultHash(const char *CardList, UINT Version, UINT Revision, UINT HashType, UINT HashID, UINT MissionID, UINT GamesOverall, UINT GamesWon, char *Buffer, DWORD MaxBufferSize)
+	IDAPI bool BuildResultHash(const char *CardList, UINT Version, UINT Revision, UINT HashType, UINT HashID, UINT MissionID, UINT GamesOverall, UINT GamesWon, double ANG, char *Buffer, DWORD MaxBufferSize)
 	{
-#define HASH_VERSION	1
+#define HASH_VERSION	2
 		ActiveDeck X;
 		DB.CreateDeck(CardList,X);
 		if (X.Deck.empty() || (!X.IsValid()))
@@ -596,8 +596,21 @@ WWWW - count of games won
 D - deck checksum ((sum of deck card IDs) mod 64)
 R - result checksum ((H + V + RR + T + II + MM + GGGG + WWWW) mod 64)
 
+--------- Hash Version 2 ---------
+H - hash version (2)
+V - EvaluateDecks version
+RR - EvaluateDecks revision
+T - hash type (0 - mission(auto), 1 - mission(manual), 2 - raid(auto), 3 - raid(manual), 4 - achievement(auto), 5 - achievement(manual),  6 - quest(auto), 7 - quest(manual), 8 - custom deck?)
+II - mission/raid/quest/achievement id
+MM - mission id(for missions it is the same as II, 0 for raids and quests, makes sense only for achievements)
+GGGG - count of games overall
+WWWW - count of games won
+NNN - average net gain(ANG), represented by following formula: floor(ANG * 5000)
+D - deck checksum ((sum of deck card IDs) mod 64)
+R - result checksum ((H + V + RR + T + II + MM + GGGG + WWWW + NNN) mod 64)
+
 Full result, containing both deck definition and result of evaluations may look like this:
-DECKHASH.HVRRTIIMMGGGGWWWWDR
+DECKHASH.HVRRTIIMMGGGGWWWWNNNDR
 */
 		string s = X.GetHash64();
 		s += ".";
@@ -621,9 +634,18 @@ DECKHASH.HVRRTIIMMGGGGWWWWDR
 		s += (char*)&c;
 		c = ID2BASE64(GamesWon % 4096);
 		s += (char*)&c;
+		int ang = int(ANG * 5000);
+		if (ang < 0)
+			ang = 0;
+		c = ID2BASE64(ang / (64 * 64));
+		s += ((char*)&c + 1); // need only last 1 char
+		c = ID2BASE64((ang / 64) % 64);
+		s += ((char*)&c + 1); // need only last 1 char
+		c = ID2BASE64(ang % 64);
+		s += ((char*)&c + 1); // need only last 1 char
 		c = ID2BASE64(DeckChecksum % 4096);
 		s += ((char*)&c + 1); // need only last 1 char
-		UINT ResultChecksum = HASH_VERSION + Version + Revision + HashType + HashID + MissionID + GamesOverall + GamesWon;
+		UINT ResultChecksum = HASH_VERSION + Version + Revision + HashType + HashID + MissionID + GamesOverall + GamesWon + ang;
 		c = ID2BASE64(ResultChecksum % 4096);
 		s += ((char*)&c + 1); // need only last 1 char
 		if (s.length() > MaxBufferSize)
