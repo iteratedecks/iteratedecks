@@ -2779,6 +2779,7 @@ public:
 		{
 			Units.push_back(Src.GetOriginalCard());
 			Units.back().SetCardSkillProcBuffer(SkillProcs);
+			ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
 		}
 	}
 	void SweepFancyStats(PlayedCard &pc)
@@ -2931,6 +2932,26 @@ public:
 			if (Units[i].OnDeathEvent())
 				ApplyEffects(QuestEffectId,EVENT_DIED,Units[i],-1,Def);
 
+		// Quest split mark
+		if (QuestEffectId == QEFFECT_CLONE_PROJECT)
+		{
+			PPCIV GetTo;
+			for (VCARDS::iterator vi = Units.begin();vi != Units.end();vi++)
+			{
+				if ((vi->IsAlive()) && 
+					(vi->GetWait() == 0) && 
+					(!vi->GetEffect(ACTIVATION_JAM)) && // Jammed
+					(!vi->GetEffect(ACTIVATION_FREEZE)) && // Frozen
+					(!vi->GetEffect(DMGDEPENDANT_IMMOBILIZE)))
+					GetTo.push_back(PPCARDINDEX(&(*vi),0));
+			}
+			if (!GetTo.empty())
+			{
+				UCHAR rc = UCHAR(rand() % GetTo.size());
+				GetTo[rc].first->SetQuestSplit(true);
+			}
+		}
+
 		if (!bSkipCardPicks)
 		{
 			const Card *c = PickNextCard();
@@ -2952,22 +2973,6 @@ public:
 						Units[Units.size() - 1].SetEffect(DMGDEPENDANT_DISEASE,ABILITY_ENABLED);
 					}
 				}
-			}
-		}
-
-		// Quest split mark
-		if (QuestEffectId == QEFFECT_CLONE_PROJECT)
-		{
-			PPCIV GetTo;
-			for (VCARDS::iterator vi = Units.begin();vi != Units.end();vi++)
-			{
-				if ((vi->IsAlive()) && (vi->GetWait() == 0))
-					GetTo.push_back(PPCARDINDEX(&(*vi),0));
-			}
-			if (!GetTo.empty())
-			{
-				UCHAR rc = UCHAR(rand() % GetTo.size());
-				GetTo[rc].first->SetQuestSplit(true);
 			}
 		}
 
