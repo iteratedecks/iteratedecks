@@ -26,7 +26,7 @@ MSPS StatsByOrder;
 #endif
 
 
-#if defined(_WIN32) || defined(_WIN64)
+#if __windows__
 static CRITICAL_SECTION cs;
 #else
 static pthread_mutex_t cs = PTHREAD_MUTEX_INITIALIZER;
