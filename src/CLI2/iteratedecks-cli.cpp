@@ -49,9 +49,10 @@
 int mainWithObjects(unsigned int const & numberOfIterations
                    ,ActiveDeck const & deck1
                    ,ActiveDeck const & deck2
+                   ,int const achievementIndex
                    )
 {
-	AchievementIndex = -1; // index, not id
+	AchievementIndex = achievementIndex; // index, not id
 	bConsoleOutput = false;
 	
 	RESULTS r;
@@ -80,7 +81,8 @@ int mainWithObjects(unsigned int const & numberOfIterations
 int mainWithOptions(unsigned int const & numberOfIterations
                    ,bool const & firstDeckIsOrdered
                    ,char const * const & _deck1
-                   ,char const * const & _deck2 
+                   ,char const * const & _deck2
+                   ,int const & achievementIndex
                    )
 {
 	DB.LoadAchievementXML("achievements.xml");
@@ -92,7 +94,7 @@ int mainWithOptions(unsigned int const & numberOfIterations
 	deck1.SetOrderMatters(firstDeckIsOrdered);
 	ActiveDeck deck2(_deck2, DB.GetPointer());
 	
-	return mainWithObjects(numberOfIterations, deck1, deck2);
+	return mainWithObjects(numberOfIterations, deck1, deck2, achievementIndex);
 }
 
 /******************************************************************************
@@ -124,12 +126,14 @@ int mainWithOptions(unsigned int const & numberOfIterations
 static option const long_options[] = 
     { { "number-of-iterations" , required_argument, 0, 'n' }
     , { "first-deck-is-ordered", no_argument      , 0, 'o' }
+    , { "achievement-index"       , required_argument, 0, 'a' }
     };
 static char const * const short_options = "n:o";
 
 int main(int const argc, char * const * const argv)
 {
     unsigned int numberOfIterations = DEFAULT_NUMBER_OF_ITERATIONS;
+    int achievementIndex = -1;
     bool firstDeckIsOrdered = false;
 
     // gnu getopt stuff
@@ -146,12 +150,20 @@ int main(int const argc, char * const * const argv)
                     ssNumberOfIterations >> numberOfIterations;
                     if(ssNumberOfIterations.fail()) {
                         std::cerr << "--number-of-iterations requires an integer argument" << std::endl;
-                        return E_INCORRECT_ARGUMENT;                    
+                        return E_INCORRECT_ARGUMENT;
                     }
                 } break;
             case 'o':
                     firstDeckIsOrdered = true;
                 break;
+            case 'a': {
+                    stringstream ssAchievementIndex(optarg);
+                    ssAchievementIndex >> achievementIndex;
+                    if(ssAchievementIndex.fail()) {
+                        std::cerr << "--achievement-index requires an integer argument" << std::endl;
+                        return E_INCORRECT_ARGUMENT;
+                    }
+                } break;
             case '?':
                 return E_NO_SUCH_OPTION;
             default: {
@@ -170,5 +182,5 @@ int main(int const argc, char * const * const argv)
         std::cerr << "please specify exactly two decks to test" << std::endl;
         return E_NOT_TWO_DECKS;
     }    
-    return mainWithOptions(numberOfIterations, firstDeckIsOrdered, deck1, deck2);
+    return mainWithOptions(numberOfIterations, firstDeckIsOrdered, deck1, deck2, achievementIndex);
 }
