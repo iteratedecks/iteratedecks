@@ -1378,7 +1378,7 @@ public:
 					if ((!c) || (!c->IsCard()))
 						errline = cline;
 					else
-						OwnedCards.insert(PAIRMUUINT::pair(c->GetId(),amount));
+						OwnedCards.insert(PAIRMUUINT(c->GetId(),amount));
 				}
 				cline++;
 			}
