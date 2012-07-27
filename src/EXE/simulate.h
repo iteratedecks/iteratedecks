@@ -708,6 +708,7 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 	}
 }
 
+// FIXME: Why is windows.h included again? That seems quite strange
 #include <windows.h>
 //#include "Aclapi.h"
 
