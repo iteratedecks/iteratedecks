@@ -254,7 +254,7 @@ public:
 		char lbuff[10];
 		for (UCHAR i=0;i<Deck.size();i++)
 		{
-			if (itoa(Deck[i],lbuff,10))
+			if (_itoa_s(Deck[i],lbuff,10))
 			{
 				if (buffer[0] != 0)
 					strcat_s(buffer,buffersize,",");
@@ -898,7 +898,7 @@ public:
 					RDB[Id].AddAlways(atoi(di->child_value()));
 				}
 				for (pugi::xml_node_iterator di = deck.begin(); di != deck.end(); ++di)
-					if (!strcmpi(di->name(),"card_pool"))
+					if (!_strcmpi(di->name(),"card_pool"))
 					{
 						CardPool p(di->attribute("amount").as_int());
 						for (pugi::xml_node_iterator ti = di->begin(); ti != di->end(); ++ti)
@@ -1570,7 +1570,7 @@ public:
 							if (c)
 							{
 								char itoabuffer[10];
-								itoa(c->GetId(),itoabuffer,10);
+								_itoa_s(c->GetId(),itoabuffer,10);
 								if (output_id_buffer[0])
 									strcat(output_id_buffer,",");
 								strcat(output_id_buffer,itoabuffer);
@@ -1805,7 +1805,7 @@ public:
 		MSUINT::iterator mi = MIIndex.find(DeckName);
 		if (mi == MIIndex.end())	
 			return buffer; // not found
-		itoa(MDB[mi->second].GetCommander(),buffer,10);
+		_itoa_s(MDB[mi->second].GetCommander(),buffer,10);
 		MDB[mi->second].GetDeck(buffer,size);
 		return buffer;
 	}
