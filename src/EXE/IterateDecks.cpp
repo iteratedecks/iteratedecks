@@ -19,7 +19,17 @@
 #ifdef _WIN64
 #define __windows__
 #endif
+
+
+// Do not include <tchar.h> on linux.
+#ifndef __linux__
 #include <tchar.h>
+#endif
+
+#ifdef __linux__
+#include <string>
+using namespace std;
+#endif
 
 #include "stdio.h"
 #include "time.h"
