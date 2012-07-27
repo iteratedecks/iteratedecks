@@ -2117,8 +2117,14 @@ public:
 							targets.push_back(tmp);
 						}
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+						{
 							if (PROC50)
+<<<<<<< HEAD
 								if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos))
+=======
+							{
+								if ((vi->first->GetAbility(DEFENSIVE_EVADE)) && (PROC50) && (!chaos))
+>>>>>>> FIX: More braces for readability
 								{
 									// evaded
 									// no fancy stats here?!
@@ -2150,6 +2156,8 @@ public:
 										printf("\n");
 									}
 								}
+							}
+						}
 					}
 					targets.clear();
 				}
