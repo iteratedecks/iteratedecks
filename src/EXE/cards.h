@@ -1,3 +1,4 @@
+// Warning: Strange charset:  windows-1251
 // *****************************************
 // EvaluateDecks
 // Tyrant card game simulator
@@ -15,8 +16,15 @@
 #include <map>
 #include <vector>
 #include <string>
+
+// Path names are different on windows from common OS
+#if defined(_WIN32) || defined(_WIN64)
 #include "pugixml\src\pugixml.hpp"
 #include "pugixml\src\pugixml.cpp"
+#else
+#include "pugixml/src/pugixml.hpp"
+#include "pugixml/src/pugixml.cpp"
+#endif
 
 typedef map<string, UINT> MSUINT;
 typedef pair<string, UINT> PAIRMSUINT;

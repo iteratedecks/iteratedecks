@@ -1,3 +1,4 @@
+// Warning: Strange charset:  windows-1251
 // *****************************************
 // EvaluateDecks
 // Tyrant card game simulator
