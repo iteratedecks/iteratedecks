@@ -59,7 +59,13 @@ typedef	unsigned int UINT;
 #define FACTION_XENO			4
 #define FACTION_RIGHTEOUS		5
 
+// Unclear why the following code works under windows...
+#if defined(_WIN32) || defined(_WIN64)
 char FACTIONS[6][CARD_NAME_MAX_LENGTH] = {0,"Imperial","Raider","Bloodthirsty","Xeno","Righteous"};
+#else
+char const * const FACTIONS[6] =
+{0,"Imperial","Raider","Bloodthirsty","Xeno","Righteous"};
+#endif
 
 //#define TARGETSCOUNT_NONE		0				
 #define TARGETSCOUNT_ONE		0				
