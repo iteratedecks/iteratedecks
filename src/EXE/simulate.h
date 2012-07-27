@@ -747,7 +747,9 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 }
 
 // FIXME: Why is windows.h included again? That seems quite strange
+#if __windows__
 #include <windows.h>
+#endif
 //#include "Aclapi.h"
 
 #define SM_NAME		"Local\\IterateDecksSharedMemory"
