@@ -1659,6 +1659,7 @@ public:
 		if (IsMimiced && Mimicer && (!Units.empty()))
 		{
 			for (UCHAR i=0;i<Units.size();i++)
+			    // FIXME: Intended asssigment? I think not!
 				if (Mimicer = &Units[i])
 				{
 					bIsSelfMimic = true;
