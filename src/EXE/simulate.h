@@ -20,9 +20,27 @@ UINT MaxTurn = MAX_TURN;
 typedef map<string, PICK_STATS> MSPS;
 typedef pair<string, PICK_STATS> PAIRSPS;
 MSPS StatsByOrder;
+#if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #include <process.h>
+#endif
+
+
+#if defined(_WIN32) || defined(_WIN64)
 static CRITICAL_SECTION cs;
+#else
+static pthread_mutex_t cs = PTHREAD_MUTEX_INITIALIZER;
+
+//void InitializeCriticalSection(pthread_mutex_t cs)
+//{
+//    cs* = PTHREAD_MUTEX_INITIALIZER;
+//}
+#define InitializeCriticalSection(cs)
+#define EnterCriticalSection pthread_mutex_lock
+#define LeaveCriticalSection pthread_mutex_unlock
+#define DeleteCriticalSection pthread_mutex_destroy
+#endif
+
 int OrderLength = 0;// 0 to disable //DEFAULT_DECK_SIZE;
 UINT MaxOrderHeapSize = 700;
 void InsertOrder(string Order, int State)
@@ -532,7 +550,11 @@ void EvaluateRaidQuestOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSInd
 	r.Games++;
 }
 
+#if defined(_WIN32) || defined(_WIN64)
 static unsigned int __stdcall ThreadFunc(void *pvParam)
+#else
+void * ThreadFunc(void *pvParam)
+#endif
 {
 	EVAL_THREAD_PARAMS *p = (EVAL_THREAD_PARAMS *)pvParam;
 	srand((unsigned)p->Seed); // it seems like each thread shares seed with others before it starts, so we should reset seed or we will gate the same random sequences in all threads
@@ -579,7 +601,11 @@ static unsigned int __stdcall ThreadFunc(void *pvParam)
 	p->r.Add(lr);
 	//for (UCHAR m=0;m<DEFAULT_DECK_SIZE+1;m++)
 	//	p->rbc[m].Add(rbc[m]);
+#if defined(_WIN32) || defined(_WIN64)
 	return (UINT)p;
+#else
+    return p;
+#endif
 }
 
 void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDef, int RaidID, int QuestID, RESULTS &ret, RESULT_BY_CARD *rbc, int &State, DWORD gamesperthread, DWORD threadscount = 1, bool bSurge = false, UCHAR TournamentMode = 0, REQUIREMENT *Req = 0, UINT *pSkillProcs = 0, bool bAnnihilator = false, bool bSurrenderAtLoss = false)
@@ -682,6 +708,7 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 			if (Req)
 				memcpy(parms[i].Req,Req,sizeof(REQUIREMENT)*REQ_MAX_SIZE);
 
+#if defined(_WIN32) || defined(_WIN64)
 			m_ulThreadHandle[i] = _beginthreadex(0,
 										0,
 										ThreadFunc,
@@ -690,10 +717,21 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 										&m_uiThreadID[i]);
 			// if(!m_ulThreadHandle)
 				// Could not create thread
+#else
+        pthread_create( &m_ulThreadHandle[i]
+                                        , NULL
+                                        , ThreadFunc
+                                        , &parms[i]
+                                        );
+#endif
 		}
 		for (DWORD i=0;i<threadscount;i++)
 		{
+#if defined(_WIN32) || defined(_WIN64)
 			cwait(NULL,m_ulThreadHandle[i],NULL); // now wait them all, order doesn't matter since we will have to wait all of them
+#else
+            pthread_join(m_ulThreadHandle[i],NULL);
+#endif
 			// collect results
 			ret.Add(parms[i].r);
 			if (rbc)
