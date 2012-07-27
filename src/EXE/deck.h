@@ -411,12 +411,12 @@ public:
 		if (IsDefined())
 		{
 			if (OriginalCard->GetAttack() && OriginalCard->GetWait())
-				printf("%s - %X [%d/%d|%d]",OriginalCard->GetName(),this,GetAttack(),Health,Wait);
+				printf("%s - %p [%d/%d|%d]",OriginalCard->GetName(),this,GetAttack(),Health,Wait);
 			else
 				if (OriginalCard->GetWait())
-					printf("%s - %X [%d|%d]",OriginalCard->GetName(),this,Health,Wait);
+					printf("%s - %p [%d|%d]",OriginalCard->GetName(),this,Health,Wait);
 				else
-					printf("%s - %X [%d]",OriginalCard->GetName(),this,Health);
+					printf("%s - %p [%d]",OriginalCard->GetName(),this,Health);
 			if (Effects[ACTIVATION_JAM])
 				printf(" Jammed");
 			if (Effects[ACTIVATION_FREEZE])
