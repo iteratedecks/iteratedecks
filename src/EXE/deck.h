@@ -975,7 +975,7 @@ private:
 		Structures.reserve(DEFAULT_DECK_RESERVE_SIZE);
 		Actions.reserve(DEFAULT_DECK_RESERVE_SIZE);
 	}
-	LOG_RECORD* LogAdd(LOG_CARD &src, UCHAR AbilityID, UCHAR Effect = ABILITY_ENABLED)
+	LOG_RECORD* LogAdd(LOG_CARD src, UCHAR AbilityID, UCHAR Effect = ABILITY_ENABLED)
 	{
 		if (!Log) return 0;
 		Log->push_back(LOG_RECORD(src,LOG_CARD(),AbilityID,Effect));
@@ -983,7 +983,7 @@ private:
 		//printf("%d: %d[%d] - %d - = %d\n",src.DeckID,src.DeckID,src.RowID,AbilityID,Effect);
 		return &(Log->back());
 	}
-	LOG_RECORD* LogAdd(LOG_CARD &src, LOG_CARD &dest, UCHAR AbilityID, UCHAR Effect = ABILITY_ENABLED)
+	LOG_RECORD* LogAdd(LOG_CARD src, LOG_CARD dest, UCHAR AbilityID, UCHAR Effect = ABILITY_ENABLED)
 	{
 		if (!Log) return 0;
 		Log->push_back(LOG_RECORD(src,dest,AbilityID,Effect));

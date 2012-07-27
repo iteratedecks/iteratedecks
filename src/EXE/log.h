@@ -30,13 +30,13 @@ struct LOG_RECORD
 	LOG_RECORD();
 
 	// FIXME: Is it intentional that Target is uninitialized?
-	LOG_RECORD(LOG_CARD &src, const UCHAR abilityID, const UCHAR effect)
+	LOG_RECORD(LOG_CARD src, const UCHAR abilityID, const UCHAR effect)
 	: Src(src),
 	  AbilityID(abilityID),
 	  Effect(effect)
 	{};
 
-	LOG_RECORD(LOG_CARD &src, LOG_CARD &target, const UCHAR abilityID, const UCHAR effect) 
+	LOG_RECORD(LOG_CARD src, LOG_CARD target, const UCHAR abilityID, const UCHAR effect) 
 	: Src(src),
 	  Target(target),
 	  AbilityID(abilityID),
