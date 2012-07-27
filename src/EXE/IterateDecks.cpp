@@ -1450,36 +1450,5 @@ int _tmain(int argc, char* argv[])
 }
 #endif
 
-#ifdef __linux__
-int main(int const argc, char const * const * const argv)
-{
-	chdir("../../bin/"); // just in case
-	DB.LoadAchievementXML("achievements.xml");
-	DB.LoadCardXML("cards.xml");
-	DB.LoadMissionXML("missions.xml");
-	DB.LoadRaidXML("raids.xml");
-	//DB.SaveMissionDecks("c:\\pun.txt");
-	ActiveDeck x("QVH0+mu8viQVH0+mu8vi",DB.GetPointer());
-	ActiveDeck z("QyAqAPBqfxvICcDVCYB+Cj",DB.GetPointer());
-	x.SetOrderMatters(true);
 
-	//DB.LoadDecks("C:\\Users\\NT\\Documents\\Visual Studio 2008\\Projects\\EvaluateDecks\\bin\\decks\\batcheval\\New Missions.txt");
-	AchievementIndex = -1; // index, not id
-	bConsoleOutput = false;
-	
-	int wins = 0;
-	{
-	RESULTS r;
-	for (UINT k=0;k<10000;k++)
-	{
-		ActiveDeck X(x);
-		ActiveDeck Y(z);
-
-		Simulate(X,Y,r);
-	}
-    wins = r.Win;
-	}
-	cout << wins << endl;
-}
-#endif
 
