@@ -1967,6 +1967,7 @@ public:
 							else
 								Dest.SkillProcs[aid]++;
 						}
+						//FIXME: That variable is unused, yet is has a large right hand side...
 						bool bTributable = (IsMimiced && IsInTargets(Mimicer,&targets)) || ((!IsMimiced) && IsInTargets(&Src,&targets));
 						for (vi = targets.begin();vi != targets.end();vi++)
 						{

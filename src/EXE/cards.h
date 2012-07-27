@@ -610,6 +610,7 @@ public:
 		if (!doc.load_file(FileName)) return false;
 
 		size_t loaded = 0;
+		// FIXME: unused variable
 		size_t ss = 0;
 		pugi::xml_node root = doc.child("root");
 		for (pugi::xml_node_iterator it = root.begin(); it != root.end(); ++it)
