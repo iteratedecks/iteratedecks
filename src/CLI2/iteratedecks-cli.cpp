@@ -41,10 +41,10 @@
 #include <getopt.h>
 
 // here come NETRAT's evil hacks
-#include "deck.h"
-#include "cards.h"
-//#include "branches.h"
-#include "simulate.h"
+#include "../EXE/deck.h"
+#include "../EXE/cards.h"
+//#include "../EXE/branches.h"
+#include "../EXE/simulate.h"
 
 int mainWithObjects(unsigned int const & numberOfIterations
                    ,ActiveDeck const & deck1
