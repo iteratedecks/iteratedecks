@@ -1,3 +1,5 @@
 .makepp/
 /IterateDecks
 /IterateDecks.o
+/iteratedecks-cli.o
+/iteratedecks-cli
