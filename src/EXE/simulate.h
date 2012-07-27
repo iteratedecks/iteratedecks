@@ -21,7 +21,7 @@ typedef map<string, PICK_STATS> MSPS;
 typedef pair<string, PICK_STATS> PAIRSPS;
 MSPS StatsByOrder;
 #include <windows.h>
-#include "process.h"
+#include <process.h>
 static CRITICAL_SECTION cs;
 int OrderLength = 0;// 0 to disable //DEFAULT_DECK_SIZE;
 UINT MaxOrderHeapSize = 700;
