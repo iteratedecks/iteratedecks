@@ -26,7 +26,7 @@ int fopen_s(FILE** pFile, const char *filename, const char *mode) {
 char* strlwr( char* s )
   {
   char* p = s;
-  while (*p = tolower( *p )) p++;
+  while ((*p = tolower( *p ))) p++;
   return s;
   }
 
