@@ -1,3 +1,4 @@
+// Warning: Strange charset
 // *****************************************
 // EvaluateDecks
 // Tyrant card game simulator
@@ -11,6 +12,11 @@
 // *****************************************
 //
 // this module contains all evaluation related stuff - card and deck classes and their interactions
+
+#ifdef __linux__
+// for rand
+#include <stdlib.h>
+#endif
 
 #include <vector>
 #include <set>
