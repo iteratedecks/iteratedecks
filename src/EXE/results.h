@@ -13,6 +13,14 @@
 // this module contains interfaces used by API, DLL and EXE to exchange evaluation results 
 // this structure is used to store and return simulation result
 
+#ifdef __linux__
+// contains memset
+#include <string.h>
+// contains assert
+#include <assert.h>
+#define _ASSERT(x) assert(x)
+#endif
+
 typedef unsigned long       DWORD;
 struct RESULTS
 {
