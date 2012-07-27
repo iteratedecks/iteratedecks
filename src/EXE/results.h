@@ -160,3 +160,4 @@ struct RESULT_BY_CARD
 			PickStats[i].Add(rAdd.PickStats[i]);
 	}
 };
+
