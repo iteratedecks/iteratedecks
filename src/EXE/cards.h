@@ -19,8 +19,8 @@
 
 #include "compat.h"
 
-// Path names are different on windows from common OS
-#if defined(_WIN32) || defined(_WIN64)
+// Path names are different on windows and unix
+#ifdef __windows__
 #include "pugixml\src\pugixml.hpp"
 #include "pugixml\src\pugixml.cpp"
 #else

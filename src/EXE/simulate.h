@@ -20,7 +20,7 @@ UINT MaxTurn = MAX_TURN;
 typedef map<string, PICK_STATS> MSPS;
 typedef pair<string, PICK_STATS> PAIRSPS;
 MSPS StatsByOrder;
-#if defined(_WIN32) || defined(_WIN64)
+#ifdef __windows__
 #include <windows.h>
 #include <process.h>
 #endif

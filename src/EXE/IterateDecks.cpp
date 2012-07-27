@@ -13,6 +13,12 @@
 //
 // main module for EXE part, contains a lot of commented snippets that can be used as samples of classes usage
 
+#ifdef _WIN32
+#define __windows__
+#endif
+#ifdef _WIN64
+#define __windows__
+#endif
 #include <tchar.h>
 
 #include "stdio.h"
@@ -30,6 +36,7 @@
 #include <direct.h>
 #endif
 
+#if __windows__
 int _tmain(int argc, char* argv[])
 {
 /*
@@ -1429,4 +1436,12 @@ int _tmain(int argc, char* argv[])
 	}
 */
 }
+#endif
+
+#ifdef __linux__
+int main(int const argc, char const * const * const argv)
+{
+
+}
+#endif
 
