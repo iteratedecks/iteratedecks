@@ -122,17 +122,17 @@ struct RESULT_BY_CARD
 	{
 		if (!IsValid())
 			return;
-		printf("CardID %4d:\n",Id);
+		printf("CardID %4ld:\n",Id);
 		if (WLGames)
-			printf("G%d	W%d	L%d:\n",WLGames,WLWin,WLLoss);
+			printf("G%ld	W%ld	L%ld:\n",WLGames,WLWin,WLLoss);
 		if (!FSRecordCount)
 			return;
-		printf("	Records		%5d:\n",FSRecordCount);
-		printf("	Avoided:	%5d	| %5.2f per card per game\n",FSAvoided,(float)FSAvoided / FSRecordCount);
-		printf("	Dealt:		%5d	| %5.2f per card per game\n",FSDamage,(float)FSDamage / FSRecordCount);
-		printf("	Mitigated:	%5d	| %5.2f per card per game\n",FSMitigated,(float)FSMitigated / FSRecordCount);
-		printf("	Healed:		%5d	| %5.2f per card per game\n",FSHealing,(float)FSHealing / FSRecordCount);
-		printf("	Special:	%5d	| %5.2f per card per game\n",FSSpecial,(float)FSSpecial / FSRecordCount);
+		printf("	Records		%5ld:\n",FSRecordCount);
+		printf("	Avoided:	%5ld	| %5.2f per card per game\n",FSAvoided,(float)FSAvoided / FSRecordCount);
+		printf("	Dealt:		%5ld	| %5.2f per card per game\n",FSDamage,(float)FSDamage / FSRecordCount);
+		printf("	Mitigated:	%5ld	| %5.2f per card per game\n",FSMitigated,(float)FSMitigated / FSRecordCount);
+		printf("	Healed:		%5ld	| %5.2f per card per game\n",FSHealing,(float)FSHealing / FSRecordCount);
+		printf("	Special:	%5ld	| %5.2f per card per game\n",FSSpecial,(float)FSSpecial / FSRecordCount);
 	}
 	void Add(const RESULT_BY_CARD &rAdd)
 	{
