@@ -18,6 +18,8 @@
 #include <stdlib.h>
 #endif
 
+#include "compat.h"
+
 #include <vector>
 #include <set>
 #include "ctype.h"

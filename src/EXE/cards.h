@@ -17,6 +17,8 @@
 #include <vector>
 #include <string>
 
+#include "compat.h"
+
 // Path names are different on windows from common OS
 #if defined(_WIN32) || defined(_WIN64)
 #include "pugixml\src\pugixml.hpp"
