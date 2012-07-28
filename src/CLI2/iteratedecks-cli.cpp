@@ -89,6 +89,8 @@ int mainWithOptions(unsigned int const & numberOfIterations
 	DB.LoadCardXML("cards.xml");
 	DB.LoadMissionXML("missions.xml");
 	DB.LoadRaidXML("raids.xml");
+	// That does something strange, there is an unresolved bug.
+	DB.LoadQuestXML("quests.xml");
 
 	ActiveDeck deck1(_deck1, DB.GetPointer());
 	deck1.SetOrderMatters(firstDeckIsOrdered);
