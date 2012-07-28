@@ -375,7 +375,7 @@ public:
 		AlwaysInclude.reserve(DEFAULT_DECK_RESERVE_SIZE);
 		Pools.reserve(DEFAULT_POOL_COUNT);
 	}
-	RaidInfo(RaidInfo &RI)
+	RaidInfo(RaidInfo const &RI)
 	{
 		Name = RI.Name;
 		Commander = RI.Commander;
@@ -459,7 +459,7 @@ public:
 		Commander = commander;
 		Pools.reserve(DEFAULT_POOL_COUNT);
 	}
-	StepInfo(StepInfo &SI)
+	StepInfo(StepInfo const &SI)
 	{
 		Id = SI.Id;
 		BgId = SI.BgId;
