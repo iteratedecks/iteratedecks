@@ -1,0 +1,3 @@
+The project (that is, this folder) is set up to compile with makepp[1]. The Makeppfile might be compatible to good old make, in any case it should contain some hints for compilation options.
+
+[1] http://makepp.sourceforge.net/
