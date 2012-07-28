@@ -10,7 +10,7 @@
     #define __windows__
 #endif
 // __linux__ is defined by gcc on gnu/linux
-
+// __FreeBSD__ is defined by gcc on FreeBSD
 
 
 /*
@@ -18,7 +18,7 @@
  */
 #if defined(__windows__)
     #include <tchar.h>
-#elif defined(__linux__)
+#elif defined(__linux__) || defined(__FreeBSD__)
     #include <string>
     #include <unistd.h>
     #include <iostream>
