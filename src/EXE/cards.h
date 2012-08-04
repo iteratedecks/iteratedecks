@@ -1087,6 +1087,7 @@ public:
 		AddSkill(ACTIVATION_SIEGE,"Siege");
 		AddSkill(ACTIVATION_SPLIT,"Split");
 		AddSkill(ACTIVATION_STRIKE,"Strike");
+		AddSkill(ACTIVATION_SUMMON,"Summon");
 		AddSkill(ACTIVATION_SUPPLY,"Supply");		
 		AddSkill(ACTIVATION_WEAKEN,"Weaken");
 

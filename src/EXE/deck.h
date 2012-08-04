@@ -108,6 +108,7 @@ char const * const FACTIONS[6] =
 #define ACTIVATION_STRIKE		27
 #define ACTIVATION_SUPPLY		28
 #define ACTIVATION_WEAKEN		29
+#define ACTIVATION_SUMMON       30 // i think 30 is still free... these numbers do not have any other meaning? why not use an enum?
 
 #define DEFENSIVE_ARMORED		31
 #define DEFENSIVE_COUNTER		32
@@ -968,6 +969,8 @@ public:
 	VLOG *Log;
 	// Quest effects
 	UINT QuestEffectId;
+    // used to get the actual card for summon
+    Card const * pCDB;
 private:
 	void Reserve()
 	{
@@ -1375,6 +1378,7 @@ public:
 		memset(SkillProcs,0,CARD_ABILITIES_MAX*sizeof(UCHAR)); 
 		memset(CardPicks,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 		memset(CardDeaths,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
+		pCDB = NULL;
 	}
 	~ActiveDeck() { Deck.clear(); Units.clear(); Structures.clear(); Actions.clear(); }
 public:
@@ -1419,6 +1423,7 @@ public:
 	}
 	// please note, contructors don't clean up storages, must do it manually and beforehand, even copy constructor
 	ActiveDeck(const char *HashBase64, const Card *pCDB)
+	: pCDB(pCDB)
 	{
 		_ASSERT(pCDB);
 		_ASSERT(HashBase64);
@@ -1489,6 +1494,7 @@ public:
 		memset(CardDeaths,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 	};
 	ActiveDeck(const ActiveDeck &D) // need copy constructor
+	: pCDB(D.pCDB)
 	{
 		QuestEffectId = D.QuestEffectId;
 		Log = 0;
@@ -1665,6 +1671,9 @@ public:
 			FusionMultiplier = 2;
 
 		bool bSplit = false;
+
+		VCARDS summonedCards;    // Cards added by summon
+		//TODO Do summoned card's "on play" effects trigger? Does the calling function correctly handle summon for summoned delay zero cards?
 
 		UCHAR SrcPos = StructureIndex;
 		if (Position > 0)
@@ -2589,6 +2598,19 @@ public:
 					}
 				}
 			}
+			// summon
+            if (aid == ACTIVATION_SUMMON) {
+                effect = Src.GetAbility(ACTIVATION_SUMMON);
+                if (effect > 0) {
+                    // get the card
+                    Card & summonedCard = this->pCDB[effect];
+                    // construct a new card in play
+                    PlayedCard summonedPlayedCard(&summonedCard);
+                    // add the summoned card to summonedCards
+                    summonedCards.push_back(summonedPlayedCard);
+                }
+            }
+
 			// weaken
 			// i've played like 20 times mission 66 just farming and noticed that AI,
 			// when played beholder one of the first cards kept weakening my unit aligned
@@ -2802,6 +2824,9 @@ public:
 			Units.back().SetCardSkillProcBuffer(SkillProcs);
 			ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
 		}
+		// summon, a more general case of split. AFAIK, one can consider split as "summon self"
+		Units.insert(Units.end(), summonedCards.begin(), summonedCards.end()); // vector concatenation is ugly
+
 	}
 	void SweepFancyStats(PlayedCard &pc)
 	{
