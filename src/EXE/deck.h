@@ -1452,8 +1452,9 @@ public:
 			if (HashBase64[i << 1] == '.') break; // delimeter
 			if (isspace(HashBase64[i << 1])) break; // not a hash
 			tid = BASE64ID((HashBase64[i << 1] << 8) + HashBase64[(i << 1) + 1]);
-			if (!i)
+			if (i==0)
 			{
+			    // first card is commander
 				_ASSERT(tid < CARD_MAX_ID);
 				_ASSERT((tid >= 1000) && (tid < 2000)); // commander Id boundaries
 				Commander = PlayedCard(&pCDB[tid]);
@@ -1461,17 +1462,20 @@ public:
 			}
 			else
 			{
+			    // later cards are not commander
 				_ASSERT(i || (tid < CARD_MAX_ID)); // commander card can't be encoded with RLE
 				if (tid < CARD_MAX_ID)
 				{
+				    // this is a card
 					Deck.push_back(&pCDB[tid]);
 					lastid = tid;
 				}
 				else
 				{
+				    // this is an encoding for rle
 					for (UINT k = CARD_MAX_ID+1; k < tid; k++) // decode RLE, +1 because we already added one card
 						Deck.push_back(&pCDB[lastid]);
-				}					
+				}
 			}
 		}
 	}
