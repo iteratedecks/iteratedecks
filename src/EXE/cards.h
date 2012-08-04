@@ -682,7 +682,7 @@ public:
 						_ASSERT(Id); // unknown skill
 						if (!Id)
 							continue;
-						UCHAR Effect = child.attribute("x").as_uint();
+						EFFECT_ARGUMENT Effect = child.attribute("x").as_uint();
 						if (!Effect)
 							Effect = ABILITY_ENABLED; // this value can't be 0, since it will disable the ability
 						UCHAR TC = child.attribute("all").as_uint();
