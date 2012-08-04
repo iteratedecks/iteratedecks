@@ -1968,10 +1968,11 @@ public:
 					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
 						if (Atk.CardPicks[i])
 						{
-							if (Atk.CardPicks[i] == vi->UnitID) cnt++;
+						    // In a quite unlikely expansion a card ID of MAX_UINT - 1 could be used,in that case the previous version of the check would fail
+							if (vi->UnitID >= 0 && Atk.CardPicks[i] == (UINT)vi->UnitID) cnt++;
 						}
 						else break;
-					if (Atk.Commander.GetId() == vi->UnitID) cnt++;
+					if (vi->UnitID >= 0 && Atk.Commander.GetId() == (UINT)vi->UnitID) cnt++;
 				}
 				if (vi->NumKilled >= 0)
 				{
@@ -1979,7 +1980,7 @@ public:
 					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
 						if (Def.CardDeaths[i])
 						{
-							if (Def.CardDeaths[i] == vi->UnitID) cnt++;
+							if (vi->UnitID >= 0 && Def.CardDeaths[i] == (UINT)vi->UnitID) cnt++;
 						}
 						else break;
 				}
