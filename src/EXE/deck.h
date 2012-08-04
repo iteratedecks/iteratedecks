@@ -30,6 +30,7 @@
 
 typedef	unsigned char UCHAR;
 typedef	unsigned int UINT;
+typedef UINT EFFECT_ARGUMENT;         // that is usally the amount (i.e, the 3 in weaken 3), but also the card to summon in summon
 
 #include "results.h"
 #include "log.h"
@@ -196,7 +197,7 @@ private:
 	UCHAR Attack;
 	UCHAR Health;
 	UCHAR Rarity;
-	UCHAR Effects[CARD_ABILITIES_MAX];
+	EFFECT_ARGUMENT Effects[CARD_ABILITIES_MAX];
 	UCHAR TargetCounts[CARD_ABILITIES_MAX];
 	UCHAR TargetFactions[CARD_ABILITIES_MAX]; // reserved negative values for faction
 	UCHAR AbilityEvent[CARD_ABILITIES_MAX];
@@ -230,7 +231,7 @@ public:
 	{
 		Id = 0;
 		memset(Name,0,CARD_NAME_MAX_LENGTH);
-		memset(Effects,0,CARD_ABILITIES_MAX);
+		memset(Effects,0,CARD_ABILITIES_MAX * sizeof(EFFECT_ARGUMENT));
 		memset(TargetCounts,0,CARD_ABILITIES_MAX);
 		memset(TargetFactions,0,CARD_ABILITIES_MAX);
 		memset(AbilityEvent,0,CARD_ABILITIES_MAX);		
@@ -251,7 +252,7 @@ public:
 		Wait = wait;
 		Rarity = rarity;
 		Set = set;
-		memset(Effects,0,CARD_ABILITIES_MAX);
+		memset(Effects,0,CARD_ABILITIES_MAX*sizeof(EFFECT_ARGUMENT));
 		memset(TargetCounts,0,CARD_ABILITIES_MAX);
 		memset(TargetFactions,0,CARD_ABILITIES_MAX);
 		memset(AbilityEvent,0,CARD_ABILITIES_MAX);	
@@ -269,7 +270,7 @@ public:
 		Wait = card.Wait;
 		Rarity = card.Rarity;
 		Set = card.Set;
-		memcpy(Effects,card.Effects,CARD_ABILITIES_MAX);
+		memcpy(Effects,card.Effects,CARD_ABILITIES_MAX*sizeof(EFFECT_ARGUMENT));
 		memcpy(TargetCounts,card.TargetCounts,CARD_ABILITIES_MAX);
 		memcpy(TargetFactions,card.TargetFactions,CARD_ABILITIES_MAX);
 		memcpy(AbilityEvent,card.AbilityEvent,CARD_ABILITIES_MAX);	
@@ -290,7 +291,7 @@ public:
 		Wait = card.Wait;
 		Rarity = card.Rarity;
 		Set = card.Set;
-		memcpy(Effects,card.Effects,CARD_ABILITIES_MAX);
+		memcpy(Effects,card.Effects,CARD_ABILITIES_MAX*sizeof(EFFECT_ARGUMENT));
 		memcpy(TargetCounts,card.TargetCounts,CARD_ABILITIES_MAX);
 		memcpy(TargetFactions,card.TargetFactions,CARD_ABILITIES_MAX);
 		memcpy(AbilityEvent,card.AbilityEvent,CARD_ABILITIES_MAX);
@@ -300,7 +301,7 @@ public:
 				AbilitiesOrdered.push_back(card.AbilitiesOrdered[i]);
 		return *this;
 	}
-	void AddAbility(const UCHAR id, const UCHAR effect, const UCHAR targetcount, const UCHAR targetfaction, const UCHAR skillevent = EVENT_EMPTY)
+	void AddAbility(const UCHAR id, const EFFECT_ARGUMENT effect, const UCHAR targetcount, const UCHAR targetfaction, const UCHAR skillevent = EVENT_EMPTY)
 	{
 		Effects[id] = effect;
 		TargetCounts[id] = targetcount;
@@ -316,7 +317,7 @@ public:
 		AbilityEvent[id] = EVENT_EMPTY;
 		AbilitiesOrdered.push_back(id);
 	}
-	void AddAbility(const UCHAR id, const UCHAR effect)
+	void AddAbility(const UCHAR id, const EFFECT_ARGUMENT effect)
 	{
 		Effects[id] = effect;
 		AbilityEvent[id] = EVENT_EMPTY;
@@ -372,7 +373,7 @@ public:
 	const UCHAR GetSet() const		{	return Set;		}
 	const UCHAR GetRarity() const { return Rarity; }
 	const UCHAR GetFaction() const { return Faction; }
-	const UCHAR GetAbility(const UCHAR id) const { return Effects[id]; }
+	const EFFECT_ARGUMENT GetAbility(const UCHAR id) const { return Effects[id]; }
 	const UCHAR GetAbilitiesCount() const { return (UCHAR)AbilitiesOrdered.size(); }
 	const UCHAR GetAbilityInOrder(const UCHAR order) const
 	{
@@ -558,7 +559,7 @@ Valor: Removed after owner ends his turn.
 // Regeneration happens before the additional strikes from Flurry.
 // Regenerating does not prevent Crush damage	
 		UCHAR dmg = Dmg;
-		UCHAR shield = GetEffect(ACTIVATION_PROTECT);
+		EFFECT_ARGUMENT shield = GetEffect(ACTIVATION_PROTECT);
 		if (shield > 0)
 		{
 			if (Pierce >= shield)
@@ -650,7 +651,7 @@ Valor: Removed after owner ends his turn.
 					if (vi->GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // counter, dmg from crush can't be countered
 					{
 						vi->CardSkillProc(DEFENSIVE_COUNTER);
-						UCHAR cdmg = vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
+						EFFECT_ARGUMENT cdmg = vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
 						vi->fsDmgDealt += cdmg;
 						UCHAR loverkill = 0;
 						if (lr && log)
@@ -669,7 +670,7 @@ Valor: Removed after owner ends his turn.
 		{
 			CardSkillProc(DEFENSIVE_COUNTER);
 			UCHAR loverkill = 0;
-			UCHAR cdmg = GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
+			EFFECT_ARGUMENT cdmg = GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
 			if (lr && log)
 				log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
 			Src.SufferDmg(cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
@@ -830,7 +831,7 @@ Valor: Removed after owner ends his turn.
 		return OriginalCard->GetType();	
 	}
 	const UCHAR GetEffect(const UCHAR id) const { return Effects[id]; }
-	const UCHAR GetAbility(const UCHAR id) const
+	const EFFECT_ARGUMENT GetAbility(const UCHAR id) const
 	{
 		// this is crap ! - must remove and check the code
 		if (!OriginalCard)
@@ -854,27 +855,27 @@ Valor: Removed after owner ends his turn.
 	void SetAttack(const UCHAR attack) { Attack = attack; }
 	void SetHealth(const UCHAR health) { Health = health; }
 	void SetEffect(const UCHAR id, const UCHAR value) { Effects[id] = value; }
-	void Rally(const UCHAR amount)
+	void Rally(const EFFECT_ARGUMENT amount)
 	{
 		Effects[ACTIVATION_RALLY] += amount;
 		//Attack += amount;
 	}
-	UCHAR Weaken(const UCHAR amount)
+	EFFECT_ARGUMENT Weaken(const EFFECT_ARGUMENT amount)
 	{
 		Effects[ACTIVATION_WEAKEN] += amount;
 		//if (amount > Attack) Attack = 0; else Attack -= amount;
 		return amount; // this is correct and incorrect at the same time ;(
 	}
-	void Berserk(const UCHAR amount)
+	void Berserk(const EFFECT_ARGUMENT amount)
 	{
 		Attack += amount;
 	}
-	void Protect(const UCHAR amount)
+	void Protect(const EFFECT_ARGUMENT amount)
 	{
 		//if (amount > Effects[ACTIVATION_PROTECT])
 		Effects[ACTIVATION_PROTECT] += amount;
 	}
-	bool Rush(const UCHAR amount)
+	bool Rush(const EFFECT_ARGUMENT amount)
 	{
 		if (Wait > 0)
 		{
@@ -888,7 +889,7 @@ Valor: Removed after owner ends his turn.
 			return false;
 	}
 	const bool IsDiseased() const	{	return Effects[DMGDEPENDANT_DISEASE] > 0; }
-	UCHAR Heal(UCHAR amount,UINT QuestEffectId = 0)
+	UCHAR Heal(EFFECT_ARGUMENT amount,UINT QuestEffectId = 0)
 	{
 		_ASSERT(!IsDiseased()); // disallowed
 		if (IsDiseased()) return 0;
@@ -1012,7 +1013,7 @@ private:
 			SRC.PrintDesc();
 			printf(" attacks\n");
 		}
-		UCHAR iflurry = (SRC.GetAbility(COMBAT_FLURRY) && PROC50) ? (SRC.GetAbility(COMBAT_FLURRY)+1) : 1; // coding like a boss :) don't like this style
+		EFFECT_ARGUMENT iflurry = (SRC.GetAbility(COMBAT_FLURRY) && PROC50) ? (SRC.GetAbility(COMBAT_FLURRY)+1) : 1; // coding like a boss :) don't like this style
 		if (iflurry > 1)
 		{
 			SkillProcs[COMBAT_FLURRY]++;
@@ -1021,7 +1022,7 @@ private:
 		if ((index >= (UCHAR)Def.Units.size()) || (!Def.Units[index].IsAlive()) || (SRC.GetAbility(COMBAT_FEAR)))
 		{
 			// Deal DMG To Commander BUT STILL PROC50 FLURRY and PROBABLY VALOR
-			UCHAR valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
+			EFFECT_ARGUMENT valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
 			for (UCHAR i=0;i<iflurry;i++)
 			{
 				if (valor)
@@ -1658,7 +1659,7 @@ public:
 		PPCIV targets;
 		targets.reserve(DEFAULT_DECK_RESERVE_SIZE);
 		PPCARDINDEX tmp;
-		UCHAR effect;
+		EFFECT_ARGUMENT effect;
 		UCHAR FusionMultiplier = 1;
 		if (IsFusioned)
 			FusionMultiplier = 2;
@@ -2947,7 +2948,7 @@ public:
 			Units[i].ResetShield(); // according to wiki, shield doesn't affect poison, it wears off before poison procs I believe
 			Units[i].ProcessPoison();
 		}
-		//  Moraku: If “Heal on Death” triggers from poison damage, it will NOT be able to heal another unit dying from poison damage on the same turn. (All poison damage takes place before “On Death” skills trigger)
+		//  Moraku: If ï¿½Heal on Deathï¿½ triggers from poison damage, it will NOT be able to heal another unit dying from poison damage on the same turn. (All poison damage takes place before ï¿½On Deathï¿½ skills trigger)
 		for (UCHAR i=0;i<Units.size();i++)
 			if (Units[i].OnDeathEvent())
 				ApplyEffects(QuestEffectId,EVENT_DIED,Units[i],-1,Def);
@@ -3020,7 +3021,7 @@ public:
 		// i believe it can't be mimiced and paybacked(can assume since it's commander skill) and 
 		// it can be evaded, according to forums
 		// "his own units that have evade wont ever seem to evade.
-		// (every time ive seen the collossus infuse and as far as i can see… he has no other non bt with evade.)"
+		// (every time ive seen the collossus infuse and as far as i can seeï¿½ he has no other non bt with evade.)"
 		// so, I assume, evade works for us, but doesn't work for his cards
 		// the bad thing about infuse is that we need faction as an attribute of card, we can't pull it out of
 		// library, I need to add PlayedCard.Faction, instead of using Card.Faction

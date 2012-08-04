@@ -693,7 +693,7 @@ public:
 						_ASSERT(Id); // unknown skill
 						if (!Id)
 							continue;
-						UCHAR Effect = child.attribute("x").as_uint();
+						EFFECT_ARGUMENT Effect = child.attribute("x").as_uint();
 						if (!Effect)
 							Effect = ABILITY_ENABLED; // this value can't be 0, since it will disable the ability
 						UCHAR TC = child.attribute("all").as_uint();
@@ -1568,7 +1568,7 @@ public:
 				{
 					// fix buffer
 					for (UCHAR z=0;buffer[z];z++)
-						if (buffer[z] == '’') // this char is so decieving ;(
+						if (buffer[z] == 'Â’') // this char is so decieving ;(
 							buffer[z] = '\'';
 					FormatCardName(buffer);
 					do
