@@ -2607,7 +2607,7 @@ public:
                 effect = Src.GetAbility(ACTIVATION_SUMMON);
                 if (effect > 0) {
                     // get the card
-                    Card & summonedCard = this->pCDB[effect];
+                    Card const & summonedCard = this->pCDB[effect];
                     // construct a new card in play
                     PlayedCard summonedPlayedCard(&summonedCard);
                     // add the summoned card to summonedCards
