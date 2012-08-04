@@ -1,3 +1,4 @@
 /.makepp/
 iteratedecks-cli.o
 iteratedecks-cli
+verify.o
