@@ -13,7 +13,7 @@ const
   CARD_NAME_MAX_LENGTH = 50;
   FILENAME_MAX_LENGTH = 50;
   REQ_MAX_SIZE = 5;
-  CARD_ABILITIES_MAX = 70;
+  CARD_ABILITIES_MAX = 70; /// 70
   cMaxBuffer = $FFFFFF;//65535;
   cDefaultMaxTurn = 50;
 
@@ -29,11 +29,11 @@ type
     Attack: byte;
     Health: byte;
     Rarity: byte;
-    Effects: array[0..CARD_ABILITIES_MAX - 1] of byte;
+    Effects: array[0..CARD_ABILITIES_MAX - 1] of UINT;
     TargetCounts: array[0..CARD_ABILITIES_MAX - 1] of byte;
     TargetFactions: array[0..CARD_ABILITIES_MAX - 1] of byte;
     AbilityEvent: array[0..CARD_ABILITIES_MAX - 1] of byte;
-    ChunkData: array[0..12] of byte; // it was 16
+    ChunkData: array[0..16] of byte; // it was 16 // 12
   end;
 
 type
@@ -217,6 +217,7 @@ procedure EvaluateInThreads(Seed: DWORD; var r: RESULTS; gamesperthread: DWORD;
   threadscount: DWORD = 1; bSurge: boolean = false); cdecl; external DLLFILE;
 
 function AbilityHasExtendedDesc(AbilityID: Byte): boolean; cdecl; external DLLFILE;
+function AbilityIsSummon(AbilityID: Byte): boolean; cdecl; external DLLFILE;
 
 function GetHashFromDeck(Deck: string; buffer: PChar; size: DWORD): boolean; cdecl; external DLLFILE;
 
