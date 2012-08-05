@@ -679,7 +679,7 @@
 	</achievement>
 	<achievement>
 		<id>156</id>
-		<name>Resiliant</name>
+		<name>Resilient</name>
 		<type mission_id='*' winner='1' />
   		<req skill_id='evade' num_used='1' />
   		<req skill_id='regenerate' num_used='1' />
@@ -1505,6 +1505,17 @@
 		<desc>Defeat Mission 181 after playing exactly 5 Assault cards, and playing no Actions or Structures</desc>
 		<gold_reward>5000</gold_reward>
 		<card_reward>680</card_reward>
+	</achievement>
+	<achievement>
+		<id>239</id>
+		<name>Honored Hope</name>
+  		<req unit_id='679' num_played='1' />
+  		<req unit_id='681' num_played='1' />
+		<req unit_id='682' num_played='1' />
+  		<type mission_id='265' winner='1' />
+		<number>1</number>
+		<desc>Play the cards "Perplexer" and "Sensei" and "Blight Tainter" in Mission 181 and win.</desc>
+		<gold_reward>27000</gold_reward>
 	</achievement>
 	
 	<!-- buypack achievements -->

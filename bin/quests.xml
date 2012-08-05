@@ -1763,6 +1763,10 @@ Clone Project = clone_project
 			<item id="1051" p="1" amount="1" />
 			<item id="201" p="5" amount="1" />
 		</item_pool>
+		<item_pool>
+			<item id="301" p="1" amount="1" />
+			<item id="301" p="1" amount="2" />
+		</item_pool>
 	</reward>
 	
 </root>
