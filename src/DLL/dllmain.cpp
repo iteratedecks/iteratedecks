@@ -294,6 +294,10 @@ extern "C"
 			(AbilityID == DMGDEPENDANT_SIPHON) ||
 			(AbilityID == SPECIAL_BACKFIRE);
 	}
+	IDAPI bool AbilityIsSummon(UCHAR AbilityID)
+	{
+		return (AbilityID == ACTIVATION_SUMMON);
+	}
 	IDAPI DWORD GetSets(UINT *Indexes,CardSet *Sets, DWORD Size)
 	{
 		DWORD cnt = 0;
