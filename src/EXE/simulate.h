@@ -605,6 +605,22 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 			_ASSERT(idx);
 			CSIndex[gAtk.Deck[i].GetId()] = idx;
 			rbc[idx].Id = gAtk.Deck[i].GetId();
+			// summon target ID
+			UINT summonID = gAtk.Deck[i].GetAbility(ACTIVATION_SUMMON);
+			if (summonID)
+			{
+				for (idx=0;idx<DEFAULT_DECK_RESERVE_SIZE+1;idx++)
+					if (rbc[idx].Id == summonID)
+						break;
+					else
+						if (!rbc[idx].IsValid())
+						{
+							rbc[idx].Id = i;
+							break;
+						}
+				CSIndex[summonID] = idx;
+				rbc[idx].Id = summonID;
+			}
 		}
 	}
 	//
