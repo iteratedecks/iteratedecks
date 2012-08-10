@@ -1035,9 +1035,14 @@ private:
 			SkillProcs[COMBAT_FLURRY]++;
 			LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_FLURRY,iflurry);
 		}
-		if ((index >= (UCHAR)Def.Units.size()) || (!Def.Units[index].IsAlive()) || (SRC.GetAbility(COMBAT_FEAR)))
-		{
-			// Deal DMG To Commander BUT STILL PROC50 FLURRY and PROBABLY VALOR
+
+        // Is there no unit opposite of the attacking unit, or do we have fear? ...
+        if (   (index >= (UCHAR)Def.Units.size()) // unit is right of everything opponent has
+            || (!Def.Units[index].IsAlive()) // opposite unit is dead
+            || (SRC.GetAbility(COMBAT_FEAR)) // unit has fear
+           )
+        {
+            // ... deal DMG to commander directly. BUT STILL PROC50 FLURRY and PROBABLY VALOR
 			EFFECT_ARGUMENT valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
 			for (UCHAR i=0;i<iflurry;i++)
 			{
