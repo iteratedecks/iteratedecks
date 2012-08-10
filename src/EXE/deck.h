@@ -1022,13 +1022,13 @@ private:
 // #############################################################################
 // #############################################################################
 // #############################################################################
+// does anyone know if VALOR procs on commander? imagine combo of valor+flurry or valor+fear
+// ok let's assume it does
+#define VALOR_HITS_COMMANDER	true
 
 	void Attack(UCHAR index, ActiveDeck &Def)
 	{
 #define SRC	Units[index]
-// does anyone know if VALOR procs on commander? imagine combo of valor+flurry or valor+fear
-// ok let's assume it does
-#define VALOR_HITS_COMMANDER	true
 		//printf("%s %d\n",SRC.GetName(),SRC.GetHealth());
 		_ASSERT(SRC.IsDefined() && SRC.IsAlive()); // baby, don't hurt me, no more
 		if (bConsoleOutput)
