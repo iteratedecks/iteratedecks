@@ -1758,7 +1758,6 @@ public:
 		bool bSplit = false;
 
 		VCARDS summonedCards;    // Cards added by summon
-		//TODO Do summoned card's "on play" effects trigger? Does the calling function correctly handle summon for summoned delay zero cards?
 
 		UCHAR SrcPos = StructureIndex;
 		if (Position > 0)
