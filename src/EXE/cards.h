@@ -1225,6 +1225,7 @@ public:
 				st = i+1;
 			}
 		}
+		D.pCDB = this->GetPointer();
 		return cnt > 0;
 	}
 	char *trim(char *str, char c=' ')

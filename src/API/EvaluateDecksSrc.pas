@@ -421,7 +421,7 @@ type
     procedure bCustomDefClick(Sender: TObject);
     procedure GenericTopMouseDown(Sender: TObject; Button: TMouseButton; Shift:
       TShiftState; X, Y: Integer);
-    procedure GenericBotMouseDown(Sender: TObject; Button: TMouseButton; Shift:
+    procedure GenericBotMouseDown(Sender: TObject; Button: TMouseButton; Shift:                
       TShiftState; X, Y: Integer);
     procedure imgMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -759,6 +759,8 @@ var
         GetFactionString(C.TargetFactions[Id]);
       if (bPower) then
         result := result + ' ' + IntToStr(C.Effects[Id]);
+      if AbilityIsSummon(Id) then
+        result := result + ' ' + GetCardNameEx(GetIndexFromId(C.Effects[Id]));
       result := result + GetAbilityEvent(C.AbilityEvent[Id]);
       result := result + #13;
     end;
@@ -3693,6 +3695,8 @@ begin
     begin
       AppendRecord;
       rec := RecordCount - 1;
+      if rec = 5 then
+        bShow.Click;
       if bIsQuest then
         Values[rec, vcType.Index] := 'Quest'
       else if bIsRaid then

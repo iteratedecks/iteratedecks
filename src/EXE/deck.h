@@ -106,9 +106,9 @@ char const * const FACTIONS[6] =
 #define ACTIVATION_SIEGE		25
 #define ACTIVATION_SPLIT		26
 #define ACTIVATION_STRIKE		27
-#define ACTIVATION_SUPPLY		28
-#define ACTIVATION_WEAKEN		29
-#define ACTIVATION_SUMMON       30 // i think 30 is still free... these numbers do not have any other meaning? why not use an enum?
+#define ACTIVATION_SUMMON       28 // i think 30 is still free... these numbers do not have any other meaning? why not use an enum?
+#define ACTIVATION_SUPPLY		29
+#define ACTIVATION_WEAKEN		30
 
 #define DEFENSIVE_ARMORED		31
 #define DEFENSIVE_COUNTER		32
@@ -469,10 +469,10 @@ public:
 			bActivated = true;
 		return bDoBegin;
 	}
-	void ProcessPoison()
+	void ProcessPoison(UINT QuestEffectId)
 	{
 		if (IsAlive() && (Effects[DMGDEPENDANT_POISON]))
-			SufferDmg(Effects[DMGDEPENDANT_POISON]);
+			SufferDmg(QuestEffectId,Effects[DMGDEPENDANT_POISON]);
 	}
 	const UCHAR GetShield() const
 	{
@@ -482,9 +482,12 @@ public:
 	{
 		Effects[ACTIVATION_PROTECT] = 0;
 	}
-	void Refresh()
+	void Refresh(UINT QuestEffectId)
 	{
-		fsHealed += (OriginalCard->GetHealth() - Health);
+		UCHAR amount = OriginalCard->GetHealth() - Health;
+		if (QuestEffectId == QEFFECT_INVIGORATE)
+			Attack += amount;
+		fsHealed += amount;
 		if (SkillProcBuffer && (OriginalCard->GetHealth() != Health))
 			SkillProcBuffer[DEFENSIVE_REFRESH]++;
 		Health = OriginalCard->GetHealth();
@@ -554,13 +557,13 @@ Valor: Removed after owner ends his turn.
 		Faction = setfaction;
 		SkillProcBuffer[ACTIVATION_INFUSE]++;
 	}
-	const UCHAR SufferDmg(const UCHAR Dmg, const UCHAR Pierce = 0, UCHAR *actualdamagedealt = 0, UCHAR *SkillProcBuffer = 0, UCHAR *OverkillDamage = 0, bool bCanRegenerate = true, VLOG *log = 0, LOG_RECORD *lr=0)
+	const UCHAR SufferDmg(UINT QuestEffectId, const UCHAR Dmg, const UCHAR Pierce = 0, UCHAR *actualdamagedealt = 0, UCHAR *SkillProcBuffer = 0, UCHAR *OverkillDamage = 0, bool bCanRegenerate = true, VLOG *log = 0, LOG_RECORD *lr=0)
 	{
 		_ASSERT(OriginalCard);
 // Regeneration happens before the additional strikes from Flurry.
 // Regenerating does not prevent Crush damage	
 		UCHAR dmg = Dmg;
-		EFFECT_ARGUMENT shield = GetEffect(ACTIVATION_PROTECT);
+		UCHAR shield = (UCHAR)GetEffect(ACTIVATION_PROTECT);
 		if (shield > 0)
 		{
 			if (Pierce >= shield)
@@ -584,6 +587,8 @@ Valor: Removed after owner ends his turn.
 			{
 				Health = OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
 				fsHealed += OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
+				if (QuestEffectId == QEFFECT_INVIGORATE)
+					Attack += Health;
 				CardSkillProc(DEFENSIVE_REGENERATE);
 				if (lr && log)
 					log->push_back(LOG_RECORD(lr->Target,DEFENSIVE_REGENERATE,Health));
@@ -648,7 +653,7 @@ Valor: Removed after owner ends his turn.
 						lr->Target.RowID = TYPE_STRUCTURE;
 					}
 					// walls can counter and regenerate
-					vi->SufferDmg(Dmg,0,0,0,overkill);
+					vi->SufferDmg(QuestEffectId,Dmg,0,0,0,overkill);
 					if (vi->GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // counter, dmg from crush can't be countered
 					{
 						vi->CardSkillProc(DEFENSIVE_COUNTER);
@@ -657,7 +662,7 @@ Valor: Removed after owner ends his turn.
 						UCHAR loverkill = 0;
 						if (lr && log)
 							log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
-						Src.SufferDmg(cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
+						Src.SufferDmg(QuestEffectId,cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
 						vi->fsOverkill += loverkill;
 					}
 				}
@@ -674,16 +679,16 @@ Valor: Removed after owner ends his turn.
 			EFFECT_ARGUMENT cdmg = GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
 			if (lr && log)
 				log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
-			Src.SufferDmg(cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
+			Src.SufferDmg(QuestEffectId,cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
 			fsOverkill += loverkill;
 		}
-		return (SufferDmg(Dmg,0,0,0,overkill) > 0);
+		return (SufferDmg(QuestEffectId,Dmg,0,0,0,overkill) > 0);
 	}
-	UCHAR StrikeDmg(const UCHAR Dmg, UCHAR *overkill = 0) // returns dealt dmg
+	UCHAR StrikeDmg(const UINT QuestEffectId, const UCHAR Dmg, UCHAR *overkill = 0) // returns dealt dmg
 	{
 		_ASSERT(Dmg); // 0 dmg is pointless and indicates an error
 		//printf("%s %d <- %d\n",GetName(),GetHealth(),Dmg);
-		return SufferDmg(Dmg + Effects[ACTIVATION_ENFEEBLE],0,0,0,overkill);
+		return SufferDmg(QuestEffectId,Dmg + Effects[ACTIVATION_ENFEEBLE],0,0,0,overkill);
 	}
 	const bool IsAlive() const
 	{
@@ -854,7 +859,7 @@ Valor: Removed after owner ends his turn.
 	void Played() { bPlayed = true; }
 	void ResetPlayedFlag() { bPlayed = false; }
 	void SetAttack(const UCHAR attack) { Attack = attack; }
-	void SetHealth(const UCHAR health) { Health = health; }
+	//void SetHealth(const UCHAR health) { Health = health; }
 	void SetEffect(const UCHAR id, const UCHAR value) { Effects[id] = value; }
 	void Rally(const EFFECT_ARGUMENT amount)
 	{
@@ -1227,7 +1232,7 @@ private:
 						UCHAR overkill = 0;
 						if (bPierce)
 							LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),COMBAT_PIERCE,pierce);
-						dmg = targets[s]->SufferDmg(dmg, pierce,&actualdamagedealt,0,&overkill,(!SRC.GetAbility(DMGDEPENDANT_DISEASE)),
+						dmg = targets[s]->SufferDmg(QuestEffectId,dmg, pierce,&actualdamagedealt,0,&overkill,(!SRC.GetAbility(DMGDEPENDANT_DISEASE)),
 							Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),0,dmg));
 						SRC.fsDmgDealt += actualdamagedealt;
 						SRC.fsOverkill += overkill;
@@ -1240,7 +1245,7 @@ private:
 						// afaik it ignores walls
 						if (targets[s]->GetAbility(SPECIAL_BACKFIRE))
 						{
-							Def.Commander.SufferDmg(targets[s]->GetAbility(SPECIAL_BACKFIRE));
+							Def.Commander.SufferDmg(QuestEffectId,targets[s]->GetAbility(SPECIAL_BACKFIRE));
 							DamageToCommander += SRC.GetAbility(SPECIAL_BACKFIRE);
 							FullDamageToCommander += SRC.GetAbility(SPECIAL_BACKFIRE);
 							Def.SkillProcs[SPECIAL_BACKFIRE]++;
@@ -1270,7 +1275,7 @@ private:
 					{
 						UCHAR overkill = 0;
 						UCHAR cdmg = targets[s]->GetAbility(DEFENSIVE_COUNTER) + SRC.GetEffect(ACTIVATION_ENFEEBLE);
-						targets[s]->fsDmgDealt += SRC.SufferDmg(cdmg,0,0,0,&overkill); // counter dmg is enhanced by enfeeble
+						targets[s]->fsDmgDealt += SRC.SufferDmg(QuestEffectId,cdmg,0,0,0,&overkill); // counter dmg is enhanced by enfeeble
 						LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DEFENSIVE_COUNTER,cdmg);
 						targets[s]->fsOverkill += overkill;
 						Def.SkillProcs[DEFENSIVE_COUNTER]++;
@@ -2452,7 +2457,7 @@ public:
 				effect = Src.GetAbility(aid) * FusionMultiplier;
 				if (effect > 0)
 				{
-					Src.fsDmgDealt += Dest.Commander.SufferDmg(effect);
+					Src.fsDmgDealt += Dest.Commander.SufferDmg(QuestEffectId,effect);
 					DamageToCommander += effect;
 					FullDamageToCommander += effect;
 				}
@@ -2498,7 +2503,7 @@ public:
 							else
 							{
 								UCHAR overkill = 0;
-								UCHAR sdmg = vi->first->SufferDmg(effect,0,0,0,&overkill);
+								UCHAR sdmg = vi->first->SufferDmg(QuestEffectId,effect,0,0,0,&overkill);
 								Dest.CheckDeathEvents(*vi->first,*this);
 								if (!IsMimiced)
 								{
@@ -2577,7 +2582,7 @@ public:
 									printf(" for %d\n",effect);
 								}
 								UCHAR overkill = 0;
-								UCHAR sdmg = vi->first->StrikeDmg(effect,&overkill);
+								UCHAR sdmg = vi->first->StrikeDmg(QuestEffectId,effect,&overkill);
 								Dest.CheckDeathEvents(*vi->first,*this);
 								if (!IsMimiced)
 								{
@@ -2593,7 +2598,7 @@ public:
 									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback
 									{
 										UCHAR overkill = 0;
-										vi->first->fsDmgDealt += Src.StrikeDmg(effect,&overkill);
+										vi->first->fsDmgDealt += Src.StrikeDmg(QuestEffectId,effect,&overkill);
 										CheckDeathEvents(Src,Dest);
 										vi->first->fsOverkill += overkill;
 										Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
@@ -2605,15 +2610,15 @@ public:
 			// summon
             if (aid == ACTIVATION_SUMMON) {
                 effect = Src.GetAbility(ACTIVATION_SUMMON);
-                if (effect > 0) {
-                    // get the card
-                    Card const & summonedCard = this->pCDB[effect];
+                if (effect > 0)
+				{
                     // construct a new card in play
-                    PlayedCard summonedPlayedCard(&summonedCard);
+                    PlayedCard summonedPlayedCard(&pCDB[effect]);
                     // add the summoned card to summonedCards
                     summonedCards.push_back(summonedPlayedCard);
                 }
             }
+
 
 			// weaken
 			// i've played like 20 times mission 66 just farming and noticed that AI,
@@ -2829,7 +2834,13 @@ public:
 			ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
 		}
 		// summon, a more general case of split. AFAIK, one can consider split as "summon self"
-		Units.insert(Units.end(), summonedCards.begin(), summonedCards.end()); // vector concatenation is ugly
+		if (!summonedCards.empty())
+			for (UINT i=0;i<summonedCards.size();i++)
+			{
+				Units.push_back(summonedCards[i].GetOriginalCard());
+				Units.back().SetCardSkillProcBuffer(SkillProcs);
+				ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
+			}
 
 	}
 	void SweepFancyStats(PlayedCard &pc)
@@ -2975,7 +2986,7 @@ public:
 		for (UCHAR i=0;i<Units.size();i++)
 		{
 			Units[i].ResetShield(); // according to wiki, shield doesn't affect poison, it wears off before poison procs I believe
-			Units[i].ProcessPoison();
+			Units[i].ProcessPoison(QuestEffectId);
 		}
 		//  Moraku: If �Heal on Death� triggers from poison damage, it will NOT be able to heal another unit dying from poison damage on the same turn. (All poison damage takes place before �On Death� skills trigger)
 		for (UCHAR i=0;i<Units.size();i++)
@@ -3105,7 +3116,7 @@ public:
 		}
 		// refresh commander
 		if (Commander.IsDefined() && Commander.GetAbility(DEFENSIVE_REFRESH)) // Bench told refresh procs at the end of player's turn
-			Commander.Refresh();
+			Commander.Refresh(QuestEffectId);
 		// clear dead units here yours and enemy
 		if (!Units.empty())
 		{
@@ -3127,7 +3138,7 @@ public:
 					vi->ResetPlayedFlag();
 					vi->ClearEnfeeble(); // this is important for chaosed skills
 					if ((!vi->IsDiseased()) && (vi->GetAbility(DEFENSIVE_REFRESH))) // Bench told refresh procs at the end of player's turn
-						vi->Refresh();
+						vi->Refresh(QuestEffectId);
 					vi->RemoveDebuffs(); // post-turn
 					vi++;
 				}
@@ -3150,7 +3161,7 @@ public:
 				else
 				{
 					if ((!vi->IsDiseased()) && (vi->GetAbility(DEFENSIVE_REFRESH)) && (QuestEffectId != QEFFECT_IMPENETRABLE)) // Bench told refresh procs at the end of player's turn
-						vi->Refresh();
+						vi->Refresh(QuestEffectId);
 					vi++;
 				}
 		}

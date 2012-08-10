@@ -1062,7 +1062,7 @@ private:
 					def = &Leaves[idx]->Def;
 				else
 					def = &Leaves[idx]->Atk;
-				def->Commander.SufferDmg(effect); // no real choice here
+				def->Commander.SufferDmg(0,effect); // no real choice here
 			}
 		}
 		// siege
@@ -1103,7 +1103,7 @@ private:
 						}
 						ActiveDeck tmpA(*atk);
 						ActiveDeck tmpD(*def);
-						tmpD.Structures[i].SufferDmg(effect);
+						tmpD.Structures[i].SufferDmg(0,effect);
 						// normal variation
 						if (bNormal)
 							Leaves[idx]->AddChild(tmpA,tmpD);
@@ -1141,12 +1141,12 @@ private:
 									// don't change
 								}
 								else
-									tmpD.Structures[i].SufferDmg(effect);
+									tmpD.Structures[i].SufferDmg(0,effect);
 							}
 							else
 							{
 								// nothing proc'd - apply effect
-								tmpD.Structures[i].SufferDmg(effect);
+								tmpD.Structures[i].SufferDmg(0,effect);
 							}
 							if (tmpD.Structures[i].GetAbility(DEFENSIVE_EVADE)) 
 							{
@@ -1228,7 +1228,7 @@ private:
 							}
 							ActiveDeck tmpA(*atk);
 							ActiveDeck tmpD(*def);
-							tmpD.Units[i].StrikeDmg(effect);							
+							tmpD.Units[i].StrikeDmg(0,effect);							
 							if ((cardindex >= 0) && (tmpD.Units[i].GetAbility(DEFENSIVE_PAYBACK) && (tmpA.Units[cardindex].GetType() == TYPE_ASSAULT)))  
 							{
 								basechance *= PROC_CHANCE;
@@ -1238,7 +1238,7 @@ private:
 								else
 									Leaves[idx]->AddChild(tmpD,tmpA,false,basechance);
 								// payback variation
-								tmpA.Units[cardindex].StrikeDmg(effect);
+								tmpA.Units[cardindex].StrikeDmg(0,effect);
 								if (bNormal)
 									Leaves[idx]->AddChild(tmpA,tmpD,false,basechance);
 								else
@@ -1291,18 +1291,18 @@ private:
 										// don't change
 									}
 									else
-										tmpD.Units[i].StrikeDmg(effect);
+										tmpD.Units[i].StrikeDmg(0,effect);
 									// it was payback
 									if ((cardindex >= 0) && ((tmpD.Units[i].GetAbility(DEFENSIVE_PAYBACK) && (tmpA.Units[cardindex].GetType() == TYPE_ASSAULT))))
 									{
 										// apply payback
-										tmpA.Units[cardindex].StrikeDmg(effect);
+										tmpA.Units[cardindex].StrikeDmg(0,effect);
 									}
 								}
 								else
 								{
 									// nothing proc'd - apply effect
-									tmpD.Units[i].StrikeDmg(effect);
+									tmpD.Units[i].StrikeDmg(0,effect);
 								}
 								if ((tmpD.Units[i].GetAbility(DEFENSIVE_EVADE)) || 
 									((cardindex >= 0) && tmpD.Units[i].GetAbility(DEFENSIVE_PAYBACK) && (tmpA.Units[cardindex].GetType() == TYPE_ASSAULT))) 
@@ -1636,20 +1636,20 @@ private:
 					// now we actually deal dmg
 					//printf("%s %d = %d => %s %d\n",SRC.GetName(),SRC.GetHealth(),dmg,targets[s]->GetName(),targets[s]->GetHealth());
 					if (dmg)
-						dmg = targets[iswipe]->SufferDmg(dmg);
+						dmg = targets[iswipe]->SufferDmg(0,dmg);
 					// and now dmg dependant effects
 					if (!targets[iswipe]->IsAlive()) // target just died
 					{
 						// afaik it ignores walls
 						if (targets[iswipe]->GetAbility(SPECIAL_BACKFIRE))
-							tmpD.Commander.SufferDmg(targets[iswipe]->GetAbility(SPECIAL_BACKFIRE));
+							tmpD.Commander.SufferDmg(0,targets[iswipe]->GetAbility(SPECIAL_BACKFIRE));
 						// crush
 						if (SRC.GetAbility(DMGDEPENDANT_CRUSH))
 							tmpD.Commander.HitCommander(0,SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,tmpD.Structures,false);
 					}
 					// counter
 					if (targets[iswipe]->GetAbility(DEFENSIVE_COUNTER))
-						SRC.SufferDmg(targets[iswipe]->GetAbility(DEFENSIVE_COUNTER) + SRC.GetEffect(ACTIVATION_ENFEEBLE)); // counter dmg is enhanced by enfeeble
+						SRC.SufferDmg(0,targets[iswipe]->GetAbility(DEFENSIVE_COUNTER) + SRC.GetEffect(ACTIVATION_ENFEEBLE)); // counter dmg is enhanced by enfeeble
 					// if target is dead, we dont need to process this effects
 					if (targets[iswipe]->IsAlive() && (dmg > 0))
 					{
@@ -1794,7 +1794,7 @@ private:
 			else
 				atk = &Leaves[i]->Def;
 			for (UCHAR i=0;i<atk->Units.size();i++)
-				atk->Units[i].ProcessPoison();
+				atk->Units[i].ProcessPoison(0);
 		}
 		printf("B");
 		// pick
