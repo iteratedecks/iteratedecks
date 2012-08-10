@@ -1026,12 +1026,23 @@ private:
 // ok let's assume it does
 #define VALOR_HITS_COMMANDER	true
 
+    void AttackCommanderOnce(UCHAR const & index
+                            ,PlayedCard & SRC
+                            ,EFFECT_ARGUMENT const & valor
+                            ,ActiveDeck & Def
+                            ,bool const variant1
+                            )
+    {
+
+    }
+
     void AttackCommanderOnce1(UCHAR const & index
                              ,PlayedCard & SRC
                              ,EFFECT_ARGUMENT const & valor
                              ,ActiveDeck & Def
                              )
     {
+        AttackCommanderOnce(index, SRC, valor, Def, true);
         if (valor) {
             SkillProcs[COMBAT_VALOR]++;
             LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_VALOR,valor);
@@ -1080,6 +1091,7 @@ private:
                              ,ActiveDeck & Def
                              )
     {
+        AttackCommanderOnce(index, SRC, valor, Def, false);
 		if (valor > 0) {
 			SkillProcs[COMBAT_VALOR]++;
 			LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_VALOR,valor);
