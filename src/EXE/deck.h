@@ -1026,6 +1026,54 @@ private:
 // ok let's assume it does
 #define VALOR_HITS_COMMANDER	true
 
+    void AttackCommanderOnce1(UCHAR const & index
+                             ,PlayedCard & SRC
+                             ,EFFECT_ARGUMENT const & valor
+                             ,ActiveDeck & Def
+                             )
+    {
+        if (valor) {
+            SkillProcs[COMBAT_VALOR]++;
+            LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_VALOR,valor);
+        }
+        if (SRC.GetAbility(COMBAT_FEAR) && (Def.Units.size() > index) && Def.Units[index].IsAlive()) {
+            SkillProcs[COMBAT_FEAR]++;
+            LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_FEAR);
+        }
+        UCHAR overkill = 0;
+        UCHAR cdmg = SRC.GetAttack()+valor;
+        if (cdmg > StrongestAttack) {
+            StrongestAttack = cdmg;
+        }
+        if (Def.Commander.HitCommander(QuestEffectId,cdmg,SRC,Def.Structures
+                                      ,true,&overkill,Log
+                                      ,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index)
+                                             ,LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0)
+                                             ,0,cdmg)
+                                      )
+           )
+        {
+            DamageToCommander += cdmg;
+            FullDamageToCommander += cdmg;
+        }
+        SRC.CardSkillProc(SPECIAL_ATTACK); // attack counter
+        // gotta check walls & source onDeath here
+        for (UCHAR z=0;z<Def.Structures.size();z++) {
+            Def.CheckDeathEvents(Def.Structures[z],*this);
+        }
+        CheckDeathEvents(SRC,Def);
+
+        SRC.fsOverkill += overkill;
+        SRC.fsDmgDealt += cdmg;
+        // can go berserk after hitting commander too
+        if ((SRC.GetAttack()+valor > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
+        {
+            SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
+            SkillProcs[DMGDEPENDANT_BERSERK]++;
+            LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_BERSERK,SRC.GetAbility(DMGDEPENDANT_BERSERK));
+        }
+    }
+
 	void Attack(UCHAR index, ActiveDeck &Def)
 	{
 #define SRC	Units[index]
@@ -1053,41 +1101,7 @@ private:
 			EFFECT_ARGUMENT valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
 			for (UCHAR i=0;i<iflurry;i++)
 			{
-				if (valor)
-				{
-					SkillProcs[COMBAT_VALOR]++;
-					LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_VALOR,valor);
-				}
-				if (SRC.GetAbility(COMBAT_FEAR) && (Def.Units.size() > index) && Def.Units[index].IsAlive())
-				{
-					SkillProcs[COMBAT_FEAR]++;
-					LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_FEAR);
-				}
-				UCHAR overkill = 0;
-				UCHAR cdmg = SRC.GetAttack()+valor;
-				if (cdmg > StrongestAttack)
-					StrongestAttack = cdmg;
-				if (Def.Commander.HitCommander(QuestEffectId,cdmg,SRC,Def.Structures,true,&overkill,
-					Log, LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),0,cdmg)))
-				{
-					DamageToCommander += cdmg;
-					FullDamageToCommander += cdmg;
-				}
-				SRC.CardSkillProc(SPECIAL_ATTACK); // attack counter
-				// gotta check walls & source onDeath here
-				for (UCHAR z=0;z<Def.Structures.size();z++)
-					Def.CheckDeathEvents(Def.Structures[z],*this);
-				CheckDeathEvents(SRC,Def);
-
-				SRC.fsOverkill += overkill;
-				SRC.fsDmgDealt += cdmg;
-				// can go berserk after hitting commander too
-				if ((SRC.GetAttack()+valor > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
-				{
-					SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
-					SkillProcs[DMGDEPENDANT_BERSERK]++;
-					LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_BERSERK,SRC.GetAbility(DMGDEPENDANT_BERSERK));
-				}
+				AttackCommanderOnce1(index, SRC, valor, Def);
 			}
 			return; // and thats it!!!
 		}
