@@ -1082,7 +1082,7 @@ private:
             SkillProcs[DMGDEPENDANT_BERSERK]++;
         }
     }
-
+// #############################################################################
     void AttackCommanderOnce1(UCHAR const & index
                              ,PlayedCard & SRC
                              ,EFFECT_ARGUMENT const & valor
