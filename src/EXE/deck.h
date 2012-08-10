@@ -78,6 +78,8 @@ char const * const FACTIONS[6] =
 #define EVENT_DIED				1
 #define EVENT_PLAYED			2
 #define EVENT_BOTH				3
+#define EVENT_ATTACKED          4 // on attacked
+// next EVENT_SOMETHING         8
 
 #define TYPE_NONE				0
 #define TYPE_COMMANDER			1
