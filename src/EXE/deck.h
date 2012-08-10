@@ -1098,7 +1098,10 @@ private:
            )
         {
             // ... deal DMG to commander directly. BUT STILL PROC50 FLURRY and PROBABLY VALOR
-			EFFECT_ARGUMENT valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
+            bool const canValorCardCommander = VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR);
+            bool const canValorLessUnits = this->GetAliveUnitsCount() < Def.GetAliveUnitsCount();
+            bool const doesValor = canValorCardCommander && canValorLessUnits;
+            EFFECT_ARGUMENT const valor = doesValor ? SRC.GetAbility(COMBAT_VALOR) : 0;
 			for (UCHAR i=0;i<iflurry;i++)
 			{
 				AttackCommanderOnce1(index, SRC, valor, Def);
