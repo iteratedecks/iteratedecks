@@ -1044,6 +1044,12 @@ private:
                 LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_FEAR);
             }
         }
+        UCHAR overkill = 0;
+        UCHAR cdmg = SRC.GetAttack()+valor;
+        // Update strongest attack
+        if (cdmg > StrongestAttack) {
+            StrongestAttack = cdmg;
+        }
     }
 
     void AttackCommanderOnce1(UCHAR const & index
@@ -1055,9 +1061,6 @@ private:
         AttackCommanderOnce(index, SRC, valor, Def, true);
         UCHAR overkill = 0;
         UCHAR cdmg = SRC.GetAttack()+valor;
-        if (cdmg > StrongestAttack) {
-            StrongestAttack = cdmg;
-        }
         if (Def.Commander.HitCommander(QuestEffectId,cdmg,SRC,Def.Structures
                                       ,true,&overkill,Log
                                       ,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index)
@@ -1096,9 +1099,6 @@ private:
         AttackCommanderOnce(index, SRC, valor, Def, false);
 		UCHAR overkill = 0;
 		UCHAR cdmg = SRC.GetAttack()+valor;
-		if (cdmg > StrongestAttack) {
-			StrongestAttack = cdmg;
-		}
 		if (Def.Commander.HitCommander(QuestEffectId,cdmg,SRC,Def.Structures
 		                              ,true,&overkill,Log
 		                              ,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index)
