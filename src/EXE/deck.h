@@ -74,12 +74,18 @@ char const * const FACTIONS[6] =
 #define TARGETSCOUNT_ONE		0				
 #define TARGETSCOUNT_ALL		10	
 
+/**
+ * Event conditions.
+ * This is a bit field, new elements should be powers of two.
+ * Zero is a special case. Would be easer if it were not.
+ */
 #define EVENT_EMPTY				0
 #define EVENT_DIED				1
 #define EVENT_PLAYED			2
-#define EVENT_BOTH				3
+//#define EVENT_BOTH				3 // bad name, but means: on play on death. no longer used.
 #define EVENT_ATTACKED          4 // on attacked
 // next EVENT_SOMETHING         8
+typedef unsigned char EVENT_CONDITION;  // just for me, helps me to see which variable does what
 
 #define TYPE_NONE				0
 #define TYPE_COMMANDER			1
@@ -1670,7 +1676,7 @@ public:
 			}
 		return destindex;
 	}
-	void ApplyEffects(UINT QuestEffectId,UCHAR EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false,PlayedCard *Mimicer=0,UCHAR StructureIndex = 0)
+	void ApplyEffects(UINT QuestEffectId,EVENT_CONDITION EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false,PlayedCard *Mimicer=0,UCHAR StructureIndex = 0)
 	{
 		UCHAR destindex,aid,faction;
 		PPCIV targets;
@@ -1733,9 +1739,20 @@ public:
 			DIED - BOTH
 			PLAY - PLAY
 			PLAY - BOTH*/
-			if (!((EffectType == Src.GetAbilityEvent(aid)) ||
-				((EffectType != EVENT_EMPTY) && (Src.GetAbilityEvent(aid) == EVENT_BOTH)))) 
-				continue;
+			EVENT_CONDITION AbilityEventType(Src.GetAbilityEvent(aid));
+			// in general: we only continue if the event type for the skill is the same as the event we process
+			// EMPTY is a special case...
+			if (EffectType == EVENT_EMPTY && AbilityEventType != EVENT_EMPTY) {
+			    // ... this is a normal (empty) event handling run, but the card has something different
+			    continue;
+			}
+			// ... for non empty we use binary and
+			if (   EffectType != EVENT_EMPTY
+			    && ((EffectType & AbilityEventType) == 0)
+			   ) {
+			    // ... this is a non-normal event handling run, but the card does not have this event
+			    continue;
+			}
 
 			// cleanse
 			if ((aid == ACTIVATION_CLEANSE) && (QuestEffectId != QEFFECT_DECAY))
