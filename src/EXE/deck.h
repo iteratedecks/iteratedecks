@@ -660,6 +660,9 @@ Valor: Removed after owner ends his turn.
 						lr->Target.CardID = index;
 						lr->Target.RowID = TYPE_STRUCTURE;
 					}
+
+					// TODO probably here wall's "on attacked" skills
+
 					// walls can counter and regenerate
 					vi->SufferDmg(QuestEffectId,Dmg,0,0,0,overkill);
 					if (vi->GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // counter, dmg from crush can't be countered
@@ -678,6 +681,9 @@ Valor: Removed after owner ends his turn.
 			}
 			index++;
 		}
+
+		// TODO probably here commanders "on attacked" skills
+
 		// no walls found then hit commander
 		// ugly - counter procs before commander takes dmg, but whatever
 		if (GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // commander can counter aswell
@@ -1211,6 +1217,9 @@ private:
 		}
 		if (bPierce)
 			SkillProcs[COMBAT_PIERCE]++;
+
+        // TODO Seems to be a good place for "on attacked", this is "after the damage was dealt"
+
 		// and now dmg dependant effects
 		if (!target.IsAlive()) // target just died
 		{
@@ -1242,6 +1251,9 @@ private:
 				SkillProcs[DMGDEPENDANT_CRUSH]++;
 			}
 		}
+
+        // TODO Last possible place for "on attacked" as it has to happen before counter
+
 		// counter
 		if ((dmg > 0) && target.GetAbility(DEFENSIVE_COUNTER))
 		{
