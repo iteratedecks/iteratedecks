@@ -1050,17 +1050,8 @@ private:
         if (cdmg > StrongestAttack) {
             StrongestAttack = cdmg;
         }
-    }
 
-    void AttackCommanderOnce1(UCHAR const & index
-                             ,PlayedCard & SRC
-                             ,EFFECT_ARGUMENT const & valor
-                             ,ActiveDeck & Def
-                             )
-    {
-        AttackCommanderOnce(index, SRC, valor, Def, true);
-        UCHAR overkill = 0;
-        UCHAR cdmg = SRC.GetAttack()+valor;
+        // do we hit the commander?
         bool const hitCommander(Def.Commander.HitCommander(QuestEffectId,cdmg
                                                           ,SRC,Def.Structures
                                                           ,true,&overkill,Log
@@ -1073,22 +1064,32 @@ private:
             DamageToCommander += cdmg;
             FullDamageToCommander += cdmg;
         }
-        SRC.CardSkillProc(SPECIAL_ATTACK); // attack counter
+        if(variant1) {
+            SRC.CardSkillProc(SPECIAL_ATTACK); // attack counter
+        }
         // gotta check walls & source onDeath here
         for (UCHAR z=0;z<Def.Structures.size();z++) {
             Def.CheckDeathEvents(Def.Structures[z],*this);
         }
         CheckDeathEvents(SRC,Def);
-
         SRC.fsOverkill += overkill;
         SRC.fsDmgDealt += cdmg;
         // can go berserk after hitting commander too
         if ((SRC.GetAttack()+valor > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
         {
             SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
-            SkillProcs[DMGDEPENDANT_BERSERK]++;
             LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_BERSERK,SRC.GetAbility(DMGDEPENDANT_BERSERK));
+            SkillProcs[DMGDEPENDANT_BERSERK]++;
         }
+    }
+
+    void AttackCommanderOnce1(UCHAR const & index
+                             ,PlayedCard & SRC
+                             ,EFFECT_ARGUMENT const & valor
+                             ,ActiveDeck & Def
+                             )
+    {
+        AttackCommanderOnce(index, SRC, valor, Def, true);
     }
 // #############################################################################
     void AttackCommanderOnce2(UCHAR const & index
@@ -1098,36 +1099,6 @@ private:
                              )
     {
         AttackCommanderOnce(index, SRC, valor, Def, false);
-		UCHAR overkill = 0;
-		UCHAR cdmg = SRC.GetAttack()+valor;
-		bool const hitCommander(Def.Commander.HitCommander(QuestEffectId,cdmg
-                                                          ,SRC,Def.Structures
-                                                          ,true,&overkill,Log
-                                                          ,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index)
-                                                                 ,LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0)
-                                                                 ,0,cdmg)
-                                                          )
-                               );
-        if (hitCommander) {
-            DamageToCommander += cdmg;
-            FullDamageToCommander += cdmg;
-        }
-
-		// gotta check walls & source onDeath here
-		for (UCHAR z=0;z<Def.Structures.size();z++) {
-			Def.CheckDeathEvents(Def.Structures[z],*this);
-		}
-		CheckDeathEvents(SRC,Def);
-
-		SRC.fsOverkill += overkill;
-		SRC.fsDmgDealt += cdmg;
-		// can go berserk after hitting commander too
-		if ((SRC.GetAttack()+valor > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
-		{
-			SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
-			LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_BERSERK,SRC.GetAbility(DMGDEPENDANT_BERSERK));
-			SkillProcs[DMGDEPENDANT_BERSERK]++;
-		}
     }
 // #############################################################################
     /**
