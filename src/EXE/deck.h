@@ -1244,8 +1244,9 @@ private:
 				}
 
 				// gotta check walls onDeath here
-				for (UCHAR z=0;z<Def.Structures.size();z++)
+				for (UCHAR z=0;z<Def.Structures.size();z++) {
 					Def.CheckDeathEvents(Def.Structures[z],*this);
+				}
 
 				SRC.fsOverkill += overkill;
 				SkillProcs[DMGDEPENDANT_CRUSH]++;
