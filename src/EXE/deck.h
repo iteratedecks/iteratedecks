@@ -1108,7 +1108,7 @@ private:
 			}
 			return; // and thats it!!!
 		}
-		else
+		else // there is a unit
 		{
 			// oh noes! that wasn't all
 			PlayedCard *targets[3];
@@ -1128,8 +1128,9 @@ private:
 					targets[2] = 0;
 				LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_SWIPE);
 			}
-			else
+			else {
 				targets[0] = &Def.Units[index];
+			}
 			// flurry
 			for (UCHAR iatk=0;iatk<iflurry;iatk++)
 			{
@@ -1396,13 +1397,13 @@ private:
 
 					if (!SRC.IsAlive()) // died from counter? during swipe
 						break;
-				}
+				} // end of swipe
 				if (iSwiped > 1)
 					SkillProcs[COMBAT_SWIPE]++;
 				if (!SRC.IsAlive()) // died from counter? during flurry
 					break;
-			}
-		}
+			} // end of flurry
+		} // end of "not hit commander directly"
 #undef SRC
 	}
 // #############################################################################
