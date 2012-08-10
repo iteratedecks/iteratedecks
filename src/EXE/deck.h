@@ -1073,7 +1073,268 @@ private:
             LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_BERSERK,SRC.GetAbility(DMGDEPENDANT_BERSERK));
         }
     }
+// #############################################################################
+    /**
+     * @returns true iff we should continue in the swipe loop
+     */
+    bool AttackUnitOrCommanderOnce2(PlayedCard & SRC
+                                   ,UCHAR const & index
+                                   ,PlayedCard & target
+                                   ,UCHAR const & targetindex
+                                   ,UCHAR const & swipe
+                                   ,UCHAR const & s
+                                   ,UCHAR & iSwiped
+                                   ,ActiveDeck & Def
+                                   )
+    {
+        bool bGoBerserk = false;
+        UCHAR burst = 0;
+		if ((SRC.GetAbility(COMBAT_BURST)) && (target.GetHealth() == target.GetOriginalCard()->GetHealth()))
+			burst = SRC.GetAbility(COMBAT_BURST);
+		if (burst > 0)
+		{
+			SkillProcs[COMBAT_BURST]++;
+			LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_BURST,burst);
+		}
+		// if target dies during flurry and slot(s == 1) is aligned to SRC, we deal dmg to commander
+		if ((!target.IsAlive()) && ((swipe == 1) || (s == 1)))
+		{
+			UCHAR valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
+			if (valor > 0)
+			{
+				SkillProcs[COMBAT_VALOR]++;
+				LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_VALOR,valor);
+			}
+			UCHAR cdmg = SRC.GetAttack()+valor;
+			UCHAR overkill = 0;
+			if (cdmg > StrongestAttack)
+				StrongestAttack = cdmg;
+			if (Def.Commander.HitCommander(QuestEffectId,cdmg,SRC,Def.Structures,true,&overkill,
+				Log, LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),0,cdmg)))
+			{
+				DamageToCommander += cdmg;
+				FullDamageToCommander += cdmg;
+			}
 
+			// gotta check walls & source onDeath here
+			for (UCHAR z=0;z<Def.Structures.size();z++)
+				Def.CheckDeathEvents(Def.Structures[z],*this);
+			CheckDeathEvents(SRC,Def);
+
+			SRC.fsDmgDealt += cdmg;
+			SRC.fsOverkill += overkill;
+			// can go berserk after hitting commander too
+			if ((SRC.GetAttack()+valor > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
+			{
+				SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
+				LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_BERSERK,SRC.GetAbility(DMGDEPENDANT_BERSERK));
+				SkillProcs[DMGDEPENDANT_BERSERK]++;
+			}
+			// might want to add here check: 
+			// if (!Def.Commander.IsAlive()) return;
+			return true;
+		}
+		iSwiped++;
+		_ASSERT(target.IsAlive()); // must be alive here
+		// actual attack
+		// must check valor before every attack
+		UCHAR valor = (SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
+		if (valor > 0)
+		{
+			SkillProcs[COMBAT_VALOR]++;
+			LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_VALOR,valor);
+		}
+		// attacking flyer
+		UCHAR antiair = SRC.GetAbility(COMBAT_ANTIAIR);
+		if (target.GetAbility(DEFENSIVE_FLYING))
+		{
+			if ((!antiair) && (!SRC.GetAbility(DEFENSIVE_FLYING)) && (PROC50 || (QuestEffectId == QEFFECT_HIGH_SKIES))) // missed
+			{
+				target.fsAvoided += SRC.GetAttack() + valor + burst + target.GetEffect(ACTIVATION_ENFEEBLE); // note that this IGNORES armor and protect
+				Def.SkillProcs[DEFENSIVE_FLYING]++;
+				LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DEFENSIVE_FLYING);
+				return true;
+			}
+		}
+		else antiair = 0; // has no effect if target is not flying
+		if (antiair > 0)
+		{
+			SkillProcs[COMBAT_ANTIAIR]++;
+			LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_ANTIAIR,antiair);
+		}
+		// enfeeble is taken into account before armor
+		UCHAR enfeeble = target.GetEffect(ACTIVATION_ENFEEBLE);
+		// now armor & pierce
+		UCHAR dmg = SRC.GetAttack() + valor + antiair + enfeeble + burst;
+		UCHAR armor = target.GetAbility(DEFENSIVE_ARMORED);
+		UCHAR pierce = SRC.GetAbility(COMBAT_PIERCE);
+		bool bPierce = false;
+		if (armor)
+		{
+			Def.SkillProcs[DEFENSIVE_ARMORED]++;
+			LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DEFENSIVE_ARMORED,armor);
+			if (pierce > 0)
+				bPierce = true;
+			if (pierce >= armor)
+			{
+				armor = 0;
+				pierce -= armor; // this is for shield
+			}
+			else
+			{
+				armor -= pierce;
+				pierce = 0; // this is for shield
+			}
+			// substract armor from dmg
+			if (armor >= dmg)
+			{
+				target.fsAvoided += dmg;
+				dmg = 0;
+			}
+			else
+			{
+				target.fsAvoided += armor;
+				dmg -= armor; 
+			}
+		}
+		// now we actually deal dmg
+		//printf("%s %d = %d => %s %d\n",SRC.GetName(),SRC.GetHealth(),dmg,targets[s]->GetName(),targets[s]->GetHealth());
+		if (dmg)
+		{
+			UCHAR actualdamagedealt = 0;
+			bPierce = bPierce || (target.GetShield() && pierce);
+			UCHAR overkill = 0;
+			if (bPierce)
+				LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),COMBAT_PIERCE,pierce);
+			dmg = target.SufferDmg(QuestEffectId,dmg, pierce,&actualdamagedealt,0,&overkill,(!SRC.GetAbility(DMGDEPENDANT_DISEASE)),
+				Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),0,dmg));
+			SRC.fsDmgDealt += actualdamagedealt;
+			SRC.fsOverkill += overkill;
+		}
+		if (bPierce)
+			SkillProcs[COMBAT_PIERCE]++;
+		// and now dmg dependant effects
+		if (!target.IsAlive()) // target just died
+		{
+			// afaik it ignores walls
+			if (target.GetAbility(SPECIAL_BACKFIRE))
+			{
+				Def.Commander.SufferDmg(QuestEffectId,target.GetAbility(SPECIAL_BACKFIRE));
+				DamageToCommander += SRC.GetAbility(SPECIAL_BACKFIRE);
+				FullDamageToCommander += SRC.GetAbility(SPECIAL_BACKFIRE);
+				Def.SkillProcs[SPECIAL_BACKFIRE]++;
+				LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),SPECIAL_BACKFIRE,SRC.GetAbility(SPECIAL_BACKFIRE));
+			}
+			// crush
+			if (SRC.GetAbility(DMGDEPENDANT_CRUSH))
+			{
+				UCHAR overkill = 0;
+				if (Def.Commander.HitCommander(QuestEffectId,SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def.Structures,false,&overkill,
+					Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),DMGDEPENDANT_CRUSH,SRC.GetAbility(DMGDEPENDANT_CRUSH))))
+				{
+					DamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
+					FullDamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
+				}
+
+				// gotta check walls onDeath here
+				for (UCHAR z=0;z<Def.Structures.size();z++)
+					Def.CheckDeathEvents(Def.Structures[z],*this);
+
+				SRC.fsOverkill += overkill;
+				SkillProcs[DMGDEPENDANT_CRUSH]++;
+			}
+		}
+		// counter
+		if ((dmg > 0) && target.GetAbility(DEFENSIVE_COUNTER))
+		{
+			UCHAR overkill = 0;
+			UCHAR cdmg = target.GetAbility(DEFENSIVE_COUNTER) + SRC.GetEffect(ACTIVATION_ENFEEBLE);
+			target.fsDmgDealt += SRC.SufferDmg(QuestEffectId,cdmg,0,0,0,&overkill); // counter dmg is enhanced by enfeeble
+			LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DEFENSIVE_COUNTER,cdmg);
+			target.fsOverkill += overkill;
+			Def.SkillProcs[DEFENSIVE_COUNTER]++;
+			CheckDeathEvents(SRC,Def);
+		}
+		if (dmg > StrongestAttack)
+			StrongestAttack = dmg;
+		// berserk
+		if ((dmg > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
+			bGoBerserk = true;
+		// if target is dead, we dont need to process this effects
+		if (/*targets[s]->IsAlive() && */(dmg > 0))
+		{
+			// immobilize
+			if (SRC.GetAbility(DMGDEPENDANT_IMMOBILIZE) && PROC50)
+			{
+				target.SetEffect(DMGDEPENDANT_IMMOBILIZE,SRC.GetAbility(DMGDEPENDANT_IMMOBILIZE));
+				SRC.fsSpecial++; // is it good?
+				SkillProcs[DMGDEPENDANT_IMMOBILIZE]++;
+				LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DMGDEPENDANT_IMMOBILIZE);
+			}
+			// disease
+			if (SRC.GetAbility(DMGDEPENDANT_DISEASE))
+			{
+				target.SetEffect(DMGDEPENDANT_DISEASE,SRC.GetAbility(DMGDEPENDANT_DISEASE));
+				SRC.fsSpecial++; // is it good?
+				SkillProcs[DMGDEPENDANT_DISEASE]++;
+				LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DMGDEPENDANT_DISEASE);
+			}
+			// poison
+			if (SRC.GetAbility(DMGDEPENDANT_POISON))
+				if (target.GetEffect(DMGDEPENDANT_POISON) < SRC.GetAbility(DMGDEPENDANT_POISON)) // overflow
+				{
+					target.SetEffect(DMGDEPENDANT_POISON,SRC.GetAbility(DMGDEPENDANT_POISON));
+					SRC.fsSpecial += SRC.GetAbility(DMGDEPENDANT_POISON); 
+					SkillProcs[DMGDEPENDANT_POISON]++;
+					LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DMGDEPENDANT_POISON,SRC.GetAbility(DMGDEPENDANT_POISON));
+				}
+		}
+		// leech
+		if (SRC.IsAlive() && SRC.GetAbility(DMGDEPENDANT_LEECH))
+		{
+			UCHAR leech = (SRC.GetAbility(DMGDEPENDANT_LEECH) < dmg) ? SRC.GetAbility(DMGDEPENDANT_LEECH) : dmg;
+			if (leech && (!SRC.IsDiseased()))
+			{
+				leech = SRC.Heal(leech,QuestEffectId);
+				SRC.fsHealed += leech;
+				if (leech > 0)
+				{
+					SkillProcs[DMGDEPENDANT_LEECH]++;
+					LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_LEECH,leech);
+				}
+			}
+		}
+		// siphon
+		if (SRC.GetAbility(DMGDEPENDANT_SIPHON))
+		{
+			UCHAR siphon = (SRC.GetAbility(DMGDEPENDANT_SIPHON) < dmg) ? SRC.GetAbility(DMGDEPENDANT_SIPHON) : dmg;
+			if (siphon)
+			{
+				siphon = Commander.Heal(siphon,QuestEffectId);
+				SRC.fsHealed += siphon;
+				if (siphon > 0)
+				{
+					SkillProcs[DMGDEPENDANT_SIPHON]++;
+					LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_SIPHON,siphon);
+				}
+			}
+		}
+		if (bGoBerserk)
+		{
+			SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
+			if (SRC.GetAbility(DMGDEPENDANT_BERSERK))
+			{
+				SkillProcs[DMGDEPENDANT_BERSERK]++;
+				LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_BERSERK,SRC.GetAbility(DMGDEPENDANT_BERSERK));
+			}
+		}
+
+		Def.CheckDeathEvents(target,*this);
+
+		if (!SRC.IsAlive()) // died from counter? during swipe
+			return false;
+    }
+// #############################################################################
 	void Attack(UCHAR index, ActiveDeck &Def)
 	{
 #define SRC	Units[index]
@@ -1134,7 +1395,6 @@ private:
 			// flurry
 			for (UCHAR iatk=0;iatk<iflurry;iatk++)
 			{
-				bool bGoBerserk = false;
 				UCHAR iSwiped = 0;
 				//
 				SRC.CardSkillProc(SPECIAL_ATTACK); // attack counter
@@ -1152,251 +1412,8 @@ private:
 						targetindex += s;
 						targetindex--;
 					}
-					UCHAR burst = 0;
-					if ((SRC.GetAbility(COMBAT_BURST)) && (targets[s]->GetHealth() == targets[s]->GetOriginalCard()->GetHealth()))
-						burst = SRC.GetAbility(COMBAT_BURST);
-					if (burst > 0)
-					{
-						SkillProcs[COMBAT_BURST]++;
-						LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_BURST,burst);
-					}
-					// if target dies during flurry and slot(s == 1) is aligned to SRC, we deal dmg to commander
-					if ((!targets[s]->IsAlive()) && ((swipe == 1) || (s == 1)))
-					{
-						UCHAR valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
-						if (valor > 0)
-						{
-							SkillProcs[COMBAT_VALOR]++;
-							LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_VALOR,valor);
-						}
-						UCHAR cdmg = SRC.GetAttack()+valor;		
-						UCHAR overkill = 0;
-						if (cdmg > StrongestAttack)
-							StrongestAttack = cdmg;
-						if (Def.Commander.HitCommander(QuestEffectId,cdmg,SRC,Def.Structures,true,&overkill,
-							Log, LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),0,cdmg)))
-						{
-							DamageToCommander += cdmg;
-							FullDamageToCommander += cdmg;
-						}
-
-						// gotta check walls & source onDeath here
-						for (UCHAR z=0;z<Def.Structures.size();z++)
-							Def.CheckDeathEvents(Def.Structures[z],*this);
-						CheckDeathEvents(SRC,Def);
-
-						SRC.fsDmgDealt += cdmg;
-						SRC.fsOverkill += overkill;
-						// can go berserk after hitting commander too
-						if ((SRC.GetAttack()+valor > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
-						{
-							SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
-							LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_BERSERK,SRC.GetAbility(DMGDEPENDANT_BERSERK));
-							SkillProcs[DMGDEPENDANT_BERSERK]++;
-						}
-						// might want to add here check: 
-						// if (!Def.Commander.IsAlive()) return;
-						continue;
-					}
-					iSwiped++;
-					_ASSERT(targets[s]->IsAlive()); // must be alive here
-					// actual attack
-					// must check valor before every attack
-					UCHAR valor = (SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
-					if (valor > 0)
-					{
-						SkillProcs[COMBAT_VALOR]++;
-						LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_VALOR,valor);
-					}
-					// attacking flyer
-					UCHAR antiair = SRC.GetAbility(COMBAT_ANTIAIR);
-					if (targets[s]->GetAbility(DEFENSIVE_FLYING))
-					{
-						if ((!antiair) && (!SRC.GetAbility(DEFENSIVE_FLYING)) && (PROC50 || (QuestEffectId == QEFFECT_HIGH_SKIES))) // missed
-						{
-							targets[s]->fsAvoided += SRC.GetAttack() + valor + burst + targets[s]->GetEffect(ACTIVATION_ENFEEBLE); // note that this IGNORES armor and protect
-							Def.SkillProcs[DEFENSIVE_FLYING]++;
-							LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DEFENSIVE_FLYING);
-							continue;
-						}
-					}
-					else antiair = 0; // has no effect if target is not flying
-					if (antiair > 0)
-					{
-						SkillProcs[COMBAT_ANTIAIR]++;
-						LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_ANTIAIR,antiair);
-					}
-					// enfeeble is taken into account before armor
-					UCHAR enfeeble = targets[s]->GetEffect(ACTIVATION_ENFEEBLE);
-					// now armor & pierce
-					UCHAR dmg = SRC.GetAttack() + valor + antiair + enfeeble + burst;
-					UCHAR armor = targets[s]->GetAbility(DEFENSIVE_ARMORED);
-					UCHAR pierce = SRC.GetAbility(COMBAT_PIERCE);
-					bool bPierce = false;
-					if (armor)
-					{
-						Def.SkillProcs[DEFENSIVE_ARMORED]++;
-						LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DEFENSIVE_ARMORED,armor);
-						if (pierce > 0)
-							bPierce = true;
-						if (pierce >= armor)
-						{
-							armor = 0;
-							pierce -= armor; // this is for shield
-						}
-						else
-						{
-							armor -= pierce;
-							pierce = 0; // this is for shield
-						}
-						// substract armor from dmg
-						if (armor >= dmg)
-						{
-							targets[s]->fsAvoided += dmg;
-							dmg = 0;
-						}
-						else
-						{
-							targets[s]->fsAvoided += armor;
-							dmg -= armor; 
-						}
-					}
-					// now we actually deal dmg
-					//printf("%s %d = %d => %s %d\n",SRC.GetName(),SRC.GetHealth(),dmg,targets[s]->GetName(),targets[s]->GetHealth());
-					if (dmg)
-					{
-						UCHAR actualdamagedealt = 0;
-						bPierce = bPierce || (targets[s]->GetShield() && pierce);
-						UCHAR overkill = 0;
-						if (bPierce)
-							LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),COMBAT_PIERCE,pierce);
-						dmg = targets[s]->SufferDmg(QuestEffectId,dmg, pierce,&actualdamagedealt,0,&overkill,(!SRC.GetAbility(DMGDEPENDANT_DISEASE)),
-							Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),0,dmg));
-						SRC.fsDmgDealt += actualdamagedealt;
-						SRC.fsOverkill += overkill;
-					}
-					if (bPierce)
-						SkillProcs[COMBAT_PIERCE]++;
-					// and now dmg dependant effects
-					if (!targets[s]->IsAlive()) // target just died
-					{
-						// afaik it ignores walls
-						if (targets[s]->GetAbility(SPECIAL_BACKFIRE))
-						{
-							Def.Commander.SufferDmg(QuestEffectId,targets[s]->GetAbility(SPECIAL_BACKFIRE));
-							DamageToCommander += SRC.GetAbility(SPECIAL_BACKFIRE);
-							FullDamageToCommander += SRC.GetAbility(SPECIAL_BACKFIRE);
-							Def.SkillProcs[SPECIAL_BACKFIRE]++;
-							LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),SPECIAL_BACKFIRE,SRC.GetAbility(SPECIAL_BACKFIRE));
-						}
-						// crush
-						if (SRC.GetAbility(DMGDEPENDANT_CRUSH))
-						{								
-							UCHAR overkill = 0;
-							if (Def.Commander.HitCommander(QuestEffectId,SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def.Structures,false,&overkill,
-								Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),DMGDEPENDANT_CRUSH,SRC.GetAbility(DMGDEPENDANT_CRUSH))))
-							{
-								DamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
-								FullDamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
-							}
-
-							// gotta check walls onDeath here
-							for (UCHAR z=0;z<Def.Structures.size();z++)
-								Def.CheckDeathEvents(Def.Structures[z],*this);
-
-							SRC.fsOverkill += overkill;
-							SkillProcs[DMGDEPENDANT_CRUSH]++;
-						}
-					}
-					// counter
-					if ((dmg > 0) && targets[s]->GetAbility(DEFENSIVE_COUNTER))
-					{
-						UCHAR overkill = 0;
-						UCHAR cdmg = targets[s]->GetAbility(DEFENSIVE_COUNTER) + SRC.GetEffect(ACTIVATION_ENFEEBLE);
-						targets[s]->fsDmgDealt += SRC.SufferDmg(QuestEffectId,cdmg,0,0,0,&overkill); // counter dmg is enhanced by enfeeble
-						LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DEFENSIVE_COUNTER,cdmg);
-						targets[s]->fsOverkill += overkill;
-						Def.SkillProcs[DEFENSIVE_COUNTER]++;
-						CheckDeathEvents(SRC,Def);
-					}
-					if (dmg > StrongestAttack)
-						StrongestAttack = dmg;
-					// berserk
-					if ((dmg > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
-						bGoBerserk = true;
-					// if target is dead, we dont need to process this effects
-					if (/*targets[s]->IsAlive() && */(dmg > 0))
-					{
-						// immobilize
-						if (SRC.GetAbility(DMGDEPENDANT_IMMOBILIZE) && PROC50)
-						{
-							targets[s]->SetEffect(DMGDEPENDANT_IMMOBILIZE,SRC.GetAbility(DMGDEPENDANT_IMMOBILIZE));
-							SRC.fsSpecial++; // is it good?
-							SkillProcs[DMGDEPENDANT_IMMOBILIZE]++;
-							LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DMGDEPENDANT_IMMOBILIZE);
-						}
-						// disease
-						if (SRC.GetAbility(DMGDEPENDANT_DISEASE))
-						{
-							targets[s]->SetEffect(DMGDEPENDANT_DISEASE,SRC.GetAbility(DMGDEPENDANT_DISEASE));
-							SRC.fsSpecial++; // is it good?
-							SkillProcs[DMGDEPENDANT_DISEASE]++;
-							LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DMGDEPENDANT_DISEASE);
-						}
-						// poison
-						if (SRC.GetAbility(DMGDEPENDANT_POISON))
-							if (targets[s]->GetEffect(DMGDEPENDANT_POISON) < SRC.GetAbility(DMGDEPENDANT_POISON)) // overflow
-							{
-								targets[s]->SetEffect(DMGDEPENDANT_POISON,SRC.GetAbility(DMGDEPENDANT_POISON));
-								SRC.fsSpecial += SRC.GetAbility(DMGDEPENDANT_POISON); 
-								SkillProcs[DMGDEPENDANT_POISON]++;
-								LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DMGDEPENDANT_POISON,SRC.GetAbility(DMGDEPENDANT_POISON));
-							}
-					}
-					// leech
-					if (SRC.IsAlive() && SRC.GetAbility(DMGDEPENDANT_LEECH))
-					{
-						UCHAR leech = (SRC.GetAbility(DMGDEPENDANT_LEECH) < dmg) ? SRC.GetAbility(DMGDEPENDANT_LEECH) : dmg;
-						if (leech && (!SRC.IsDiseased()))
-						{
-							leech = SRC.Heal(leech,QuestEffectId);
-							SRC.fsHealed += leech;
-							if (leech > 0)
-							{
-								SkillProcs[DMGDEPENDANT_LEECH]++;
-								LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_LEECH,leech);
-							}
-						}
-					}
-					// siphon
-					if (SRC.GetAbility(DMGDEPENDANT_SIPHON))
-					{
-						UCHAR siphon = (SRC.GetAbility(DMGDEPENDANT_SIPHON) < dmg) ? SRC.GetAbility(DMGDEPENDANT_SIPHON) : dmg;
-						if (siphon)
-						{
-							siphon = Commander.Heal(siphon,QuestEffectId);
-							SRC.fsHealed += siphon;
-							if (siphon > 0)
-							{
-								SkillProcs[DMGDEPENDANT_SIPHON]++;
-								LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_SIPHON,siphon);
-							}
-						}
-					}
-					if (bGoBerserk)
-					{
-						SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
-						if (SRC.GetAbility(DMGDEPENDANT_BERSERK))
-						{
-							SkillProcs[DMGDEPENDANT_BERSERK]++;
-							LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_BERSERK,SRC.GetAbility(DMGDEPENDANT_BERSERK));
-						}
-					}
-
-					Def.CheckDeathEvents(*targets[s],*this);
-
-					if (!SRC.IsAlive()) // died from counter? during swipe
-						break;
+					bool doContinue = AttackUnitOrCommanderOnce2(SRC, index, *targets[s], targetindex, swipe,s, iSwiped, Def);
+					if(doContinue) {continue;} else {break;}
 				} // end of swipe
 				if (iSwiped > 1)
 					SkillProcs[COMBAT_SWIPE]++;
