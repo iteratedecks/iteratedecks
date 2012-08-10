@@ -1061,14 +1061,15 @@ private:
         AttackCommanderOnce(index, SRC, valor, Def, true);
         UCHAR overkill = 0;
         UCHAR cdmg = SRC.GetAttack()+valor;
-        if (Def.Commander.HitCommander(QuestEffectId,cdmg,SRC,Def.Structures
-                                      ,true,&overkill,Log
-                                      ,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index)
-                                             ,LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0)
-                                             ,0,cdmg)
-                                      )
-           )
-        {
+        bool const hitCommander(Def.Commander.HitCommander(QuestEffectId,cdmg
+                                                          ,SRC,Def.Structures
+                                                          ,true,&overkill,Log
+                                                          ,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index)
+                                                                 ,LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0)
+                                                                 ,0,cdmg)
+                                                          )
+                               );
+        if (hitCommander) {
             DamageToCommander += cdmg;
             FullDamageToCommander += cdmg;
         }
@@ -1099,17 +1100,18 @@ private:
         AttackCommanderOnce(index, SRC, valor, Def, false);
 		UCHAR overkill = 0;
 		UCHAR cdmg = SRC.GetAttack()+valor;
-		if (Def.Commander.HitCommander(QuestEffectId,cdmg,SRC,Def.Structures
-		                              ,true,&overkill,Log
-		                              ,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index)
-		                                     ,LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0)
-		                                     ,0,cdmg)
-		                              )
-		   )
-		{
-			DamageToCommander += cdmg;
-			FullDamageToCommander += cdmg;
-		}
+		bool const hitCommander(Def.Commander.HitCommander(QuestEffectId,cdmg
+                                                          ,SRC,Def.Structures
+                                                          ,true,&overkill,Log
+                                                          ,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index)
+                                                                 ,LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0)
+                                                                 ,0,cdmg)
+                                                          )
+                               );
+        if (hitCommander) {
+            DamageToCommander += cdmg;
+            FullDamageToCommander += cdmg;
+        }
 
 		// gotta check walls & source onDeath here
 		for (UCHAR z=0;z<Def.Structures.size();z++) {
