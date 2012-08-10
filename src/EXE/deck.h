@@ -1339,12 +1339,16 @@ private:
 	{
 #define SRC	Units[index]
 		//printf("%s %d\n",SRC.GetName(),SRC.GetHealth());
+
+        // Make sure the attacking unit lives. That should be the case here, thus assertion.
 		_ASSERT(SRC.IsDefined() && SRC.IsAlive()); // baby, don't hurt me, no more
 		if (bConsoleOutput)
 		{
 			SRC.PrintDesc();
 			printf(" attacks\n");
 		}
+
+        // Check for flurry, this is independent of whether there is an unit opposing this or not.
 		EFFECT_ARGUMENT iflurry = (SRC.GetAbility(COMBAT_FLURRY) && PROC50) ? (SRC.GetAbility(COMBAT_FLURRY)+1) : 1; // coding like a boss :) don't like this style
 		if (iflurry > 1)
 		{
