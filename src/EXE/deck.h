@@ -1037,6 +1037,13 @@ private:
             SkillProcs[COMBAT_VALOR]++;
             LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_VALOR,valor);
         }
+        // This should also be fine in variant2.
+        if(variant1) {
+            if (SRC.GetAbility(COMBAT_FEAR) && (Def.Units.size() > index) && Def.Units[index].IsAlive()) {
+                SkillProcs[COMBAT_FEAR]++;
+                LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_FEAR);
+            }
+        }
     }
 
     void AttackCommanderOnce1(UCHAR const & index
@@ -1046,10 +1053,6 @@ private:
                              )
     {
         AttackCommanderOnce(index, SRC, valor, Def, true);
-        if (SRC.GetAbility(COMBAT_FEAR) && (Def.Units.size() > index) && Def.Units[index].IsAlive()) {
-            SkillProcs[COMBAT_FEAR]++;
-            LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_FEAR);
-        }
         UCHAR overkill = 0;
         UCHAR cdmg = SRC.GetAttack()+valor;
         if (cdmg > StrongestAttack) {
