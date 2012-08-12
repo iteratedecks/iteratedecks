@@ -1,0 +1,20 @@
+makepp_no_builtin = 1
+
+TOOLCHAIN_PREFIX=i686-w64-mingw32-
+CC=${TOOLCHAIN_PREFIX}gcc
+CXX=${TOOLCHAIN_PREFIX}g++
+LD=${TOOLCHAIN_PREFIX}ld
+
+LDFLAGS+=-static
+
+SRC_DIR=../../src/
+
+$(phony ALL): CLI
+
+$(phony CLI): iteratedecks-cli.exe
+
+iteratedecks-cli.exe: $(infer_objects iteratedecks-cli.o, *.o)
+    ${CXX} ${inputs} ${LDFLAGS} ${LDLIBTS} ${LIBS} -o ${output}
+
+%.o: ${SRC_DIR}CLI2/%.cpp
+    ${CXX} ${CXXFLAGS} ${CPPFLAGS} -c ${input} -o ${output}

@@ -1,7 +1,7 @@
 #ifndef __COMPAT_H_
 #define __COMPAT_H_
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__MINGW32__)
 
 #include <errno.h>
 

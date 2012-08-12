@@ -20,7 +20,7 @@
 #include "compat.h"
 
 // Path names are different on windows and unix
-#ifdef __windows__
+#if defined(__windows__) && !defined(__MINGW32__)
 #include "pugixml\src\pugixml.hpp"
 #include "pugixml\src\pugixml.cpp"
 #else

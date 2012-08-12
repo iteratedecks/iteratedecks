@@ -20,13 +20,13 @@ UINT MaxTurn = MAX_TURN;
 typedef map<string, PICK_STATS> MSPS;
 typedef pair<string, PICK_STATS> PAIRSPS;
 MSPS StatsByOrder;
-#ifdef __windows__
+#if defined(__windows__)
 #include <windows.h>
 #include <process.h>
 #endif
 
 
-#if __windows__
+#if defined(__windows__)
 static CRITICAL_SECTION cs;
 #else
 static pthread_mutex_t cs = PTHREAD_MUTEX_INITIALIZER;
@@ -763,7 +763,7 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 }
 
 // FIXME: Why is windows.h included again? That seems quite strange
-#if __windows__
+#if defined(__windows__)
 #include <windows.h>
 #endif
 //#include "Aclapi.h"
