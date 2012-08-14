@@ -801,7 +801,7 @@ Valor: Removed after owner ends his turn.
 		fsSpecial = 0;
 		fsOverkill = 0;
 		fsDeaths = 0;
-		SkillProcBuffer = 0;
+		SkillProcBuffer = NULL;
 		DeathEvents = 0;
 		return *this;
 	}
@@ -824,7 +824,7 @@ Valor: Removed after owner ends his turn.
 		fsSpecial = 0;
 		fsOverkill = 0;
 		fsDeaths = 0;
-		SkillProcBuffer = 0;
+		SkillProcBuffer = NULL;
 		DeathEvents = 0;
 	}
 	const UINT GetId() const { return OriginalCard->GetId(); }
@@ -856,9 +856,11 @@ Valor: Removed after owner ends his turn.
 	const EFFECT_ARGUMENT GetAbility(const UCHAR id) const
 	{
 		// this is crap ! - must remove and check the code
-		if (!OriginalCard)
+		if (!OriginalCard) {
+            assert(false);
 			return 0;
-		return OriginalCard->GetAbility(id); 
+        }
+		return this->OriginalCard->GetAbility(id);
 	}
 	const UCHAR GetTargetCount(const UCHAR id) const { return OriginalCard->GetTargetCount(id); }
 	const UCHAR GetTargetFaction(const UCHAR id) const
@@ -946,9 +948,28 @@ Valor: Removed after owner ends his turn.
 		fsSpecial = 0;
 		fsOverkill = 0;
 		fsDeaths = 0;
-		SkillProcBuffer = 0;
+		SkillProcBuffer = NULL;
 		DeathEvents = 0;
 	}
+    PlayedCard(PlayedCard const & original)
+    : Attack(original.Attack)
+    , Health(original.Health)
+    , Wait(original.Wait)
+    , Faction(original.Faction)
+    , bQuestSplit(original.bQuestSplit)
+    , OriginalCard(original.OriginalCard)
+    , fsDmgDealt(original.fsDmgDealt)
+    , fsDmgMitigated(original.fsDmgMitigated)
+    , fsAvoided(original.fsAvoided)
+    , fsHealed(original.fsHealed)
+    , fsSpecial(original.fsSpecial)
+    , fsOverkill(original.fsOverkill)
+    , fsDeaths(original.fsDeaths)
+    , DeathEvents(original.DeathEvents)
+    {
+        memcpy(Effects,original.Effects,sizeof(Effects));
+        SkillProcBuffer = original.SkillProcBuffer;
+    }
 };
 struct REQUIREMENT
 {
@@ -976,7 +997,9 @@ public:
 	//
 	const UCHAR *CSIndex;
 	RESULT_BY_CARD *CSResult;
-	//
+    /**
+     *  Each deck counts the number of times a skill is proced. This buffer will be provided to every PlayedCard in this deck.
+     */
 	UCHAR SkillProcs[CARD_ABILITIES_MAX];
 	//
 	UINT CardPicks[DEFAULT_DECK_RESERVE_SIZE];
@@ -1457,7 +1480,7 @@ public:
 		DamageToCommander = 0; 
 		FullDamageToCommander = 0;
 		StrongestAttack = 0;
-		memset(SkillProcs,0,CARD_ABILITIES_MAX*sizeof(UCHAR)); 
+		memset(SkillProcs,0,sizeof(SkillProcs));
 		memset(CardPicks,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 		memset(CardDeaths,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 		pCDB = NULL;
@@ -1519,7 +1542,7 @@ public:
 		bOrderMatters = false; 
 		bDelayFirstCard = false;
 		unsigned short tid = 0, lastid = 0;
-		memset(SkillProcs,0,CARD_ABILITIES_MAX*sizeof(UCHAR));
+		memset(SkillProcs,0,sizeof(SkillProcs));
 		memset(CardPicks,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 		memset(CardDeaths,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 		//
@@ -1575,7 +1598,7 @@ public:
 		Commander = PlayedCard(Cmd); 
 		Commander.SetCardSkillProcBuffer(SkillProcs); 
 		Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); 
-		memset(SkillProcs,0,CARD_ABILITIES_MAX*sizeof(UCHAR));
+		memset(SkillProcs,0,sizeof(SkillProcs));
 		memset(CardPicks,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 		memset(CardDeaths,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 	};
@@ -1609,7 +1632,7 @@ public:
 		}
 		bOrderMatters = D.bOrderMatters;
 		bDelayFirstCard = D.bDelayFirstCard;
-		memcpy(SkillProcs,D.SkillProcs,CARD_ABILITIES_MAX*sizeof(UCHAR));
+		memcpy(SkillProcs,D.SkillProcs,sizeof(SkillProcs));
 		memcpy(CardPicks,D.CardPicks,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 		memcpy(CardDeaths,D.CardDeaths,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 		CSIndex = D.CSIndex;
@@ -2924,9 +2947,10 @@ public:
 		if (!summonedCards.empty())
 			for (UINT i=0;i<summonedCards.size();i++)
 			{
-				Units.push_back(summonedCards[i].GetOriginalCard());
-				Units.back().SetCardSkillProcBuffer(SkillProcs);
-				ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
+                PlayedCard & summonedCard(summonedCards[i]);
+				Units.push_back(summonedCard);
+				summonedCard.SetCardSkillProcBuffer(SkillProcs);
+				ApplyEffects(QuestEffectId,EVENT_PLAYED,summonedCard,-1,Dest);
 			}
 
 	}
