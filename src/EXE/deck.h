@@ -462,8 +462,9 @@ public:
 	}
 	void CardSkillProc(UCHAR aid)
 	{
-		if (SkillProcBuffer)
+		if (SkillProcBuffer) {
 			SkillProcBuffer[aid]++;
+        }
 	}
 	const bool BeginTurn()
 	{
