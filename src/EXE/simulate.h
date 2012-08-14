@@ -608,6 +608,7 @@ void * ThreadFunc(void *pvParam)
 #endif
 }
 
+#ifdef __windows__
 void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDef, int RaidID, int QuestID, RESULTS &ret, RESULT_BY_CARD *rbc, int &State, DWORD gamesperthread, DWORD threadscount = 1, bool bSurge = false, UCHAR TournamentMode = 0, REQUIREMENT *Req = 0, UINT *pSkillProcs = 0, bool bAnnihilator = false, bool bSurrenderAtLoss = false)
 {
 	// create Index
@@ -761,6 +762,7 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 			DeleteCriticalSection(&cs);
 	}
 }
+#endif
 
 // FIXME: Why is windows.h included again? That seems quite strange
 #if defined(__windows__)

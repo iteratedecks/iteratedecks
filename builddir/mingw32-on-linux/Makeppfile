@@ -3,7 +3,6 @@ makepp_no_builtin = 1
 TOOLCHAIN_PREFIX=i686-w64-mingw32-
 CC=${TOOLCHAIN_PREFIX}gcc
 CXX=${TOOLCHAIN_PREFIX}g++
-LD=${TOOLCHAIN_PREFIX}ld
 
 LDFLAGS+=-static
 

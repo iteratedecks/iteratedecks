@@ -1,0 +1,18 @@
+SRC_DIR=../../src/CLI2/
+CXXFLAGS+= -ggdb
+LDFLAGS+= -ggdb
+
+$(phony ALL): CLI
+
+$(phony CLI): iteratedecks-cli XML
+
+$(phony XML): achievements.xml cards.xml missions.xml quests.xml raids.xml
+
+iteratedecks-cli: $(infer_objects iteratedecks-cli.o, *.o)
+    ${CXX} ${inputs} ${LDFLAGS} ${LDLIBTS} ${LIBS} -o ${output}
+
+%.o: ${SRC_DIR}%.cpp
+    ${CXX} ${CXXFLAGS} ${CPPFLAGS} -c ${input} -o ${output}
+
+%.xml: ../../bin/%.xml
+    cp -lf $(input) $(output)
