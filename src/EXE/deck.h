@@ -951,15 +951,20 @@ Valor: Removed after owner ends his turn.
 		SkillProcBuffer = NULL;
 		DeathEvents = 0;
 	}
+
+    /**
+     * Copy constructor.
+     */
     PlayedCard(PlayedCard const & original)
-    : Attack(original.Attack)
+    : OriginalCard(original.OriginalCard)
+    , Attack(original.Attack)
     , Health(original.Health)
     , Wait(original.Wait)
     , Faction(original.Faction)
-    , bPlayed(bPlayed)
-    , bActivated(bActivated)
+    , bPlayed(original.bPlayed)
+    , bActivated(original.bActivated)
     , bQuestSplit(original.bQuestSplit)
-    , OriginalCard(original.OriginalCard)
+    , DeathEvents(original.DeathEvents)
     , fsDmgDealt(original.fsDmgDealt)
     , fsDmgMitigated(original.fsDmgMitigated)
     , fsAvoided(original.fsAvoided)
@@ -967,7 +972,6 @@ Valor: Removed after owner ends his turn.
     , fsSpecial(original.fsSpecial)
     , fsOverkill(original.fsOverkill)
     , fsDeaths(original.fsDeaths)
-    , DeathEvents(original.DeathEvents)
     {
         memcpy(Effects,original.Effects,sizeof(Effects));
         SkillProcBuffer = original.SkillProcBuffer;
