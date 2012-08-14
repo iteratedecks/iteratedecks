@@ -816,7 +816,7 @@ Valor: Removed after owner ends his turn.
 		bQuestSplit = false;
 		bPlayed = false;
 		bActivated = false;
-		memset(Effects,0,CARD_ABILITIES_MAX);
+		memset(Effects,0,sizeof(Effects));
 		fsDmgDealt = 0;
 		fsDmgMitigated = 0;
 		fsAvoided = 0;
