@@ -3204,8 +3204,9 @@ public:
 			}
 		}
 		// apply actions same way 
-		if (Commander.IsDefined())
+		if (Commander.IsDefined()) {
 			ApplyEffects(QuestEffectId,EVENT_EMPTY,Commander,-1,Def);
+        }
 		// structure cards
 		for (UCHAR i=0;i<Structures.size();i++)
 		{
