@@ -1517,6 +1517,55 @@
 		<desc>Play the cards "Perplexer" and "Sensei" and "Blight Tainter" in Mission 181 and win.</desc>
 		<gold_reward>27000</gold_reward>
 	</achievement>
+	<achievement>
+		<id>240</id>
+		<name>Honored Purveyors</name>
+  		<req unit_id='762' num_played='1' />
+  		<req unit_id='765' num_played='1' />
+		<req unit_id='763' num_played='1' />
+  		<type mission_id='288' winner='1' />
+		<number>1</number>
+		<desc>Play Blockade Tank, Mending Exosuit, and Claw Wheeler in Mission 204 and win.</desc>
+		<gold_reward>27000</gold_reward>
+	</achievement>
+	<achievement>
+		<id>241</id>
+		<name>Awakening Conqueror</name>
+		<type mission_id='288' winner='1' />
+		<number>10</number>
+		<desc>Complete all missions associated with the Awakening set (through Mission 204)</desc>
+		<card_reward>764</card_reward>
+	</achievement>
+	<achievement>
+		<id>242</id>
+		<name>Grand Summoner</name>
+		<type mission_id='266' compare='great_equal' winner='1' />
+  		<req skill_id='summon' num_used='10' />
+		<number>1</number>
+		<desc>Defeat Mission 182 or higher after using Summon at least 10 times</desc>
+		<gold_reward>1000</gold_reward>
+		<card_reward>760</card_reward>
+	</achievement>
+	<achievement>
+		<id>243</id>
+		<name>Speedy Lockeheart</name>
+		<type mission_id='288' winner='1' />
+		<req num_turns='9' compare='less_equal'/>
+		<number>1</number>
+		<desc>Beat Mission 204 by turn 9</desc>
+		<gold_reward>2000</gold_reward>
+		<card_reward>766</card_reward>
+	</achievement>
+	<achievement>
+		<id>244</id>
+		<name>Overload</name>
+		<type mission_id='266' compare='great_equal' winner='1' />
+		<req unit_type='4' num_played='10' />
+		<number>1</number>
+		<desc>Defeat Mission 182 or higher after playing at least 10 Structures</desc>
+		<gold_reward>3000</gold_reward>
+		<card_reward>761</card_reward>
+	</achievement>
 	
 	<!-- buypack achievements -->
 	<achievement>

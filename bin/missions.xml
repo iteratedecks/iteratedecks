@@ -298,8 +298,8 @@
 			<line commander='1042'>We've pushed the Raiders out of Arctis and now stand at the gates of Norhaven... but there is a terrible stench of death...</line>
 		</speech>
 		<banter>More...flesh..!</banter>
-		<speechComplete commander='1042'>
-			<line>How..?  The bloodthirsty haven't attacked a settlement in years...</line>
+		<speechComplete>
+			<line commander='1042'>How..?  The bloodthirsty haven't attacked a settlement in years...</line>
 		</speechComplete>
 		<deck>
 			<card>119</card>
@@ -8061,7 +8061,7 @@
 		<speech>
 			<line commander='1042'>Any news of Halcyon?</line>
 			<line commander='1153'>He is holed up in a base in Ashrock with his remaining supporters. It is under constant attack from Raiders, but they have miraculously been able to hold their position.</line>
-			<line commander='1153'>We don’t know much more than that. The Sovereign Imperials defected shortly after Halcyon&apos;s unsuccessful attempt at destroying the Nexus.</line>
+			<line commander='1153'>We don't know much more than that. The Sovereign Imperials defected shortly after Halcyon&apos;s unsuccessful attempt at destroying the Nexus.</line>
 			<line commander='1153'>His Tyranny has cost too many lives. We actually recognize you as the earliest Sovereigns rather than traitors.</line>
 		</speech>
 		<deck>
@@ -9805,6 +9805,897 @@
 	</mission>
 	
 <!-- END Phobos Aftermath Missions -->
+
+<!-- Awakening Missions -->
+
+	<!-- Location 1 -->
+
+	<mission>
+		<id>266</id>
+		<name>Mission 182</name>
+		<picture>mission266.jpg</picture>
+		<location_id>30</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>380</x>
+		<y>160</y> 
+		<xp>32</xp> <!-- 2.7 -->
+		<energy>12</energy>
+		<money>675</money> <!-- 14 -->
+		<rep faction='19' amount='3' />
+		<item id='4' p='.01' />
+		<commander>1187</commander>
+		<desc>Halcyon's forces have spotted us and are calling in reinforcements.</desc>
+		<speech>
+			<line commander='1153'>One after another the Nexuses fall. We&apos;ll purge this world of the Bloodthirsty yet!</line>
+			<line commander='1026'>Yes, its a pity Halcyon&apos;s Imperials still stand against us.</line>
+		</speech>
+		<deck>
+			<card>701</card>
+			<card>701</card>
+			<card>718</card>
+			<card>732</card>
+			<card>693</card>
+			<card>692</card>
+			<card>473</card>
+			<card>476</card>
+			<card>423</card>
+			<card>2091</card>
+		</deck>
+		<rewards>
+			<card>701</card>
+		</rewards>
+		<req>265</req>
+	</mission>
+
+
+	<mission>
+		<id>267</id>
+		<name>Mission 183</name>
+		<picture>mission267.jpg</picture>
+		<location_id>30</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>340</x>
+		<y>150</y> 
+		<xp>36</xp>
+		<energy>13</energy>
+		<money>750</money>
+		<rep faction='19' amount='4' />
+		<item id='4' p='.01' />
+		<commander>1188</commander>
+		<desc>The quarrel with the Imperials alerted Xeno forces in the area.</desc>
+		<speech>
+			<line commander='1042'>Xeno dropships have been spotted in the area. We need to ferret them out before they become a threat.</line>
+			<line commander='1153'>Keep them off us while we work on the Giga Bomb. It’ll take out the final Nexus.</line>
+		</speech>
+		<deck>
+			<card>713</card>
+			<card>714</card>
+			<card>751</card>
+			<card>642</card>
+			<card>644</card>
+			<card>657</card>
+			<card>552</card>
+			<card>587</card>
+			<card>2118</card>
+			<card>3050</card>
+		</deck>
+		<rewards>
+			<card>713</card>
+		</rewards>
+		<req>266</req>
+	</mission>
+
+	<mission>
+		<id>268</id>
+		<name>Mission 184</name>
+		<picture>mission268.jpg</picture>
+		<location_id>30</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>240</x>
+		<y>130</y> 
+		<xp>42</xp>
+		<energy>15</energy>
+		<money>875</money>
+		<rep faction='19' amount='4' />
+		<item id='4' p='.01' />
+		<commander>1189</commander>
+		<desc>Raiders have found ways to aggressively defend themselves.</desc>
+		<speech>
+			<line commander='1153'>The Giga Bomb is complete. Lets load it up and get it to the transport.</line>
+			<line commander='1026'>Scouts are reporting that the Righteous Vicar has also been crushing Nexuses. I guess we&apos;re leading by example.</line>
+			<line commander='1189'>Yes, lead them by example and die by my hands, traitor. I will reclaim our lost glory!</line>
+		</speech>
+		<deck>
+			<card>703</card>
+			<card>703</card>
+			<card>702</card>
+			<card>734</card>
+			<card>680</card>
+			<card>618</card>
+			<card>639</card>
+			<card>449</card>
+			<card>633</card>
+			<card>2116</card>
+		</deck>
+		<rewards>
+			<card>1183</card>
+		</rewards>
+		<req>267</req>
+	</mission>
+
+	<mission>
+		<id>269</id>
+		<name>Mission 185</name>
+		<picture>mission269.jpg</picture>
+		<location_id>30</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>175</x>
+		<y>180</y> 
+		<xp>48</xp>
+		<energy>17</energy>
+		<money>1025</money>
+		<rep faction='19' amount='5' />
+		<item id='4' p='.06' />
+		<commander>1190</commander>
+		<desc>The Bloodthirsty are as ferocious as ever.</desc>
+		<speech>
+			<line commander='1042'>Bloodthirsty must sense we want to hit the last Nexus. We&apos;ll need to cut through them to get to the transport.</line>
+		</speech>
+		<deck>
+			<card>710</card>
+			<card>759</card>
+			<card>739</card>
+			<card>550</card>
+			<card>677</card>
+			<card>500</card>
+			<card>467</card>
+			<card>690</card>
+			<card>569</card>
+			<card>3028</card>
+			<card>2119</card>
+		</deck>
+		<rewards>
+			<card>2119</card>
+		</rewards>
+		<req>268</req>
+	</mission>
+
+	<mission>
+		<id>270</id>
+		<name>Mission 186</name>
+		<picture>mission270.jpg</picture>
+		<location_id>30</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>80</x>
+		<y>280</y> 
+		<xp>52</xp> <!-- 2.9 -->
+		<energy>18</energy>
+		<money>1100</money> <!-- 15.3 -->
+		<rep faction='19' amount='6' />
+		<item id='4' p='.07' />
+		<commander>1188</commander>
+		<desc>Xeno are attempting to blockade you from leaving the island.</desc>
+		<speech>
+			<line commander='1042'>We’re almost to the transport , but the Xenos are coming at us at full force. Why do they want the bomb so badly?</line>
+		</speech>
+		<speechComplete>
+			<line commander='1042'>We’re clear. Lets wipe that last Nexus off the map.</line>
+		</speechComplete>
+		<deck>
+			<card>746</card>
+			<card>750</card>
+			<card>751</card>
+			<card>712</card>
+			<card>616</card>
+			<card>636</card>
+			<card>571</card>
+			<card>545</card>
+			<card>418</card>
+			<card>717</card>
+			<card>3045</card>
+			<card>2117</card>
+		</deck>
+		<rewards>
+			<card>2118</card>
+		</rewards>
+		<req>269</req>
+	</mission>
+
+	<!-- Location 2 -->
+
+	<mission>
+		<id>271</id>
+		<name>Mission 187</name>
+		<picture>mission271.jpg</picture>
+		<location_id>31</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>130</x>
+		<y>80</y> 
+		<xp>39</xp> <!-- 2.8 -->
+		<energy>14</energy>
+		<money>850</money> <!-- 15 -->
+		<rep faction='19' amount='5' />
+		<item id='4' p='.01' />
+		<commander>1190</commander>
+		<desc>Some of the Bloodthirsty&apos;s most dominating forces still roam this island.</desc>
+		<speech>
+			<line commander='1097'>We must make our way to the final active Nexus. The Council has entrusted you with the Purity Ritual which should seal its baleful gates.</line>
+		</speech>
+		<deck>
+			<card>708</card>
+			<card>707</card>
+			<card>742</card>
+			<card>735</card>
+			<card>579</card>
+			<card>641</card>
+			<card>635</card>
+			<card>308</card>
+			<card>638</card>
+			<card>2110</card>
+		</deck>
+		<rewards>
+			<card>708</card>
+		</rewards>
+		<req>270</req>
+	</mission>
+
+	<mission>
+		<id>272</id>
+		<name>Mission 188</name>
+		<picture>mission272.jpg</picture>
+		<location_id>31</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>230</x>
+		<y>150</y> 
+		<xp>43</xp> <!-- 2.87 -->
+		<energy>15</energy>
+		<money>925</money> <!-- 15.5 -->
+		<rep faction='19' amount='6' />
+		<item id='4' p='.01' />
+		<commander>1188</commander>
+		<desc>The Xeno maintain a scouting presence on the island, but they are still a formidable opponent.</desc>
+		<speech>
+			<line commander='1097'>The Xeno ranks march against us yet again! Come, Vicar, let us lay waste to this extraterrestrial  threat that stands in the way of our duties.</line>
+		</speech>
+		<deck>
+			<card>745</card>
+			<card>747</card>
+			<card>749</card>
+			<card>626</card>
+			<card>537</card>
+			<card>572</card>
+			<card>683</card>
+			<card>678</card>
+			<card>287</card>
+			<card>3045</card>
+		</deck>
+		<rewards>
+			<card>745</card>
+		</rewards>
+		<req>271</req>
+	</mission>
+
+	<mission>
+		<id>273</id>
+		<name>Mission 189</name>
+		<picture>mission273.jpg</picture>
+		<location_id>31</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>300</x>
+		<y>180</y> 
+		<xp>50</xp> <!-- 2.94 -->
+		<energy>17</energy>
+		<money>1100</money> <!-- 16.0 -->
+		<rep faction='19' amount='6' />
+		<item id='4' p='.06' />
+		<commander>1190</commander>
+		<desc>Bloodthirsty have shown increased aggression towards the Righteous.</desc>
+		<speech>
+			<line commander='1097'>The council feels something stirring from Tartarus. It can only be Typhon. We must shut down the Nexus before he frees himself.</line>
+		</speech>
+		<deck>
+			<card>698</card>
+			<card>740</card>
+			<card>735</card>
+			<card>593</card>
+			<card>682</card>
+			<card>656</card>
+			<card>534</card>
+			<card>345</card>
+			<card>431</card>
+			<card>2066</card>
+			<card>2111</card>
+		</deck>
+		<rewards>
+			<card>740</card>
+		</rewards>
+		<req>272</req>
+	</mission>
+
+	<mission>
+		<id>274</id>
+		<name>Mission 190</name>
+		<picture>mission274.jpg</picture>
+		<location_id>31</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>340</x>
+		<y>120</y> 
+		<xp>54</xp> <!-- 3.0 -->
+		<energy>18</energy>
+		<money>1175</money> <!-- 16.4 -->
+		<rep faction='19' amount='7' />
+		<item id='4' p='.07' />
+		<commander>1189</commander>
+		<desc>Raiders are attempting to overwhelm our weak points.</desc>
+		<speech>
+			<line commander='1097'>That last Bloodthirsty attack weakened our defenses and the Raiders are taking advantage.</line>
+			<line commander='1097'>We can’t let our forces get tangled here, our next Nexus target is so close. Let us dispatch these fools and be off.</line>
+		</speech>
+		<deck>
+			<card>737</card>
+			<card>738</card>
+			<card>736</card>
+			<card>702</card>
+			<card>637</card>
+			<card>624</card>
+			<card>529</card>
+			<card>495</card>
+			<card>130</card>
+			<card>215</card>
+			<card>2081</card>
+			<card>2113</card>
+		</deck>
+		<rewards>
+			<card>702</card>
+		</rewards>
+		<req>273</req>
+	</mission>
+
+<!-- Location 3 -->
+
+	<mission>
+		<id>275</id>
+		<name>Mission 191</name>
+		<picture>mission275.jpg</picture>
+		<location_id>32</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>450</x>
+		<y>80</y> 
+		<xp>41</xp> <!-- 2.9 -->
+		<energy>14</energy>
+		<money>900</money> <!-- 16.0 -->
+		<rep faction='19' amount='6' />
+		<item id='4' p='.01' />
+		<commander>1189</commander>
+		<desc>Raiders are advancing on the position of your crash landing.</desc>
+		<speech>
+			<line commander='1042'>Those damned Raiders shot us down! Daedalus protect the bomb! Commander, get ready, they’re coming over the ridge!</line>
+		</speech>
+		<deck>
+			<card>709</card>
+			<card>725</card>
+			<card>734</card>
+			<card>521</card>
+			<card>566</card>
+			<card>428</card>
+			<card>568</card>
+			<card>237</card>
+			<card>516</card>
+			<card>3051</card>
+		</deck>
+		<rewards>
+			<card>727</card>
+		</rewards>
+		<req>274</req>
+	</mission>
+
+	<mission>
+		<id>276</id>
+		<name>Mission 192</name>
+		<picture>mission276.jpg</picture>
+		<location_id>32</location_id>
+		<num_to_complete>6</num_to_complete>
+		<x>320</x>
+		<y>280</y> 
+		<xp>44</xp> <!-- 2.94 -->
+		<energy>15</energy>
+		<money>975</money> <!-- 16.2 -->
+		<rep faction='19' amount='6' />
+		<item id='4' p='.01' />
+		<commander>1188</commander>
+		<desc>Xeno are also attracted to the final Nexus, but are maintaining their distance.</desc>
+		<speech>
+			<line commander='1097'>Did you see that ship crash? It bore familiar markings, lets smite these Xeno and find our way to the crash site.</line>
+		</speech>
+		<deck>
+			<card>748</card>
+			<card>750</card>
+			<card>642</card>
+			<card>744</card>
+			<card>139</card>
+			<card>173</card>
+			<card>546</card>
+			<card>425</card>
+			<card>644</card>
+			<card>2118</card>
+		</deck>
+		<rewards>
+			<card>722</card>
+		</rewards>
+		<req>275</req>
+	</mission>
+
+	<mission>
+		<id>277</id>
+		<name>Mission 193</name>
+		<picture>mission277.jpg</picture>
+		<location_id>32</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>360</x>
+		<y>150</y> 
+		<xp>48</xp> <!-- 2.98 -->
+		<energy>16</energy>
+		<money>1050</money> <!-- 16.4 -->
+		<rep faction='19' amount='7' />
+		<item id='4' p='.01' />
+		<commander>1190</commander>
+		<desc>You will have to combine forces with the Righteous to take out the Bloodthirsty</desc>
+		<speech>
+			<line commander='1042'>Attalia, is that you?!</line>
+			<line commander='1097'>Katana what are you doing out here?! Are you hurt?</line>
+			<line commander='1042'>We&apos;re fine. Lousy raiders blew us out of the sky.</line>
+		</speech>
+		<deck>
+			<card>698</card>
+			<card>706</card>
+			<card>707</card>
+			<card>708</card>
+			<card>496</card>
+			<card>583</card>
+			<card>570</card>
+			<card>346</card>
+			<card>3050</card>
+			<card>2110</card>
+		</deck>
+		<rewards>
+			<card>2112</card>
+		</rewards>
+		<req>276</req>
+	</mission>
+
+	<mission>
+		<id>278</id>
+		<name>Mission 194</name>
+		<picture>mission278.jpg</picture>
+		<location_id>32</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>280</x>
+		<y>120</y> 
+		<xp>52</xp> <!-- 3.03 -->
+		<energy>17</energy>
+		<money>1125</money> <!-- 16.6 -->
+		<rep faction='19' amount='7' />
+		<item id='4' p='.01' />
+		<commander>1191</commander>
+		<desc>New powerful Bloodthirsty are emerging from the Nexus and heading straight for your location.</desc>
+		<speech>
+			<line commander='1042'>This close to the nexus... are you heading toward it.</line>
+			<line commander='1097'>Yes. The Council has imparted the Purity Ritual to my Vicar allowing him to close the Nexus.</line>
+			<line commander='1153'>Ritual? Our Giga Bomb is complete! We just need to detonate it near the Nexus.</line>
+		</speech>
+		<deck>
+			<card>550</card>
+			<card>711</card>
+			<card>759</card>
+			<card>742</card>
+			<card>345</card>
+			<card>629</card>
+			<card>506</card>
+			<card>427</card>
+			<card>172</card>
+			<card>3041</card>
+		</deck>
+		<rewards>
+			<card>728</card>
+		</rewards>
+		<req>277</req>
+	</mission>
+
+	<mission>
+		<id>279</id>
+		<name>Mission 195</name>
+		<picture>mission279.jpg</picture>
+		<location_id>32</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>190</x>
+		<y>180</y> 
+		<xp>55</xp> <!-- 3.06 -->
+		<energy>18</energy>
+		<money>1200</money> <!-- 16.8 -->
+		<rep faction='19' amount='8' />
+		<item id='4' p='.05' />
+		<commander>1192</commander>
+		<desc>Raiders are willing to give up their lives just to stall you from reaching the Nexus.</desc>
+		<speech>
+			<line commander='1097'>A bomb? How do you expect to get something like that so close? It's giving off such a huge psionic signal that it will attract the wrong attention.</line>
+			<line commander='1153'>Its faster then one of your rituals. Who knows what could happen while your performing it? Rituals are long and drawn out. The Giga Bomb just needs a button press...</line>
+		</speech>
+		<deck>
+			<card>521</card>
+			<card>737</card>
+			<card>709</card>
+			<card>639</card>
+			<card>680</card>
+			<card>568</card>
+			<card>529</card>
+			<card>518</card>
+			<card>673</card>
+			<card>2023</card>
+			<card>2116</card>
+		</deck>
+		<rewards>
+			<card>521</card>
+		</rewards>
+		<req>278</req>
+	</mission>
+	
+	<mission>
+		<id>280</id>
+		<name>Mission 196</name>
+		<picture>mission280.jpg</picture>
+		<location_id>32</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>90</x>
+		<y>140</y> 
+		<xp>59</xp> <!-- 3.09 -->
+		<energy>19</energy>
+		<money>1300</money> <!-- 17.0 -->
+		<rep faction='19' amount='9' />
+		<item id='4' p='.06' />
+		<commander>1193</commander>
+		<desc>Xeno are unwilling to get closer to the Nexus but they will not let you pass them either.</desc>
+		<speech>
+			<line commander='1042'>Was that a sonic boom? Damn! Xenos inbound!</line>
+		</speech>
+		<deck>
+			<card>717</card>
+			<card>765</card>
+			<card>760</card>
+			<card>714</card>
+			<card>750</card>
+			<card>261</card>
+			<card>353</card>
+			<card>683</card>
+			<card>531</card>
+			<card>525</card>
+			<card>2092</card>
+			<card>2118</card>
+		</deck>
+		<rewards>
+			<card>747</card>
+		</rewards>
+		<req>279</req>
+	</mission>
+
+	<mission>
+		<id>281</id>
+		<name>Mission 197</name>
+		<picture>mission281.jpg</picture>
+		<location_id>32</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>130</x>
+		<y>50</y> 
+		<xp>66</xp> <!-- 3.12 -->
+		<energy>21</energy>
+		<money>1450</money> <!-- 17.2 -->
+		<rep faction='19' amount='10' />
+		<item id='4' p='.07' />
+		<commander>1191</commander>
+		<desc>Powerful Bloodthirsty loom over the mountain ridge.</desc>
+		<speech>
+			<line commander='1042'>We&apos;re surrounded by Bloodthirsty!</line>
+			<line commander='1153'>Where is Attalia?!</line>
+			<line commander='1026'>She was right behind me!</line>
+			<line commander='1153'>I&apos;m going in after her!</line>
+			<line commander='1097'>Vicar! Help!</line>
+		</speech>
+		<speechComplete>
+			<line commander='1097'>Thanks Daedalus. Perhaps the bomb is a good idea after all, I just want this nightmare to be over.</line>
+		</speechComplete>
+		<deck>
+			<card>764</card>
+			<card>739</card>
+			<card>711</card>
+			<card>735</card>
+			<card>326</card>
+			<card>407</card>
+			<card>603</card>
+			<card>382</card>
+			<card>406</card>
+			<card>621</card>
+			<card>225</card>
+			<card>2052</card>
+			<card>3024</card>
+		</deck>
+		<rewards>
+			<card>699</card>
+		</rewards>
+		<req>280</req>
+	</mission>
+
+<!-- Location 4 -->
+
+	<mission>
+		<id>282</id>
+		<name>Mission 198</name>
+		<picture>mission282.jpg</picture>
+		<location_id>33</location_id>
+		<num_to_complete>7</num_to_complete>
+		<x>450</x>
+		<y>220</y> 
+		<xp>50</xp> <!-- 3.05 -->
+		<energy>16</energy>
+		<money>1050</money> <!-- 16.5 -->
+		<rep faction='19' amount='9' />
+		<item id='4' p='.01' />
+		<commander>1192</commander>
+		<desc>You will have to break through the Raider perimeter to get closer to the Nexus.</desc>
+		<speech>
+			<line commander='1097'>We’re close to the Nexus. Can’t you feel it?</line>
+			<line commander='1192'>The only thing you’ll feel is my knife!</line>
+		</speech>
+		<deck>
+			<card>725</card>
+			<card>709</card>
+			<card>639</card>
+			<card>643</card>
+			<card>509</card>
+			<card>221</card>
+			<card>442</card>
+			<card>448</card>
+			<card>763</card>
+			<card>2088</card>
+		</deck>
+		<rewards>
+			<card>703</card>
+		</rewards>
+		<req>281</req>
+	</mission>
+
+	<mission>
+		<id>283</id>
+		<name>Mission 199</name>
+		<picture>mission283.jpg</picture>
+		<location_id>33</location_id>
+		<num_to_complete>8</num_to_complete>
+		<x>380</x>
+		<y>200</y> 
+		<xp>52</xp> <!-- 3.08 -->
+		<energy>17</energy>
+		<money>1125</money> <!-- 16.7 -->
+		<rep faction='19' amount='10' />
+		<item id='4' p='.01' />
+		<commander>1192</commander>
+		<desc>The Raiders are sending their largest forces after the bomb.</desc>
+		<speech>
+			<line commander='1042'>Raiders are trying to get the bomb! We need to keep them off of it!</line>
+		</speech>
+		<deck>
+			<card>763</card>
+			<card>738</card>
+			<card>734</card>
+			<card>737</card>
+			<card>54</card>
+			<card>637</card>
+			<card>633</card>
+			<card>566</card>
+			<card>245</card>
+			<card>2116</card>
+		</deck>
+		<rewards>
+			<card>1181</card>
+		</rewards>
+		<req>282</req>
+	</mission>
+
+	<mission>
+		<id>284</id>
+		<name>Mission 200</name>
+		<picture>mission284.jpg</picture>
+		<location_id>33</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>300</x>
+		<y>260</y> 
+		<xp>56</xp> <!-- 3.11 -->
+		<energy>18</energy>
+		<money>1225</money> <!-- 17.0 -->
+		<rep faction='19' amount='11' />
+		<item id='4' p='.01' />
+		<commander>1191</commander>
+		<desc>Bloodthirsty from all over are converging on your position.</desc>
+		<speech>
+			<line commander='1026'>There it is, we&apos;re so close now. Soon there will be nothing left but rubble.</line>
+			<line commander='1042'>Plant the bomb! The Bloodthirsty know what we&apos;re trying to do!</line>
+		</speech>
+		<deck>
+			<card>698</card>
+			<card>550</card>
+			<card>735</card>
+			<card>641</card>
+			<card>690</card>
+			<card>625</card>
+			<card>540</card>
+			<card>499</card>
+			<card>375</card>
+			<card>2009</card>
+		</deck>
+		<rewards>
+			<card>752</card>
+		</rewards>
+		<req>283</req>
+	</mission>
+
+	<mission>
+		<id>285</id>
+		<name>Mission 201</name>
+		<picture>mission285.jpg</picture>
+		<location_id>33</location_id>
+		<num_to_complete>9</num_to_complete>
+		<x>200</x>
+		<y>200</y> 
+		<xp>60</xp> <!-- 3.14 -->
+		<energy>19</energy>
+		<money>1300</money> <!-- 17.3 -->
+		<rep faction='19' amount='12' />
+		<item id='4' p='.01' />
+		<commander>1191</commander>
+		<desc>The Bloodthirsty do not care what your plans are, they only seek to destroy you where you stand.</desc>
+		<speech>
+			<line commander='1042'>We need to clear a path through the Bloodthirsty and get to safe distance.</line>
+		</speech>
+		<deck>
+			<card>735</card>
+			<card>706</card>
+			<card>739</card>
+			<card>677</card>
+			<card>116</card>
+			<card>225</card>
+			<card>255</card>
+			<card>534</card>
+			<card>315</card>
+			<card>2111</card>
+		</deck>
+		<rewards>
+			<card>3050</card>
+		</rewards>
+		<req>284</req>
+	</mission>
+
+	<mission>
+		<id>286</id>
+		<name>Mission 202</name>
+		<picture>mission286.jpg</picture>
+		<location_id>33</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>430</x>
+		<y>130</y> 
+		<xp>64</xp> <!-- 3.18 -->
+		<energy>20</energy>
+		<money>1400</money> <!-- 17.5 -->
+		<rep faction='19' amount='13' />
+		<item id='4' p='.06' />
+		<commander>1192</commander>
+		<desc>Raiders are willing to sacrifice themselves to slow your retreat.</desc>
+		<speech>
+			<line commander='1042'>We’re in position! Daedalus get ready to detonate.</line>
+		</speech>
+		<speechComplete>
+			<line commander='1042'>Detonate it, now!</line>
+			<line commander='1153'>What is that?!</line>
+		</speechComplete>
+		<deck>
+			<card>738</card>
+			<card>709</card>
+			<card>624</card>
+			<card>428</card>
+			<card>314</card>
+			<card>495</card>
+			<card>633</card>
+			<card>237</card>
+			<card>198</card>
+			<card>2038</card>
+			<card>2023</card>
+		</deck>
+		<rewards>
+			<card>639</card>
+		</rewards>
+		<req>285</req>
+	</mission>
+
+	<mission>
+		<id>287</id>
+		<name>Mission 203</name>
+		<picture>mission287.jpg</picture>
+		<location_id>33</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>300</x>
+		<y>100</y> 
+		<xp>67</xp> <!-- 3.21 -->
+		<energy>21</energy>
+		<money>1500</money> <!-- 17.7 -->
+		<rep faction='19' amount='14' />
+		<item id='4' p='.07' />
+		<commander>1191</commander>
+		<desc>As the Nexus stirs the Bloodthirsty form a wall between you and it.</desc>
+		<speech>
+			<line commander='1153'>It consumed it... it ate the Giga Bomb!</line>
+			<line commander='1042'>That was the largest Bloodthirsty I’ve ever seen! Its internal chemistry must be breaking down the bomb!</line>
+			<line commander='1097'>Get us in there close! We need to start the ritual!</line>
+		</speech>
+		<deck>
+			<card>706</card>
+			<card>698</card>
+			<card>739</card>
+			<card>656</card>
+			<card>603</card>
+			<card>534</card>
+			<card>524</card>
+			<card>500</card>
+			<card>431</card>
+			<card>382</card>
+			<card>3046</card>
+			<card>2049</card>
+		</deck>
+		<rewards>
+			<card>694</card>
+		</rewards>
+		<req>286</req>
+	</mission>
+
+	<mission>
+		<id>288</id>
+		<name>Mission 204</name>
+		<picture>mission288.jpg</picture>
+		<location_id>33</location_id>
+		<num_to_complete>10</num_to_complete>
+		<x>240</x>
+		<y>120</y> 
+		<xp>75</xp> <!-- 3.25 -->
+		<energy>23</energy>
+		<money>1650</money> <!-- 18.0 -->
+		<rep faction='19' amount='15' />
+		<item id='4' p='.08' />
+		<commander>1191</commander>
+		<desc>You must break the line of Bloodthirsty to reach the Nexus before it is too late!</desc>
+		<speech>
+			<line commander='1097'>We don’t have enough time! We must focus on Ritual!</line>
+		</speech>
+		<speechComplete>
+			<line commander='1042'>What was that flash of light?! My eyes!</line>
+			<line commander='1008'>I’ve been gone for so long and I am, oh, so hungry.</line>
+		</speechComplete>
+		<deck>
+			<card>706</card>
+			<card>735</card>
+			<card>711</card>
+			<card>225</card>
+			<card>231</card>
+			<card>524</card>
+			<card>527</card>
+			<card>641</card>
+			<card>690</card>
+			<card>427</card>
+			<card>346</card>
+			<card>2111</card>
+			<card>2110</card>
+		</deck>
+		<rewards>
+			<card>706</card>
+		</rewards>
+		<req>287</req>
+	</mission>
+	
+	<!-- END Awakening Missions -->
 	
 <!-- END MISSIONS -->
 	
@@ -10142,6 +11033,48 @@
 		<effect x='292' y='220'>wastelandeffects.swf</effect>
 		<nav>Nav7</nav>
 		<req>259</req>
+	</location>
+	
+	<location>
+		<id>30</id>
+		<name>Artemis</name>
+		<picture>NorthPoleMap</picture>
+		<picture_file>artemismap.jpg</picture_file>
+		<effect_file>artemisHDFX.swf</effect_file>
+		<effect x='292' y='220'>northpolemapFX.swf</effect>
+		<nav>Nav25</nav>
+		<req>265</req>
+	</location>
+
+	<location>
+		<id>31</id>
+		<name>Valhalla</name>
+		<picture>PurityRing4Map</picture>
+		<picture_file>valhallaHD.jpg</picture_file>
+		<effect_file>valhallaHDFX.swf</effect_file>
+		<effect x='292' y='220'>purityring4FX.swf</effect>
+		<nav>Nav19</nav>
+		<req>270</req>
+	</location>
+
+	<location>
+		<id>32</id>
+		<name>Shattered Coast</name>
+		<picture_file>awakeningcoastmap.jpg</picture_file>
+		<effect_file>awakeningcoastHDFX.swf</effect_file>
+		<effect x='292' y='220'>awakeningcoastHDFX.swf</effect>
+		<nav>NavAwakeCoast</nav>
+		<req>274</req>
+	</location>
+
+	<location>
+		<id>33</id>
+		<name>Lockeheart</name>
+		<picture_file>awakeningnexusmap.jpg</picture_file>
+		<effect_file>awakeningnexusHDFX.swf</effect_file>
+		<effect x='292' y='220'>awakeningnexusHDFX.swf</effect>
+		<nav>NavAwakeNexus</nav>
+		<req>281</req>
 	</location>
 	
 	<faction>
@@ -10628,6 +11561,35 @@
 			<rep_req>2000</rep_req>
 			<cost>20000</cost>
 			<card>682</card>
+		</reward>
+	</faction>
+	
+	<faction>
+		<id>19</id>
+		<location_id>30</location_id>
+		<location_id>31</location_id>
+		<location_id>32</location_id>
+		<location_id>33</location_id>
+		<name>Purveyors of Shadows</name>
+		<icon>FactionIconAwakening</icon>
+		<repbase>1000</repbase>
+		<reward id='1'>
+			<rep_level>1</rep_level>
+			<rep_req>200</rep_req>
+			<cost>500</cost>
+			<card>762</card>
+		</reward>
+		<reward id='2'>
+			<rep_level>2</rep_level>
+			<rep_req>800</rep_req>
+			<cost>5000</cost>
+			<card>765</card>
+		</reward>
+		<reward id='3'>
+			<rep_level>3</rep_level>
+			<rep_req>2000</rep_req>
+			<cost>20000</cost>
+			<card>763</card>
 		</reward>
 	</faction>
 	
