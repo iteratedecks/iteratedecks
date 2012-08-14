@@ -21,6 +21,7 @@
 #include "compat.h"
 
 #include <vector>
+#include <list>
 #include <set>
 #include "ctype.h"
 
@@ -173,6 +174,8 @@ typedef vector<PlayedCard*> PVCARDS;
 typedef pair<PlayedCard*,UCHAR> PPCARDINDEX;
 typedef vector<PPCARDINDEX> PPCIV;
 typedef multiset<UINT> MSID;
+typedef list<PlayedCard> LCARDS;
+
 #define PROC50	Proc()
 const bool PROC50
 {
@@ -645,13 +648,13 @@ Valor: Removed after owner ends his turn.
 		fsDmgMitigated += dmg;
 		return dmg;
 	}
-	bool HitCommander(UINT QuestEffectId, const UCHAR Dmg, PlayedCard &Src, VCARDS &Structures, bool bCanBeCountered = true, UCHAR *overkill = 0, VLOG *log = 0, LOG_RECORD *lr = 0)
+	bool HitCommander(UINT QuestEffectId, const UCHAR Dmg, PlayedCard &Src, LCARDS &Structures, bool bCanBeCountered = true, UCHAR *overkill = 0, VLOG *log = 0, LOG_RECORD *lr = 0)
 	{
 		_ASSERT(GetType() == TYPE_COMMANDER); // double check for debug
 		_ASSERT(Dmg); // 0 dmg is pointless and indicates an error
 		// find a wall to break it ;)
 		UCHAR index = 0;
-		for (VCARDS::iterator vi = Structures.begin();vi!=Structures.end();vi++)
+		for (LCARDS::iterator vi = Structures.begin();vi!=Structures.end();vi++)
 		{
 			if (vi->GetAbility(DEFENSIVE_WALL) && vi->IsAlive())
 			{
@@ -990,14 +993,15 @@ struct REQUIREMENT
 	UCHAR Procs;
 	REQUIREMENT() { SkillID = 0; };
 };
+
 class ActiveDeck
 {
 public:
 	PlayedCard Commander;
-	VCARDS Deck;
-	VCARDS Units;
-	VCARDS Structures;
-	VCARDS Actions;
+	LCARDS Deck;
+	LCARDS Units;
+	LCARDS Structures;
+	LCARDS Actions;
 	//
 	bool bOrderMatters;
 	MSID Hand;
@@ -1024,12 +1028,21 @@ public:
     // used to get the actual card for summon
     Card const * pCDB;
 private:
+    PlayedCard & getUnitAt(unsigned int const index)
+    {
+        LCARDS::iterator iter = this->Units.begin();
+        for(unsigned int i = 0; i < index; i++) {
+            iter++;
+        }
+        return *iter;
+    }
+
 	void Reserve()
 	{
-		Deck.reserve(DEFAULT_DECK_RESERVE_SIZE);
-		Units.reserve(DEFAULT_DECK_RESERVE_SIZE);
-		Structures.reserve(DEFAULT_DECK_RESERVE_SIZE);
-		Actions.reserve(DEFAULT_DECK_RESERVE_SIZE);
+		//Deck.reserve(DEFAULT_DECK_RESERVE_SIZE);
+		//Units.reserve(DEFAULT_DECK_RESERVE_SIZE);
+		//Structures.reserve(DEFAULT_DECK_RESERVE_SIZE);
+		//Actions.reserve(DEFAULT_DECK_RESERVE_SIZE);
 	}
 	LOG_RECORD* LogAdd(LOG_CARD src, UCHAR AbilityID, UCHAR Effect = ABILITY_ENABLED)
 	{
@@ -1050,9 +1063,11 @@ private:
 	UCHAR GetAliveUnitsCount()
 	{
 		UCHAR c = 0;
-		for (UCHAR i=0;i<Units.size();i++)
-			if (Units[i].IsAlive())
+        for(LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
+			if (iter->IsAlive()) {
 				c++;
+            }
+        }
 		return c;
 	}
 
@@ -1066,7 +1081,7 @@ private:
 #define VALOR_HITS_COMMANDER	true
 
     void AttackCommanderOnce(UCHAR const & index
-                            ,PlayedCard & SRC
+                            ,PlayedCard & src
                             ,EFFECT_ARGUMENT const & valor
                             ,ActiveDeck & Def
                             ,bool const variant1
@@ -1078,13 +1093,13 @@ private:
         }
         // This should also be fine in variant2.
         if(variant1) {
-            if (SRC.GetAbility(COMBAT_FEAR) && (Def.Units.size() > index) && Def.Units[index].IsAlive()) {
+            if (src.GetAbility(COMBAT_FEAR) && (Def.Units.size() > index) && Def.getUnitAt(index).IsAlive()) {
                 SkillProcs[COMBAT_FEAR]++;
                 LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_FEAR);
             }
         }
         UCHAR overkill = 0;
-        UCHAR cdmg = SRC.GetAttack()+valor;
+        UCHAR cdmg = src.GetAttack()+valor;
         // Update strongest attack
         if (cdmg > StrongestAttack) {
             StrongestAttack = cdmg;
@@ -1092,7 +1107,7 @@ private:
 
         // do we hit the commander?
         bool const hitCommander(Def.Commander.HitCommander(QuestEffectId,cdmg
-                                                          ,SRC,Def.Structures
+                                                          ,src,Def.Structures
                                                           ,true,&overkill,Log
                                                           ,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index)
                                                                  ,LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0)
@@ -1104,20 +1119,20 @@ private:
             FullDamageToCommander += cdmg;
         }
         if(variant1) {
-            SRC.CardSkillProc(SPECIAL_ATTACK); // attack counter
+            src.CardSkillProc(SPECIAL_ATTACK); // attack counter
         }
         // gotta check walls & source onDeath here
-        for (UCHAR z=0;z<Def.Structures.size();z++) {
-            Def.CheckDeathEvents(Def.Structures[z],*this);
+        for (LCARDS::iterator iter=Def.Structures.begin(); iter != Def.Structures.end(); iter++) {
+            Def.CheckDeathEvents(*iter,*this);
         }
-        CheckDeathEvents(SRC,Def);
-        SRC.fsOverkill += overkill;
-        SRC.fsDmgDealt += cdmg;
+        CheckDeathEvents(src,Def);
+        src.fsOverkill += overkill;
+        src.fsDmgDealt += cdmg;
         // can go berserk after hitting commander too
-        if ((SRC.GetAttack()+valor > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
+        if ((src.GetAttack()+valor > 0) && src.GetAbility(DMGDEPENDANT_BERSERK))
         {
-            SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
-            LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_BERSERK,SRC.GetAbility(DMGDEPENDANT_BERSERK));
+            src.Berserk(src.GetAbility(DMGDEPENDANT_BERSERK));
+            LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_BERSERK,src.GetAbility(DMGDEPENDANT_BERSERK));
             SkillProcs[DMGDEPENDANT_BERSERK]++;
         }
     }
@@ -1275,8 +1290,8 @@ private:
 				}
 
 				// gotta check walls onDeath here
-				for (UCHAR z=0;z<Def.Structures.size();z++) {
-					Def.CheckDeathEvents(Def.Structures[z],*this);
+                for (LCARDS::iterator iter=Def.Structures.begin(); iter != Def.Structures.end(); iter++) {
+					Def.CheckDeathEvents(*iter,*this);
 				}
 
 				SRC.fsOverkill += overkill;
@@ -1380,7 +1395,7 @@ private:
 // #############################################################################
 	void Attack(UCHAR index, ActiveDeck &Def)
 	{
-#define SRC	Units[index]
+        PlayedCard & SRC = this->getUnitAt(index);
 		//printf("%s %d\n",SRC.GetName(),SRC.GetHealth());
 
         // Make sure the attacking unit lives. That should be the case here, thus assertion.
@@ -1401,7 +1416,7 @@ private:
 
         // Is there no unit opposite of the attacking unit, or do we have fear? ...
         if (   (index >= (UCHAR)Def.Units.size()) // unit is right of everything opponent has
-            || (!Def.Units[index].IsAlive()) // opposite unit is dead
+            || (!Def.getUnitAt(index).IsAlive()) // opposite unit is dead
             || (SRC.GetAbility(COMBAT_FEAR)) // unit has fear
            )
         {
@@ -1424,20 +1439,21 @@ private:
 			UCHAR swipe = (SRC.GetAbility(COMBAT_SWIPE)) ? 3 : 1;
 			if (swipe > 1)
 			{
-				if ((index > 0) && (Def.Units[index-1].IsAlive()))
-					targets[0] = &Def.Units[index-1];
-				else
+				if ((index > 0) && (Def.getUnitAt(index-1).IsAlive())) {
+					targets[0] = &Def.getUnitAt(index-1);
+				} else {
 					targets[0] = 0;
-				targets[1] = &Def.Units[index];
+                }
+				targets[1] = &Def.getUnitAt(index);
 				_ASSERT(targets[1]); // this is aligned to SRC and must be present
-				if ((index+1 < (UCHAR)Def.Units.size()) && (Def.Units[index+1].IsAlive()))
-					targets[2] = &Def.Units[index+1];
-				else
+				if ((index+1 < (UCHAR)Def.Units.size()) && (Def.getUnitAt(index+1).IsAlive())) {
+					targets[2] = &Def.getUnitAt(index+1);
+				} else {
 					targets[2] = 0;
+                }
 				LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_SWIPE);
-			}
-			else {
-				targets[0] = &Def.Units[index];
+			} else {
+				targets[0] = &Def.getUnitAt(index);
 			}
 			// flurry
 			for (UCHAR iatk=0;iatk<iflurry;iatk++)
@@ -1507,10 +1523,10 @@ public:
 	bool IsAnnihilated()
 	{
 		if (!Deck.empty()) return false;
-		for (VCARDS::iterator vi = Units.begin(); vi != Units.end(); vi++)
+		for (LCARDS::iterator vi = Units.begin(); vi != Units.end(); vi++)
 			if (vi->IsAlive())
 				return false;
-		for (VCARDS::iterator vi = Structures.begin(); vi != Structures.end(); vi++)
+		for (LCARDS::iterator vi = Structures.begin(); vi != Structures.end(); vi++)
 			if (vi->IsAlive())
 				return false;
 		return true;
@@ -1525,7 +1541,7 @@ public:
 		if (Commander.GetId() == Id)
 			return 1;
 		UCHAR c = 0;
-		for (VCARDS::iterator vi = Deck.begin(); vi != Deck.end(); vi++)
+		for (LCARDS::iterator vi = Deck.begin(); vi != Deck.end(); vi++)
 			if (vi->GetId() == Id)
 				c++;
 		return c;
@@ -1559,7 +1575,7 @@ public:
 		if (len & 1)
 			return;
 		len = len >> 1; // div 2
-		Deck.reserve(DEFAULT_DECK_RESERVE_SIZE);
+		//Deck.reserve(DEFAULT_DECK_RESERVE_SIZE);
 		for (UCHAR i = 0; i < len; i++)
 		{
 			if (HashBase64[i << 1] == '.') break; // delimeter
@@ -1605,7 +1621,7 @@ public:
 		StrongestAttack = 0;
 		Commander = PlayedCard(Cmd); 
 		Commander.SetCardSkillProcBuffer(SkillProcs); 
-		Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); 
+		//Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); 
 		memset(SkillProcs,0,sizeof(SkillProcs));
 		memset(CardPicks,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 		memset(CardDeaths,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
@@ -1617,28 +1633,24 @@ public:
 		Log = 0;
 		Commander = D.Commander;
 		Commander.SetCardSkillProcBuffer(SkillProcs);
-		Deck.reserve(D.Deck.size());
-		for (UCHAR i=0;i<D.Deck.size();i++)
-			Deck.push_back(D.Deck[i]);
-		Actions.reserve(D.Actions.size());
-		for (UCHAR i=0;i<D.Actions.size();i++)
-		{
-			Actions.push_back(D.Actions[i]);
-			Actions.back().SetCardSkillProcBuffer(SkillProcs); // have to reassign buffers
+		//Deck.reserve(D.Deck.size());
+		Deck = D.Deck;
+		//Actions.reserve(D.Actions.size());
+        Actions = D.Actions;
+		for (LCARDS::iterator iter = Actions.begin(); iter != Actions.end(); iter++) {
+			iter->SetCardSkillProcBuffer(SkillProcs); // have to reassign buffers
 		}
-		Units.reserve(D.Units.size());
-		for (UCHAR i=0;i<D.Units.size();i++)
-		{
-			Units.push_back(D.Units[i]);
-			Units.back().SetCardSkillProcBuffer(SkillProcs); // have to reassign buffers
+		//Units.reserve(D.Units.size());
+        Units = D.Units;
+		for (LCARDS::iterator iter = Units.begin(); iter != Units.end(); iter++) {
+			iter->SetCardSkillProcBuffer(SkillProcs); // have to reassign buffers
 		}
-		Structures.reserve(D.Structures.size());
-		for (UCHAR i=0;i<D.Structures.size();i++)
-		{
-			Structures.push_back(D.Structures[i]);
-			Structures.back().SetCardSkillProcBuffer(SkillProcs); // have to reassign buffers
+		//Structures.reserve(D.Structures.size());
+        Structures = D.Structures;
+        for (LCARDS::iterator iter = Actions.begin(); iter != Actions.end(); iter++) {
+			iter->SetCardSkillProcBuffer(SkillProcs); // have to reassign buffers
 		}
-		bOrderMatters = D.bOrderMatters;
+        bOrderMatters = D.bOrderMatters;
 		bDelayFirstCard = D.bDelayFirstCard;
 		memcpy(SkillProcs,D.SkillProcs,sizeof(SkillProcs));
 		memcpy(CardPicks,D.CardPicks,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
@@ -1679,19 +1691,34 @@ public:
 			return (sr < 0);
 		if (Units.size() != D.Units.size())
 			return (Units.size() < D.Units.size());
-		for (UCHAR i=0;i<Units.size();i++)
-			if (Units[i] != D.Units[i])
-				return (Units[i] < D.Units[i]);
+        for (LCARDS::const_iterator i = Units.begin(), j = D.Units.begin()
+            ; i != Units.end()
+            ; i++,j++
+            ) {
+            if(*i != *j) {
+                return *i < *j;
+            }
+        }
 		if (Structures.size() != D.Structures.size())
 			return (Structures.size() < D.Structures.size());
-		for (UCHAR i=0;i<Structures.size();i++)
-			if (Structures[i] != D.Structures[i])
-				return (Structures[i] < D.Structures[i]);
+        for (LCARDS::const_iterator i = Structures.begin(), j = D.Structures.begin()
+            ; i != Structures.end()
+            ; i++,j++
+            ) {
+            if(*i != *j) {
+                return *i < *j;
+            }
+        }
 		if (Actions.size() != D.Actions.size())
 			return (Actions.size() < D.Actions.size());
-		for (UCHAR i=0;i<Actions.size();i++)
-			if (Actions[i] != D.Actions[i])
-				return (Actions[i] < D.Actions[i]);
+        for (LCARDS::const_iterator i = Actions.begin(), j = D.Actions.begin()
+            ; i != Actions.end()
+            ; i++,j++
+            ) {
+            if(*i != *j) {
+                return *i < *j;
+            }
+        }
 		return false;
 	}
 	const bool IsValid(bool bSoftCheck = false) const
@@ -1704,24 +1731,22 @@ public:
 			return true;
 		set <UINT> cards;
 		bool bLegendary = false;
-		for (UCHAR i=0;i<Deck.size();i++)
+		for (LCARDS::const_iterator iter = Deck.begin(); iter != Deck.end(); iter++)
 		{
-			UINT rarity = Deck[i].GetRarity();
+			UINT rarity = iter->GetRarity();
 			if (rarity == RARITY_LEGENDARY)
 			{
 				if (bLegendary)
 					return false;
 				else
 					bLegendary = true;
-			}
-			else
-			{
-				if (Deck[i].GetRarity() == RARITY_UNIQUE)
+			} else {
+				if (iter->GetRarity() == RARITY_UNIQUE)
 				{
-					if (cards.find(Deck[i].GetId()) != cards.end())
+					if (cards.find(iter->GetId()) != cards.end())
 						return false;
 					else
-						cards.insert(Deck[i].GetId());
+						cards.insert(iter->GetId());
 				}
 			}
 		}
@@ -1783,7 +1808,7 @@ public:
 
 		bool bSplit = false;
 
-		VCARDS summonedCards;    // Cards added by summon
+		std::vector<Card const *> summonedCards;    // Cards added by summon
 
 		UCHAR SrcPos = StructureIndex;
 		if (Position > 0)
@@ -1792,9 +1817,9 @@ public:
 		bool bIsSelfMimic = false; // Chaosed Mimic indicator
 		if (IsMimiced && Mimicer && (!Units.empty()))
 		{
-			for (UCHAR i=0;i<Units.size();i++)
-			    // FIXME: Intended asssigment? I think not!
-				if (Mimicer = &Units[i])
+            for (LCARDS::iterator iter = Deck.begin(); iter != Deck.end(); iter++)
+                // FIXME: Intended asssigment? I think not!
+				if (Mimicer = &(*iter))
 				{
 					bIsSelfMimic = true;
 					break;
@@ -2093,10 +2118,10 @@ public:
 				{
 					targets.clear();
 					if (Position)
-						targets.push_back(PPCARDINDEX(&Units[Position-1],Position-1));
-					targets.push_back(PPCARDINDEX(&Units[Position],Position));
+						targets.push_back(PPCARDINDEX(&(this->getUnitAt(Position-1)),Position-1));
+					targets.push_back(PPCARDINDEX(&(this->getUnitAt(Position)),Position));
 					if ((DWORD)Position+1 < Units.size())
-						targets.push_back(PPCARDINDEX(&Units[Position+1],Position+1));
+						targets.push_back(PPCARDINDEX(&(this->getUnitAt(Position+1)),Position+1));
 					if (targets.size())
 					{
 						PPCIV::iterator vi = targets.begin();
@@ -2726,10 +2751,8 @@ public:
                 effect = Src.GetAbility(ACTIVATION_SUMMON);
                 if (effect > 0)
 				{
-                    // construct a new card in play
-                    PlayedCard summonedPlayedCard(&pCDB[effect]);
                     // add the summoned card to summonedCards
-                    summonedCards.push_back(summonedPlayedCard);
+                    summonedCards.push_back(&pCDB[effect]);
                 }
             }
 
@@ -2951,10 +2974,9 @@ public:
 		if (!summonedCards.empty())
 			for (UINT i=0;i<summonedCards.size();i++)
 			{
-                PlayedCard & summonedCard(summonedCards[i]);
-				Units.push_back(summonedCard);
-				summonedCard.SetCardSkillProcBuffer(SkillProcs);
-				ApplyEffects(QuestEffectId,EVENT_PLAYED,summonedCard,-1,Dest);
+                Units.push_back(summonedCards[i]);
+                Units.back().SetCardSkillProcBuffer(SkillProcs);
+                ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
 			}
 
 	}
@@ -2976,15 +2998,15 @@ public:
 		if (!CSIndex) return;
 		if (!CSResult) return;
 		SweepFancyStats(Commander);
-		for (VCARDS::iterator vi = Units.begin();vi != Units.end();vi++)
+		for (LCARDS::iterator vi = Units.begin();vi != Units.end();vi++)
 			SweepFancyStats(*vi);
-		for (VCARDS::iterator vi = Structures.begin();vi != Structures.end();vi++)
+		for (LCARDS::iterator vi = Structures.begin();vi != Structures.end();vi++)
 			SweepFancyStats(*vi);
 	}
 	const Card *PickNextCard(bool bNormalPick = true)
 	{
 		// pick a random card
-		VCARDS::iterator vi = Deck.begin();
+		LCARDS::iterator vi = Deck.begin();
 		UCHAR indx = 0;
 		if (vi != Deck.end()) // gay ass STL updates !!!
 		{
@@ -3011,7 +3033,7 @@ public:
 						indx = UCHAR(rand() % Deck.size());
 						// we need to pick first card of a same type, instead of picking this card
 						for (UCHAR i=0;i<Deck.size();i++)
-							if ((Deck[indx].GetId() == Deck[i].GetId()) && (Hand.find(indx) == Hand.end()) && (Hand.find(i) == Hand.end()))
+							if ((this->getUnitAt(indx).GetId() == this->getUnitAt(i).GetId()) && (Hand.find(indx) == Hand.end()) && (Hand.find(i) == Hand.end()))
 							{
 								indx = i;
 								break;
@@ -3045,7 +3067,7 @@ public:
 		{
 			if (!indx)
 			{
-				const Card * c = vi->GetOriginalCard();
+                Card const * const c = vi->GetOriginalCard();
 				if (bNormalPick)
 				{
 					if (bConsoleOutput)
@@ -3062,17 +3084,18 @@ public:
 					}
 					if (vi->GetType() == TYPE_ASSAULT)
 					{
-						Units.push_back(*vi);
+                        PlayedCard newAssaultCard(c);
+						Units.push_back(newAssaultCard);
 						Units.back().SetCardSkillProcBuffer(SkillProcs);
 					}
 					if (vi->GetType() == TYPE_STRUCTURE)
 					{
-						Structures.push_back(*vi);
+						Structures.push_back(PlayedCard(c));
 						Structures.back().SetCardSkillProcBuffer(SkillProcs);
 					}
 					if (vi->GetType() == TYPE_ACTION)
 					{
-						Actions.push_back(*vi);
+						Actions.push_back(PlayedCard(c));
 						Actions.back().SetCardSkillProcBuffer(SkillProcs);
 					}
 					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
@@ -3098,21 +3121,20 @@ public:
 	void AttackDeck(ActiveDeck &Def, bool bSkipCardPicks = false)
 	{
 		// process poison
-		for (UCHAR i=0;i<Units.size();i++)
-		{
-			Units[i].ResetShield(); // according to wiki, shield doesn't affect poison, it wears off before poison procs I believe
-			Units[i].ProcessPoison(QuestEffectId);
-		}
+        for (LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
+            iter->ResetShield(); // according to wiki, shield doesn't affect poison, it wears off before poison procs I believe
+            iter->ProcessPoison(QuestEffectId);
+        }
 		//  Moraku: If �Heal on Death� triggers from poison damage, it will NOT be able to heal another unit dying from poison damage on the same turn. (All poison damage takes place before �On Death� skills trigger)
-		for (UCHAR i=0;i<Units.size();i++)
-			if (Units[i].OnDeathEvent())
-				ApplyEffects(QuestEffectId,EVENT_DIED,Units[i],-1,Def);
-
+        for (LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
+			if (iter->OnDeathEvent())
+				ApplyEffects(QuestEffectId,EVENT_DIED,*iter,-1,Def);
+        }
 		// Quest split mark
 		if (QuestEffectId == QEFFECT_CLONE_PROJECT)
 		{
 			PPCIV GetTo;
-			for (VCARDS::iterator vi = Units.begin();vi != Units.end();vi++)
+			for (LCARDS::iterator vi = Units.begin();vi != Units.end();vi++)
 			{
 				if ((vi->IsAlive()) && 
 					(vi->GetWait() == 0) && 
@@ -3154,19 +3176,19 @@ public:
 
 		PlayedCard Empty;
 		UCHAR iFusionCount = 0;
-		for (UCHAR i=0;i<Structures.size();i++)
-		{
-			if (Structures[i].GetAbility(SPECIAL_FUSION) > 0)
-				iFusionCount++;
-		}
+        for (LCARDS::const_iterator iter = Structures.begin(); iter != Structures.end(); iter++) {
+            if (iter->GetAbility(SPECIAL_FUSION) > 0) {
+                iFusionCount++;
+            }
+        }
 		// action cards
-		for (UCHAR i=0;i<Actions.size();i++)
-		{
-			// apply actions somehow ...
-			ApplyEffects(QuestEffectId,EVENT_EMPTY,Actions[i],-1,Def);
-		}
-		for (VCARDS::iterator vi = Actions.begin();vi != Actions.end();vi++)
+        for (LCARDS::iterator iter = Actions.begin(); iter != Actions.end(); iter++) {
+            // apply actions somehow ...
+            ApplyEffects(QuestEffectId,EVENT_EMPTY,*iter,-1,Def);
+        }
+		for (LCARDS::iterator vi = Actions.begin();vi != Actions.end();vi++) {
 			SweepFancyStats(*vi);
+        }
 		Actions.clear();
 		// commander card
 		// ok lets work out Infuse:
@@ -3208,35 +3230,35 @@ public:
 			ApplyEffects(QuestEffectId,EVENT_EMPTY,Commander,-1,Def);
         }
 		// structure cards
-		for (UCHAR i=0;i<Structures.size();i++)
-		{
+        { UCHAR i = 0;
+        for (LCARDS::iterator iter = Structures.begin(); iter != Structures.end(); iter++,i++) {
 			// apply actions somehow ...
-			if (Structures[i].BeginTurn())
-				ApplyEffects(QuestEffectId,EVENT_EMPTY,Structures[i],-1,Def,false,(iFusionCount >= 3),0,i);
-			Structures[i].EndTurn();
-		}
+			if (iter->BeginTurn()) {
+				ApplyEffects(QuestEffectId,EVENT_EMPTY,*iter,-1,Def,false,(iFusionCount >= 3),0,i);
+            }
+			iter->EndTurn();
+		}}
 		// assault cards
-		for (UCHAR i=0;i<Units.size();i++)
-		{
-			if (Units[i].BeginTurn())
-			{
-				//if (!Units[i].GetEffect(ACTIVATION_JAM)) // jammed - checked in beginturn
-				ApplyEffects(QuestEffectId,EVENT_EMPTY,Units[i],i,Def);
-				if ((!Units[i].GetEffect(DMGDEPENDANT_IMMOBILIZE)) && (!Units[i].GetEffect(ACTIVATION_JAM)) && (!Units[i].GetEffect(ACTIVATION_FREEZE))) // tis funny but I need to check Jam for second time in case it was just paybacked
+		{ UCHAR i = 0;
+        for (LCARDS::iterator iter = Units.begin(); iter != Units.end(); iter++,i++) {
+			if (iter->BeginTurn()) {
+				ApplyEffects(QuestEffectId,EVENT_EMPTY,*iter,i,Def);
+				if ((!iter->GetEffect(DMGDEPENDANT_IMMOBILIZE)) && (!iter->GetEffect(ACTIVATION_JAM)) && (!iter->GetEffect(ACTIVATION_FREEZE))) // tis funny but I need to check Jam for second time in case it was just paybacked
 				{
-					if (Units[i].IsAlive() && Units[i].GetAttack() && Def.Commander.IsAlive()) // can't attack with dead unit ;) also if attack = 0 then dont attack at all
+					if (iter->IsAlive() && iter->GetAttack() > 0 && Def.Commander.IsAlive()) { // can't attack with dead unit ;) also if attack = 0 then dont attack at all
 						Attack(i,Def);
+                    }
 				}
 			}
-			Units[i].EndTurn();
-		}
+			iter->EndTurn();
+		}}
 		// refresh commander
 		if (Commander.IsDefined() && Commander.GetAbility(DEFENSIVE_REFRESH)) // Bench told refresh procs at the end of player's turn
 			Commander.Refresh(QuestEffectId);
 		// clear dead units here yours and enemy
 		if (!Units.empty())
 		{
-			VCARDS::iterator vi = Units.begin();
+			LCARDS::iterator vi = Units.begin();
 			while (vi != Units.end())
 				if (!vi->IsAlive())
 				{
@@ -3261,7 +3283,7 @@ public:
 		}
 		if (!Structures.empty())
 		{
-			VCARDS::iterator vi = Structures.begin();
+			LCARDS::iterator vi = Structures.begin();
 			while (vi != Structures.end())
 				if (!vi->IsAlive())
 				{
@@ -3284,7 +3306,7 @@ public:
 		//
 		if (!Def.Units.empty())
 		{
-			VCARDS::iterator vi = Def.Units.begin();
+			LCARDS::iterator vi = Def.Units.begin();
 			while (vi != Def.Units.end())
 				if (!vi->IsAlive())
 				{
@@ -3305,7 +3327,7 @@ public:
 		}
 		if (!Def.Structures.empty())
 		{
-			VCARDS::iterator vi = Def.Structures.begin();
+			LCARDS::iterator vi = Def.Structures.begin();
 			while (vi != Def.Structures.end())
 				if (!vi->IsAlive())
 				{
@@ -3326,14 +3348,17 @@ public:
 	}
 	void PrintShort()
 	{
-		printf("%s [",Commander.GetName());
-		for (UCHAR i=0;i<Deck.size();i++)
-		{
-			if (i)
-				printf(",");
-			printf(Deck[i].GetName());
+		std::cout << Commander.GetName() << " [";
+        bool first = true;
+		for (LCARDS::const_iterator iter = Deck.begin(); iter != Deck.end(); iter++) {
+			if (first) {
+                first = false;
+            } else {
+				std::cout << ",";
+            }
+			std::cout << iter->GetName();
 		}
-		printf("]\n");
+		std::cout << "]\n";
 	}
 	string GetDeck() const
 	{
@@ -3346,11 +3371,10 @@ public:
 			_itoa_s(Commander.GetId(),buffer,10);
 			s.append(buffer);
 		}
-		for (UCHAR i=0;i<Deck.size();i++)
-		{
+		for (LCARDS::const_iterator iter = Deck.begin(); iter != Deck.end(); iter++) {
 			if (!s.empty())
 				s.append(",");
-			_itoa_s(Deck[i].GetId(),buffer,10);
+			_itoa_s(iter->GetId(),buffer,10);
 			s.append(buffer);
 		}
 		return s;
@@ -3366,14 +3390,14 @@ public:
 		typedef multiset<UINT> MSID; // I <3 sets, they keep stuff sorted ;)
 #endif
 		MSID ids;
-		if (!bCardPicks)
-		{
-		for (UCHAR i=0;i<Deck.size();i++)
+        if (!bCardPicks) {
+            for (LCARDS::const_iterator iter = Deck.begin(); iter != Deck.end(); iter++) {
 #if HASH_SAVES_ORDER
-			ids.push_back(Deck[i].GetId());
+                ids.push_back(iter->GetId());
 #else
-			ids.insert(Deck[i].GetId());
+                ids.insert(iter->GetId());
 #endif
+            }
 		}
 		else
 			for (UCHAR i=0;(i<DEFAULT_DECK_RESERVE_SIZE) && (CardPicks[i]);i++)
@@ -3437,12 +3461,12 @@ public:
 		return s;
 	}
 protected:
-	void GetTargets(VCARDS &From, UCHAR TargetFaction, PPCIV &GetTo, bool bForInfuse = false)
+	void GetTargets(LCARDS &From, UCHAR TargetFaction, PPCIV &GetTo, bool bForInfuse = false)
 	{
 		if (!bForInfuse)
 			GetTo.clear();
 		UCHAR pos = 0;
-		for (VCARDS::iterator vi = From.begin();vi != From.end();vi++)
+		for (LCARDS::iterator vi = From.begin();vi != From.end();vi++)
 		{
 			if ((vi->IsAlive()) && (((vi->GetFaction() == TargetFaction) && (!bForInfuse)) || (TargetFaction == FACTION_NONE) || ((vi->GetFaction() != TargetFaction) && (bForInfuse))))
 				GetTo.push_back(PPCARDINDEX(&(*vi),pos));

@@ -285,23 +285,23 @@ public:
 	const bool IsValid() const { return (Commander != 0); }
 };
 // helpers
-bool IsCardInDeck(const UINT Id, VCARDS &deck)
+bool IsCardInDeck(const UINT Id, LCARDS &deck)
 {
 	if ((Id) && (!deck.empty()))
-		for (UCHAR i = 0;i < deck.size();i++)
-		{
-			if (deck[i].GetId() == Id)
+		for (LCARDS::const_iterator iter = deck.begin(); iter != deck.end(); iter++) {
+			if (iter->GetId() == Id) {
 				return true;
+            }
 		}
 	return false;
 }
-void PickACard(Card *pCDB, VID &fromIDpool, VCARDS &topool)
+void PickACard(Card *pCDB, VID &fromIDpool, LCARDS &topool)
 {
 	bool bLegendary = false;
 	if (!fromIDpool.empty())
 	{
 		UCHAR indx = 0;
-		for (VCARDS::iterator vi = topool.begin();vi != topool.end();vi++)
+		for (LCARDS::iterator vi = topool.begin();vi != topool.end();vi++)
 			if (vi->GetRarity() == RARITY_LEGENDARY)
 				bLegendary = true;
 		UINT iPreventLoop = 0;
@@ -343,7 +343,7 @@ public:
 			Pool.push_back(C.Pool[i]);
 	}
 	~CardPool() { Pool.clear(); };
-	void GetPool(Card *pCDB, VCARDS &Deck) const
+	void GetPool(Card *pCDB, LCARDS &Deck) const
 	{
 		_ASSERT(Amount); // invalid pool
 		_ASSERT(!Pool.empty()); // invalid pool
@@ -385,13 +385,13 @@ public:
 		for (UCHAR i=0;i<RI.Pools.size();i++)
 			Pools.push_back(RI.Pools[i]);
 	}
-	void GetAlways(Card *pCDB, VCARDS &Deck) const
+	void GetAlways(Card *pCDB, LCARDS &Deck) const
 	{
 		for (UCHAR i=0;i<AlwaysInclude.size();i++)
 			if (pCDB[AlwaysInclude[i]].IsCard())
 				Deck.push_back(&pCDB[AlwaysInclude[i]]);
 	}
-	void GetPools(Card *pCDB, VCARDS &Deck) const
+	void GetPools(Card *pCDB, LCARDS &Deck) const
 	{
 		for (UCHAR i=0;i<Pools.size();i++)
 			Pools[i].GetPool(pCDB,Deck);
@@ -467,7 +467,7 @@ public:
 		for (UCHAR i=0;i<SI.Pools.size();i++)
 			Pools.push_back(SI.Pools[i]);
 	}
-	void GetPools(Card *pCDB, VCARDS &Deck) const
+	void GetPools(Card *pCDB, LCARDS &Deck) const
 	{
 		for (UCHAR i=0;i<Pools.size();i++)
 		{
