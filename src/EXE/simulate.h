@@ -184,7 +184,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 			if (tAtk.Deck.size() == 1)
 			{
 				// last card is about to be played
-				UINT id = tAtk.Deck[0].GetId(); // it's ID
+				UINT id = tAtk.Deck.front().GetId(); // it's ID
 				// play variation without this card
 				rbc[CSIndex[id]].WLGames++;
 				ActiveDeck xwl(tAtk),ywl(tDef);
@@ -347,7 +347,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 		// remove all the cards except for last to be picked
 		while (tAtk.Deck.size() > 1)
 			tAtk.PickNextCard(true);
-		UINT id = tAtk.Deck[0].GetId(); // thats the last card
+		UINT id = tAtk.Deck.front().GetId(); // thats the last card
 		// this card did not participate in current game
 		rbc[CSIndex[id]].WLGames++;
 		if (!tAtk.Commander.IsAlive())
@@ -437,7 +437,7 @@ void EvaluateRaidQuestOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSInd
 			if (tAtk.Deck.size() == 1)
 			{
 				// last card is about to be played
-				UINT id = tAtk.Deck[0].GetId(); // it's ID
+				UINT id = tAtk.Deck.front().GetId(); // it's ID
 				// play variation without this card
 				rbc[CSIndex[id]].WLGames++;
 				ActiveDeck xwl(tAtk),ywl(tDef);
@@ -538,7 +538,7 @@ void EvaluateRaidQuestOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSInd
 		// remove all the cards except for last to be picked
 		while (tAtk.Deck.size() > 1)
 			tAtk.PickNextCard(true);
-		UINT id = tAtk.Deck[0].GetId(); // thats the last card
+		UINT id = tAtk.Deck.front().GetId(); // thats the last card
 		// this card did not participate in current game
 		rbc[CSIndex[id]].WLGames++;
 		if (!tAtk.Commander.IsAlive())
