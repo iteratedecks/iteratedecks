@@ -2441,20 +2441,22 @@ public:
 					else
 						faction = Src.GetTargetFaction(aid);
 					GetTargets(Units,faction,targets);
-					if (targets.size())
-					{
-						PPCIV::iterator vi = targets.begin();
-						while (vi != targets.end())
-						{
-							if ((vi->first->GetWait()) ||
-								 vi->first->GetPlayed() ||
-								(vi->first->GetEffect(ACTIVATION_JAM)) || // Jammed
-								(vi->first->GetEffect(ACTIVATION_FREEZE)) || // Frozen
-								(vi->first->GetEffect(DMGDEPENDANT_IMMOBILIZE))   // Immobilized
-								)
-								vi = targets.erase(vi);
-							else vi++;
-						}
+                    // If we have targets at all
+                    if (targets.size() > 0) {
+                        PPCIV::iterator vi(targets.begin());
+                        // look at each target, remove it if it can't attack
+                        while (vi != targets.end()) {
+                            if (    (vi->first->GetWait() > 0)  // only rally units that are ready
+                                 || (vi->first->GetPlayed())    // don't rally units that already did their action
+                                 || (vi->first->GetEffect(ACTIVATION_JAM)) // Jammed
+                                 || (vi->first->GetEffect(ACTIVATION_FREEZE)) // Frozen
+                                 || (vi->first->GetEffect(DMGDEPENDANT_IMMOBILIZE))   // Immobilized
+                               ) {
+                                vi = targets.erase(vi);
+                            } else {
+                                vi++;
+                            }
+                        } // while
 						bool bTributable = (IsMimiced && IsInTargets(Mimicer,&targets)) || ((!IsMimiced) && IsInTargets(&Src,&targets));
 						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
@@ -2506,7 +2508,7 @@ public:
 								}
 							}
 						}
-					}
+					} // if we have targets at all
 					targets.clear();
 				}
 			}
