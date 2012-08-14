@@ -166,6 +166,13 @@ int AchievementIndex = -1; // index, not id
 
 typedef vector<LOG_RECORD> VLOG;
 
+class PlayedCard;
+
+typedef vector<PlayedCard> VCARDS;
+typedef vector<PlayedCard*> PVCARDS;
+typedef pair<PlayedCard*,UCHAR> PPCARDINDEX;
+typedef vector<PPCARDINDEX> PPCIV;
+typedef multiset<UINT> MSID;
 #define PROC50	Proc()
 const bool PROC50
 {
@@ -983,11 +990,6 @@ struct REQUIREMENT
 	UCHAR Procs;
 	REQUIREMENT() { SkillID = 0; };
 };
-typedef vector<PlayedCard> VCARDS;
-typedef vector<PlayedCard*> PVCARDS;
-typedef pair<PlayedCard*,UCHAR> PPCARDINDEX;
-typedef vector<PPCARDINDEX> PPCIV;
-typedef multiset<UINT> MSID;
 class ActiveDeck
 {
 public:
