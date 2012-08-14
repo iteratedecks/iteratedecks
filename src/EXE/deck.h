@@ -3134,19 +3134,19 @@ public:
 			if (c)
 			{
 				if (c->GetType() == TYPE_ACTION)
-					ApplyEffects(QuestEffectId,EVENT_PLAYED,Actions[0],-1,Def);
+					ApplyEffects(QuestEffectId,EVENT_PLAYED,Actions.front(),-1,Def);
 				else
 				if (c->GetType() == TYPE_STRUCTURE)
-					ApplyEffects(QuestEffectId,EVENT_PLAYED,Structures[Structures.size() - 1],-1,Def);			
+					ApplyEffects(QuestEffectId,EVENT_PLAYED,Structures.back(),-1,Def);
 				else
 				if (c->GetType() == TYPE_ASSAULT)
 				{
-					ApplyEffects(QuestEffectId,EVENT_PLAYED,Units[Units.size() - 1],-1,Def);
+					ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Def);
 					// add quest statuses for decay
 					if (QuestEffectId == QEFFECT_DECAY)
 					{
-						Units[Units.size() - 1].SetEffect(DMGDEPENDANT_POISON,1);
-						Units[Units.size() - 1].SetEffect(DMGDEPENDANT_DISEASE,ABILITY_ENABLED);
+						Units.back().SetEffect(DMGDEPENDANT_POISON,1);
+						Units.back().SetEffect(DMGDEPENDANT_DISEASE,ABILITY_ENABLED);
 					}
 				}
 			}
