@@ -468,7 +468,7 @@ public:
 	}
 	const bool BeginTurn()
 	{
-		const bool bDoBegin = (Health && (!Effects[ACTIVATION_JAM]) && (!Effects[ACTIVATION_FREEZE]) && (!Wait));
+		const bool bDoBegin = (Health>0) && (!Effects[ACTIVATION_JAM]) && (!Effects[ACTIVATION_FREEZE]) && (!Wait);
 		if (bDoBegin && (!bActivated))
 			bActivated = true;
 		return bDoBegin;
