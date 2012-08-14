@@ -956,6 +956,8 @@ Valor: Removed after owner ends his turn.
     , Health(original.Health)
     , Wait(original.Wait)
     , Faction(original.Faction)
+    , bPlayed(bPlayed)
+    , bActivated(bActivated)
     , bQuestSplit(original.bQuestSplit)
     , OriginalCard(original.OriginalCard)
     , fsDmgDealt(original.fsDmgDealt)
