@@ -1659,21 +1659,15 @@ public:
 	{
 		if (strcmp(GetHash64().c_str(),D.GetHash64().c_str()))
 			return false;
-		if (Units.size() != D.Units.size())
-			return false;
-		for (UCHAR i=0;i<Units.size();i++)
-			if (!(Units[i] == D.Units[i]))
-				return false;
-		if (Structures.size() != D.Structures.size())
-			return false;
-		for (UCHAR i=0;i<Structures.size();i++)
-			if (!(Structures[i] == D.Structures[i]))
-				return false;
-		if (Actions.size() != D.Actions.size())
-			return false;
-		for (UCHAR i=0;i<Actions.size();i++)
-			if (!(Actions[i] == D.Actions[i]))
-				return false;
+        if (Units != D.Units) {
+            return false;
+        }
+        if (Structures != D.Structures) {
+            return false;
+        }
+        if (Actions != D.Actions) {
+            return false;
+        }
 		return true;
 	}
 	bool operator<(const ActiveDeck &D) const
