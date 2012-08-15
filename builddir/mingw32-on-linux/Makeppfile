@@ -1,19 +1,22 @@
+# Built file for windows releases compiled on linux.
 makepp_no_builtin = 1
 
+# For cross compilation we need a different toolchain
 TOOLCHAIN_PREFIX=i686-w64-mingw32-
 CC=${TOOLCHAIN_PREFIX}gcc
 CXX=${TOOLCHAIN_PREFIX}g++
 
-LDFLAGS+=-static
+# Make it a static application, don't want to ship libraries to windows.
+COMMON_FLAGS=
+CXXFLAGS+=${COMMON_FLAGS}
+LDFLAGS+=${COMMON_FLAGS} -static
 
-SRC_DIR=../../src/
+# Where our sources are
+SRC_DIR_CLI=../../src/CLI2/
+
+# Our release
+RELEASE_BINARY_CLI=iteratedecks-cli.exe
 
 $(phony ALL): CLI
 
-$(phony CLI): iteratedecks-cli.exe
-
-iteratedecks-cli.exe: $(infer_objects iteratedecks-cli.o, *.o)
-    ${CXX} ${inputs} ${LDFLAGS} ${LDLIBTS} ${LIBS} -o ${output}
-
-%.o: ${SRC_DIR}CLI2/%.cpp
-    ${CXX} ${CXXFLAGS} ${CPPFLAGS} -c ${input} -o ${output}
+include ../cli.Makeppfile

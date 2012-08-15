@@ -1,18 +1,22 @@
-SRC_DIR=../../src/CLI2/
-CXXFLAGS+= -ggdb
-LDFLAGS+= -ggdb
+# Built file for linux releases compiled on linux.
+makepp_no_builtin = 1
+
+# For normal compilation default toolchain should work.
+#TOOLCHAIN_PREFIX=
+#CC=${TOOLCHAIN_PREFIX}gcc
+#CXX=${TOOLCHAIN_PREFIX}g++
+
+# Some flags
+COMMON_FLAGS= -ggdb
+CXXFLAGS+=${COMMON_FLAGS}
+LDFLAGS+=${COMMON_FLAGS}
+
+# Where our sources are
+SRC_DIR_CLI=../../src/CLI2/
+
+# Our release
+RELEASE_BINARY_CLI=iteratedecks-cli
 
 $(phony ALL): CLI
 
-$(phony CLI): iteratedecks-cli XML
-
-$(phony XML): achievements.xml cards.xml missions.xml quests.xml raids.xml
-
-iteratedecks-cli: $(infer_objects iteratedecks-cli.o, *.o)
-    ${CXX} ${inputs} ${LDFLAGS} ${LDLIBTS} ${LIBS} -o ${output}
-
-%.o: ${SRC_DIR}%.cpp
-    ${CXX} ${CXXFLAGS} ${CPPFLAGS} -c ${input} -o ${output}
-
-%.xml: ../../bin/%.xml
-    cp -lf $(input) $(output)
+include ../cli.Makeppfile
