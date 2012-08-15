@@ -1027,7 +1027,7 @@ public:
 	UINT QuestEffectId;
     // used to get the actual card for summon
     Card const * pCDB;
-private:
+public:
     PlayedCard & getUnitAt(unsigned int const index)
     {
         LCARDS::iterator iter = this->Units.begin();
@@ -1037,6 +1037,24 @@ private:
         return *iter;
     }
 
+    PlayedCard & getCardAt(unsigned int const index)
+    {
+        LCARDS::iterator iter = this->Deck.begin();
+        for(unsigned int i = 0; i < index; i++) {
+            iter++;
+        }
+        return *iter;
+    }
+
+    PlayedCard const & getCardAt(unsigned int const index) const
+    {
+        LCARDS::const_iterator iter = this->Deck.begin();
+        for(unsigned int i = 0; i < index; i++) {
+            iter++;
+        }
+        return *iter;
+    }
+private:
 	void Reserve()
 	{
 		//Deck.reserve(DEFAULT_DECK_RESERVE_SIZE);
