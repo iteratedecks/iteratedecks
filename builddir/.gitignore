@@ -1,4 +1,5 @@
-*/*.o
+*/CLI2
+*/EXE
 */*.xml
 */release.tar
 */release.tar.gz

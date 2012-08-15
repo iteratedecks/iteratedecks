@@ -1,2 +1,2 @@
-$(phony test TEST): tests test.sh ../CLI2/iteratedecks-cli
+$(phony test TEST): tests test.sh ../../builddir/linux-on-linux/iteratedecks-cli
     cat tests | ./test.sh

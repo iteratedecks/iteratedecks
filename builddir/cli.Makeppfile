@@ -1,10 +1,16 @@
+# Where our sources are
+repository ../../src
+#SRC_DIR_CLI=../../src/CLI2/
+#SRC_DIR_EXE=../../src/EXE/
+
 $(phony CLI): ${RELEASE_BINARY_CLI} XML PACKAGE
 
-${RELEASE_BINARY_CLI}: $(infer_objects iteratedecks-cli.o, *.o)
+${RELEASE_BINARY_CLI}: $(infer_objects CLI2/iteratedecks-cli.o, CLI2/*.o EXE/*.o)
     ${CXX} ${inputs} ${LDFLAGS} ${LDLIBTS} ${LIBS} -o ${output}
 
-%.o: ${SRC_DIR_CLI}%.cpp
-    ${CXX} ${CXXFLAGS} ${CPPFLAGS} -c ${input} -o ${output}
+makepp_percent_subdirs=1
+%.o: %.cpp
+    $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(input) -o $(output)
 
 include bin.Makeppfile
 

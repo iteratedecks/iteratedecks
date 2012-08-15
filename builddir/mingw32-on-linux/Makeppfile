@@ -1,18 +1,14 @@
 # Built file for windows releases compiled on linux.
-makepp_no_builtin = 1
 
 # For cross compilation we need a different toolchain
-TOOLCHAIN_PREFIX=i686-w64-mingw32-
-CC=${TOOLCHAIN_PREFIX}gcc
-CXX=${TOOLCHAIN_PREFIX}g++
+TOOLCHAIN_PREFIX:=i686-w64-mingw32-
+CC:=${TOOLCHAIN_PREFIX}gcc
+CXX:=${TOOLCHAIN_PREFIX}g++
 
 # Make it a static application, don't want to ship libraries to windows.
 COMMON_FLAGS=
 CXXFLAGS+=${COMMON_FLAGS}
 LDFLAGS+=${COMMON_FLAGS} -static
-
-# Where our sources are
-SRC_DIR_CLI=../../src/CLI2/
 
 # Our release
 RELEASE_BINARY_CLI=iteratedecks-cli.exe

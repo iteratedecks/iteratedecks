@@ -1,5 +1,5 @@
 # Built file for linux releases compiled on linux.
-makepp_no_builtin = 1
+#makepp_no_builtin = 1
 
 # For normal compilation default toolchain should work.
 #TOOLCHAIN_PREFIX=
@@ -10,9 +10,6 @@ makepp_no_builtin = 1
 COMMON_FLAGS= -ggdb
 CXXFLAGS+=${COMMON_FLAGS}
 LDFLAGS+=${COMMON_FLAGS}
-
-# Where our sources are
-SRC_DIR_CLI=../../src/CLI2/
 
 # Our release
 RELEASE_BINARY_CLI=iteratedecks-cli
