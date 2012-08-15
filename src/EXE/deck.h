@@ -3468,8 +3468,7 @@ protected:
 					vi->SufferDmg(QuestEffectId,Dmg,0,0,0,overkill);
 
                     // probably here wall's "on attacked" skills
-                    // TODO need to get the commanders deck...
-                    //deck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*vi,index,deck);
+                    deck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*vi,index,deck);
 
 					if (vi->GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // counter, dmg from crush can't be countered
 					{
@@ -3488,8 +3487,8 @@ protected:
 			index++;
 		}
 
-        // TODO need to get the commanders deck...
-        //deck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*this,0,deck);
+        // Commander was attacked, trigger event.
+        deck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*this,0,deck);
 
 		// no walls found then hit commander
 		// ugly - counter procs before commander takes dmg, but whatever
