@@ -7,3 +7,24 @@ TARGET_PLATFORMS=linux mingw32
 #dirty head releases
 DIRTY_${foreach}.tar.gz: ${foreach}-on-${OS}/release.tar.gz : foreach ${TARGET_PLATFORMS}
     cp -f $(input) $(output)
+
+$(phony IS_CLEAN_HEAD):
+    @if [ `git diff HEAD | wc --chars` -gt 0 ]; then \
+        echo "dirty head, can't continue" 1>&2; \
+        false; \
+    else true; fi
+
+$(phony IS_PUSHED):
+    @if [ `git status --branch --porcelain | grep "##" | grep -F "ahead" | wc --chars` -gt 0 ]; then \
+        echo "not pushed, can't continue" 1>&2; \
+        false; \
+    else true; fi
+
+SVN_REVISION=$(shell git svn info | grep "Revision:" | cut -d " " -f 2)
+
+$(phony CAN_SVN_RELEASE): IS_CLEAN_HEAD IS_PUSHED
+
+$(phony SVN_RELEASE): $(foreach platform,${TARGET_PLATFORMS},${SVN_REVISION}_${platform}.tar.gz)
+
+${SVN_REVISION}_${foreach}.tar.gz: ${foreach}-on-${OS}/release.tar.gz CAN_SVN_RELEASE : foreach ${TARGET_PLATFORMS}
+    cp -f $(input) $(output)
