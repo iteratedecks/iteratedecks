@@ -1,7 +1,7 @@
 #!/bin/bash
 
-cd ../../bin
-ITERATEDECKS="../../builddir/linux-on-linux/iteratedecks-cli"
+cd ../../builddir/linux-on-linux
+ITERATEDECKS="./iteratedecks-cli"
 SUCCESS=0
 
 while read line
@@ -31,4 +31,4 @@ done
     fi       
 
 
-cd ../src/TEST
+cd ../../src/TEST
