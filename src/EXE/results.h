@@ -21,6 +21,8 @@
 #define _ASSERT(x) assert(x)
 #endif
 
+#include "deck.hpp"
+
 typedef unsigned long       DWORD;
 struct RESULTS
 {

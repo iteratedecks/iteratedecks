@@ -29,9 +29,6 @@
 #define DEFAULT_DECK_RESERVE_SIZE	15 // up to 20? kinda deck max size for structures
 #define DEFAULT_HAND_SIZE		3
 
-typedef	unsigned char UCHAR;
-typedef	unsigned int UINT;
-typedef UINT EFFECT_ARGUMENT;         // that is usally the amount (i.e, the 3 in weaken 3), but also the card to summon in summon
 
 #include "results.h"
 #include "log.h"
@@ -167,14 +164,7 @@ int AchievementIndex = -1; // index, not id
 
 typedef vector<LOG_RECORD> VLOG;
 
-class PlayedCard;
-
-typedef vector<PlayedCard> VCARDS;
-typedef vector<PlayedCard*> PVCARDS;
-typedef pair<PlayedCard*,UCHAR> PPCARDINDEX;
-typedef vector<PPCARDINDEX> PPCIV;
-typedef multiset<UINT> MSID;
-typedef list<PlayedCard> LCARDS;
+#include "deck.hpp"
 
 #define PROC50	Proc()
 const bool PROC50
@@ -648,68 +638,16 @@ Valor: Removed after owner ends his turn.
 		fsDmgMitigated += dmg;
 		return dmg;
 	}
-	bool HitCommander(UINT QuestEffectId, const UCHAR Dmg, PlayedCard &Src, LCARDS &Structures, bool bCanBeCountered = true, UCHAR *overkill = 0, VLOG *log = 0, LOG_RECORD *lr = 0)
-	{
-		_ASSERT(GetType() == TYPE_COMMANDER); // double check for debug
-		_ASSERT(Dmg); // 0 dmg is pointless and indicates an error
-		// find a wall to break it ;)
-		UCHAR index = 0;
-		for (LCARDS::iterator vi = Structures.begin();vi!=Structures.end();vi++)
-		{
-			if (vi->GetAbility(DEFENSIVE_WALL) && vi->IsAlive())
-			{
-				if (QuestEffectId != QEFFECT_IMPENETRABLE)
-				{
-					vi->CardSkillProc(DEFENSIVE_WALL);
-					if (lr)
-					{
-						lr->Target.CardID = index;
-						lr->Target.RowID = TYPE_STRUCTURE;
-					}
-
-
-
-					// walls can counter and regenerate
-					vi->SufferDmg(QuestEffectId,Dmg,0,0,0,overkill);
-
-                    // probably here wall's "on attacked" skills
-                    // TODO need to get the commanders deck...
-                    //deck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*vi,index,deck);
-
-					if (vi->GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // counter, dmg from crush can't be countered
-					{
-						vi->CardSkillProc(DEFENSIVE_COUNTER);
-						EFFECT_ARGUMENT cdmg = vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
-						vi->fsDmgDealt += cdmg;
-						UCHAR loverkill = 0;
-						if (lr && log)
-							log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
-						Src.SufferDmg(QuestEffectId,cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
-						vi->fsOverkill += loverkill;
-					}
-				}
-				return false;
-			}
-			index++;
-		}
-
-        // TODO need to get the commanders deck...
-        //deck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*this,0,deck);
-
-		// no walls found then hit commander
-		// ugly - counter procs before commander takes dmg, but whatever
-		if (GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // commander can counter aswell
-		{
-			CardSkillProc(DEFENSIVE_COUNTER);
-			UCHAR loverkill = 0;
-			EFFECT_ARGUMENT cdmg = GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
-			if (lr && log)
-				log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
-			Src.SufferDmg(QuestEffectId,cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
-			fsOverkill += loverkill;
-		}
-		return (SufferDmg(QuestEffectId,Dmg,0,0,0,overkill) > 0);
-	}
+	bool HitCommander(UINT QuestEffectId
+                     ,const UCHAR Dmg
+                     ,PlayedCard &Src
+                     ,ActiveDeck & deck
+                     ,bool bCanBeCountered = true
+                     ,UCHAR *overkill = NULL
+                     ,VLOG *log = NULL
+                     ,LOG_RECORD *lr = NULL
+                     );
+	
 	UCHAR StrikeDmg(const UINT QuestEffectId, const UCHAR Dmg, UCHAR *overkill = 0) // returns dealt dmg
 	{
 		_ASSERT(Dmg); // 0 dmg is pointless and indicates an error
@@ -1125,7 +1063,7 @@ private:
 
         // do we hit the commander?
         bool const hitCommander(Def.Commander.HitCommander(QuestEffectId,cdmg
-                                                          ,src,Def.Structures
+                                                          ,src,Def
                                                           ,true,&overkill,Log
                                                           ,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index)
                                                                  ,LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0)
@@ -1300,7 +1238,7 @@ private:
 			if (SRC.GetAbility(DMGDEPENDANT_CRUSH))
 			{
 				UCHAR overkill = 0;
-				if (Def.Commander.HitCommander(QuestEffectId,SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def.Structures,false,&overkill,
+				if (Def.Commander.HitCommander(QuestEffectId,SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def,false,&overkill,
 					Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),DMGDEPENDANT_CRUSH,SRC.GetAbility(DMGDEPENDANT_CRUSH))))
 				{
 					DamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
@@ -3493,3 +3431,77 @@ protected:
 	}
 };
 
+/**
+     * Hit the commander.
+     */
+    bool PlayedCard::HitCommander(UINT QuestEffectId
+                                 , const UCHAR Dmg
+                                 , PlayedCard &Src
+                                 , ActiveDeck & deck
+                                 , bool bCanBeCountered
+                                 , UCHAR *overkill
+                                 , VLOG *log
+                                 , LOG_RECORD *lr
+                                 )
+	{
+        LCARDS & Structures(deck.Structures);
+		_ASSERT(GetType() == TYPE_COMMANDER); // double check for debug
+		_ASSERT(Dmg); // 0 dmg is pointless and indicates an error
+		// find a wall to break it ;)
+		UCHAR index = 0;
+		for (LCARDS::iterator vi = Structures.begin();vi!=Structures.end();vi++)
+		{
+			if (vi->GetAbility(DEFENSIVE_WALL) && vi->IsAlive())
+			{
+				if (QuestEffectId != QEFFECT_IMPENETRABLE)
+				{
+					vi->CardSkillProc(DEFENSIVE_WALL);
+					if (lr)
+					{
+						lr->Target.CardID = index;
+						lr->Target.RowID = TYPE_STRUCTURE;
+					}
+
+
+
+					// walls can counter and regenerate
+					vi->SufferDmg(QuestEffectId,Dmg,0,0,0,overkill);
+
+                    // probably here wall's "on attacked" skills
+                    // TODO need to get the commanders deck...
+                    //deck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*vi,index,deck);
+
+					if (vi->GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // counter, dmg from crush can't be countered
+					{
+						vi->CardSkillProc(DEFENSIVE_COUNTER);
+						EFFECT_ARGUMENT cdmg = vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
+						vi->fsDmgDealt += cdmg;
+						UCHAR loverkill = 0;
+						if (lr && log)
+							log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
+						Src.SufferDmg(QuestEffectId,cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
+						vi->fsOverkill += loverkill;
+					}
+				}
+				return false;
+			}
+			index++;
+		}
+
+        // TODO need to get the commanders deck...
+        //deck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*this,0,deck);
+
+		// no walls found then hit commander
+		// ugly - counter procs before commander takes dmg, but whatever
+		if (GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // commander can counter aswell
+		{
+			CardSkillProc(DEFENSIVE_COUNTER);
+			UCHAR loverkill = 0;
+			EFFECT_ARGUMENT cdmg = GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
+			if (lr && log)
+				log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
+			Src.SufferDmg(QuestEffectId,cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
+			fsOverkill += loverkill;
+		}
+		return (SufferDmg(QuestEffectId,Dmg,0,0,0,overkill) > 0);
+	}

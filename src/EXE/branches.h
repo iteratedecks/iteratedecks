@@ -1515,7 +1515,7 @@ private:
 					// Deal DMG To Commander BUT STILL PROC50 FLURRY and PROBABLY VALOR
 					UCHAR valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (tmpA.Units.size() < tmpD.Units.size())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
 					for (UCHAR i=0;i<iflurry;i++)
-						tmpD.Commander.HitCommander(0,SRC.GetAttack()+valor,SRC,tmpD.Structures);
+						tmpD.Commander.HitCommander(0,SRC.GetAttack()+valor,SRC,tmpD);
 					if (bNormal)
 						Leaves[idx]->AddChild(tmpA,tmpD);
 					else
@@ -1591,7 +1591,7 @@ private:
 				if ((!targets[iswipe]->IsAlive()) && ((swipe == 1) || (iswipe == 1)))
 				{
 					UCHAR valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (tmpA.Units.size() < tmpD.Units.size())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
-					tmpD.Commander.HitCommander(0,SRC.GetAttack()+valor,SRC,tmpD.Structures);
+					tmpD.Commander.HitCommander(0,SRC.GetAttack()+valor,SRC,tmpD);
 					// might want to add here check:
 					// if (!Def.Commander.IsAlive()) return;
 					continue;
@@ -1645,7 +1645,7 @@ private:
 							tmpD.Commander.SufferDmg(0,targets[iswipe]->GetAbility(SPECIAL_BACKFIRE));
 						// crush
 						if (SRC.GetAbility(DMGDEPENDANT_CRUSH))
-							tmpD.Commander.HitCommander(0,SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,tmpD.Structures,false);
+							tmpD.Commander.HitCommander(0,SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,tmpD,false);
 					}
 					// counter
 					if (targets[iswipe]->GetAbility(DEFENSIVE_COUNTER))
