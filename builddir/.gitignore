@@ -1,2 +1,5 @@
-*.o
-*.xml
+*/*.o
+*/*.xml
+*/release.tar
+*/release.tar.gz
+/DIRTY_*.tar.gz

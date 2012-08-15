@@ -1,0 +1,9 @@
+#get the operating system
+OS=$(shell uname -s | tr [:upper:] [:lower:])
+
+#target platforms
+TARGET_PLATFORMS=linux mingw32
+
+#dirty head releases
+DIRTY_${foreach}.tar.gz: ${foreach}-on-${OS}/release.tar.gz : foreach ${TARGET_PLATFORMS}
+    cp -f $(input) $(output)
