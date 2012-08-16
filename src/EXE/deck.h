@@ -24,6 +24,7 @@
 #include <list>
 #include <set>
 #include "ctype.h"
+#include <stdexcept>
 
 #define DEFAULT_DECK_SIZE		10
 #define DEFAULT_DECK_RESERVE_SIZE	15 // up to 20? kinda deck max size for structures
@@ -1043,6 +1044,11 @@ private:
                             ,bool const variant1
                             )
     {
+        if(src.GetAttack() <= 0) {
+            // can't attack with zero attack, this indicates an error
+            throw std::invalid_argument("Zero attack in ActiveDeck::AttackCommanderOnce!");
+        }
+
         if (valor > 0) {
             SkillProcs[COMBAT_VALOR]++;
             LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_VALOR,valor);
@@ -1062,7 +1068,8 @@ private:
         }
 
         // do we hit the commander?
-        bool const hitCommander(Def.Commander.HitCommander(QuestEffectId,cdmg
+        bool const hitCommander(Def.Commander.HitCommander(QuestEffectId
+                                                          ,cdmg
                                                           ,src,Def
                                                           ,true,&overkill,Log
                                                           ,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index)
@@ -1134,13 +1141,19 @@ private:
 			LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_BURST,burst);
 		}
 		// if target dies during flurry and slot(s == 1) is aligned to SRC, we deal dmg to commander
-		if ((!target.IsAlive()) && ((swipe == 1) || (s == 1)))
+		if (    (!target.IsAlive())
+             && ((swipe == 1) || (s == 1))
+           )
 		{
-			EFFECT_ARGUMENT valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
-            AttackCommanderOnce2(index, SRC, valor, Def);
-			// might want to add here check: 
-			// if (!Def.Commander.IsAlive()) return;
-			return true;
+            if (SRC.GetAttack() > 0) {
+                EFFECT_ARGUMENT valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
+                AttackCommanderOnce2(index, SRC, valor, Def);
+                // might want to add here check:
+                // if (!Def.Commander.IsAlive()) return;
+                return true;
+            } else {
+                return false;
+            }
 		}
 		iSwiped++;
 		_ASSERT(target.IsAlive()); // must be alive here
@@ -3431,7 +3444,7 @@ protected:
 	}
 };
 
-/**
+    /**
      * Hit the commander.
      */
     bool PlayedCard::HitCommander(UINT QuestEffectId
@@ -3446,7 +3459,12 @@ protected:
 	{
         LCARDS & Structures(deck.Structures);
 		_ASSERT(GetType() == TYPE_COMMANDER); // double check for debug
-		_ASSERT(Dmg); // 0 dmg is pointless and indicates an error
+
+        // 0 dmg is pointless and indicates an error
+        if(Dmg <= 0) {
+            throw std::invalid_argument("Zero 0 damage in PlayedCard::HitCommander");
+        }
+
 		// find a wall to break it ;)
 		UCHAR index = 0;
 		for (LCARDS::iterator vi = Structures.begin();vi!=Structures.end();vi++)
