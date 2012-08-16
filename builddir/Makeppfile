@@ -3,14 +3,21 @@ OS=$(shell uname -s | tr [:upper:] [:lower:])
 
 #target platforms
 TARGET_PLATFORMS=linux mingw32
+ARCHIVE_EXTENSIONS=.tar.gz .zip
 
 $(phony ALL): DIRTY_RELEASES SVN_RELEASES
 
-$(phony DIRTY_RELEASES): $(foreach platform,${TARGET_PLATFORMS},DIRTY_${platform}.tar.gz)
+$(phony DIRTY_RELEASES): $(foreach ext,${ARCHIVE_EXTENSIONS},$(foreach platform,${TARGET_PLATFORMS},DIRTY_${platform}${ext}))
 
+########################################################################
 #dirty head releases
 DIRTY_${foreach}.tar.gz: ${foreach}-on-${OS}/release.tar.gz : foreach ${TARGET_PLATFORMS}
     cp -f $(input) $(output)
+
+DIRTY_${foreach}.zip: ${foreach}-on-${OS}/release.zip : foreach ${TARGET_PLATFORMS}
+    cp -f $(input) $(output)
+
+########################################################################
 
 $(phony IS_CLEAN_HEAD):
     @if [ `git diff HEAD | wc --chars` -gt 0 ]; then \
@@ -28,7 +35,10 @@ SVN_REVISION=$(shell git svn info | grep "Revision:" | cut -d " " -f 2)
 
 $(phony CAN_SVN_RELEASE): IS_CLEAN_HEAD IS_PUSHED
 
-$(phony SVN_RELEASES): $(foreach platform,${TARGET_PLATFORMS},${SVN_REVISION}_${platform}.tar.gz)
+$(phony SVN_RELEASES): $(foreach ext,${ARCHIVE_EXTENSIONS},$(foreach platform,${TARGET_PLATFORMS},${SVN_REVISION}_${platform}${ext}))
 
 ${SVN_REVISION}_${foreach}.tar.gz: ${foreach}-on-${OS}/release.tar.gz CAN_SVN_RELEASE : foreach ${TARGET_PLATFORMS}
+    cp -f $(input) $(output)
+
+${SVN_REVISION}_${foreach}.zip: ${foreach}-on-${OS}/release.zip CAN_SVN_RELEASE : foreach ${TARGET_PLATFORMS}
     cp -f $(input) $(output)

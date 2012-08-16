@@ -4,5 +4,8 @@
 */*.xml
 */release.tar
 */release.tar.gz
+*/release.zip
 /DIRTY_*.tar.gz
+/DIRTY_*.zip
 /*_*.tar.gz
+/*_*.zip
