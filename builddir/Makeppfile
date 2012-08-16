@@ -7,9 +7,14 @@ ARCHIVE_EXTENSIONS=.tar.gz .zip
 
 $(phony ALL): DIRTY_RELEASES SVN_RELEASES
 
-$(phony DIRTY_RELEASES): $(foreach ext,${ARCHIVE_EXTENSIONS},$(foreach platform,${TARGET_PLATFORMS},DIRTY_${platform}${ext}))
+$(phony UPLOAD): UPLOAD_ALPHA
 
 ########################################################################
+########################################################################
+
+DIRTY_RELEASES:=$(foreach ext,${ARCHIVE_EXTENSIONS},$(foreach platform,${TARGET_PLATFORMS},DIRTY_${platform}${ext}))
+$(phony DIRTY_RELEASES): DIRTY_RELEASES
+
 #dirty head releases
 DIRTY_${foreach}.tar.gz: ${foreach}-on-${OS}/release.tar.gz : foreach ${TARGET_PLATFORMS}
     cp -f $(input) $(output)
@@ -18,6 +23,9 @@ DIRTY_${foreach}.zip: ${foreach}-on-${OS}/release.zip : foreach ${TARGET_PLATFOR
     cp -f $(input) $(output)
 
 ########################################################################
+########################################################################
+
+$(phony SVN_RELEASES): SVN_ALPHA_RELEASES
 
 $(phony IS_CLEAN_HEAD):
     @if [ `git diff HEAD | wc --chars` -gt 0 ]; then \
@@ -35,10 +43,36 @@ SVN_REVISION=$(shell git svn info | grep "Revision:" | cut -d " " -f 2)
 
 $(phony CAN_SVN_RELEASE): IS_CLEAN_HEAD IS_PUSHED
 
-$(phony SVN_RELEASES): $(foreach ext,${ARCHIVE_EXTENSIONS},$(foreach platform,${TARGET_PLATFORMS},${SVN_REVISION}_${platform}${ext}))
+SVN_ALPHA_RELEASES:=$(foreach ext,${ARCHIVE_EXTENSIONS},$(foreach platform,${TARGET_PLATFORMS},${SVN_REVISION}_${platform}${ext}))
+
+$(phony SVN_ALPHA_RELEASES): ${SVN_ALPHA_RELEASES}
 
 ${SVN_REVISION}_${foreach}.tar.gz: ${foreach}-on-${OS}/release.tar.gz CAN_SVN_RELEASE : foreach ${TARGET_PLATFORMS}
     cp -f $(input) $(output)
 
 ${SVN_REVISION}_${foreach}.zip: ${foreach}-on-${OS}/release.zip CAN_SVN_RELEASE : foreach ${TARGET_PLATFORMS}
     cp -f $(input) $(output)
+
+########################################################################
+########################################################################
+########################################################################
+
+#upload rules
+
+$(phony UPLOAD_ALPHA): UPLOAD_${SVN_ALPHA_RELEASES}
+
+$(phony UPLOAD_${SVN_REVISION}_linux${foreach}): ${SVN_REVISION}_linux${foreach} : foreach ${ARCHIVE_EXTENSIONS}
+    sleep 1s
+    ./googlecode_upload.py \
+    --project=evaluatedecks \
+    --summary="linux alpha ${SVN_REVISION}" \
+    --labels="OpSys-Linux,Type-Package" \
+    $(input)
+
+$(phony UPLOAD_${SVN_REVISION}_mingw32${foreach}): ${SVN_REVISION}_mingw32${foreach} : foreach ${ARCHIVE_EXTENSIONS}
+    sleep 1s
+    ./googlecode_upload.py \
+    --project=evaluatedecks \
+    --summary="windows(mingw32) alpha ${SVN_REVISION}" \
+    --labels="OpSys-Windows,Type-Package" \
+    $(input)
