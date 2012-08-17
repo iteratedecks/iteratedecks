@@ -146,7 +146,7 @@ static option const long_options[] =
     , { "achievement-index"    , required_argument, 0, 'a' }
     , { "verify"               , required_argument, 0 , 0 }
     };
-static char const * const short_options = "n:o";
+static char const * const short_options = "n:oa:";
 
 int main(int const argc, char * const * const argv)
 {
