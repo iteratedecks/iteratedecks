@@ -143,8 +143,8 @@ int mainWithOptions(unsigned int const & numberOfIterations
 static option const long_options[] =
     { { "number-of-iterations" , required_argument, 0, 'n' }
     , { "first-deck-is-ordered", no_argument      , 0, 'o' }
-    , { "achievement-index"       , required_argument, 0, 'a' }
-    , { "verify"               , required_argument      , 0 , 0 }
+    , { "achievement-index"    , required_argument, 0, 'a' }
+    , { "verify"               , required_argument, 0 , 0 }
     };
 static char const * const short_options = "n:o";
 
@@ -172,9 +172,9 @@ int main(int const argc, char * const * const argv)
                         return E_INCORRECT_ARGUMENT;
                     }
                 } break;
-            case 'o':
+            case 'o': {
                     firstDeckIsOrdered = true;
-                break;
+                } break;
             case 'a': {
                     stringstream ssAchievementIndex(optarg);
                     ssAchievementIndex >> achievementIndex;
@@ -192,8 +192,7 @@ int main(int const argc, char * const * const argv)
                         break;
                     default:
                             std::cerr << "0 default: " << option_index << std::endl;
-                }
-                break;
+                } break;
             default: {
                     std::cerr << "default: " << c << std::endl;
                 }
