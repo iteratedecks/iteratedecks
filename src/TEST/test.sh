@@ -16,6 +16,7 @@ do
     else
         echo -e "\033[1;31mbad\033[0m"
         SUCCESS=1
+        exit
     fi       
 done
 
