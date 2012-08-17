@@ -30,3 +30,8 @@ VerifyOptions::VerifyOptions(char const * const str) {
         throw IncorrectVerifySyntax();
     }
 }
+
+IncorrectVerifySyntax::IncorrectVerifySyntax()
+: runtime_error("Incorrect verify syntax")
+{
+}

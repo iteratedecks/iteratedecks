@@ -1,5 +1,6 @@
-
-#include <exception>
+#ifndef VERIFY_HPP_
+#define VERIFY_HPP_
+#include <stdexcept>
 
 struct VerifyOptions {
     public:
@@ -14,5 +15,8 @@ struct VerifyOptions {
 
 };
 
-class IncorrectVerifySyntax: public std::exception {
+class IncorrectVerifySyntax: public std::runtime_error {
+    public:
+        IncorrectVerifySyntax();
 };
+#endif

@@ -47,11 +47,12 @@
 #include "../EXE/simulate.h"
 
 #include "verify.hpp"
+#include "cliOptions.hpp"
 
 int mainWithObjects(unsigned int const & numberOfIterations
                    ,ActiveDeck const & deck1
                    ,ActiveDeck const & deck2
-                   ,int const & achievementIndex
+                   ,int const achievementIndex
                    ,VerifyOptions const & verifyOptions
                    )
 {
@@ -91,26 +92,25 @@ int mainWithObjects(unsigned int const & numberOfIterations
  ******************************************************************************
  ******************************************************************************/
 
-int mainWithOptions(unsigned int const & numberOfIterations
-                   ,bool const & firstDeckIsOrdered
-                   ,char const * const & _deck1
-                   ,char const * const & _deck2
-                   ,int const & achievementIndex
-                   ,VerifyOptions const & verifyOptions
+int mainWithOptions(CliOptions const & options
                    )
 {
 	DB.LoadAchievementXML("achievements.xml");
 	DB.LoadCardXML("cards.xml");
 	DB.LoadMissionXML("missions.xml");
 	DB.LoadRaidXML("raids.xml");
-	// That does something strange, there is an unresolved bug.
 	DB.LoadQuestXML("quests.xml");
 
-	ActiveDeck deck1(_deck1, DB.GetPointer());
-	deck1.SetOrderMatters(firstDeckIsOrdered);
-	ActiveDeck deck2(_deck2, DB.GetPointer());
+    // FIXME: should not pass c_str
+    assert(options.attackDeck.getType() == DeckArgument::HASH);
+	ActiveDeck deck1(options.attackDeck.getHash().c_str(), DB.GetPointer());
+	deck1.SetOrderMatters(options.attackDeck.isOrdered());
+
+    assert(options.defenseDeck.getType() == DeckArgument::HASH);
+	ActiveDeck deck2(options.defenseDeck.getHash().c_str(), DB.GetPointer());
+    deck1.SetOrderMatters(options.defenseDeck.isOrdered());
 	
-	return mainWithObjects(numberOfIterations, deck1, deck2, achievementIndex, verifyOptions);
+	return mainWithObjects(options.numberOfIterations, deck1, deck2, options.achievementOptions, options.verifyOptions);
 }
 
 /******************************************************************************
@@ -124,10 +124,6 @@ int mainWithOptions(unsigned int const & numberOfIterations
  ******************************************************************************
  ******************************************************************************/
 
-/**
- * Default values.
- */
-#define DEFAULT_NUMBER_OF_ITERATIONS 1000;
 
 /**
  * Errors
@@ -145,15 +141,13 @@ static option const long_options[] =
     , { "first-deck-is-ordered", no_argument      , 0, 'o' }
     , { "achievement-index"    , required_argument, 0, 'a' }
     , { "verify"               , required_argument, 0 , 0 }
+    , { "verbose"              , no_argument      , 0 , 'v' }
     };
-static char const * const short_options = "n:oa:";
+static char const * const short_options = "n:oa:v";
 
 int main(int const argc, char * const * const argv)
 {
-    unsigned int numberOfIterations = DEFAULT_NUMBER_OF_ITERATIONS;
-    int achievementIndex = -1;
-    bool firstDeckIsOrdered = false;
-    VerifyOptions verifyOptions;
+    CliOptions options;
 
     // gnu getopt stuff
     while(true) {
@@ -166,29 +160,43 @@ int main(int const argc, char * const * const argv)
         switch(c) {
             case 'n': {
                     stringstream ssNumberOfIterations(optarg);
-                    ssNumberOfIterations >> numberOfIterations;
+                    ssNumberOfIterations >> options.numberOfIterations;
                     if(ssNumberOfIterations.fail()) {
                         std::cerr << "-n --number-of-iterations requires an integer argument" << std::endl;
                         return E_INCORRECT_ARGUMENT;
                     }
                 } break;
             case 'o': {
-                    firstDeckIsOrdered = true;
+                    if (options.attackDeck.getType() == DeckArgument::HASH) {
+                        options.attackDeck.setOrdered(true);
+                    } else {
+                        std::cerr << "ordered deck only makes sense for hash decks";
+                        return E_INCORRECT_ARGUMENT;
+                    }
                 } break;
             case 'a': {
                     stringstream ssAchievementIndex(optarg);
+                    int achievementIndex;
                     ssAchievementIndex >> achievementIndex;
                     if(ssAchievementIndex.fail()) {
                         std::cerr << "-a --achievement-index requires an integer argument" << std::endl;
                         return E_INCORRECT_ARGUMENT;
                     }
+                    if (achievementIndex >= 0) {
+                        options.achievementOptions.enableCheck(achievementIndex);
+                    } else {
+                        options.achievementOptions.disableCheck();
+                    }
+                } break;
+            case 'v': {
+                    options.verbosity++;
                 } break;
             case '?':
                 return E_NO_SUCH_OPTION;
             case 0:
                 switch(option_index) {
                     case 3:
-                            verifyOptions = VerifyOptions(optarg);
+                            options.verifyOptions = VerifyOptions(optarg);
                         break;
                     default:
                             std::cerr << "0 default: " << option_index << std::endl;
@@ -199,18 +207,16 @@ int main(int const argc, char * const * const argv)
         }
     }
     
-    char const * deck1;
-    char const * deck2;
     // other arguments, we expect exactly two decks
     if(optind+2 == argc) {
-        deck1 = argv[optind+0];
-        deck2 = argv[optind+1];
+        options.attackDeck.setHash(argv[optind+0]);
+        options.defenseDeck.setHash(argv[optind+1]);
     } else {
         std::cerr << "please specify exactly two decks to test" << std::endl;
         return E_NOT_TWO_DECKS;
     }
     try {
-        return mainWithOptions(numberOfIterations, firstDeckIsOrdered, deck1, deck2, achievementIndex, verifyOptions);
+        return mainWithOptions(options);
     } catch(std::runtime_error const & e) {
         std::cerr << "Runtime error:" << std::endl;
         std::cerr << e.what() << std::endl;

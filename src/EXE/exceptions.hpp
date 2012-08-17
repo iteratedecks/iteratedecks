@@ -16,4 +16,9 @@
     };
 
 
+    class InvalidState : public std::logic_error {
+        public:
+            explicit InvalidState(std::string const & what);
+    };
+
 #endif

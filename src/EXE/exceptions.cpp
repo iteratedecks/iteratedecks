@@ -11,3 +11,9 @@ InvalidDeckHashError::InvalidDeckHashError(std::string const & what)
 }
 
 std::string const InvalidDeckHashError::notEvenChars("Deck hashes should have even length.");
+
+
+InvalidState::InvalidState(std::string const & what)
+: logic_error(what)
+{
+}
