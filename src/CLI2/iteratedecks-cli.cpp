@@ -168,7 +168,7 @@ int main(int const argc, char * const * const argv)
                     stringstream ssNumberOfIterations(optarg);
                     ssNumberOfIterations >> numberOfIterations;
                     if(ssNumberOfIterations.fail()) {
-                        std::cerr << "--number-of-iterations requires an integer argument" << std::endl;
+                        std::cerr << "-n --number-of-iterations requires an integer argument" << std::endl;
                         return E_INCORRECT_ARGUMENT;
                     }
                 } break;
@@ -179,7 +179,7 @@ int main(int const argc, char * const * const argv)
                     stringstream ssAchievementIndex(optarg);
                     ssAchievementIndex >> achievementIndex;
                     if(ssAchievementIndex.fail()) {
-                        std::cerr << "--achievement-index requires an integer argument" << std::endl;
+                        std::cerr << "-a --achievement-index requires an integer argument" << std::endl;
                         return E_INCORRECT_ARGUMENT;
                     }
                 } break;
