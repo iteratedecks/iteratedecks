@@ -54,10 +54,11 @@ int mainWithObjects(unsigned int const & numberOfIterations
                    ,ActiveDeck const & deck2
                    ,int const achievementIndex
                    ,VerifyOptions const & verifyOptions
+                   ,unsigned int const & verbosity
                    )
 {
 	AchievementIndex = achievementIndex; // index, not id
-	bConsoleOutput = false;
+	bConsoleOutput = verbosity > 0;
 	
 	RESULTS r;
 	for (UINT k=0;k<numberOfIterations;k++)	{
@@ -110,7 +111,7 @@ int mainWithOptions(CliOptions const & options
 	ActiveDeck deck2(options.defenseDeck.getHash().c_str(), DB.GetPointer());
     deck1.SetOrderMatters(options.defenseDeck.isOrdered());
 	
-	return mainWithObjects(options.numberOfIterations, deck1, deck2, options.achievementOptions, options.verifyOptions);
+	return mainWithObjects(options.numberOfIterations, deck1, deck2, options.achievementOptions, options.verifyOptions, options.verbosity);
 }
 
 /******************************************************************************
