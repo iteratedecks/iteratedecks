@@ -25,6 +25,7 @@
 #include <set>
 #include "ctype.h"
 #include <stdexcept>
+#include "exceptions.hpp"
 
 #define DEFAULT_DECK_SIZE		10
 #define DEFAULT_DECK_RESERVE_SIZE	15 // up to 20? kinda deck max size for structures
@@ -1536,10 +1537,13 @@ public:
 		bDelayFirstCard = false;
 		unsigned short tid = 0, lastid = 0;
 		memset(SkillProcs,0,sizeof(SkillProcs));
-		memset(CardPicks,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
-		memset(CardDeaths,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
+		memset(CardPicks,0,sizeof(CardPicks));
+		memset(CardDeaths,0,sizeof(CardDeaths));
 		//
 		size_t len = strlen(HashBase64);
+        if(len % 2 != 0) {
+            throw InvalidDeckHashError(InvalidDeckHashError::notEvenChars);
+        }
 		_ASSERT(!(len & 1)); // bytes should go in pairs
 		if (len & 1)
 			return;

@@ -135,6 +135,7 @@ int mainWithOptions(unsigned int const & numberOfIterations
 #define E_NO_SUCH_OPTION -1
 #define E_INCORRECT_ARGUMENT -2
 #define E_NOT_TWO_DECKS -3
+#define E_RUNTIME_ERROR -4;
 
 /**
  * Option table
@@ -208,6 +209,12 @@ int main(int const argc, char * const * const argv)
     } else {
         std::cerr << "please specify exactly two decks to test" << std::endl;
         return E_NOT_TWO_DECKS;
-    }    
-    return mainWithOptions(numberOfIterations, firstDeckIsOrdered, deck1, deck2, achievementIndex, verifyOptions);
+    }
+    try {
+        return mainWithOptions(numberOfIterations, firstDeckIsOrdered, deck1, deck2, achievementIndex, verifyOptions);
+    } catch(std::runtime_error const & e) {
+        std::cerr << "Runtime error:" << std::endl;
+        std::cerr << e.what() << std::endl;
+        return E_RUNTIME_ERROR;
+    }
 }
