@@ -2628,7 +2628,7 @@ public:
 					bSplit = true;
 				}
 			}
-			// strike - Only targets active Assault cards on play with at least 1 Attack that are neither Jammed nor Immobilized
+			// strike
 			if (aid == ACTIVATION_STRIKE)
 			{
 				effect = Src.GetAbility(aid) * FusionMultiplier;
