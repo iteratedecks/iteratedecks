@@ -59,6 +59,7 @@
         unsigned int verbosity;
         AchievementOptions achievementOptions;
         VerifyOptions verifyOptions;
+        unsigned int seed;
 
         CliOptions(); 
     };

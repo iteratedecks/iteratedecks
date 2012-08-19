@@ -143,6 +143,7 @@ static option const long_options[] =
     , { "achievement-index"    , required_argument, 0, 'a' }
     , { "verify"               , required_argument, 0 , 0 }
     , { "verbose"              , no_argument      , 0 , 'v' }
+    , { "seed"                 , optional_argument, 0 , 0 }
     };
 static char const * const short_options = "n:oa:v";
 
@@ -196,9 +197,22 @@ int main(int const argc, char * const * const argv)
                 return E_NO_SUCH_OPTION;
             case 0:
                 switch(option_index) {
-                    case 3:
+                    case 3: {
                             options.verifyOptions = VerifyOptions(optarg);
-                        break;
+                        } break;
+                    case 5: {
+                            stringstream ssSeed(optarg);
+                            if (ssSeed.eof()) {
+                                // no data, random seed
+                                options.seed = time(NULL);
+                            } else {
+                                ssSeed >> options.seed;
+                                if (ssSeed.fail()) {
+                                    std::cerr << "--seed requires an positive integer argument" << std::endl;
+                                    return E_INCORRECT_ARGUMENT;
+                                }
+                            }
+                        } break;
                     default:
                             std::cerr << "0 default: " << option_index << std::endl;
                 } break;

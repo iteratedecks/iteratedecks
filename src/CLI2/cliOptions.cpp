@@ -71,5 +71,6 @@ AchievementOptions::operator int() const
 CliOptions::CliOptions()
 : numberOfIterations(DEFAULT_NUMBER_OF_ITERATIONS)
 , verbosity(0)
+, seed(1)
 {
 }
