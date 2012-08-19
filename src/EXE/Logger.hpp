@@ -1,6 +1,8 @@
 #ifndef LOGGER_HPP_
     #define LOGGER_HPP_
 
+    #include "deck.hpp"
+
     class Logger {
         private:
             unsigned int flags;
@@ -10,13 +12,14 @@
     };
 
     class DeckLogger {
-        private:
-            Logger const delegate;
+        public:
             enum DeckType {
                 ATTACK,
                 DEFENSE
             };
-            DeckType const deckType;
+        private:
+            Logger delegate;
+            DeckType deckType;
         public:
             DeckLogger(DeckType const & deckType, Logger const & delegate);
         

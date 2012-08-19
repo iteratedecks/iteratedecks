@@ -34,6 +34,7 @@
 
 #include "results.h"
 #include "log.h"
+#include "Logger.hpp"
 
 #define CARD_NAME_MAX_LENGTH	50 // must sync it with CARD_NAME_MAX_LENGTH in interface
 #define FILENAME_MAX_LENGTH		50 //
@@ -80,7 +81,6 @@ char const * const FACTIONS[6] =
 //#define EVENT_BOTH				3 // bad name, but means: on play on death. no longer used.
 #define EVENT_ATTACKED          4 // on attacked
 // next EVENT_SOMETHING         8
-typedef unsigned char EVENT_CONDITION;  // just for me, helps me to see which variable does what
 
 #define TYPE_NONE				0
 #define TYPE_COMMANDER			1
@@ -967,6 +967,8 @@ public:
 	UINT QuestEffectId;
     // used to get the actual card for summon
     Card const * pCDB;
+    // logging
+    DeckLogger * logger;
 public:
     PlayedCard & getUnitAt(unsigned int const index)
     {
