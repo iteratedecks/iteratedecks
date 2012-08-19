@@ -138,8 +138,9 @@ Loser damage bonus accumulates from T.
 Speed bonus applies before turn T+10.
 In other words, it is the same as on auto, only the counters reset every time you choose a card. Defender never gets loser bonus during early stages, but attacker might if he damages the commander the turn before losing to the AI.
 */
-	if (CSIndex && rbc)
+	if (CSIndex && rbc) {
 		tAtk.SetFancyStatsBuffer(CSIndex,rbc);
+    }
 	UCHAR iLastManualTurn = 0;
 	UCHAR iAutoAtkDmg = 0, iAutoDefDmg = 0;
 	for (UCHAR i=0; (i < MaxTurn);)
