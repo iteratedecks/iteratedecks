@@ -12,6 +12,13 @@ $(phony UPLOAD): UPLOAD_ALPHA
 ########################################################################
 ########################################################################
 
+$(phony IS_TESTED): TEST
+
+$(phony TEST): ../src/TEST/test
+
+########################################################################
+########################################################################
+
 DIRTY_RELEASES:=$(foreach ext,${ARCHIVE_EXTENSIONS},$(foreach platform,${TARGET_PLATFORMS},DIRTY_${platform}${ext}))
 $(phony DIRTY_RELEASES): DIRTY_RELEASES
 
@@ -41,7 +48,7 @@ $(phony IS_PUSHED):
 
 SVN_REVISION=$(shell git svn info | grep "Revision:" | cut -d " " -f 2)
 
-$(phony CAN_SVN_RELEASE): IS_CLEAN_HEAD IS_PUSHED
+$(phony CAN_SVN_RELEASE): IS_CLEAN_HEAD IS_PUSHED IS_TESTED
 
 SVN_ALPHA_RELEASES:=$(foreach ext,${ARCHIVE_EXTENSIONS},$(foreach platform,${TARGET_PLATFORMS},${SVN_REVISION}_${platform}${ext}))
 
