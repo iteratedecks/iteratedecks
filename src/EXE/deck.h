@@ -2724,8 +2724,9 @@ public:
                 effect = Src.GetAbility(ACTIVATION_SUMMON);
                 if (effect > 0)
 				{
+                    Card const * const summonedCard = &pCDB[effect];
                     // add the summoned card to summonedCards
-                    summonedCards.push_back(&pCDB[effect]);
+                    summonedCards.push_back(summonedCard);
                 }
             }
 
