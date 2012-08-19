@@ -726,6 +726,8 @@ Valor: Removed after owner ends his turn.
 		fsDeaths = 0;
 		SkillProcBuffer = NULL;
 		DeathEvents = 0;
+        //uniqueId = nextUniqueId++;
+        assert(false);
 		return *this;
 	}
 	PlayedCard::PlayedCard(const Card *card)
@@ -874,6 +876,7 @@ Valor: Removed after owner ends his turn.
 		fsDeaths = 0;
 		SkillProcBuffer = NULL;
 		DeathEvents = 0;
+        assert(false);
 	}
 
     /**
