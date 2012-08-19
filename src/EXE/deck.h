@@ -1052,7 +1052,7 @@ private:
         // do we hit the commander?
         bool const hitCommander(Def.Commander.HitCommander(QuestEffectId
                                                           ,cdmg
-                                                          ,src,Def
+                                                          ,src,Def,*this
                                                           ,true,&overkill,Log
                                                           ,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index)
                                                                  ,LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0)
@@ -1233,7 +1233,7 @@ private:
 			if (SRC.GetAbility(DMGDEPENDANT_CRUSH))
 			{
 				UCHAR overkill = 0;
-				if (Def.Commander.HitCommander(QuestEffectId,SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def,false,&overkill,
+				if (Def.Commander.HitCommander(QuestEffectId,SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def,*this,false,&overkill,
 					Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),DMGDEPENDANT_CRUSH,SRC.GetAbility(DMGDEPENDANT_CRUSH))))
 				{
 					DamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
@@ -2646,25 +2646,29 @@ public:
 						GetTargets(Dest.Units,faction,targets);
                     }
                     // do we have a target at all
-					if (targets.size())
-					{
-						if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL)
-						{
+					if (targets.size() > 0)	{
+                        // is it not strike all?
+						if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) {
+                            // pick a random target
 							destindex = UCHAR(rand() % targets.size());
-							if (!chaos)
+							if (!chaos) {
 								destindex = Intercept(targets, destindex, Dest);
+                            }
 							tmp = targets[destindex];
 							targets.clear();
 							targets.push_back(tmp);
 						}
-						if (!targets.empty())
-						{
-							if ((!IsMimiced) || bIsSelfMimic)
+                        // Targets should never be empty at this point
+                        assert(!targets.empty());
+						if (!targets.empty()) {
+							if ((!IsMimiced) || bIsSelfMimic) {
 								SkillProcs[aid]++;
-							else
+							} else {
 								Dest.SkillProcs[aid]++;
+                            }
 						}
-						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                        // do for all targets
+						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++) {
 							if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos))
 							{
 								// evaded
@@ -2703,7 +2707,8 @@ public:
 										Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
 									}
 							}			
-					} else {
+                        }
+                    } else {
                         // no target to strike
                         LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,(chaos>0),faction,effect));
                     }
@@ -3446,14 +3451,15 @@ protected:
     bool PlayedCard::HitCommander(UINT QuestEffectId
                                  , const UCHAR Dmg
                                  , PlayedCard &Src
-                                 , ActiveDeck & deck
+                                 , ActiveDeck & ownDeck
+                                 , ActiveDeck & otherDeck
                                  , bool bCanBeCountered
                                  , UCHAR *overkill
                                  , VLOG *log
                                  , LOG_RECORD *lr
                                  )
 	{
-        LCARDS & Structures(deck.Structures);
+        LCARDS & Structures(ownDeck.Structures);
 		_ASSERT(GetType() == TYPE_COMMANDER); // double check for debug
 
         // 0 dmg is pointless and indicates an error
@@ -3482,7 +3488,7 @@ protected:
 					vi->SufferDmg(QuestEffectId,Dmg,0,0,0,overkill);
 
                     // probably here wall's "on attacked" skills
-                    deck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*vi,index,deck);
+                    ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*vi,index,otherDeck);
 
 					if (vi->GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // counter, dmg from crush can't be countered
 					{
@@ -3502,7 +3508,7 @@ protected:
 		}
 
         // Commander was attacked, trigger event.
-        deck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*this,0,deck);
+        ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*this,0,otherDeck);
 
 		// no walls found then hit commander
 		// ugly - counter procs before commander takes dmg, but whatever
