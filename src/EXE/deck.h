@@ -1581,7 +1581,8 @@ public:
 			}
 		}
 	}
-	ActiveDeck(const Card *Cmd) 
+	ActiveDeck(const Card *Cmd, DeckLogger const & logger)
+    : logger(logger)
 	{ 
 		QuestEffectId = 0;
 		Log = 0;
@@ -1601,6 +1602,7 @@ public:
 	};
 	ActiveDeck(const ActiveDeck &D) // need copy constructor
 	: pCDB(D.pCDB)
+    , logger(D.logger)
 	{
 		QuestEffectId = D.QuestEffectId;
 		Log = 0;
@@ -2725,6 +2727,7 @@ public:
                 if (effect > 0)
 				{
                     Card const * const summonedCard = &pCDB[effect];
+                    this->logger->abilitySummon(EffectType,Src,summonedCard);
                     // add the summoned card to summonedCards
                     summonedCards.push_back(summonedCard);
                 }
