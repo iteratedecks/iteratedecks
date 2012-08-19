@@ -2632,16 +2632,20 @@ public:
 			if (aid == ACTIVATION_STRIKE)
 			{
 				effect = Src.GetAbility(aid) * FusionMultiplier;
-				if (effect > 0)
-				{
-					if (IsMimiced)
+				if (effect > 0) {
+                    // mimiced strike?
+					if (IsMimiced) {
 						faction = FACTION_NONE;
-					else
+					}else {
 						faction = Src.GetTargetFaction(aid);
-					if (chaos > 0)
+                    }
+                    // chaosed strike?
+					if (chaos > 0) {
 						GetTargets(Units,faction,targets);
-					else
+					} else {
 						GetTargets(Dest.Units,faction,targets);
+                    }
+                    // do we have a target at all
 					if (targets.size())
 					{
 						if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL)
