@@ -36,10 +36,6 @@
 #include "log.h"
 #include "Logger.hpp"
 
-#define CARD_NAME_MAX_LENGTH	50 // must sync it with CARD_NAME_MAX_LENGTH in interface
-#define FILENAME_MAX_LENGTH		50 //
-#define CARD_ABILITIES_MAX		70 // must sync it with CARD_ABILITIES_MAX in interface
-
 #define FANCY_STATS_COUNT		5
 
 #define CARD_MAX_ID				4000 // sizes of storage arrays
@@ -70,17 +66,7 @@ char const * const FACTIONS[6] =
 #define TARGETSCOUNT_ONE		0				
 #define TARGETSCOUNT_ALL		10	
 
-/**
- * Event conditions.
- * This is a bit field, new elements should be powers of two.
- * Zero is a special case. Would be easer if it were not.
- */
-#define EVENT_EMPTY				0
-#define EVENT_DIED				1
-#define EVENT_PLAYED			2
-//#define EVENT_BOTH				3 // bad name, but means: on play on death. no longer used.
-#define EVENT_ATTACKED          4 // on attacked
-// next EVENT_SOMETHING         8
+
 
 #define TYPE_NONE				0
 #define TYPE_COMMANDER			1
@@ -163,8 +149,6 @@ using namespace std;
 
 bool bConsoleOutput = false; // this is global just for convinience, should be DEFINE instead, to cleanup the code
 int AchievementIndex = -1; // index, not id
-
-typedef vector<LOG_RECORD> VLOG;
 
 #include "deck.hpp"
 
@@ -395,100 +379,100 @@ public:
 	const char *GetName() const { return Name; }
 	const char *GetPicture() const { return Picture; }
 };
-class PlayedCard
-{
-typedef vector<PlayedCard> VCARDS;
-typedef vector<PlayedCard*> PVCARDS;
-private:
-	// constant
-	const Card *OriginalCard;
-	// temporary
-	UCHAR Attack;
-	UCHAR Health;
-	UCHAR Wait;
-	UCHAR Faction; // this is for Infuse
-	UCHAR Effects[CARD_ABILITIES_MAX];
-	bool bPlayed;
-	bool bActivated;
-	bool bQuestSplit;
-	UCHAR DeathEvents;
-public:
-	// fancy stats
-	UINT fsDmgDealt; // attack, counter, strike, poison is not here(hard to track the source of poison)
-	UINT fsDmgMitigated; // obvious - before it died, should we include overkill?
-	UINT fsAvoided; // evade, armor, flying, protect - absorbed damage, this always IGNORES protect and ignores armor if it's a flying miss
-	UINT fsHealed; // supply, heal, leech, regenerate
-	UINT fsSpecial; // enfeeble, protect, weaken, rally, poison(when applied)
-	UINT fsOverkill; // overkill damage
-	UINT fsDeaths;
-	// skill proc counter
-	UCHAR *SkillProcBuffer;
-public:
-	void DecWait() { if (Wait) Wait--; }
-	void IncWait() { if (Wait) Wait++; }  // this is only for tournaments
-	const char *GetName() const { return OriginalCard->GetName(); }
-	void PrintDesc()
-	{
-		if (IsDefined())
-		{
-			if (OriginalCard->GetAttack() && OriginalCard->GetWait())
-				printf("%s - %p [%d/%d|%d]",OriginalCard->GetName(),this,GetAttack(),Health,Wait);
-			else
-				if (OriginalCard->GetWait())
-					printf("%s - %p [%d|%d]",OriginalCard->GetName(),this,Health,Wait);
-				else
-					printf("%s - %p [%d]",OriginalCard->GetName(),this,Health);
-			if (Effects[ACTIVATION_JAM])
-				printf(" Jammed");
-			if (Effects[ACTIVATION_FREEZE])
-				printf(" Frozen");
-			if (Effects[DMGDEPENDANT_IMMOBILIZE])
-				printf(" Immobilized");
-			if (Effects[DMGDEPENDANT_DISEASE])
-				printf(" Diseased");
-			if (Effects[ACTIVATION_CHAOS])
-				printf(" Chaosed");
-		}
-	}
-	void SetCardSkillProcBuffer(UCHAR *_SkillProcBuffer)
+
+//class PlayedCard
+#if 1
+    void PlayedCard::DecWait() { if (Wait) Wait--; }
+
+    void PlayedCard::IncWait() { if (Wait) Wait++; }  // this is only for tournaments
+
+    const char * PlayedCard::GetName() const { return OriginalCard->GetName(); }
+
+    void PlayedCard::PrintDesc()
+    {
+        if (IsDefined())
+        {
+            std::cout << this->toString();
+        }
+    }
+    std::string PlayedCard::toString() const
+    {
+        if (!IsDefined()) {
+            return std::string();
+        } else {
+            std::stringstream ss;
+            ss << OriginalCard->GetName();
+            ss << " - ";
+            ss << this->uniqueId;
+            if (this->GetType()!=TYPE_ACTION) {
+                ss << " [";
+                if (this->GetType()==TYPE_ASSAULT) {
+                    ss << "A:";
+                    ss << (UINT)this->GetAttack();
+                    ss << " ";
+                }
+                ss << "H:";
+                ss << (UINT)this->Health;
+                if (this->GetType()!=TYPE_COMMANDER) {
+                    ss << " D:";
+                    ss << (UINT)this->Wait;
+                }
+                ss << "]";
+                if(this->GetType()==TYPE_ACTION) {
+                    if (Effects[ACTIVATION_JAM])
+                        ss << " Jammed";
+                    if (Effects[ACTIVATION_FREEZE])
+                        ss << " Frozen";
+                    if (Effects[DMGDEPENDANT_IMMOBILIZE])
+                        ss << " Immobilized";
+                    if (Effects[DMGDEPENDANT_DISEASE])
+                        ss << " Diseased";
+                    if (Effects[ACTIVATION_CHAOS])
+                        ss << " Chaosed";
+                }
+            }
+            return ss.str();
+        }
+    }
+	void PlayedCard::SetCardSkillProcBuffer(UCHAR *_SkillProcBuffer)
 	{
 		SkillProcBuffer = _SkillProcBuffer;
 	}
-	const bool GetQuestSplit() const
+	const bool PlayedCard::GetQuestSplit() const
 	{
 		return bQuestSplit;
 	}
-	void SetQuestSplit(bool bSplit)
+	void PlayedCard::SetQuestSplit(bool bSplit)
 	{
 		bQuestSplit = bSplit;
 	}
-	void CardSkillProc(UCHAR aid)
+	void PlayedCard::CardSkillProc(UCHAR aid)
 	{
 		if (SkillProcBuffer) {
 			SkillProcBuffer[aid]++;
         }
 	}
-	const bool BeginTurn()
+	const bool PlayedCard::BeginTurn()
 	{
 		const bool bDoBegin = (Health>0) && (!Effects[ACTIVATION_JAM]) && (!Effects[ACTIVATION_FREEZE]) && (!Wait);
 		if (bDoBegin && (!bActivated))
 			bActivated = true;
 		return bDoBegin;
 	}
-	void ProcessPoison(UINT QuestEffectId)
+	void PlayedCard::ProcessPoison(UINT QuestEffectId)
 	{
 		if (IsAlive() && (Effects[DMGDEPENDANT_POISON]))
 			SufferDmg(QuestEffectId,Effects[DMGDEPENDANT_POISON]);
 	}
-	const UCHAR GetShield() const
+	const UCHAR PlayedCard::GetShield() const
 	{
 		return Effects[ACTIVATION_PROTECT];
 	}
-	void ResetShield()
+	void PlayedCard::ResetShield()
 	{
 		Effects[ACTIVATION_PROTECT] = 0;
 	}
-	void Refresh(UINT QuestEffectId)
+	void PlayedCard::Refresh(UINT QuestEffectId)
 	{
 		UCHAR amount = OriginalCard->GetHealth() - Health;
 		if (QuestEffectId == QEFFECT_INVIGORATE)
@@ -498,11 +482,11 @@ public:
 			SkillProcBuffer[DEFENSIVE_REFRESH]++;
 		Health = OriginalCard->GetHealth();
 	}
-	void ClearEnfeeble()
+	void PlayedCard::ClearEnfeeble()
 	{
 		Effects[ACTIVATION_ENFEEBLE] = 0;
 	}
-	void RemoveDebuffs()
+	void PlayedCard::RemoveDebuffs()
 	{
 /*
 by Moraku:
@@ -527,7 +511,7 @@ Valor: Removed after owner ends his turn.
 		Effects[ACTIVATION_RALLY] = 0;
 		Effects[ACTIVATION_WEAKEN] = 0;
 	}
-	void Cleanse()
+	void PlayedCard::Cleanse()
 	{
 		Effects[DMGDEPENDANT_POISON] = 0;
 		Effects[DMGDEPENDANT_DISEASE] = 0;
@@ -538,7 +522,7 @@ Valor: Removed after owner ends his turn.
 		Effects[ACTIVATION_ENFEEBLE] = 0;
 		Effects[ACTIVATION_CHAOS] = 0;
 	}
-	bool IsCleanseTarget()
+	bool PlayedCard::IsCleanseTarget()
 	{
 		// Poison, Disease, Jam, Immobilize, Enfeeble, Chaos. (Does not remove Weaken.)
 		return (Effects[DMGDEPENDANT_POISON] || 
@@ -549,21 +533,21 @@ Valor: Removed after owner ends his turn.
 				Effects[ACTIVATION_ENFEEBLE] ||
 				Effects[ACTIVATION_CHAOS]);
 	}
-	void EndTurn()
+	void PlayedCard::EndTurn()
 	{
 		Played(); // for rally
 		if ((Wait > 0) && (!Effects[ACTIVATION_FREEZE]))
 			DecWait();
 	}
-	const UCHAR GetAbilitiesCount() const { return OriginalCard->GetAbilitiesCount(); }
-	const UCHAR GetAbilityInOrder(const UCHAR order) const { return OriginalCard->GetAbilityInOrder(order); }
-	void Infuse(const UCHAR setfaction)
+	const UCHAR PlayedCard::GetAbilitiesCount() const { return OriginalCard->GetAbilitiesCount(); }
+	const UCHAR PlayedCard::GetAbilityInOrder(const UCHAR order) const { return OriginalCard->GetAbilityInOrder(order); }
+	void PlayedCard::Infuse(const UCHAR setfaction)
 	{
 		//OriginalCard.Infuse(setfaction);
 		Faction = setfaction;
 		SkillProcBuffer[ACTIVATION_INFUSE]++;
 	}
-	const UCHAR SufferDmg(UINT QuestEffectId, const UCHAR Dmg, const UCHAR Pierce = 0, UCHAR *actualdamagedealt = 0, UCHAR *SkillProcBuffer = 0, UCHAR *OverkillDamage = 0, bool bCanRegenerate = true, VLOG *log = 0, LOG_RECORD *lr=0)
+    const UCHAR PlayedCard::SufferDmg(UINT QuestEffectId, const UCHAR Dmg, const UCHAR Pierce, UCHAR *actualdamagedealt, UCHAR *SkillProcBuffer, UCHAR *OverkillDamage, bool bCanRegenerate, VLOG *log, LOG_RECORD *lr)
 	{
 		_ASSERT(OriginalCard);
 // Regeneration happens before the additional strikes from Flurry.
@@ -640,31 +624,22 @@ Valor: Removed after owner ends his turn.
 		fsDmgMitigated += dmg;
 		return dmg;
 	}
-	bool HitCommander(UINT QuestEffectId
-                     ,const UCHAR Dmg
-                     ,PlayedCard &Src
-                     ,ActiveDeck & deck
-                     ,bool bCanBeCountered = true
-                     ,UCHAR *overkill = NULL
-                     ,VLOG *log = NULL
-                     ,LOG_RECORD *lr = NULL
-                     );
 	
-	UCHAR StrikeDmg(const UINT QuestEffectId, const UCHAR Dmg, UCHAR *overkill = 0) // returns dealt dmg
+	UCHAR PlayedCard::StrikeDmg(const UINT QuestEffectId, const UCHAR Dmg, UCHAR *overkill) // returns dealt dmg
 	{
 		_ASSERT(Dmg); // 0 dmg is pointless and indicates an error
 		//printf("%s %d <- %d\n",GetName(),GetHealth(),Dmg);
 		return SufferDmg(QuestEffectId,Dmg + Effects[ACTIVATION_ENFEEBLE],0,0,0,overkill);
 	}
-	const bool IsAlive() const
+	const bool PlayedCard::IsAlive() const
 	{
 		return ((OriginalCard) &&/* THIS IS CRAP! */(Health != 0)); //(Attack||Health||Wait);
 	}
-	const bool IsDefined() const
+	const bool PlayedCard::IsDefined() const
 	{
 		return (OriginalCard && (Attack||Health||Wait||(GetType() == TYPE_COMMANDER)||(GetType() == TYPE_ACTION)));
 	}
-	bool OnDeathEvent()
+	bool PlayedCard::OnDeathEvent()
 	{
 		if (DeathEvents > 0)
 		{
@@ -673,11 +648,11 @@ Valor: Removed after owner ends his turn.
 		}
 		return false;
 	}
-	const UCHAR GetRarity() const
+	const UCHAR PlayedCard::GetRarity() const
 	{
-		return OriginalCard->GetRarity();
+        return OriginalCard->GetRarity();
 	}
-	bool operator==(const PlayedCard &C) const
+	bool PlayedCard::operator==(const PlayedCard &C) const
 	{
 		if (OriginalCard != C.OriginalCard) // better to compare ID's, but this should also work
 			return false;
@@ -695,7 +670,7 @@ Valor: Removed after owner ends his turn.
 			return false;
 		return (!memcmp(Effects,C.Effects,CARD_ABILITIES_MAX * sizeof(UCHAR)));
 	}
-	bool operator!=(const PlayedCard &C) const
+	bool PlayedCard::operator!=(const PlayedCard &C) const
 	{
 		if (OriginalCard != C.OriginalCard) // better to compare ID's, but this should also work
 			return true;
@@ -713,7 +688,7 @@ Valor: Removed after owner ends his turn.
 			return true;
 		return (memcmp(Effects,C.Effects,CARD_ABILITIES_MAX * sizeof(UCHAR)) != 0);
 	}
-	bool operator<(const PlayedCard &C) const
+	bool PlayedCard::operator<(const PlayedCard &C) const
 	{
 		if (OriginalCard != C.OriginalCard) // better to compare ID's, but this should also work
 			return (OriginalCard < C.OriginalCard);
@@ -732,7 +707,7 @@ Valor: Removed after owner ends his turn.
 		int mr = memcmp(Effects,C.Effects,CARD_ABILITIES_MAX * sizeof(UCHAR)) < 0;
 		return (mr < 0) && (mr != 0);
 	}
-	PlayedCard& operator=(const Card *card)
+    PlayedCard& PlayedCard::operator=(const Card *card)
 	{
 		_ASSERT(card);
 		OriginalCard = card;
@@ -755,7 +730,8 @@ Valor: Removed after owner ends his turn.
 		DeathEvents = 0;
 		return *this;
 	}
-	PlayedCard(const Card *card) 
+	PlayedCard::PlayedCard(const Card *card)
+    : uniqueId(nextUniqueId++)
 	{
 		_ASSERT(card);
 		OriginalCard = card;
@@ -777,12 +753,12 @@ Valor: Removed after owner ends his turn.
 		SkillProcBuffer = NULL;
 		DeathEvents = 0;
 	}
-	const UINT GetId() const { return OriginalCard->GetId(); }
-	const UCHAR GetNativeAttack() const
+	const UINT PlayedCard::GetId() const { return OriginalCard->GetId(); }
+	const UCHAR PlayedCard::GetNativeAttack() const
 	{
 		return Attack;
 	}
-	const UCHAR GetAttack() const
+	const UCHAR PlayedCard::GetAttack() const
 	{
 		char atk = Attack - Effects[ACTIVATION_WEAKEN] + Effects[ACTIVATION_RALLY];
 		//printf("[%X] %d = %d - %d + %d\n",this,atk,Attack,Effects[ACTIVATION_WEAKEN],Effects[ACTIVATION_RALLY]);
@@ -791,19 +767,19 @@ Valor: Removed after owner ends his turn.
 		else
 			return 0;
 	}
-	const UCHAR GetHealth() const { return Health; }
-	const UCHAR GetMaxHealth() const { return OriginalCard->GetHealth(); }
-	const UCHAR GetFaction() const { return Faction; }
-	const UCHAR GetWait() const { return Wait; }
-	const UCHAR GetType() const	
+	const UCHAR PlayedCard::GetHealth() const { return Health; }
+	const UCHAR PlayedCard::GetMaxHealth() const { return OriginalCard->GetHealth(); }
+	const UCHAR PlayedCard::GetFaction() const { return Faction; }
+	const UCHAR PlayedCard::GetWait() const { return Wait; }
+	const UCHAR PlayedCard::GetType() const
 	{
 		// this is crap ! - must remove and check the code
 		if (!OriginalCard)
 			return TYPE_NONE;
 		return OriginalCard->GetType();	
 	}
-	const UCHAR GetEffect(const UCHAR id) const { return Effects[id]; }
-	const EFFECT_ARGUMENT GetAbility(const UCHAR id) const
+	const UCHAR PlayedCard::GetEffect(const UCHAR id) const { return Effects[id]; }
+	const EFFECT_ARGUMENT PlayedCard::GetAbility(const UCHAR id) const
 	{
 		// this is crap ! - must remove and check the code
 		if (!OriginalCard) {
@@ -812,8 +788,8 @@ Valor: Removed after owner ends his turn.
         }
 		return this->OriginalCard->GetAbility(id);
 	}
-	const UCHAR GetTargetCount(const UCHAR id) const { return OriginalCard->GetTargetCount(id); }
-	const UCHAR GetTargetFaction(const UCHAR id) const
+	const UCHAR PlayedCard::GetTargetCount(const UCHAR id) const { return OriginalCard->GetTargetCount(id); }
+	const UCHAR PlayedCard::GetTargetFaction(const UCHAR id) const
 	{
 		// this is for infuse
 		// if card was infused, we gotta force target faction it was infused into
@@ -822,34 +798,33 @@ Valor: Removed after owner ends his turn.
 		else
 			return OriginalCard->GetTargetFaction(id);
 	}
-	const UCHAR GetAbilityEvent(const UCHAR id) const { return OriginalCard->GetAbilityEvent(id); }
-	const bool GetPlayed() const { return bPlayed; }
-	void Played() { bPlayed = true; }
-	void ResetPlayedFlag() { bPlayed = false; }
-	void SetAttack(const UCHAR attack) { Attack = attack; }
-	//void SetHealth(const UCHAR health) { Health = health; }
-	void SetEffect(const UCHAR id, const UCHAR value) { Effects[id] = value; }
-	void Rally(const EFFECT_ARGUMENT amount)
+	const UCHAR PlayedCard::GetAbilityEvent(const UCHAR id) const { return OriginalCard->GetAbilityEvent(id); }
+	const bool PlayedCard::GetPlayed() const { return bPlayed; }
+	void PlayedCard::Played() { bPlayed = true; }
+	void PlayedCard::ResetPlayedFlag() { bPlayed = false; }
+	void PlayedCard::SetAttack(const UCHAR attack) { Attack = attack; }
+	void PlayedCard::SetEffect(const UCHAR id, const UCHAR value) { Effects[id] = value; }
+	void PlayedCard::Rally(const EFFECT_ARGUMENT amount)
 	{
 		Effects[ACTIVATION_RALLY] += amount;
 		//Attack += amount;
 	}
-	EFFECT_ARGUMENT Weaken(const EFFECT_ARGUMENT amount)
+	EFFECT_ARGUMENT PlayedCard::Weaken(const EFFECT_ARGUMENT amount)
 	{
 		Effects[ACTIVATION_WEAKEN] += amount;
 		//if (amount > Attack) Attack = 0; else Attack -= amount;
 		return amount; // this is correct and incorrect at the same time ;(
 	}
-	void Berserk(const EFFECT_ARGUMENT amount)
+	void PlayedCard::Berserk(const EFFECT_ARGUMENT amount)
 	{
 		Attack += amount;
 	}
-	void Protect(const EFFECT_ARGUMENT amount)
+	void PlayedCard::Protect(const EFFECT_ARGUMENT amount)
 	{
 		//if (amount > Effects[ACTIVATION_PROTECT])
 		Effects[ACTIVATION_PROTECT] += amount;
 	}
-	bool Rush(const EFFECT_ARGUMENT amount)
+	bool PlayedCard::Rush(const EFFECT_ARGUMENT amount)
 	{
 		if (Wait > 0)
 		{
@@ -862,8 +837,8 @@ Valor: Removed after owner ends his turn.
 		else
 			return false;
 	}
-	const bool IsDiseased() const	{	return Effects[DMGDEPENDANT_DISEASE] > 0; }
-	UCHAR Heal(EFFECT_ARGUMENT amount,UINT QuestEffectId = 0)
+	const bool PlayedCard::IsDiseased() const	{	return Effects[DMGDEPENDANT_DISEASE] > 0; }
+	UCHAR PlayedCard::Heal(EFFECT_ARGUMENT amount,UINT QuestEffectId)
 	{
 		_ASSERT(!IsDiseased()); // disallowed
 		if (IsDiseased()) return 0;
@@ -878,9 +853,10 @@ Valor: Removed after owner ends his turn.
 			Attack += amount;
 		return amount;
 	}
-	const Card *GetOriginalCard() const { return OriginalCard; }
-//protected:
-	PlayedCard() 
+	const Card * PlayedCard::GetOriginalCard() const { return OriginalCard; }
+
+    PlayedCard::PlayedCard()
+    : uniqueId(nextUniqueId++)
 	{
 		Attack = 0;
 		Health = 0;
@@ -905,7 +881,7 @@ Valor: Removed after owner ends his turn.
     /**
      * Copy constructor.
      */
-    PlayedCard(PlayedCard const & original)
+    PlayedCard::PlayedCard(PlayedCard const & original)
     : OriginalCard(original.OriginalCard)
     , Attack(original.Attack)
     , Health(original.Health)
@@ -922,11 +898,14 @@ Valor: Removed after owner ends his turn.
     , fsSpecial(original.fsSpecial)
     , fsOverkill(original.fsOverkill)
     , fsDeaths(original.fsDeaths)
+    , uniqueId(original.uniqueId)
     {
         memcpy(Effects,original.Effects,sizeof(Effects));
         SkillProcBuffer = original.SkillProcBuffer;
     }
-};
+#endif
+
+unsigned int PlayedCard::nextUniqueId(0);
 struct REQUIREMENT
 {
 	UCHAR SkillID;
@@ -1584,8 +1563,7 @@ public:
 			}
 		}
 	}
-	ActiveDeck(const Card *Cmd, DeckLogger const & logger)
-    : logger(logger)
+	ActiveDeck(const Card *Cmd)
 	{ 
 		QuestEffectId = 0;
 		Log = 0;
@@ -2730,7 +2708,6 @@ public:
                 if (effect > 0)
 				{
                     Card const * const summonedCard = &pCDB[effect];
-                    this->logger->abilitySummon(EffectType,Src,summonedCard);
                     // add the summoned card to summonedCards
                     summonedCards.push_back(summonedCard);
                 }
@@ -2951,13 +2928,14 @@ public:
 			ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
 		}
 		// summon, a more general case of split. AFAIK, one can consider split as "summon self"
-		if (!summonedCards.empty())
-			for (UINT i=0;i<summonedCards.size();i++)
-			{
+		if (!summonedCards.empty()) {
+			for (UINT i=0;i<summonedCards.size();i++) {
                 Units.push_back(summonedCards[i]);
+                LOG(this->logger,abilitySummon(EffectType,Src,Units.back()));
                 Units.back().SetCardSkillProcBuffer(SkillProcs);
                 ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
 			}
+        }
 
 	}
 	void SweepFancyStats(PlayedCard &pc)

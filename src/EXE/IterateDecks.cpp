@@ -625,7 +625,7 @@ int _tmain(int argc, char* argv[])
 		ActiveDeck X(x);
 		ActiveDeck Y(z);
 
-		Simulate(X,Y,r,CSIndex,rbc);
+		Simulate(X,Y,r,NULL,CSIndex,rbc);
 	}
 	return r.Win;
 	}
@@ -637,7 +637,7 @@ int _tmain(int argc, char* argv[])
 		a.LogDeckID = 0;
 		b.Log = &log;
 		b.LogDeckID = 1;
-		Simulate(a,b,r,CSIndex,rbc);
+		Simulate(a,b,r,NULL,CSIndex,rbc);
 		//
 		// print log
 		char death[] = "dies";

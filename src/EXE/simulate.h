@@ -99,7 +99,18 @@ void MergeBuffers(UINT *Dest, const UCHAR *Src, UINT Size = CARD_ABILITIES_MAX)
 		Dest[i] += Src[i];
 }
 
-void Simulate(ActiveDeck &tAtk, ActiveDeck &tDef, RESULTS &r, const UCHAR *CSIndex = 0, RESULT_BY_CARD *rbc = 0, bool bSurge = false, REQUIREMENT *Reqs = 0, UINT *SkillProcs = 0, bool bAnnihilator = false, bool bSurrenderAtLoss = false)
+void Simulate(ActiveDeck &tAtk
+             ,ActiveDeck &tDef
+             ,RESULTS &r
+             ,SimulationLogger * logger = NULL
+             ,const UCHAR *CSIndex = NULL
+             ,RESULT_BY_CARD *rbc = NULL
+             ,bool bSurge = false
+             ,REQUIREMENT *Reqs = 0
+             ,UINT *SkillProcs = 0
+             ,bool bAnnihilator = false
+             ,bool bSurrenderAtLoss = false
+             )
 {
 /*
 Should have given more credit to people that help improving...
@@ -133,6 +144,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 	UCHAR iAutoAtkDmg = 0, iAutoDefDmg = 0;
 	for (UCHAR i=0; (i < MaxTurn);)
 	{
+        LOG(logger,turnStart(i));
 		if (bSurge)
 		{
 			tDef.AttackDeck(tAtk);
@@ -177,6 +189,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 				}
 				break;
 			}
+            LOG(logger,turnEnd(i));
 			i++;
 		}
 		if (CSIndex && rbc)
@@ -231,9 +244,13 @@ In other words, it is the same as on auto, only the counters reset every time yo
 			tAtk.DamageToCommander = 0; // reset
 			tDef.DamageToCommander = 0; // reset
 		}
-		if (tAtk.Deck.size() >= 2)
+		if (tAtk.Deck.size() >= 2) {
 			iLastManualTurn = i;
-		tAtk.AttackDeck(tDef);
+        }
+        if(bSurge) {
+            LOG(logger,turnStart(i));
+        }
+        tAtk.AttackDeck(tDef);
 		if (!tDef.Commander.IsAlive())
 		{			
 			if (tAtk.CheckRequirements(Reqs) && ((!bAnnihilator) || (tDef.IsAnnihilated())) && (DB.CheckAchievement(AchievementIndex,i+1,tAtk,tDef)))
@@ -287,9 +304,11 @@ In other words, it is the same as on auto, only the counters reset every time yo
 				r.Points+=5; // +5 points for winning by turn T+10
 			break;
 		}
+        LOG(logger,turnEnd(i));
 		i++;
 		if (!bSurge)
 		{
+            LOG(logger,turnStart(i));
 			tDef.AttackDeck(tAtk);
 			if (!tAtk.Commander.IsAlive())
 			{
@@ -332,7 +351,8 @@ In other words, it is the same as on auto, only the counters reset every time yo
 				}
 				break;
 			}
-			i++;
+            LOG(logger,turnEnd(i));
+            i++;
 		}
 	}
 	// used to calc only for wins, now for all games
@@ -589,7 +609,7 @@ void * ThreadFunc(void *pvParam)
 					else
 						Atk.DelayFirstCard();
 				}
-				Simulate(Atk,Def,lr,p->CSIndex,p->rbc,p->bSurge,p->Req,p->SkillProcs,p->Annihilator,p->SurrenderAtLoss);
+				Simulate(Atk,Def,lr,NULL,p->CSIndex,p->rbc,p->bSurge,p->Req,p->SkillProcs,p->Annihilator,p->SurrenderAtLoss);
 			}
 			else
 				if (p->QuestID < 0)
@@ -683,7 +703,7 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 					}
 					tDef = customdeck;
 				}
-				Simulate(tAtk,tDef,ret,(rbc)?CSIndex:0,rbc,bSurge,Req,pSkillProcs,bAnnihilator,bSurrenderAtLoss);
+				Simulate(tAtk,tDef,ret,NULL,(rbc)?CSIndex:0,rbc,bSurge,Req,pSkillProcs,bAnnihilator,bSurrenderAtLoss);
 			}
 			else
 				if (QuestID < 0)

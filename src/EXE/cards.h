@@ -1051,7 +1051,7 @@ public:
 		_ASSERT(RaidID < RAID_MAX_ID);
 		_ASSERT(RDB[RaidID].IsValid());
         unsigned int const & commanderId(RDB[RaidID].GetCommander());
-		D = ActiveDeck(&CDB[commanderId],D.logger); // replace
+		D = ActiveDeck(&CDB[commanderId]); // replace
 		RDB[RaidID].GetAlways(CDB,D.Deck);
 		RDB[RaidID].GetPools(CDB,D.Deck);
 	}
@@ -1060,7 +1060,7 @@ public:
 		_ASSERT(QuestID < STEP_MAX_ID);
 		_ASSERT(STDB[QuestID].IsValid());
         unsigned int const & commanderId(STDB[QuestID].GetCommander());
-		D = ActiveDeck(&CDB[commanderId],D.logger); // replace
+		D = ActiveDeck(&CDB[commanderId]); // replace
 		STDB[QuestID].GetPools(CDB,D.Deck);
 	}
 	DWORD LoadPointers(Card **Ptr, DWORD MaxCount)

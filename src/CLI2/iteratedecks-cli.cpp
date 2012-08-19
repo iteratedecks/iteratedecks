@@ -59,14 +59,21 @@ int mainWithObjects(unsigned int const & numberOfIterations
 {
 	AchievementIndex = achievementIndex; // index, not id
 	bConsoleOutput = (verbosity > 0);
-	
+
+    unsigned int loggingFlags = (verbosity) > 0 ? Logger::LOG_ALL : Logger::LOG_NONE;
+    Logger logger(loggingFlags);
+    DeckLogger attackLogger(DeckLogger::ATTACK, logger);
+    DeckLogger defenseLogger(DeckLogger::DEFENSE, logger);
+    SimulationLogger simulationLogger(logger);
+
 	RESULTS r;
 	for (UINT k=0;k<numberOfIterations;k++)	{
 		ActiveDeck X(deck1);
+        X.logger = &attackLogger;
 		ActiveDeck Y(deck2);
+        Y.logger = &defenseLogger;
 
-
-		Simulate(X,Y,r);
+		Simulate(X,Y,r,&simulationLogger);
 	}
 	double winRate = (double)r.Win / (double)r.Games;
 	std::cout << r.Win << "/" << r.Games << std::endl;
