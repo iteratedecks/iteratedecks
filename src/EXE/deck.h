@@ -1363,6 +1363,7 @@ private:
 
 		if (!SRC.IsAlive()) // died from counter? during swipe
 			return false;
+        return true;
     }
 // #############################################################################
 	void Attack(UCHAR index, ActiveDeck &Def)
