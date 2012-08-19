@@ -876,7 +876,6 @@ Valor: Removed after owner ends his turn.
 		fsDeaths = 0;
 		SkillProcBuffer = NULL;
 		DeathEvents = 0;
-        assert(false);
 	}
 
     /**
