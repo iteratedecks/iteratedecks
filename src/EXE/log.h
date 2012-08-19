@@ -17,7 +17,7 @@ struct LOG_CARD
 	  CardID(cardID)
 	{};
 
-	bool IsValid() { return (RowID != INVALID_ROWID); };
+	bool IsValid() const { return (RowID != INVALID_ROWID); };
 };
 struct LOG_RECORD
 {
