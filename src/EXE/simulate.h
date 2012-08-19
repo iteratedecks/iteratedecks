@@ -145,7 +145,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 	UCHAR iAutoAtkDmg = 0, iAutoDefDmg = 0;
 	for (UCHAR i=0; (i < MaxTurn);)
 	{
-        LOG(logger,turnStart(i));
+        LOG(logger,turnStart(i+1));
 		if (bSurge)
 		{
 			tDef.AttackDeck(tAtk);
@@ -190,7 +190,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 				}
 				break;
 			}
-            LOG(logger,turnEnd(i));
+            LOG(logger,turnEnd(i+1));
 			i++;
 		}
 		if (CSIndex && rbc)
@@ -249,7 +249,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 			iLastManualTurn = i;
         }
         if(bSurge) {
-            LOG(logger,turnStart(i));
+            LOG(logger,turnStart(i+1));
         }
         tAtk.AttackDeck(tDef);
 		if (!tDef.Commander.IsAlive())
@@ -305,11 +305,11 @@ In other words, it is the same as on auto, only the counters reset every time yo
 				r.Points+=5; // +5 points for winning by turn T+10
 			break;
 		}
-        LOG(logger,turnEnd(i));
+        LOG(logger,turnEnd(i+1));
 		i++;
 		if (!bSurge)
 		{
-            LOG(logger,turnStart(i));
+            LOG(logger,turnStart(i+1));
 			tDef.AttackDeck(tAtk);
 			if (!tAtk.Commander.IsAlive())
 			{
@@ -352,7 +352,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 				}
 				break;
 			}
-            LOG(logger,turnEnd(i));
+            LOG(logger,turnEnd(i+1));
             i++;
 		}
 	}
