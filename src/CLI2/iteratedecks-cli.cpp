@@ -58,7 +58,7 @@ int mainWithObjects(unsigned int const & numberOfIterations
                    )
 {
 	AchievementIndex = achievementIndex; // index, not id
-	bConsoleOutput = verbosity > 0;
+	bConsoleOutput = (verbosity > 0);
 	
 	RESULTS r;
 	for (UINT k=0;k<numberOfIterations;k++)	{

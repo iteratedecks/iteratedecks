@@ -1,5 +1,9 @@
 #include "cliOptions.hpp"
 
+DeckArgument::DeckArgument()
+: type(HASH)
+{
+}
 
 DeckArgument::DeckArgumentType DeckArgument::getType() const
 {
@@ -66,5 +70,6 @@ AchievementOptions::operator int() const
 
 CliOptions::CliOptions()
 : numberOfIterations(DEFAULT_NUMBER_OF_ITERATIONS)
+, verbosity(0)
 {
 }

@@ -29,6 +29,8 @@
             unsigned int raidId;
             unsigned int questId;
         public:
+            DeckArgument();
+
             DeckArgumentType getType() const;
             std::string getHash() const throw (InvalidState);
             bool isOrdered() const throw (InvalidState);
