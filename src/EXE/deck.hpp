@@ -13,11 +13,15 @@
     typedef	unsigned char UCHAR;
     typedef	unsigned int UINT;
     typedef UINT EFFECT_ARGUMENT;         // that is usally the amount (i.e, the 3 in weaken 3), but also the card to summon in summon
+    typedef UCHAR AbilityId;
+    typedef UCHAR FactionId;
+    char const * const FACTIONS[6] = {0,"Imperial","Raider","Bloodthirsty","Xeno","Righteous"};
 
     class Card;
     class ActiveDeck;
     class PlayedCard;
     class LOG_RECORD;
+    class CardDB;
 
     typedef std::vector<LOG_RECORD> VLOG;
 

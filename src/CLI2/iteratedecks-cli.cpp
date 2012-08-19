@@ -61,7 +61,7 @@ int mainWithObjects(unsigned int const & numberOfIterations
 	bConsoleOutput = (verbosity > 0);
 
     unsigned int loggingFlags = (verbosity) > 0 ? Logger::LOG_ALL : Logger::LOG_NONE;
-    Logger logger(loggingFlags);
+    Logger logger(loggingFlags,&DB);
     DeckLogger attackLogger(DeckLogger::ATTACK, logger);
     DeckLogger defenseLogger(DeckLogger::DEFENSE, logger);
     SimulationLogger simulationLogger(logger);

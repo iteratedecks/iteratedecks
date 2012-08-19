@@ -59,8 +59,6 @@
 #define FACTION_XENO			4
 #define FACTION_RIGHTEOUS		5
 
-char const * const FACTIONS[6] =
-{0,"Imperial","Raider","Bloodthirsty","Xeno","Righteous"};
 
 //#define TARGETSCOUNT_NONE		0				
 #define TARGETSCOUNT_ONE		0				
@@ -2703,7 +2701,10 @@ public:
 										Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
 									}
 							}			
-					}
+					} else {
+                        // no target to strike
+                        LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,(chaos>0),faction,effect));
+                    }
 				}
 			}
 			// summon

@@ -3,10 +3,14 @@
 #include <iostream>
 #include <sstream>
 
-unsigned int const Logger::LOG_NONE(0);
-unsigned int const Logger::LOG_ABILITY(1);
-unsigned int const Logger::LOG_TURN(2);
-unsigned int const Logger::LOG_ALL(3);
+static int logInit=0;
+unsigned int const Logger::LOG_NONE                     (0);
+unsigned int const Logger::LOG_ABILITY                  (1<<logInit++);
+unsigned int const Logger::LOG_ABILITY_FAILED_NOTARGET  (1<<logInit++);
+unsigned int const Logger::LOG_TURN                     (1<<logInit++);
+unsigned int const Logger::LOG_ALL                      ((1<<logInit)-1);
+
+
 
 std::string eventConditionToString(EVENT_CONDITION const & eventCondition)
 {
@@ -23,10 +27,22 @@ std::string eventConditionToString(EVENT_CONDITION const & eventCondition)
     }
 }
 
-Logger::Logger(unsigned int const & flags)
+std::string factionIdToString(FactionId const & factionId)
+{
+    if(factionId > 0) {
+        char const * const factionName = FACTIONS[factionId];
+        return std::string(factionName);
+    } else {
+        return std::string();
+    }
+}
+
+Logger::Logger(unsigned int const & flags, CardDB const * const & cDB)
 : flags(flags)
+, cDB(cDB)
 {
 }
+
 
 void Logger::log(unsigned int const & flags
            ,std::string const & message
@@ -101,7 +117,7 @@ void DeckLogger::ability(EVENT_CONDITION const & eventCondition
     if (this->delegate.isEnabled(Logger::LOG_ABILITY)) {
         std::string eventConditionStr = eventConditionToString(eventCondition);
         std::string deckStr = this->getDeckStr();
-        this->delegate.log(Logger::LOG_ABILITY,deckStr + eventConditionStr + src.toString() + message);
+        this->delegate.log(Logger::LOG_ABILITY,deckStr + eventConditionStr + src.toString() + " " + message);
     }
 }
 
@@ -113,5 +129,33 @@ void DeckLogger::abilitySummon(EVENT_CONDITION const & eventCondition
     if (this->delegate.isEnabled(Logger::LOG_ABILITY)) {
         std::string summonMessage("summons " + summonedCard.toString());
         this->ability(eventCondition,src,summonMessage);
+    }
+}
+
+void DeckLogger::abilityFailNoTarget(EVENT_CONDITION const & eventCondition
+                                    ,AbilityId const & aid
+                                    ,PlayedCard const & src
+                                    ,bool const & isMimiced
+                                    ,bool const & isChaosed
+                                    ,FactionId const & factionId
+                                    ,EFFECT_ARGUMENT const & effectArgument
+                                    )
+{
+    if (this->delegate.isEnabled(Logger::LOG_ABILITY_FAILED_NOTARGET)) {
+        std::stringstream ssFailMessage;
+        if(isMimiced) {
+            ssFailMessage << "mimiced ";
+        }
+        if(isChaosed) {
+            ssFailMessage << "chaosed ";
+        }
+        ssFailMessage << this->delegate.abilityIdToString(aid) << " ";
+        if(factionId > 0) {
+            ssFailMessage << factionIdToString(factionId) << " ";
+        }
+        ssFailMessage << effectArgument;
+        ssFailMessage << " failed because there is no target";
+        std::string failMessage(ssFailMessage.str());
+        this->ability(eventCondition,src,failMessage);
     }
 }

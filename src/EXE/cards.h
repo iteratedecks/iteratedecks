@@ -1159,7 +1159,7 @@ public:
 		strlwr(buffer);		
 		QuestEffectIndex.insert(PAIRMSKILLS(buffer,Id));
 	}
-	const char *GetSkill(UCHAR Indx)
+	const char *GetSkill(UCHAR Indx) const
 	{
 		return Skills[Indx].SkillName;
 	}
@@ -2093,3 +2093,10 @@ public:
 	}
 };
 
+// FIXME: After fixing class CardDB, move this to Logger.cpp
+#include "Logger.hpp"
+std::string Logger::abilityIdToString(AbilityId const & abilityId) const
+{
+    char const * cStrName = cDB->GetSkill(abilityId);
+    return std::string(cStrName);
+}
