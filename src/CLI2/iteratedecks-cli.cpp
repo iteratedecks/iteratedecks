@@ -116,7 +116,7 @@ int mainWithOptions(CliOptions const & options
 
     assert(options.defenseDeck.getType() == DeckArgument::HASH);
 	ActiveDeck deck2(options.defenseDeck.getHash().c_str(), DB.GetPointer());
-    deck1.SetOrderMatters(options.defenseDeck.isOrdered());
+    deck2.SetOrderMatters(options.defenseDeck.isOrdered());
 	
 	return mainWithObjects(options.numberOfIterations, deck1, deck2, options.achievementOptions, options.verifyOptions, options.verbosity);
 }
