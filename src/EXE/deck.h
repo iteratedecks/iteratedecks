@@ -26,6 +26,7 @@
 #include "ctype.h"
 #include <stdexcept>
 #include "exceptions.hpp"
+#include <iomanip>
 
 #define DEFAULT_DECK_SIZE		10
 #define DEFAULT_DECK_RESERVE_SIZE	15 // up to 20? kinda deck max size for structures
@@ -399,11 +400,11 @@ public:
             return std::string();
         } else {
             std::stringstream ss;
-            ss << OriginalCard->GetName();
-            ss << " - ";
-            ss << this->uniqueId;
+            ss << "[";
+            ss << std::setw(3) << this->uniqueId;
+            ss << "| \"" << OriginalCard->GetName() << '"';
             if (this->GetType()!=TYPE_ACTION) {
-                ss << " [";
+                ss << " ";
                 if (this->GetType()==TYPE_ASSAULT) {
                     ss << "A:";
                     ss << (UINT)this->GetAttack();
@@ -415,7 +416,6 @@ public:
                     ss << " D:";
                     ss << (UINT)this->Wait;
                 }
-                ss << "]";
                 if(this->GetType()==TYPE_ACTION) {
                     if (Effects[ACTIVATION_JAM])
                         ss << " Jammed";
@@ -429,6 +429,7 @@ public:
                         ss << " Chaosed";
                 }
             }
+            ss << "]";
             return ss.str();
         }
     }
@@ -1364,6 +1365,7 @@ private:
 		{
 			SkillProcs[COMBAT_FLURRY]++;
 			LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_FLURRY,iflurry);
+            LOG(this->logger,abilityFlurry(SRC,iflurry));
 		}
 
         // Is there no unit opposite of the attacking unit, or do we have fear? ...
@@ -1389,8 +1391,7 @@ private:
 			PlayedCard *targets[3];
 			// flurry + swipe ...
 			UCHAR swipe = (SRC.GetAbility(COMBAT_SWIPE)) ? 3 : 1;
-			if (swipe > 1)
-			{
+			if (swipe > 1) {
 				if ((index > 0) && (Def.getUnitAt(index-1).IsAlive())) {
 					targets[0] = &Def.getUnitAt(index-1);
 				} else {

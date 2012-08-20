@@ -121,6 +121,16 @@ void DeckLogger::ability(EVENT_CONDITION const & eventCondition
     }
 }
 
+void DeckLogger::abilityOffensive(PlayedCard const & src
+                                 ,std::string const & message
+                                 )
+{
+    if (this->delegate.isEnabled(Logger::LOG_ABILITY)) {
+        std::string deckStr = this->getDeckStr();
+        this->delegate.log(Logger::LOG_ABILITY,deckStr + src.toString() + " " + message);
+    }
+}
+
 void DeckLogger::abilitySummon(EVENT_CONDITION const & eventCondition
                               ,PlayedCard const & src
                               ,PlayedCard const & summonedCard
@@ -129,6 +139,16 @@ void DeckLogger::abilitySummon(EVENT_CONDITION const & eventCondition
     if (this->delegate.isEnabled(Logger::LOG_ABILITY)) {
         std::string summonMessage("summons " + summonedCard.toString());
         this->ability(eventCondition,src,summonMessage);
+    }
+}
+
+void DeckLogger::abilityFlurry(PlayedCard const & src
+                              ,EFFECT_ARGUMENT const & amount
+                              )
+{
+    if (this->delegate.isEnabled(Logger::LOG_ABILITY)) {
+        std::string flurryMessage("flurries " + amount);
+        this->abilityOffensive(src,flurryMessage);
     }
 }
 
