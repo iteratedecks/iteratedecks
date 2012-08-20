@@ -1773,8 +1773,6 @@ public:
 
 		bool bSplit = false;
 
-		std::vector<Card const *> summonedCards;    // Cards added by summon
-
 		UCHAR SrcPos = StructureIndex;
 		if (Position > 0)
 			SrcPos = (UCHAR)Position;
@@ -2726,11 +2724,21 @@ public:
 			// summon
             if (aid == ACTIVATION_SUMMON) {
                 effect = Src.GetAbility(ACTIVATION_SUMMON);
-                if (effect > 0)
-				{
+                if (effect > 0)	{
                     Card const * const summonedCard = &pCDB[effect];
-                    // add the summoned card to summonedCards
-                    summonedCards.push_back(summonedCard);
+                    if(summonedCard->GetType() == TYPE_ASSAULT) {
+                        Units.push_back(summonedCard);
+                        LOG(this->logger,abilitySummon(EffectType,Src,Units.back()));
+                        Units.back().SetCardSkillProcBuffer(SkillProcs);
+                        ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
+                    } else if (summonedCard->GetType() == TYPE_STRUCTURE) {
+                        Structures.push_back(summonedCard);
+                        LOG(this->logger,abilitySummon(EffectType,Src,Structures.back()));
+                        Structures.back().SetCardSkillProcBuffer(SkillProcs);
+                        ApplyEffects(QuestEffectId,EVENT_PLAYED,Structures.back(),-1,Dest);
+                    } else {
+                        throw logic_error("Summoned something that is neither assault unit nor structure");
+                    }
                 }
             }
 
@@ -2948,16 +2956,6 @@ public:
 			Units.back().SetCardSkillProcBuffer(SkillProcs);
 			ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
 		}
-		// summon, a more general case of split. AFAIK, one can consider split as "summon self"
-		if (!summonedCards.empty()) {
-			for (UINT i=0;i<summonedCards.size();i++) {
-                Units.push_back(summonedCards[i]);
-                LOG(this->logger,abilitySummon(EffectType,Src,Units.back()));
-                Units.back().SetCardSkillProcBuffer(SkillProcs);
-                ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
-			}
-        }
-
 	}
 	void SweepFancyStats(PlayedCard &pc)
 	{
