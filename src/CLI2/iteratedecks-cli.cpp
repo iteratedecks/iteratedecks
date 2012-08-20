@@ -208,11 +208,11 @@ int main(int const argc, char * const * const argv)
                             options.verifyOptions = VerifyOptions(optarg);
                         } break;
                     case 5: {
-                            stringstream ssSeed(optarg);
-                            if (ssSeed.eof()) {
+                            if (optarg == NULL) {
                                 // no data, random seed
                                 options.seed = time(NULL);
                             } else {
+                                stringstream ssSeed(optarg);
                                 ssSeed >> options.seed;
                                 if (ssSeed.fail()) {
                                     std::cerr << "--seed requires an positive integer argument" << std::endl;
