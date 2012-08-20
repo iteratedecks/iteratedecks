@@ -402,7 +402,15 @@ public:
             std::stringstream ss;
             ss << "[";
             ss << std::setw(3) << this->uniqueId;
-            ss << "| \"" << OriginalCard->GetName() << '"';
+            ss << "|";
+            switch(this->GetType()){
+                case TYPE_ACTION   : ss << 'A'; break;
+                case TYPE_ASSAULT  : ss << 'U'; break;
+                case TYPE_COMMANDER: ss << 'C'; break;
+                case TYPE_STRUCTURE: ss << 'S'; break;
+                default: throw logic_error("Unknown card type");
+            }
+            ss << " \"" << OriginalCard->GetName() << '"';
             if (this->GetType()!=TYPE_ACTION) {
                 ss << " ";
                 if (this->GetType()==TYPE_ASSAULT) {
