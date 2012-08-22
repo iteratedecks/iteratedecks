@@ -193,7 +193,7 @@ void DeckLogger::abilitySummon(EVENT_CONDITION const & eventCondition
                               )
 {
     if (this->delegate.isEnabled(Logger::LOG_ABILITY)) {
-        std::string summonMessage("summons " + summonedCard.toString());
+        std::string summonMessage("summons " + colorCard(summonedCard));
         this->ability(eventCondition,src,summonMessage);
     }
 }
