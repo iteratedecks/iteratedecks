@@ -2077,22 +2077,40 @@ public:
 			if (aid == ACTIVATION_SUPPLY)
 			{
 				effect = Src.GetAbility(aid) * FusionMultiplier;
-				if ((effect > 0) && (Position >= 0) && ((!IsMimiced) || (Mimicer && (Mimicer->GetType() == TYPE_ASSAULT)))) // can only be mimiced by assault cards
+				if (    (effect > 0)
+                     && (Position >= 0)
+                     && (    (!IsMimiced)
+                          || (Mimicer != NULL && (Mimicer->GetType() == TYPE_ASSAULT)) // can only be mimiced by assault cards
+                        )
+                   )
 				{
 					targets.clear();
-					if (Position)
+                    // If we are not left most, add unit left of us
+					if (Position > 0) {
 						targets.push_back(PPCARDINDEX(&(this->getUnitAt(Position-1)),Position-1));
+                    }
+                    // we are a target
 					targets.push_back(PPCARDINDEX(&(this->getUnitAt(Position)),Position));
-					if ((DWORD)Position+1 < Units.size())
+                    // if there is a unit right of us, add it
+					if ((DWORD)Position+1 < Units.size()) {
 						targets.push_back(PPCARDINDEX(&(this->getUnitAt(Position+1)),Position+1));
-					if (targets.size())
+                    }
+
+                    // that should always be the case
+                    assert(targets.size() > 0);
+					if (targets.size() > 0)
 					{
 						PPCIV::iterator vi = targets.begin();
-						while (vi != targets.end())
-						{
-							if ((vi->first->GetHealth() == vi->first->GetMaxHealth()) || vi->first->IsDiseased())
+						while (vi != targets.end())	{
+							if ((vi->first->GetHealth() == vi->first->GetMaxHealth())) {
+                                vi = targets.erase(vi);
+                            } else if (vi->first->IsDiseased()) {
+                                // remove diseased targets
+                                LOG(this->logger,abilityFailDisease(EffectType,aid,Src,*(vi->first),IsMimiced,FACTION_NONE,effect));
 								vi = targets.erase(vi);
-							else vi++;
+                            } else {
+                                vi++;
+                            }
 						}
 						if (!targets.empty())
 						{
@@ -2100,23 +2118,24 @@ public:
 								SkillProcs[aid]++;
 							else
 								Dest.SkillProcs[aid]++;
-						}
+						} else {
+                            // no targets
+                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,false,FACTION_NONE,effect));
+                        }
 						//FIXME: That variable is unused, yet is has a large right hand side...
-						bool bTributable = (IsMimiced && IsInTargets(Mimicer,&targets)) || ((!IsMimiced) && IsInTargets(&Src,&targets));
+						bool bTributable =  (IsMimiced && IsInTargets(Mimicer,&targets))
+                                         || ((!IsMimiced) && IsInTargets(&Src,&targets));
 						for (vi = targets.begin();vi != targets.end();vi++)
 						{
-							if (bConsoleOutput)
-							{
-								Src.PrintDesc();
-								printf(" supply ");
-								vi->first->PrintDesc();
-								printf(" for %d\n",effect);
-							}
-							if (!IsMimiced)
+                            LOG(this->logger,abilitySupport(EffectType,Src,aid,*(vi->first),effect));
+							if (!IsMimiced) {
 								Src.fsHealed += vi->first->Heal(effect,QuestEffectId);
-							else
+							} else {
 								Mimicer->fsHealed += vi->first->Heal(effect,QuestEffectId);
-							if (vi->first->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
+                            }
+                            // tribute
+                            bool const notDiseased(!Src.IsDiseased());
+							if (vi->first->GetAbility(DEFENSIVE_TRIBUTE) && PROC50 && notDiseased)
 							{
 								if (IsMimiced)
 								{
