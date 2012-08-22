@@ -1771,8 +1771,6 @@ public:
 		if (IsFusioned)
 			FusionMultiplier = 2;
 
-		bool bSplit = false;
-
 		UCHAR SrcPos = StructureIndex;
 		if (Position > 0)
 			SrcPos = (UCHAR)Position;
@@ -1791,7 +1789,9 @@ public:
 		if ((QuestEffectId == QEFFECT_CLONE_PROJECT) && (!IsMimiced) && (Src.GetQuestSplit()) && (EffectType == EVENT_EMPTY))
 		{
 			Src.SetQuestSplit(false); // remove mark
-			bSplit = true;
+            Units.push_back(Src.GetOriginalCard());
+            Units.back().SetCardSkillProcBuffer(SkillProcs);
+            ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
 		}
 		// here is a good question - can paybacked skill be paybacked? - nope
 		// can paybacked skill be evaded? - doubt
