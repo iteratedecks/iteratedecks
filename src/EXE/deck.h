@@ -2939,8 +2939,48 @@ public:
 					targets.clear();
 				}
 			}
+
+            // TODO "on attack" stuff needs to be done for damage dependent
+            if (EffectType == EVENT_ATTACKED) {
+                assert(!IsMimiced);
+                assert(!IsFusioned); // no idea what that is...
+                PlayedCard & target(Dest.getUnitAt(Position));
+                EFFECT_ARGUMENT const & effectArgument = Src.GetAbility(aid);
+                applyDamageDependentEffectOnAttack(QuestEffectId, Src, aid, effectArgument, Dest, target);
+            }
 		}
 	}
+
+    void applyDamageDependentEffectOnAttack(UINT questEffectId, PlayedCard & src, AbilityId const & abilityId, EFFECT_ARGUMENT const & effectArgument, ActiveDeck & otherDeck, PlayedCard & target) {
+        LOG(this->logger,abilityOffensive(EVENT_ATTACKED, src, abilityId, target, effectArgument));
+        switch(abilityId) {
+            case DMGDEPENDANT_BERSERK: {
+                    src.Berserk(effectArgument);
+                    SkillProcs[DMGDEPENDANT_BERSERK]++;
+                } break;
+            case DMGDEPENDANT_CRUSH:
+                throw std::logic_error("crush on attack ... that was not expected");
+            case DMGDEPENDANT_DISEASE: {
+                    assert(effectArgument > 0);
+                    target.SetEffect(DMGDEPENDANT_DISEASE,effectArgument);
+                    src.fsSpecial++;
+                    SkillProcs[DMGDEPENDANT_DISEASE]++;
+                } break;
+            case DMGDEPENDANT_IMMOBILIZE:
+                throw std::logic_error("\"immobilize on attack\" not implemented because im lazy");
+            case DMGDEPENDANT_LEECH:
+                throw std::logic_error("crush on attack ... that was not expected");
+            case DMGDEPENDANT_POISON:
+                if (target.GetEffect(DMGDEPENDANT_POISON) < effectArgument) { // more than before
+					target.SetEffect(DMGDEPENDANT_POISON,effectArgument);
+					src.fsSpecial += effectArgument;
+					SkillProcs[DMGDEPENDANT_POISON]++;
+				} break;
+            default:
+                throw std::logic_error("not implemented because im lazy");
+        }
+    }
+
 	void SweepFancyStats(PlayedCard &pc)
 	{
 		if (!CSIndex) return;
