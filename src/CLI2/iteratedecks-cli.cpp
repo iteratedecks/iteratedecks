@@ -53,8 +53,8 @@ int mainWithObjects(unsigned int const & numberOfIterations
                    ,ActiveDeck const & deck1
                    ,ActiveDeck const & deck2
                    ,int const achievementIndex
-                   ,VerifyOptions const & verifyOptions
                    ,unsigned int const & verbosity
+                   ,CliOptions const & options
                    )
 {
 	AchievementIndex = achievementIndex; // index, not id
@@ -62,6 +62,7 @@ int mainWithObjects(unsigned int const & numberOfIterations
 
     unsigned int loggingFlags = (verbosity) > 0 ? Logger::LOG_ALL : Logger::LOG_NONE;
     Logger logger(loggingFlags,&DB);
+    logger.setColorMode(options.colorMode);
     DeckLogger attackLogger(DeckLogger::ATTACK, logger);
     DeckLogger defenseLogger(DeckLogger::DEFENSE, logger);
     SimulationLogger simulationLogger(logger);
@@ -77,7 +78,8 @@ int mainWithObjects(unsigned int const & numberOfIterations
 	}
 	double winRate = (double)r.Win / (double)r.Games;
 	std::cout << r.Win << "/" << r.Games << std::endl;
-	
+
+    VerifyOptions const & verifyOptions(options.verifyOptions);
 	if(verifyOptions.doVerify) {
 	    if(verifyOptions.min <= winRate && winRate <= verifyOptions.max) {
 	        // pass
@@ -118,7 +120,7 @@ int mainWithOptions(CliOptions const & options
 	ActiveDeck deck2(options.defenseDeck.getHash().c_str(), DB.GetPointer());
     deck2.SetOrderMatters(options.defenseDeck.isOrdered());
 	
-	return mainWithObjects(options.numberOfIterations, deck1, deck2, options.achievementOptions, options.verifyOptions, options.verbosity);
+	return mainWithObjects(options.numberOfIterations, deck1, deck2, options.achievementOptions, options.verbosity, options);
 }
 
 /******************************************************************************
@@ -151,6 +153,7 @@ static option const long_options[] =
     , { "verify"               , required_argument, 0 , 0 }
     , { "verbose"              , no_argument      , 0 , 'v' }
     , { "seed"                 , optional_argument, 0 , 0 }
+    , { "color"                , optional_argument, 0 , 0 }
     };
 static char const * const short_options = "n:oa:v";
 
@@ -219,6 +222,10 @@ int main(int const argc, char * const * const argv)
                                     return E_INCORRECT_ARGUMENT;
                                 }
                             }
+                        } break;
+                    case 6: {
+                        // TODO better logic
+                        options.colorMode = Logger::COLOR_ANSI;
                         } break;
                     default:
                             std::cerr << "0 default: " << option_index << std::endl;

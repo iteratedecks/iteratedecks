@@ -72,5 +72,6 @@ CliOptions::CliOptions()
 : numberOfIterations(DEFAULT_NUMBER_OF_ITERATIONS)
 , verbosity(0)
 , seed(1)
+, colorMode(Logger::COLOR_NONE)
 {
 }

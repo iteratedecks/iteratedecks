@@ -2,6 +2,7 @@
     #define CLI_OPTIONS_H_
 
     #include "verify.hpp"
+    #include "../EXE/Logger.hpp"
     #include "../EXE/exceptions.hpp"
 
     /**
@@ -60,6 +61,7 @@
         AchievementOptions achievementOptions;
         VerifyOptions verifyOptions;
         unsigned int seed;
+        Logger::ColorMode colorMode;
 
         CliOptions(); 
     };

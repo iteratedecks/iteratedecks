@@ -41,7 +41,25 @@ std::string factionIdToString(FactionId const & factionId)
 Logger::Logger(unsigned int const & flags, CardDB const * const & cDB)
 : flags(flags)
 , cDB(cDB)
+, colorMode(COLOR_NONE)
 {
+}
+
+void Logger::setColorMode(ColorMode const & colorMode) 
+{
+    this->colorMode = colorMode;
+}
+
+std::string Logger::colorCard(PlayedCard const & playedCard) const
+{
+    switch (this->colorMode) {
+        case COLOR_NONE:
+            return playedCard.toString();
+        case COLOR_ANSI:
+            return "\033[34m" + playedCard.toString() + "\033[39m";
+        default:
+            throw std::logic_error("switch fail, not implemented?");
+    }
 }
 
 
@@ -116,9 +134,12 @@ void DeckLogger::ability(EVENT_CONDITION const & eventCondition
                         )
 {
     if (this->delegate.isEnabled(Logger::LOG_ABILITY)) {
-        std::string eventConditionStr = eventConditionToString(eventCondition);
-        std::string deckStr = this->getDeckStr();
-        this->delegate.log(Logger::LOG_ABILITY,deckStr + eventConditionStr + src.toString() + " " + message);
+        std::stringstream ssMessage;
+        ssMessage << eventConditionToString(eventCondition);
+        ssMessage << this->getDeckStr();
+        ssMessage << colorCard(src) << " ";
+        ssMessage << message;
+        this->delegate.log(Logger::LOG_ABILITY,ssMessage.str());
     }
 }
 
@@ -167,7 +188,7 @@ void DeckLogger::abilitySupport(EVENT_CONDITION const & eventCondition
         std::stringstream ssMessage;
         ssMessage << this->delegate.abilityIdToString(aid) << " ";
         ssMessage << (unsigned int)amount << " ";
-        ssMessage << target.toString();
+        ssMessage << colorCard(target);
         this->ability(eventCondition,src,ssMessage.str());
     }
 }
@@ -220,8 +241,13 @@ void DeckLogger::abilityFailDisease(EVENT_CONDITION const & eventCondition
             ssFailMessage << factionIdToString(factionId) << " ";
         }
         ssFailMessage << effectArgument;
-        ssFailMessage << " failed for target " << target.toString() << " because it is diseased";
+        ssFailMessage << " failed for target " << colorCard(target) << " because it is diseased";
         std::string failMessage(ssFailMessage.str());
         this->ability(eventCondition,src,failMessage);
     }
+}
+
+std::string DeckLogger::colorCard(PlayedCard const & playedCard) const
+{
+    return this->delegate.colorCard(playedCard);
 }

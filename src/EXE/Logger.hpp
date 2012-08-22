@@ -6,6 +6,11 @@
 
     class Logger {
         public:
+            enum ColorMode {
+                COLOR_NONE,
+                COLOR_ANSI,
+                COLOR_CSS
+            };
             static unsigned int const LOG_NONE;
             static unsigned int const LOG_ABILITY;
             static unsigned int const LOG_ABILITY_FAILED;
@@ -15,12 +20,16 @@
         private:
             unsigned int flags;
             CardDB const * const cDB;
+            ColorMode colorMode;
 
             void write(std::string const & message);
         public:
             std::string abilityIdToString(AbilityId const & abilityId) const;
         public:
+            std::string colorCard(PlayedCard const & playedCard) const;
+        public:
             Logger(unsigned int const & flags, CardDB const * const & cDB);
+            void setColorMode(ColorMode const & colorMode);
 
             void log(unsigned int const & flags, std::string const & message);
             bool isEnabled(unsigned int const & flags) const;
@@ -46,6 +55,8 @@
             DeckType deckType;
         protected:
             std::string getDeckStr() const;
+        public:
+            std::string colorCard(PlayedCard const & playedCard) const;
         public:
             DeckLogger(DeckType const & deckType, Logger const & delegate);
         
