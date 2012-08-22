@@ -1302,11 +1302,8 @@ private:
         if(!attacker.IsDefined() || !attacker.IsAlive()) {
             throw std::logic_error("attacking unit is not defined or not alive");
         }
-		if (bConsoleOutput)
-		{
-			attacker.PrintDesc();
-			printf(" attacks\n");
-		}
+
+        LOG(this->logger,attackBegin(attacker));
 
         // Check for flurry, this is independent of whether there is an unit opposing this or not.
 		EFFECT_ARGUMENT iflurry = (attacker.GetAbility(COMBAT_FLURRY) && PROC50) ? (attacker.GetAbility(COMBAT_FLURRY)+1) : 1; // coding like a boss :) don't like this style
