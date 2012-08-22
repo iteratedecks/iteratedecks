@@ -1835,8 +1835,9 @@ public:
 			    continue;
 			}
 
+            switch(aid) {
 			// cleanse
-			if (aid == ACTIVATION_CLEANSE) {
+			case ACTIVATION_CLEANSE: {
                 if (QuestEffectId != QEFFECT_DECAY) {
                     effect = Src.GetAbility(aid) * FusionMultiplier; // will it be fusioned? who knows
                     if (effect > 0)
@@ -1922,10 +1923,9 @@ public:
                         targets.clear();
                     }
                 }
-            }
+            } break;
             // enfeeble
-			if (aid == ACTIVATION_ENFEEBLE)
-			{
+			case ACTIVATION_ENFEEBLE: {
 				effect = Src.GetAbility(aid) * FusionMultiplier;
 				if (effect > 0)
 				{
@@ -2001,10 +2001,9 @@ public:
 					}
 					targets.clear();
 				}
-			}
+			} break;
 			// heal
-			if (aid == ACTIVATION_HEAL)
-			{
+			case ACTIVATION_HEAL: {
 				effect = Src.GetAbility(aid) * FusionMultiplier;
 				if (effect > 0)
 				{
@@ -2073,10 +2072,9 @@ public:
 					}
 					targets.clear();
 				}
-			}
+			} break;
 			// supply
-			if (aid == ACTIVATION_SUPPLY)
-			{
+			case ACTIVATION_SUPPLY:	{
 				effect = Src.GetAbility(aid) * FusionMultiplier;
 				if (    (effect > 0)
                      && (Position >= 0)
@@ -2159,11 +2157,9 @@ public:
 					}
 					targets.clear();
 				}
-			}
+			} break;
 			// protect
-			// do skills like PROTECT ALL exist? in case they do - does shield override another shield?
-			if (aid == ACTIVATION_PROTECT)
-			{
+			case ACTIVATION_PROTECT: {
 				effect = Src.GetAbility(aid) * FusionMultiplier; // will it be fusioned? who knows
 				if (effect > 0)
 				{
@@ -2235,12 +2231,11 @@ public:
 					}
 					targets.clear();
 				}
-			}
+			} break;
 			// infuse is processed on the upper level
 			// ******
 			// jam
-			if (aid == ACTIVATION_JAM)
-			{
+			case ACTIVATION_JAM: {
 				effect = Src.GetAbility(aid);
 				if (effect > 0)
 				{
@@ -2311,10 +2306,9 @@ public:
 					}
 					targets.clear();
 				}
-			}
+			} break;
 			// freeze
-			if (aid == ACTIVATION_FREEZE)
-			{
+			case ACTIVATION_FREEZE:	{
 				effect = Src.GetAbility(aid);
 				if (effect > 0)
 				{
@@ -2383,10 +2377,9 @@ public:
 					}
 					targets.clear();
 				}
-			}
+			} break;
 			// mimic - could be tricky
-			if (aid == ACTIVATION_MIMIC)
-			{
+			case ACTIVATION_MIMIC: {
 				effect = Src.GetAbility(aid);
 				if ((effect > 0) && (!IsMimiced))
 				{
@@ -2435,12 +2428,9 @@ public:
 					}
 					targets.clear();
 				}
-			}
+			} break;
 			// rally
-			// does rally prefer units with 0 attack? ???? or its completely random
-			// afaik it's completely random
-			if (aid == ACTIVATION_RALLY)
-			{
+			case ACTIVATION_RALLY: {
 				effect = Src.GetAbility(aid) * FusionMultiplier;
 				if (effect > 0)
 				{
@@ -2513,17 +2503,15 @@ public:
 					} // if we have targets at all
 					targets.clear();
 				}
-			}
+			} break;
 			// recharge -  only action cards
-			if (aid == ACTIVATION_RECHARGE)
-			{
+			case ACTIVATION_RECHARGE: {
 				if (Src.GetAbility(aid) > 0)
 					if (PROC50)
 						Deck.push_back(Src);
-			}
+			} break;
 			// repair
-			if (aid == ACTIVATION_REPAIR)
-			{
+			case ACTIVATION_REPAIR:	{
 				effect = Src.GetAbility(aid) * FusionMultiplier;
 				if (effect > 0)
 				{
@@ -2566,10 +2554,9 @@ public:
 					}
 					targets.clear();
 				}
-			}
+			} break;
 			// shock
-			if (aid == ACTIVATION_SHOCK)
-			{
+			case ACTIVATION_SHOCK: {
 				effect = Src.GetAbility(aid) * FusionMultiplier;
 				if (effect > 0)
 				{
@@ -2577,10 +2564,9 @@ public:
 					DamageToCommander += effect;
 					FullDamageToCommander += effect;
 				}
-			}
+			} break;
 			// siege
-			if (aid == ACTIVATION_SIEGE)
-			{
+			case ACTIVATION_SIEGE: {
 				effect = Src.GetAbility(aid) * FusionMultiplier;
 				if (effect > 0)
 				{
@@ -2635,10 +2621,9 @@ public:
 					}
 					targets.clear();
 				}
-			}
+			} break;
 			// split
-			if (aid == ACTIVATION_SPLIT)
-			{
+            case ACTIVATION_SPLIT: {
 				effect = Src.GetAbility(ACTIVATION_SPLIT);
 				if ((effect > 0) && (!IsMimiced))
 				{
@@ -2648,10 +2633,9 @@ public:
 					// workaround:
 					bSplit = true;
 				}
-			}
+			} break;
 			// strike
-			if (aid == ACTIVATION_STRIKE)
-			{
+			case ACTIVATION_STRIKE: {
 				effect = Src.GetAbility(aid) * FusionMultiplier;
 				if (effect > 0) {
                     // mimiced strike?
@@ -2734,9 +2718,9 @@ public:
                         LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,(chaos>0),faction,effect));
                     }
 				}
-			}
+			} break;
 			// summon
-            if (aid == ACTIVATION_SUMMON) {
+            case ACTIVATION_SUMMON: {
                 effect = Src.GetAbility(ACTIVATION_SUMMON);
                 if (effect > 0)	{
                     Card const * const summonedCard = &pCDB[effect];
@@ -2754,9 +2738,7 @@ public:
                         throw logic_error("Summoned something that is neither assault unit nor structure");
                     }
                 }
-            }
-
-
+            } break;
 			// weaken
 			// i've played like 20 times mission 66 just farming and noticed that AI,
 			// when played beholder one of the first cards kept weakening my unit aligned
@@ -2765,8 +2747,7 @@ public:
 			// I played rush cards so he had plenty cards to pick from to weaken
 			// I fucking hate random ...
 			// no, that not true, AI is dumb
-			if (aid == ACTIVATION_WEAKEN)
-			{
+			case ACTIVATION_WEAKEN:	{
 				effect = Src.GetAbility(aid) * FusionMultiplier;
 				if (effect > 0)
 				{
@@ -2833,7 +2814,9 @@ public:
 							}
 					}
 				}
-			}
+			} break;
+            } // end with switch for now
+
 			// rush - not sure yet whether this skill is activation or not
 			// can it be mimiced? it only presents on structures and commanders atm
 			// it shouldn't be tributable
