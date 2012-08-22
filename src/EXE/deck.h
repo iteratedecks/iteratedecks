@@ -2815,57 +2815,8 @@ public:
 					}
 				}
 			} break;
-            } // end with switch for now
-
-			// rush - not sure yet whether this skill is activation or not
-			// can it be mimiced? it only presents on structures and commanders atm
-			// it shouldn't be tributable
-			if ((aid == ACTIVATION_RUSH) || ((QuestEffectId == QEFFECT_TIME_SURGE) && (!aindex)))
-			{
-				effect = Src.GetAbility(aid);
-				if (aid != ACTIVATION_RUSH)
-					effect = 1;
-				if (effect > 0)
-				{
-					faction = Src.GetTargetFaction(aid);
-					GetTargets(Units,faction,targets);
-					if (targets.size())
-					{
-						PPCIV::iterator vi = targets.begin();
-						while (vi != targets.end())
-						{
-							if (!vi->first->GetWait())
-								vi = targets.erase(vi);
-							else vi++;
-						}
-						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
-						{
-							destindex = UCHAR(rand() % targets.size());
-							tmp = targets[destindex];
-							targets.clear();
-							targets.push_back(tmp);
-						}
-						if (!targets.empty())
-							SkillProcs[aid]++;
-						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-						{
-							if (bConsoleOutput)
-							{
-								Src.PrintDesc();
-								printf(" rush ");
-								vi->first->PrintDesc();
-								printf(" for %d\n",effect);
-							}
-							vi->first->Rush(effect);		
-							Src.fsSpecial += effect;
-						}
-					}
-					targets.clear();
-				}
-			}
-			// Chaos		
-			if (aid == ACTIVATION_CHAOS)
-			{
+            // Chaos
+			case ACTIVATION_CHAOS: {
 				effect = Src.GetAbility(aid);
 				if (effect > 0)
 				{
@@ -2937,6 +2888,54 @@ public:
 									}
 							}
 					}
+				}
+			} break;
+            } // end with switch for now
+
+			// rush - not sure yet whether this skill is activation or not
+			// can it be mimiced? it only presents on structures and commanders atm
+			// it shouldn't be tributable
+			if ((aid == ACTIVATION_RUSH) || ((QuestEffectId == QEFFECT_TIME_SURGE) && (!aindex)))
+			{
+				effect = Src.GetAbility(aid);
+				if (aid != ACTIVATION_RUSH)
+					effect = 1;
+				if (effect > 0)
+				{
+					faction = Src.GetTargetFaction(aid);
+					GetTargets(Units,faction,targets);
+					if (targets.size())
+					{
+						PPCIV::iterator vi = targets.begin();
+						while (vi != targets.end())
+						{
+							if (!vi->first->GetWait())
+								vi = targets.erase(vi);
+							else vi++;
+						}
+						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+						{
+							destindex = UCHAR(rand() % targets.size());
+							tmp = targets[destindex];
+							targets.clear();
+							targets.push_back(tmp);
+						}
+						if (!targets.empty())
+							SkillProcs[aid]++;
+						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+						{
+							if (bConsoleOutput)
+							{
+								Src.PrintDesc();
+								printf(" rush ");
+								vi->first->PrintDesc();
+								printf(" for %d\n",effect);
+							}
+							vi->first->Rush(effect);		
+							Src.fsSpecial += effect;
+						}
+					}
+					targets.clear();
 				}
 			}
 		}
