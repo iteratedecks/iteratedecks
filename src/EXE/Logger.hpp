@@ -27,6 +27,7 @@
             std::string abilityIdToString(AbilityId const & abilityId) const;
         public:
             std::string colorCard(PlayedCard const & playedCard) const;
+            std::string colorTurn(std::string const & str) const;
         public:
             Logger(unsigned int const & flags, CardDB const * const & cDB);
             void setColorMode(ColorMode const & colorMode);
@@ -38,6 +39,8 @@
     class SimulationLogger {
         private:
             Logger delegate;
+        public:
+            std::string colorTurn(std::string const & str) const;
         public:
             SimulationLogger(Logger const & delegate);
             void turnStart(unsigned int const & turn);

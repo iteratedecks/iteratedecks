@@ -11,7 +11,27 @@ unsigned int const Logger::LOG_ABILITY_FAILED_NOTARGET  (1<<logInit++);
 unsigned int const Logger::LOG_TURN                     (1<<logInit++);
 unsigned int const Logger::LOG_ALL                      ((1<<logInit)-1);
 
+enum Color {
+    GREEN,
+    LIGHT_BLUE
+};
 
+std::string ansiColor(Color const & color)
+{
+    std::stringstream colorCode;
+    colorCode << "\033[";
+    switch(color) {
+        case GREEN: colorCode << "32"; break;
+        case LIGHT_BLUE: colorCode << "1;34"; break;
+    }
+    colorCode << "m";
+    return colorCode.str();
+}
+
+std::string ansiNoColor()
+{
+    return "\033[22;39m";
+}
 
 std::string eventConditionToString(EVENT_CONDITION const & eventCondition)
 {
@@ -56,7 +76,21 @@ std::string Logger::colorCard(PlayedCard const & playedCard) const
         case COLOR_NONE:
             return playedCard.toString();
         case COLOR_ANSI:
-            return "\033[34m" + playedCard.toString() + "\033[39m";
+            // ansi escape sequences do look like arcane magic, but don't be afraid
+            return ansiColor(LIGHT_BLUE) + playedCard.toString() + ansiNoColor();
+        default:
+            throw std::logic_error("switch fail, not implemented?");
+    }
+}
+
+std::string Logger::colorTurn(std::string const & str) const
+{
+    switch (this->colorMode) {
+        case COLOR_NONE:
+            return str;
+        case COLOR_ANSI:
+            // ansi escape sequences do look like arcane magic, but don't be afraid
+            return ansiColor(GREEN) + str + ansiNoColor();
         default:
             throw std::logic_error("switch fail, not implemented?");
     }
@@ -95,7 +129,7 @@ void SimulationLogger::turnStart(unsigned int const & turn)
         std::stringstream ssMessage;
         ssMessage << "Turn " << turn << " starts";
         std::string message(ssMessage.str());
-        this->delegate.log(Logger::LOG_TURN,message);
+        this->delegate.log(Logger::LOG_TURN,colorTurn(message));
     }
 }
 
@@ -105,7 +139,7 @@ void SimulationLogger::turnEnd(unsigned int const & turn)
         std::stringstream ssMessage;
         ssMessage << "Turn " << turn << " ends";
         std::string message(ssMessage.str());
-        this->delegate.log(Logger::LOG_TURN,message);
+        this->delegate.log(Logger::LOG_TURN,colorTurn(message));
     }
 }
 
@@ -250,4 +284,9 @@ void DeckLogger::abilityFailDisease(EVENT_CONDITION const & eventCondition
 std::string DeckLogger::colorCard(PlayedCard const & playedCard) const
 {
     return this->delegate.colorCard(playedCard);
+}
+
+std::string SimulationLogger::colorTurn(std::string const & str) const
+{
+    return this->delegate.colorTurn(str);
 }
