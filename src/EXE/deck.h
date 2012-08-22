@@ -1836,93 +1836,94 @@ public:
 			}
 
 			// cleanse
-			if ((aid == ACTIVATION_CLEANSE) && (QuestEffectId != QEFFECT_DECAY))
-			{
-				effect = Src.GetAbility(aid) * FusionMultiplier; // will it be fusioned? who knows
-				if (effect > 0)
-				{
-					if (IsMimiced)
-						faction = FACTION_NONE;
-					else
-						faction = Src.GetTargetFaction(aid);
-					GetTargets(Units,faction,targets);
-					LOG_CARD lc(LogDeckID,TYPE_ASSAULT,100);
-					if (targets.size())
-					{
-						PPCIV::iterator vi = targets.begin();
-						while (vi != targets.end())
-						{
-							if (!vi->first->IsCleanseTarget())
-								vi = targets.erase(vi);
-							else vi++;
-						}
-						bool bTributable = (IsMimiced && IsInTargets(Mimicer,&targets)) || ((!IsMimiced) && IsInTargets(&Src,&targets));
-						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
-						{
-							destindex = UCHAR(rand() % targets.size());
-							tmp = targets[destindex];
-							targets.clear();
-							targets.push_back(tmp);
-						}
-						if (!targets.empty())
-						{
-							if ((!IsMimiced) || bIsSelfMimic)
-								SkillProcs[aid]++;
-							else
-								Dest.SkillProcs[aid]++;
-						}
-						for (vi = targets.begin();vi != targets.end();vi++)
-						{
-							if (bConsoleOutput)
-							{
-								Src.PrintDesc();
-								printf(" cleanse ");
-								vi->first->PrintDesc();
-								printf("\n");
-							}
-							lc.CardID = vi->second;
-							vi->first->Cleanse();
-							if (!IsMimiced)
-							{
-								Src.fsSpecial += effect;
-								LogAdd(LOG_CARD(LogDeckID,Src.GetType(),SrcPos),lc,aid);
-							}
-							else
-							{
-								Mimicer->fsSpecial += effect;
-								LogAdd(LOG_CARD(LogDeckID,Mimicer->GetType(),SrcPos),lc,aid);
-							}
-							if (vi->first->GetAbility(DEFENSIVE_TRIBUTE) && bTributable)
-							{
-								if (IsMimiced)
-								{
-									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != vi->first) && PROC50)
-									{
-										Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
-										Mimicer->Cleanse();
-										LogAdd(lc,DEFENSIVE_TRIBUTE);
-										LogAdd(lc,LOG_CARD(LogDeckID,Mimicer->GetType(),SrcPos),aid);
-										vi->first->fsSpecial += effect;
-									}
-								}
-								else
-								{
-									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != vi->first) && PROC50)
-									{
-										SkillProcs[DEFENSIVE_TRIBUTE]++;
-										Src.Cleanse();
-										LogAdd(lc,DEFENSIVE_TRIBUTE);
-										LogAdd(lc,LOG_CARD(LogDeckID,Src.GetType(),SrcPos),aid);
-										vi->first->fsSpecial += effect;
-									}
-								}
-							}
-						}
-					}
-					targets.clear();
-				}
-			}
-			// enfeeble
+			if (aid == ACTIVATION_CLEANSE) {
+                if (QuestEffectId != QEFFECT_DECAY) {
+                    effect = Src.GetAbility(aid) * FusionMultiplier; // will it be fusioned? who knows
+                    if (effect > 0)
+                    {
+                        if (IsMimiced)
+                            faction = FACTION_NONE;
+                        else
+                            faction = Src.GetTargetFaction(aid);
+                        GetTargets(Units,faction,targets);
+                        LOG_CARD lc(LogDeckID,TYPE_ASSAULT,100);
+                        if (targets.size())
+                        {
+                            PPCIV::iterator vi = targets.begin();
+                            while (vi != targets.end())
+                            {
+                                if (!vi->first->IsCleanseTarget())
+                                    vi = targets.erase(vi);
+                                else vi++;
+                            }
+                            bool bTributable = (IsMimiced && IsInTargets(Mimicer,&targets)) || ((!IsMimiced) && IsInTargets(&Src,&targets));
+                            if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+                            {
+                                destindex = UCHAR(rand() % targets.size());
+                                tmp = targets[destindex];
+                                targets.clear();
+                                targets.push_back(tmp);
+                            }
+                            if (!targets.empty())
+                            {
+                                if ((!IsMimiced) || bIsSelfMimic)
+                                    SkillProcs[aid]++;
+                                else
+                                    Dest.SkillProcs[aid]++;
+                            }
+                            for (vi = targets.begin();vi != targets.end();vi++)
+                            {
+                                if (bConsoleOutput)
+                                {
+                                    Src.PrintDesc();
+                                    printf(" cleanse ");
+                                    vi->first->PrintDesc();
+                                    printf("\n");
+                                }
+                                lc.CardID = vi->second;
+                                vi->first->Cleanse();
+                                if (!IsMimiced)
+                                {
+                                    Src.fsSpecial += effect;
+                                    LogAdd(LOG_CARD(LogDeckID,Src.GetType(),SrcPos),lc,aid);
+                                }
+                                else
+                                {
+                                    Mimicer->fsSpecial += effect;
+                                    LogAdd(LOG_CARD(LogDeckID,Mimicer->GetType(),SrcPos),lc,aid);
+                                }
+                                if (vi->first->GetAbility(DEFENSIVE_TRIBUTE) && bTributable)
+                                {
+                                    if (IsMimiced)
+                                    {
+                                        if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != vi->first) && PROC50)
+                                        {
+                                            Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
+                                            Mimicer->Cleanse();
+                                            LogAdd(lc,DEFENSIVE_TRIBUTE);
+                                            LogAdd(lc,LOG_CARD(LogDeckID,Mimicer->GetType(),SrcPos),aid);
+                                            vi->first->fsSpecial += effect;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if ((Src.GetType() == TYPE_ASSAULT) && (&Src != vi->first) && PROC50)
+                                        {
+                                            SkillProcs[DEFENSIVE_TRIBUTE]++;
+                                            Src.Cleanse();
+                                            LogAdd(lc,DEFENSIVE_TRIBUTE);
+                                            LogAdd(lc,LOG_CARD(LogDeckID,Src.GetType(),SrcPos),aid);
+                                            vi->first->fsSpecial += effect;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        targets.clear();
+                    }
+                }
+            }
+            // enfeeble
 			if (aid == ACTIVATION_ENFEEBLE)
 			{
 				effect = Src.GetAbility(aid) * FusionMultiplier;
