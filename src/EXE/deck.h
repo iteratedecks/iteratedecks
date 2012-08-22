@@ -337,7 +337,7 @@ public:
     std::string PlayedCard::toString() const
     {
         if (!IsDefined()) {
-            return std::string();
+            default: throw logic_error("toString: undefined card");
         } else {
             std::stringstream ss;
             ss << "[";
@@ -348,7 +348,7 @@ public:
                 case TYPE_ASSAULT  : ss << 'U'; break;
                 case TYPE_COMMANDER: ss << 'C'; break;
                 case TYPE_STRUCTURE: ss << 'S'; break;
-                default: throw logic_error("Unknown card type");
+                default: throw logic_error("toString: Unknown card type");
             }
             ss << " \"" << OriginalCard->GetName() << '"';
             if (this->GetType()!=TYPE_ACTION) {
