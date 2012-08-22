@@ -1357,7 +1357,6 @@ private:
 	void Attack(UCHAR index, ActiveDeck &Def)
 	{
         PlayedCard & attacker = this->getUnitAt(index);
-		//printf("%s %d\n",SRC.GetName(),SRC.GetHealth());
 
         // Make sure the attacking unit lives. That should be the case here, thus assertion.
 		_ASSERT(attacker.IsDefined() && attacker.IsAlive()); // baby, don't hurt me, no more
