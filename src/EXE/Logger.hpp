@@ -61,7 +61,8 @@
             DeckLogger(DeckType const & deckType, Logger const & delegate);
         
             void ability(EVENT_CONDITION const & eventCondition,PlayedCard const & src, std::string const & message);
-            void abilityOffensive(PlayedCard const & src, std::string const & message);
+
+            void abilityAttack(PlayedCard const & src, std::string const & message);
             void abilitySummon(EVENT_CONDITION const & eventCondition, PlayedCard const & src, PlayedCard const & summonedCard);
             void abilityFlurry(PlayedCard const & src, EFFECT_ARGUMENT const & amount);
             void abilitySupport(EVENT_CONDITION const & eventCondition,PlayedCard const & src, AbilityId const & aid, PlayedCard const & target, EFFECT_ARGUMENT amount);

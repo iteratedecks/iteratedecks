@@ -143,9 +143,9 @@ void DeckLogger::ability(EVENT_CONDITION const & eventCondition
     }
 }
 
-void DeckLogger::abilityOffensive(PlayedCard const & src
-                                 ,std::string const & message
-                                 )
+void DeckLogger::abilityAttack(PlayedCard const & src
+                              ,std::string const & message
+                              )
 {
     if (this->delegate.isEnabled(Logger::LOG_ABILITY)) {
         std::string deckStr = this->getDeckStr();
@@ -173,7 +173,7 @@ void DeckLogger::abilityFlurry(PlayedCard const & src
         ssFlurryMessage << "flurries ";
         ssFlurryMessage << amount;
         std::string flurryMessage(ssFlurryMessage.str());
-        this->abilityOffensive(src,flurryMessage);
+        this->abilityAttack(src,flurryMessage);
     }
 }
 
