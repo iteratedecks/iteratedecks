@@ -1356,40 +1356,40 @@ private:
 // #############################################################################
 	void Attack(UCHAR index, ActiveDeck &Def)
 	{
-        PlayedCard & SRC = this->getUnitAt(index);
+        PlayedCard & attacker = this->getUnitAt(index);
 		//printf("%s %d\n",SRC.GetName(),SRC.GetHealth());
 
         // Make sure the attacking unit lives. That should be the case here, thus assertion.
-		_ASSERT(SRC.IsDefined() && SRC.IsAlive()); // baby, don't hurt me, no more
+		_ASSERT(attacker.IsDefined() && attacker.IsAlive()); // baby, don't hurt me, no more
 		if (bConsoleOutput)
 		{
-			SRC.PrintDesc();
+			attacker.PrintDesc();
 			printf(" attacks\n");
 		}
 
         // Check for flurry, this is independent of whether there is an unit opposing this or not.
-		EFFECT_ARGUMENT iflurry = (SRC.GetAbility(COMBAT_FLURRY) && PROC50) ? (SRC.GetAbility(COMBAT_FLURRY)+1) : 1; // coding like a boss :) don't like this style
+		EFFECT_ARGUMENT iflurry = (attacker.GetAbility(COMBAT_FLURRY) && PROC50) ? (attacker.GetAbility(COMBAT_FLURRY)+1) : 1; // coding like a boss :) don't like this style
 		if (iflurry > 1)
 		{
 			SkillProcs[COMBAT_FLURRY]++;
 			LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_FLURRY,iflurry);
-            LOG(this->logger,abilityFlurry(SRC,iflurry));
+            LOG(this->logger,abilityFlurry(attacker,iflurry));
 		}
 
         // Is there no unit opposite of the attacking unit, or do we have fear? ...
         if (   (index >= (UCHAR)Def.Units.size()) // unit is right of everything opponent has
             || (!Def.getUnitAt(index).IsAlive()) // opposite unit is dead
-            || (SRC.GetAbility(COMBAT_FEAR)) // unit has fear
+            || (attacker.GetAbility(COMBAT_FEAR)) // unit has fear
            )
         {
             // ... deal DMG to commander directly. BUT STILL PROC50 FLURRY and PROBABLY VALOR
-            bool const canValorCardCommander = VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR);
+            bool const canValorCardCommander = VALOR_HITS_COMMANDER && attacker.GetAbility(COMBAT_VALOR);
             bool const canValorLessUnits = this->GetAliveUnitsCount() < Def.GetAliveUnitsCount();
             bool const doesValor = canValorCardCommander && canValorLessUnits;
-            EFFECT_ARGUMENT const valor = doesValor ? SRC.GetAbility(COMBAT_VALOR) : 0;
+            EFFECT_ARGUMENT const valor = doesValor ? attacker.GetAbility(COMBAT_VALOR) : 0;
 			for (UCHAR i=0;i<iflurry;i++)
 			{
-				AttackCommanderOnce1(index, SRC, valor, Def);
+				AttackCommanderOnce1(index, attacker, valor, Def);
 			}
 			return; // and thats it!!!
 		}
@@ -1398,7 +1398,7 @@ private:
 			// oh noes! that wasn't all
 			PlayedCard *targets[3];
 			// flurry + swipe ...
-			UCHAR swipe = (SRC.GetAbility(COMBAT_SWIPE)) ? 3 : 1;
+			UCHAR swipe = (attacker.GetAbility(COMBAT_SWIPE)) ? 3 : 1;
 			if (swipe > 1) {
 				if ((index > 0) && (Def.getUnitAt(index-1).IsAlive())) {
 					targets[0] = &Def.getUnitAt(index-1);
@@ -1421,7 +1421,7 @@ private:
 			{
 				UCHAR iSwiped = 0;
 				//
-				SRC.CardSkillProc(SPECIAL_ATTACK); // attack counter
+				attacker.CardSkillProc(SPECIAL_ATTACK); // attack counter
 				// swipe
 				for (UCHAR s=0;s<swipe;s++)
 				{
@@ -1436,12 +1436,12 @@ private:
 						targetindex += s;
 						targetindex--;
 					}
-					bool doContinue = AttackUnitOrCommanderOnce2(SRC, index, *targets[s], targetindex, swipe,s, iSwiped, Def);
+					bool doContinue = AttackUnitOrCommanderOnce2(attacker, index, *targets[s], targetindex, swipe,s, iSwiped, Def);
 					if(doContinue) {continue;} else {break;}
 				} // end of swipe
 				if (iSwiped > 1)
 					SkillProcs[COMBAT_SWIPE]++;
-				if (!SRC.IsAlive()) // died from counter? during flurry
+				if (!attacker.IsAlive()) // died from counter? during flurry
 					break;
 			} // end of flurry
 		} // end of "not hit commander directly"
