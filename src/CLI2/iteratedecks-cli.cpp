@@ -38,8 +38,6 @@
 #include <stdio.h>
 #include <time.h>
 
-#include <getopt.h>
-
 // here come NETRAT's evil hacks
 #include "../EXE/deck.h"
 #include "../EXE/cards.h"
@@ -48,6 +46,7 @@
 
 #include "verify.hpp"
 #include "cliOptions.hpp"
+#include "cliParser.hpp"
 
 int mainWithObjects(unsigned int const & numberOfIterations
                    ,ActiveDeck const & deck1
@@ -143,107 +142,12 @@ int mainWithOptions(CliOptions const & options
 #define E_NOT_TWO_DECKS -3
 #define E_RUNTIME_ERROR -4;
 
-/**
- * Option table
- */
-static option const long_options[] =
-    { { "number-of-iterations" , required_argument, 0, 'n' }
-    , { "first-deck-is-ordered", no_argument      , 0, 'o' }
-    , { "achievement-index"    , required_argument, 0, 'a' }
-    , { "verify"               , required_argument, 0 , 0 }
-    , { "verbose"              , no_argument      , 0 , 'v' }
-    , { "seed"                 , optional_argument, 0 , 0 }
-    , { "color"                , optional_argument, 0 , 0 }
-    };
-static char const * const short_options = "n:oa:v";
+using namespace EvaluateDecks::CLI;
 
 int main(int const argc, char * const * const argv)
 {
-    CliOptions options;
+    CliOptions options = parseCliOptions(argc, argv);
 
-    // gnu getopt stuff
-    while(true) {
-        int option_index = 0;
-        int c = getopt_long(argc, argv, short_options, long_options, &option_index);
-        if(c == -1) {
-            break;
-        }
-  
-        switch(c) {
-            case 'n': {
-                    stringstream ssNumberOfIterations(optarg);
-                    ssNumberOfIterations >> options.numberOfIterations;
-                    if(ssNumberOfIterations.fail()) {
-                        std::cerr << "-n --number-of-iterations requires an integer argument" << std::endl;
-                        return E_INCORRECT_ARGUMENT;
-                    }
-                } break;
-            case 'o': {
-                    if (options.attackDeck.getType() == DeckArgument::HASH) {
-                        options.attackDeck.setOrdered(true);
-                    } else {
-                        std::cerr << "ordered deck only makes sense for hash decks";
-                        return E_INCORRECT_ARGUMENT;
-                    }
-                } break;
-            case 'a': {
-                    stringstream ssAchievementIndex(optarg);
-                    int achievementIndex;
-                    ssAchievementIndex >> achievementIndex;
-                    if(ssAchievementIndex.fail()) {
-                        std::cerr << "-a --achievement-index requires an integer argument" << std::endl;
-                        return E_INCORRECT_ARGUMENT;
-                    }
-                    if (achievementIndex >= 0) {
-                        options.achievementOptions.enableCheck(achievementIndex);
-                    } else {
-                        options.achievementOptions.disableCheck();
-                    }
-                } break;
-            case 'v': {
-                    options.verbosity++;
-                } break;
-            case '?':
-                return E_NO_SUCH_OPTION;
-            case 0:
-                switch(option_index) {
-                    case 3: {
-                            options.verifyOptions = VerifyOptions(optarg);
-                        } break;
-                    case 5: {
-                            if (optarg == NULL) {
-                                // no data, random seed
-                                options.seed = time(NULL);
-                            } else {
-                                stringstream ssSeed(optarg);
-                                ssSeed >> options.seed;
-                                if (ssSeed.fail()) {
-                                    std::cerr << "--seed requires an positive integer argument" << std::endl;
-                                    return E_INCORRECT_ARGUMENT;
-                                }
-                            }
-                        } break;
-                    case 6: {
-                        // TODO better logic
-                        options.colorMode = Logger::COLOR_ANSI;
-                        } break;
-                    default:
-                            std::cerr << "0 default: " << option_index << std::endl;
-                } break;
-            default: {
-                    std::cerr << "default: " << c << std::endl;
-                }
-        }
-    }
-    
-    // other arguments, we expect exactly two decks
-    if(optind+2 == argc) {
-        options.attackDeck.setHash(argv[optind+0]);
-        options.defenseDeck.setHash(argv[optind+1]);
-    } else {
-        std::cerr << "please specify exactly two decks to test" << std::endl;
-        return E_NOT_TWO_DECKS;
-    }
     try {
         return mainWithOptions(options);
     } catch(std::runtime_error const & e) {
