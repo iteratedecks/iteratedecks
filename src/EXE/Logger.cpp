@@ -8,6 +8,8 @@ unsigned long const Logger::LOG_NONE                     (0);
 unsigned long const Logger::LOG_ABILITY                  (1<<logInit++);
 unsigned long const Logger::LOG_ABILITY_FAILED           (1<<logInit++);
 unsigned long const Logger::LOG_ABILITY_FAILED_NOTARGET  (1<<logInit++);
+unsigned long const Logger::LOG_ATTACK                   (1<<logInit++);
+unsigned long const Logger::LOG_ATTACK_BEGIN_END         (1<<logInit++);
 unsigned long const Logger::LOG_TURN                     (1<<logInit++);
 unsigned long const Logger::LOG_ALL                      ((1<<logInit)-1);
 
@@ -305,4 +307,33 @@ std::string DeckLogger::colorCard(PlayedCard const & playedCard) const
 std::string SimulationLogger::colorTurn(std::string const & str) const
 {
     return this->delegate.colorTurn(str);
+}
+
+void DeckLogger::attackBegin(PlayedCard const & attacker) {
+    if(this->delegate.isEnabled(Logger::LOG_ATTACK_BEGIN_END)) {
+        std::stringstream ssMessage;
+        ssMessage << colorCard(attacker);
+        ssMessage << " begins attack";
+        this->delegate.log(Logger::LOG_ATTACK,ssMessage.str());
+    }
+}
+
+void DeckLogger::attackHit(PlayedCard const & attacker, PlayedCard const & victim, unsigned int const & damage) {
+    if(this->delegate.isEnabled(Logger::LOG_ATTACK)) {
+        std::stringstream ssMessage;
+        ssMessage << colorCard(attacker);
+        ssMessage << " attacks ";
+        ssMessage << colorCard(victim);
+        ssMessage << " for " << damage << " damage";
+        this->delegate.log(Logger::LOG_ATTACK,ssMessage.str());
+    }
+}
+
+void DeckLogger::attackEnd(PlayedCard const & attacker) {
+    if(this->delegate.isEnabled(Logger::LOG_ATTACK_BEGIN_END)) {
+        std::stringstream ssMessage;
+        ssMessage << colorCard(attacker);
+        ssMessage << " ends attack";
+        this->delegate.log(Logger::LOG_ATTACK,ssMessage.str());
+    }
 }

@@ -15,6 +15,8 @@
             static unsigned long const LOG_ABILITY;
             static unsigned long const LOG_ABILITY_FAILED;
             static unsigned long const LOG_ABILITY_FAILED_NOTARGET;
+            static unsigned long const LOG_ATTACK;
+            static unsigned long const LOG_ATTACK_BEGIN_END;
             static unsigned long const LOG_TURN;
             static unsigned long const LOG_ALL;
         private:
@@ -75,6 +77,11 @@
 
             void abilityFailNoTarget(EVENT_CONDITION const & eventCondition, AbilityId const & aid, PlayedCard const & src,bool const & isMimiced, bool const & isChaosed,FactionId const & factionId,EFFECT_ARGUMENT const & effectArgument);
             void abilityFailDisease(EVENT_CONDITION const & eventCondition, AbilityId const & aid, PlayedCard const & src, PlayedCard const & target, bool const & isMimiced, FactionId const & factionId, EFFECT_ARGUMENT const & effectArgument);
+
+
+            void attackBegin(PlayedCard const & attacker);
+            void attackHit(PlayedCard const & attacker, PlayedCard const & victim, unsigned int const & damage);
+            void attackEnd(PlayedCard const & attacker);
     };
 
     #define LOG(logger,command) do { if((logger) != NULL) { (logger)->command; } } while(false)
