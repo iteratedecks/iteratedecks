@@ -337,7 +337,7 @@ public:
     std::string PlayedCard::toString() const
     {
         if (!IsDefined()) {
-            default: throw logic_error("toString: undefined card");
+            throw logic_error("toString: undefined card");
         } else {
             std::stringstream ss;
             ss << "[";
