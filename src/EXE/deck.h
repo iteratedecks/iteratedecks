@@ -2482,13 +2482,7 @@ public:
 						}
 						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
 						{
-							if (bConsoleOutput)
-							{
-								Src.PrintDesc();
-								printf(" rally ");
-								vi->first->PrintDesc();
-								printf(" for %d\n",effect);
-							}
+                            LOG(this->logger,abilitySupport(EffectType,Src,aid,*(vi->first),effect));
 							vi->first->Rally(effect);		
 							if (!IsMimiced)
 								Src.fsSpecial += effect;
@@ -2824,13 +2818,7 @@ public:
 							}
 							else
 							{
-								if (bConsoleOutput)
-								{
-									Src.PrintDesc();
-									printf(" weaken ");
-									vi->first->PrintDesc();
-									printf(" for %d\n",effect);
-								}
+                                LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect));
 								UCHAR we = vi->first->Weaken(effect);
 								if (!IsMimiced)
 									Src.fsSpecial += we;

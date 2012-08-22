@@ -227,6 +227,22 @@ void DeckLogger::abilitySupport(EVENT_CONDITION const & eventCondition
     }
 }
 
+void DeckLogger::abilityOffensive(EVENT_CONDITION const & eventCondition
+                                 ,PlayedCard const & src
+                                 ,AbilityId const & aid
+                                 ,PlayedCard const & target
+                                 ,EFFECT_ARGUMENT amount
+                                 )
+{
+    if (this->delegate.isEnabled(Logger::LOG_ABILITY)) {
+        std::stringstream ssMessage;
+        ssMessage << this->delegate.abilityIdToString(aid) << " ";
+        ssMessage << (unsigned int)amount << " ";
+        ssMessage << colorCard(target);
+        this->ability(eventCondition,src,ssMessage.str());
+    }
+}
+
 
 void DeckLogger::abilityFailNoTarget(EVENT_CONDITION const & eventCondition
                                     ,AbilityId const & aid
