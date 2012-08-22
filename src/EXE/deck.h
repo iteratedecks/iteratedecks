@@ -1359,7 +1359,9 @@ private:
         PlayedCard & attacker = this->getUnitAt(index);
 
         // Make sure the attacking unit lives. That should be the case here, thus assertion.
-		_ASSERT(attacker.IsDefined() && attacker.IsAlive()); // baby, don't hurt me, no more
+        if(!attacker.IsDefined() || !attacker.IsAlive()) {
+            throw std::logic_error("attacking unit is not defined or not alive");
+        }
 		if (bConsoleOutput)
 		{
 			attacker.PrintDesc();
