@@ -2890,7 +2890,18 @@ public:
 					}
 				}
 			} break;
+
+            default:
+                // TODO "on attack" stuff needs to be done for damage dependent
+                if (EffectType == EVENT_ATTACKED) {
+                    assert(!IsMimiced);
+                    assert(!IsFusioned); // no idea what that is...
+                    PlayedCard & target(Dest.getUnitAt(Position));
+                    EFFECT_ARGUMENT const & effectArgument = Src.GetAbility(aid);
+                    applyDamageDependentEffectOnAttack(QuestEffectId, Src, aid, effectArgument, Dest, target);
+                }
             } // end with switch for now
+
 
 			// rush - not sure yet whether this skill is activation or not
 			// can it be mimiced? it only presents on structures and commanders atm
@@ -2939,15 +2950,6 @@ public:
 					targets.clear();
 				}
 			}
-
-            // TODO "on attack" stuff needs to be done for damage dependent
-            if (EffectType == EVENT_ATTACKED) {
-                assert(!IsMimiced);
-                assert(!IsFusioned); // no idea what that is...
-                PlayedCard & target(Dest.getUnitAt(Position));
-                EFFECT_ARGUMENT const & effectArgument = Src.GetAbility(aid);
-                applyDamageDependentEffectOnAttack(QuestEffectId, Src, aid, effectArgument, Dest, target);
-            }
 		}
 	}
 
@@ -2977,6 +2979,7 @@ public:
 					SkillProcs[DMGDEPENDANT_POISON]++;
 				} break;
             default:
+                std::cerr << (UINT)abilityId << std::endl;
                 throw std::logic_error("not implemented because im lazy");
         }
     }
