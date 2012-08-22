@@ -92,6 +92,7 @@
     typedef std::multiset<UINT> MSID;
     typedef std::list<PlayedCard> LCARDS;
 
+    #include "playedCard.hpp"
     class PlayedCard {
         private:
             // constant
@@ -187,6 +188,8 @@
              * Copy constructor.
              */
             PlayedCard(PlayedCard const & original);
+
+            bool canAttack() const;
     };
 
 

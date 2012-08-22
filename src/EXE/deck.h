@@ -1301,6 +1301,8 @@ private:
         // Make sure the attacking unit lives. That should be the case here, thus assertion.
         if(!attacker.IsDefined() || !attacker.IsAlive()) {
             throw std::logic_error("attacking unit is not defined or not alive");
+        } else if(!attacker.canAttack()) {
+            throw std::logic_error("attacking unit can not attack");
         }
 
         LOG(this->logger,attackBegin(attacker));
