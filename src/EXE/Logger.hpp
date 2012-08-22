@@ -11,14 +11,14 @@
                 COLOR_ANSI,
                 COLOR_CSS
             };
-            static unsigned int const LOG_NONE;
-            static unsigned int const LOG_ABILITY;
-            static unsigned int const LOG_ABILITY_FAILED;
-            static unsigned int const LOG_ABILITY_FAILED_NOTARGET;
-            static unsigned int const LOG_TURN;
-            static unsigned int const LOG_ALL;
+            static unsigned long const LOG_NONE;
+            static unsigned long const LOG_ABILITY;
+            static unsigned long const LOG_ABILITY_FAILED;
+            static unsigned long const LOG_ABILITY_FAILED_NOTARGET;
+            static unsigned long const LOG_TURN;
+            static unsigned long const LOG_ALL;
         private:
-            unsigned int flags;
+            unsigned long flags;
             CardDB const * const cDB;
             ColorMode colorMode;
 
@@ -29,11 +29,11 @@
             std::string colorCard(PlayedCard const & playedCard) const;
             std::string colorTurn(std::string const & str) const;
         public:
-            Logger(unsigned int const & flags, CardDB const * const & cDB);
+            Logger(unsigned long const & flags, CardDB const * const & cDB);
             void setColorMode(ColorMode const & colorMode);
 
-            void log(unsigned int const & flags, std::string const & message);
-            bool isEnabled(unsigned int const & flags) const;
+            void log(unsigned long const & flags, std::string const & message);
+            bool isEnabled(unsigned long const & flags) const;
     };
 
     class SimulationLogger {

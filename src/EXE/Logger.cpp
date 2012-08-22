@@ -4,12 +4,12 @@
 #include <sstream>
 
 static int logInit=0;
-unsigned int const Logger::LOG_NONE                     (0);
-unsigned int const Logger::LOG_ABILITY                  (1<<logInit++);
-unsigned int const Logger::LOG_ABILITY_FAILED           (1<<logInit++);
-unsigned int const Logger::LOG_ABILITY_FAILED_NOTARGET  (1<<logInit++);
-unsigned int const Logger::LOG_TURN                     (1<<logInit++);
-unsigned int const Logger::LOG_ALL                      ((1<<logInit)-1);
+unsigned long const Logger::LOG_NONE                     (0);
+unsigned long const Logger::LOG_ABILITY                  (1<<logInit++);
+unsigned long const Logger::LOG_ABILITY_FAILED           (1<<logInit++);
+unsigned long const Logger::LOG_ABILITY_FAILED_NOTARGET  (1<<logInit++);
+unsigned long const Logger::LOG_TURN                     (1<<logInit++);
+unsigned long const Logger::LOG_ALL                      ((1<<logInit)-1);
 
 enum Color {
     GREEN,
@@ -58,7 +58,7 @@ std::string factionIdToString(FactionId const & factionId)
     }
 }
 
-Logger::Logger(unsigned int const & flags, CardDB const * const & cDB)
+Logger::Logger(unsigned long const & flags, CardDB const * const & cDB)
 : flags(flags)
 , cDB(cDB)
 , colorMode(COLOR_NONE)
@@ -97,9 +97,9 @@ std::string Logger::colorTurn(std::string const & str) const
 }
 
 
-void Logger::log(unsigned int const & flags
-           ,std::string const & message
-           )
+void Logger::log(unsigned long const & flags
+                ,std::string const & message
+                )
 {
     if(this->isEnabled(flags)) {
         this->write(message);
@@ -112,7 +112,7 @@ void Logger::write(std::string const & message)
     std::clog << message << std::endl;
 }
 
-bool Logger::isEnabled(unsigned int const & flags) const
+bool Logger::isEnabled(unsigned long const & flags) const
 {
     return (this->flags & flags) > 0;
 }
