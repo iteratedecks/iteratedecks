@@ -63,9 +63,11 @@
             void ability(EVENT_CONDITION const & eventCondition,PlayedCard const & src, std::string const & message);
 
             void abilityAttack(PlayedCard const & src, std::string const & message);
+            void abilitySupport(EVENT_CONDITION const & eventCondition,PlayedCard const & src, AbilityId const & aid, PlayedCard const & target, EFFECT_ARGUMENT amount);
+
             void abilitySummon(EVENT_CONDITION const & eventCondition, PlayedCard const & src, PlayedCard const & summonedCard);
             void abilityFlurry(PlayedCard const & src, EFFECT_ARGUMENT const & amount);
-            void abilitySupport(EVENT_CONDITION const & eventCondition,PlayedCard const & src, AbilityId const & aid, PlayedCard const & target, EFFECT_ARGUMENT amount);
+
 
             void abilityFailNoTarget(EVENT_CONDITION const & eventCondition, AbilityId const & aid, PlayedCard const & src,bool const & isMimiced, bool const & isChaosed,FactionId const & factionId,EFFECT_ARGUMENT const & effectArgument);
             void abilityFailDisease(EVENT_CONDITION const & eventCondition, AbilityId const & aid, PlayedCard const & src, PlayedCard const & target, bool const & isMimiced, FactionId const & factionId, EFFECT_ARGUMENT const & effectArgument);
