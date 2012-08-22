@@ -2895,6 +2895,7 @@ public:
 			// rush - not sure yet whether this skill is activation or not
 			// can it be mimiced? it only presents on structures and commanders atm
 			// it shouldn't be tributable
+            // P: Now thats some really strange encoding for quest effect ....
 			if ((aid == ACTIVATION_RUSH) || ((QuestEffectId == QEFFECT_TIME_SURGE) && (!aindex)))
 			{
 				effect = Src.GetAbility(aid);
