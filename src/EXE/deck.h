@@ -1308,12 +1308,14 @@ private:
         LOG(this->logger,attackBegin(attacker));
 
         // Check for flurry, this is independent of whether there is an unit opposing this or not.
-		EFFECT_ARGUMENT iflurry = (attacker.GetAbility(COMBAT_FLURRY) && PROC50) ? (attacker.GetAbility(COMBAT_FLURRY)+1) : 1; // coding like a boss :) don't like this style
-		if (iflurry > 1)
-		{
+        EFFECT_ARGUMENT const flurryBonus(attacker.GetAbility(COMBAT_FLURRY));
+        bool const canFlurry(flurryBonus>0);
+        bool const doesFlurry(canFlurry && PROC50);
+		unsigned int const flurries(doesFlurry ? flurryBonus+1 : 1);
+		if (flurries > 1) {
 			SkillProcs[COMBAT_FLURRY]++;
-			LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_FLURRY,iflurry);
-            LOG(this->logger,abilityFlurry(attacker,iflurry));
+			LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_FLURRY,flurries);
+            LOG(this->logger,abilityFlurry(attacker,flurries));
 		}
 
         // Is there no unit opposite of the attacking unit, or do we have fear? ...
@@ -1327,7 +1329,7 @@ private:
             bool const canValorLessUnits = this->GetAliveUnitsCount() < Def.GetAliveUnitsCount();
             bool const doesValor = canValorCardCommander && canValorLessUnits;
             EFFECT_ARGUMENT const valor = doesValor ? attacker.GetAbility(COMBAT_VALOR) : 0;
-			for (UCHAR i=0;i<iflurry;i++)
+			for (UCHAR i=0;i<flurries;i++)
 			{
 				AttackCommanderOnce1(index, attacker, valor, Def);
 			}
@@ -1357,7 +1359,7 @@ private:
 				targets[0] = &Def.getUnitAt(index);
 			}
 			// flurry
-			for (UCHAR iatk=0;iatk<iflurry;iatk++)
+			for (UCHAR iatk=0;iatk<flurries;iatk++)
 			{
 				UCHAR iSwiped = 0;
 				//
