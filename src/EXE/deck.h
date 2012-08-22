@@ -2627,11 +2627,11 @@ public:
 				effect = Src.GetAbility(ACTIVATION_SPLIT);
 				if ((effect > 0) && (!IsMimiced))
 				{
-					//Units.push_back(PlayedCard(Src.GetOriginalCard()));
-					// vector can be reallocated after push back, so I have to update Src
-					// Src = Units[Position]; this doesn't work because I use reference to an object
-					// workaround:
-					bSplit = true;
+                    // vectors can be reallocated, lists not, so do it right now
+                    // otherwise "on play" effects might happen to late
+					Units.push_back(Src.GetOriginalCard());
+                    Units.back().SetCardSkillProcBuffer(SkillProcs);
+                    ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
 				}
 			} break;
 			// strike
@@ -2939,13 +2939,6 @@ public:
 					}
 				}
 			}
-		}
-		// split, finally, can't do it inside of the loop because it corrupts pointer to Src since vector can be moved
-		if (bSplit)
-		{
-			Units.push_back(Src.GetOriginalCard());
-			Units.back().SetCardSkillProcBuffer(SkillProcs);
-			ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
 		}
 	}
 	void SweepFancyStats(PlayedCard &pc)
