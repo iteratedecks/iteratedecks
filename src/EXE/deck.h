@@ -1343,14 +1343,14 @@ private:
 				if ((index > 0) && (Def.getUnitAt(index-1).IsAlive())) {
 					targets[0] = &Def.getUnitAt(index-1);
 				} else {
-					targets[0] = 0;
+					targets[0] = NULL;
                 }
 				targets[1] = &Def.getUnitAt(index);
 				_ASSERT(targets[1]); // this is aligned to SRC and must be present
 				if ((index+1 < (UCHAR)Def.Units.size()) && (Def.getUnitAt(index+1).IsAlive())) {
 					targets[2] = &Def.getUnitAt(index+1);
 				} else {
-					targets[2] = 0;
+					targets[2] = NULL;
                 }
 				LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_SWIPE);
 			} else {
