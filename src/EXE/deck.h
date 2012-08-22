@@ -1200,7 +1200,7 @@ private:
 		}
 
         // Moraku suggests that "on attack" triggers after crush
-        ApplyEffects(QuestEffectId,EVENT_ATTACKED,target,targetindex,*this);
+        ApplyEffects(QuestEffectId,EVENT_ATTACKED,target,targetindex,*this,false,false,NULL,0,&SRC);
 
 		// counter
 		if ((dmg > 0) && target.GetAbility(DEFENSIVE_COUNTER))
@@ -1701,7 +1701,7 @@ public:
 			}
 		return destindex;
 	}
-	void ApplyEffects(UINT QuestEffectId,EVENT_CONDITION EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false,PlayedCard *Mimicer=0,UCHAR StructureIndex = 0)
+	void ApplyEffects(UINT QuestEffectId,EVENT_CONDITION EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false,PlayedCard *Mimicer=0,UCHAR StructureIndex = 0, PlayedCard * target=NULL)
 	{
 		UCHAR destindex,aid,faction;
 		PPCIV targets;
@@ -2837,9 +2837,9 @@ public:
                 if (EffectType == EVENT_ATTACKED) {
                     assert(!IsMimiced);
                     assert(!IsFusioned); // no idea what that is...
-                    PlayedCard & target(Dest.getUnitAt(Position));
+                    assert(target != NULL); // we need a target for dmg dependent stuff
                     EFFECT_ARGUMENT const & effectArgument = Src.GetAbility(aid);
-                    applyDamageDependentEffectOnAttack(QuestEffectId, Src, aid, effectArgument, Dest, target);
+                    applyDamageDependentEffectOnAttack(QuestEffectId, Src, aid, effectArgument, Dest, *target);
                 }
             } // end with switch for now
 
@@ -3463,7 +3463,7 @@ protected:
 					vi->SufferDmg(QuestEffectId,Dmg,0,0,0,overkill);
 
                     // probably here wall's "on attacked" skills
-                    ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*vi,index,otherDeck);
+                    ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*vi,index,otherDeck,false,false,NULL,0,&Src);
 
 					if (vi->GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // counter, dmg from crush can't be countered
 					{
@@ -3483,7 +3483,7 @@ protected:
 		}
 
         // Commander was attacked, trigger event.
-        ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*this,0,otherDeck);
+        ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*this,0,otherDeck,false,false,NULL,0,&Src);
 
 		// no walls found then hit commander
 		// ugly - counter procs before commander takes dmg, but whatever
