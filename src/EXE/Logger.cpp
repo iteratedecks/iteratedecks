@@ -170,7 +170,7 @@ void DeckLogger::ability(EVENT_CONDITION const & eventCondition
     if (this->delegate.isEnabled(Logger::LOG_ABILITY)) {
         std::stringstream ssMessage;
         ssMessage << eventConditionToString(eventCondition);
-        ssMessage << this->getDeckStr();
+        //ssMessage << this->getDeckStr();
         ssMessage << colorCard(src) << " ";
         ssMessage << message;
         this->delegate.log(Logger::LOG_ABILITY,ssMessage.str());
