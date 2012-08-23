@@ -25,6 +25,7 @@
 
 #include <getopt.h>
 #include <sstream>
+#include <ctime>
 
 namespace EvaluateDecks {
     namespace CLI {
