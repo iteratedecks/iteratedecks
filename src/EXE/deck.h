@@ -2965,21 +2965,28 @@ public:
 			{
 				// pick that involves 'hand' and priorities
 				// fill hand
-				UCHAR handsize = 3;
+				UCHAR const handsize(3);
 				if (Deck.size() <= handsize)
 				{
+                    // fill hand with all cards in deck
 					Hand.clear();
 					for (UCHAR i=0;i<Deck.size();i++)
 						Hand.insert(i);
 				}
 				else
 				{
+                    //std::clog << "pick next card, ordered, Hand.size() = " << Hand.size() << " Deck.size()=" << Deck.size() << std::endl;
 					do
 					{
+                        // one random card in deck ...
 						indx = UCHAR(rand() % Deck.size());
+                        //std::clog << "random choice: " << (unsigned int)indx << " thats " << this->getCardAt(indx).toString() << std::endl;
 						// we need to pick first card of a same type, instead of picking this card
 						for (UCHAR i=0;i<Deck.size();i++)
-							if ((this->getUnitAt(indx).GetId() == this->getUnitAt(i).GetId()) && (Hand.find(indx) == Hand.end()) && (Hand.find(i) == Hand.end()))
+							if (    (this->getCardAt(indx).GetId() == this->getCardAt(i).GetId())
+                                 && (Hand.find(indx) == Hand.end())
+                                 && (Hand.find(i) == Hand.end())
+                               )
 							{
 								indx = i;
 								break;
@@ -2991,6 +2998,13 @@ public:
 						}
 					}
 					while (Hand.size() < handsize);
+                    //std::clog << "Hand is now: ";
+                    for(MSID::const_iterator iter = Hand.begin(); iter != Hand.end(); iter++) {
+                        unsigned int const i(*iter);
+                        PlayedCard const & card(this->getCardAt(i));
+                        //std::clog << i << ", ";
+                    }
+                    //std::clog << std::endl;
 				}
 				indx = (*Hand.begin()); // pick first in set
 				//printf("pick %d\n",indx);
