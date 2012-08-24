@@ -56,6 +56,7 @@ int mainWithObjects(unsigned int const & numberOfIterations
                    ,CliOptions const & options
                    )
 {
+    srand(options.seed);
 	AchievementIndex = achievementIndex; // index, not id
 	bConsoleOutput = (verbosity > 0);
 
