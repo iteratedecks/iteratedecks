@@ -1569,8 +1569,9 @@ public:
 		if (D.bOrderMatters)
 		{
 			Hand.clear();
-			for (MSID::iterator si=D.Hand.begin();si!=D.Hand.end();si++)
-				Hand.insert(*si);			
+			for (MSID::iterator si=D.Hand.begin();si!=D.Hand.end();si++) {
+				Hand.insert(*si);
+            }
 		}
 		//for (VCARDS::iterator vi = D.Deck.begin();vi != D.Deck.end();vi++)
 		//	Deck.push_back(*vi);
