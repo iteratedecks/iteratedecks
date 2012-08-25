@@ -29,16 +29,16 @@ MSPS StatsByOrder;
 #if defined(__windows__)
 static CRITICAL_SECTION cs;
 #else
-static pthread_mutex_t cs = PTHREAD_MUTEX_INITIALIZER;
+//static pthread_mutex_t cs = PTHREAD_MUTEX_INITIALIZER;
 
 //void InitializeCriticalSection(pthread_mutex_t cs)
 //{
 //    cs* = PTHREAD_MUTEX_INITIALIZER;
 //}
-#define InitializeCriticalSection(cs)
-#define EnterCriticalSection pthread_mutex_lock
-#define LeaveCriticalSection pthread_mutex_unlock
-#define DeleteCriticalSection pthread_mutex_destroy
+//#define InitializeCriticalSection(cs)
+//#define EnterCriticalSection pthread_mutex_lock
+//#define LeaveCriticalSection pthread_mutex_unlock
+//#define DeleteCriticalSection pthread_mutex_destroy
 #endif
 
 int OrderLength = 0;// 0 to disable //DEFAULT_DECK_SIZE;
@@ -48,7 +48,9 @@ void InsertOrder(string Order, int State)
 	if (OrderLength <= 0)
 		return;
 
+    #if defined(__windows__)
 	EnterCriticalSection(&cs);
+    #endif
 	if (OrderLength > 0)
 		Order = Order.substr(0,(OrderLength + 1)*2); // 2 extra chars for commander
 	pair <MSPS::iterator, bool> pi = StatsByOrder.insert(PAIRSPS(Order,PICK_STATS()));
@@ -80,8 +82,11 @@ void InsertOrder(string Order, int State)
 		StatsByOrder.swap(tempmap);	
 		tempmap.clear();
 	}
+    #if defined(__windows__)
 	LeaveCriticalSection(&cs);
+    #endif
 }
+
 
 // routines
 void MergeBuffers(UINT *Dest, const UINT *Src, UINT Size = CARD_ABILITIES_MAX)
