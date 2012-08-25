@@ -1,77 +1,83 @@
 #include "cliOptions.hpp"
 
-DeckArgument::DeckArgument()
-: type(HASH)
-{
-}
+        namespace EvaluateDecks {
+            namespace CLI {
 
-DeckArgument::DeckArgumentType DeckArgument::getType() const
-{
-    return this->type;
-}
+        DeckArgument::DeckArgument()
+        : type(HASH)
+        {
+        }
 
-std::string DeckArgument::getHash() const throw (InvalidState)
-{
-    if(this->type != HASH) {
-        throw InvalidState("Only hash decks have a hash.");
-    }
-    return this->hashData.hash;
-}
+        DeckArgument::DeckArgumentType DeckArgument::getType() const
+        {
+            return this->type;
+        }
 
-bool DeckArgument::isOrdered() const throw (InvalidState)
-{
-    if(this->type != HASH) {
-        throw InvalidState("Only hash decks can be ordered.");
-    }
-    return this->hashData.ordered;
-}
+        std::string DeckArgument::getHash() const throw (InvalidState)
+        {
+            if(this->type != HASH) {
+                throw InvalidState("Only hash decks have a hash.");
+            }
+            return this->hashData.hash;
+        }
 
-void DeckArgument::setOrdered(bool const & ordered)
-{
-    if(this->type != HASH) {
-        throw InvalidState("Only hash decks can be ordered.");
-    }
-    this->hashData.ordered = ordered;
-}
+        bool DeckArgument::isOrdered() const throw (InvalidState)
+        {
+            if(this->type != HASH) {
+                throw InvalidState("Only hash decks can be ordered.");
+            }
+            return this->hashData.ordered;
+        }
 
-void DeckArgument::setHash(std::string const & hash)
-{
-    this->type = HASH;
-    this->hashData.hash = hash;
-}
+        void DeckArgument::setOrdered(bool const & ordered)
+        {
+            if(this->type != HASH) {
+                throw InvalidState("Only hash decks can be ordered.");
+            }
+            this->hashData.ordered = ordered;
+        }
+
+        void DeckArgument::setHash(std::string const & hash)
+        {
+            this->type = HASH;
+            this->hashData.hash = hash;
+        }
 
 
-AchievementOptions::AchievementOptions()
-: doAchievementCheck(false)
-, achievementIndex(0)
-{
-}
+        AchievementOptions::AchievementOptions()
+        : doAchievementCheck(false)
+        , achievementIndex(0)
+        {
+        }
 
-void AchievementOptions::enableCheck(unsigned int const & achievementIndex)
-{
-    this->doAchievementCheck = true;
-    this->achievementIndex = achievementIndex;
-}
+        void AchievementOptions::enableCheck(unsigned int const & achievementIndex)
+        {
+            this->doAchievementCheck = true;
+            this->achievementIndex = achievementIndex;
+        }
 
-void AchievementOptions::disableCheck()
-{
-    this->doAchievementCheck = false;
-    this->achievementIndex = 0;
-}
+        void AchievementOptions::disableCheck()
+        {
+            this->doAchievementCheck = false;
+            this->achievementIndex = 0;
+        }
 
-AchievementOptions::operator int() const
-{
-    if(this->doAchievementCheck) {
-        return this->achievementIndex;
-    } else {
-        return -1;
-    }
-}
+        AchievementOptions::operator int() const
+        {
+            if(this->doAchievementCheck) {
+                return this->achievementIndex;
+            } else {
+                return -1;
+            }
+        }
 
-CliOptions::CliOptions()
-: numberOfIterations(DEFAULT_NUMBER_OF_ITERATIONS)
-, verbosity(0)
-, seed(1)
-, colorMode(Logger::COLOR_NONE)
-{
-}
+        CliOptions::CliOptions()
+        : numberOfIterations(DEFAULT_NUMBER_OF_ITERATIONS)
+        , verbosity(0)
+        , seed(1)
+        , colorMode(Logger::COLOR_NONE)
+        , printHelpAndExit(false)
+        {
+        }
+    } // namespace CLI
+} // namespace EvaluateDecks

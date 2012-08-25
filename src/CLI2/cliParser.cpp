@@ -41,6 +41,7 @@ namespace EvaluateDecks {
             , { "verbose"              , no_argument      , 0 , 'v' }
             , { "seed"                 , optional_argument, 0 , 0 }
             , { "color"                , optional_argument, 0 , 0 }
+            , { "help"                 , no_argument      , 0 , 'h' }
             };
         static char const * const short_options = "n:oa:v";
 
@@ -86,6 +87,9 @@ namespace EvaluateDecks {
                     case 'v': {
                             options.verbosity++;
                         } break;
+                    case 'h': {
+                            options.printHelpAndExit = true;
+                        }
                     case '?':
                         throw std::invalid_argument("no such option");
                     case 0:

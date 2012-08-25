@@ -48,6 +48,8 @@
 #include "cliOptions.hpp"
 #include "cliParser.hpp"
 
+using namespace EvaluateDecks::CLI;
+
 int mainWithObjects(unsigned int const & numberOfIterations
                    ,ActiveDeck const & deck1
                    ,ActiveDeck const & deck2
