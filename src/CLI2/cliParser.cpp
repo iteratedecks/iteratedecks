@@ -30,23 +30,24 @@
 namespace EvaluateDecks {
     namespace CLI {
 
-        /**
-         * Option table
-         */
-        static option const long_options[] =
-            { { "number-of-iterations" , required_argument, 0, 'n' }
-            , { "first-deck-is-ordered", no_argument      , 0, 'o' }
-            , { "achievement-index"    , required_argument, 0, 'a' }
-            , { "verify"               , required_argument, 0 , 0 }
-            , { "verbose"              , no_argument      , 0 , 'v' }
-            , { "seed"                 , optional_argument, 0 , 0 }
-            , { "color"                , optional_argument, 0 , 0 }
-            , { "help"                 , no_argument      , 0 , 'h' }
-            };
-        static char const * const short_options = "n:oa:v";
-
         CliOptions parseCliOptions(int const & argc, char * const argv[]) throw (std::invalid_argument, std::logic_error)
         {
+            // get option table
+            option long_options[numberOfOptions];
+            std::string shortOptions;
+            for(unsigned int i = 0; i < numberOfOptions; i++) {
+                long_options[i] = options[i].getOptPart;
+                if (long_options[i].flag == NULL && long_options[i].val != 0) {
+                    shortOptions += long_options[i].val;
+                    if(long_options[i].has_arg == required_argument) {
+                        shortOptions += ":";
+                    } else if (long_options[i].has_arg == optional_argument) {
+                        shortOptions += "::";
+                    }
+                }
+            }
+            char const * const short_options(shortOptions.c_str());
+
             CliOptions options;
             // gnu getopt stuff
             while(true) {
@@ -89,7 +90,7 @@ namespace EvaluateDecks {
                         } break;
                     case 'h': {
                             options.printHelpAndExit = true;
-                        }
+                        } break;
                     case '?':
                         throw std::invalid_argument("no such option");
                     case 0:
@@ -126,9 +127,10 @@ namespace EvaluateDecks {
                         }
                 }
             }
-
+            if (options.printHelpAndExit) {
+                // no more arguments expected
+            } else if(optind+2 == argc) {
                 // other arguments, we expect exactly two decks
-            if(optind+2 == argc) {
                 options.attackDeck.setHash(argv[optind+0]);
                 options.defenseDeck.setHash(argv[optind+1]);
             } else {

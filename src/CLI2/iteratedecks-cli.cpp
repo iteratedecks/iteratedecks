@@ -107,6 +107,11 @@ int mainWithObjects(unsigned int const & numberOfIterations
 int mainWithOptions(CliOptions const & options
                    )
 {
+    if (options.printHelpAndExit) {
+        printUsage();
+        return 0;
+    }
+
 	DB.LoadAchievementXML("achievements.xml");
 	DB.LoadCardXML("cards.xml");
 	DB.LoadMissionXML("missions.xml");
@@ -125,28 +130,17 @@ int mainWithOptions(CliOptions const & options
 	return mainWithObjects(options.numberOfIterations, deck1, deck2, options.achievementOptions, options.verbosity, options);
 }
 
-/******************************************************************************
- ******************************************************************************
- * The main function, cli interface                                           *
- *                                                                            *
- * We use gnu getopt_long for option passing, they are defined in             *
- * long_options and short_options.                                            *
- * After passing the options, we call the next main method, mainWithOptions   *
- * with the values from the options or the default values.                    *
- ******************************************************************************
- ******************************************************************************/
-
-
 /**
  * Errors
  */
-#define E_NO_SUCH_OPTION -1
-#define E_INCORRECT_ARGUMENT -2
-#define E_NOT_TWO_DECKS -3
-#define E_RUNTIME_ERROR -4;
+#define E_RUNTIME_ERROR -1;
+#define E_LOGIC_ERROR -2;
 
 using namespace EvaluateDecks::CLI;
 
+/**
+ * Reads cli arguments, parses them with parseCliOptions, then calls mainWithOptions().
+ */
 int main(int const argc, char * const * const argv)
 {
     CliOptions options = parseCliOptions(argc, argv);
@@ -157,5 +151,9 @@ int main(int const argc, char * const * const argv)
         std::cerr << "Runtime error:" << std::endl;
         std::cerr << e.what() << std::endl;
         return E_RUNTIME_ERROR;
+    } catch(std::logic_error const & e) {
+        std::cerr << "Logic error:" << std::endl;
+        std::cerr << e.what() << std::endl;
+        return E_LOGIC_ERROR;
     }
 }

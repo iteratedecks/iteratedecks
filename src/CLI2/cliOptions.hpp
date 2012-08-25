@@ -4,9 +4,20 @@
     #include "verify.hpp"
     #include "../EXE/Logger.hpp"
     #include "../EXE/exceptions.hpp"
+    #include <getopt.h>
 
     namespace EvaluateDecks {
         namespace CLI {
+
+            struct CommentedOption {
+                option getOptPart;
+                std::string comment;
+            };
+
+            extern CommentedOption const options[];
+            extern size_t const numberOfOptions;
+
+            void printUsage();
 
             /**
             * Default values.
