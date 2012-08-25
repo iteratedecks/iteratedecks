@@ -1,7 +1,5 @@
 # Where our sources are
 repository ../../src
-#SRC_DIR_CLI=../../src/CLI2/
-#SRC_DIR_EXE=../../src/EXE/
 
 $(phony CLI): ${RELEASE_BINARY_CLI} XML PACKAGE
 
