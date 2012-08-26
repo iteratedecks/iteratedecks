@@ -388,6 +388,20 @@ void DeckLogger::attackBegin(PlayedCard const & attacker) {
         std::stringstream ssMessage;
         ssMessage << colorCard(attacker);
         ssMessage << " begins attack";
+        this->delegate.log(Logger::LOG_ATTACK_BEGIN_END,ssMessage.str());
+    }
+}
+
+void DeckLogger::attackTarget(PlayedCard const & attacker
+                             ,PlayedCard const & target
+                             )
+{
+    if(this->delegate.isEnabled(Logger::LOG_ATTACK)) {
+        std::stringstream ssMessage;
+        ssMessage << colorCard(attacker);
+        ssMessage << " tries to attack ";
+        ssMessage << colorCard(target);
+        ssMessage << " ...";
         this->delegate.log(Logger::LOG_ATTACK,ssMessage.str());
     }
 }
@@ -408,6 +422,6 @@ void DeckLogger::attackEnd(PlayedCard const & attacker) {
         std::stringstream ssMessage;
         ssMessage << colorCard(attacker);
         ssMessage << " ends attack";
-        this->delegate.log(Logger::LOG_ATTACK,ssMessage.str());
+        this->delegate.log(Logger::LOG_ATTACK_BEGIN_END,ssMessage.str());
     }
 }

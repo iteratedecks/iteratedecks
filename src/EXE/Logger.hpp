@@ -87,6 +87,7 @@
 
 
             void attackBegin(PlayedCard const & attacker);
+            void attackTarget(PlayedCard const & attacker, PlayedCard const & target);
             void attackHit(PlayedCard const & attacker, PlayedCard const & victim, unsigned int const & damage);
             void attackEnd(PlayedCard const & attacker);
     };

@@ -1094,6 +1094,7 @@ private:
                 return false;
             }
 		}
+        LOG(this->logger,attackTarget(SRC,target));
 		iSwiped++;
 		_ASSERT(target.IsAlive()); // must be alive here
 		// actual attack
