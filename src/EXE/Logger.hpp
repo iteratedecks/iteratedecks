@@ -18,6 +18,7 @@
             static unsigned long const LOG_ATTACK;
             static unsigned long const LOG_ATTACK_BEGIN_END;
             static unsigned long const LOG_TURN;
+            static unsigned long const LOG_SIMULATION;
             static unsigned long const LOG_ALL;
         private:
             unsigned long flags;
@@ -30,6 +31,7 @@
         public:
             std::string colorCard(PlayedCard const & playedCard) const;
             std::string colorTurn(std::string const & str) const;
+            std::string colorSimulation(std::string const & str) const;
         public:
             Logger(unsigned long const & flags, CardDB const * const & cDB);
             void setColorMode(ColorMode const & colorMode);
@@ -43,10 +45,13 @@
             Logger delegate;
         public:
             std::string colorTurn(std::string const & str) const;
+            std::string colorSimulation(std::string const & str) const;
         public:
             SimulationLogger(Logger const & delegate);
             void turnStart(unsigned int const & turn);
             void turnEnd(unsigned int const & turn);
+            void simulationStart(unsigned int const & simulation);
+            void simulationEnd(unsigned int const & simulation);
     };
 
     class DeckLogger {

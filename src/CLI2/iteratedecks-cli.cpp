@@ -107,14 +107,16 @@ int mainWithOptions(CliOptions const & options
 
     // Here come the actual simulations
 	RESULTS r;
-	for (UINT k=0;k<options.numberOfIterations;k++)	{
-		ActiveDeck X(deck1);
+    for (UINT k=0;k<options.numberOfIterations;k++)	{
+        ActiveDeck X(deck1);
         X.logger = &attackLogger;
-		ActiveDeck Y(deck2);
+        ActiveDeck Y(deck2);
         Y.logger = &defenseLogger;
 
-		Simulate(X,Y,r,&simulationLogger);
-	}
+        simulationLogger.simulationStart(k);
+        Simulate(X,Y,r,&simulationLogger);
+        simulationLogger.simulationEnd(k);
+    }
 
     // Print result
 	double winRate = (double)r.Win / (double)r.Games;

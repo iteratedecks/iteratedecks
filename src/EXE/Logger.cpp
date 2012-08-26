@@ -11,10 +11,12 @@ unsigned long const Logger::LOG_ABILITY_FAILED_NOTARGET  (1<<logInit++);
 unsigned long const Logger::LOG_ATTACK                   (1<<logInit++);
 unsigned long const Logger::LOG_ATTACK_BEGIN_END         (1<<logInit++);
 unsigned long const Logger::LOG_TURN                     (1<<logInit++);
+unsigned long const Logger::LOG_SIMULATION               (1<<logInit++);
 unsigned long const Logger::LOG_ALL                      ((1<<logInit)-1);
 
 enum Color {
     GREEN,
+    LIGHT_GREEN,
     LIGHT_BLUE
 };
 
@@ -24,6 +26,7 @@ std::string ansiColor(Color const & color)
     colorCode << "\033[";
     switch(color) {
         case GREEN: colorCode << "32"; break;
+        case LIGHT_GREEN: colorCode << "1;32"; break;
         case LIGHT_BLUE: colorCode << "1;34"; break;
     }
     colorCode << "m";
@@ -98,6 +101,20 @@ std::string Logger::colorTurn(std::string const & str) const
     }
 }
 
+std::string Logger::colorSimulation(std::string const & str) const
+{
+    switch (this->colorMode) {
+        case COLOR_NONE:
+            return str;
+        case COLOR_ANSI:
+            // ansi escape sequences do look like arcane magic, but don't be afraid
+            return ansiColor(LIGHT_GREEN) + str + ansiNoColor();
+        default:
+            throw std::logic_error("switch fail, not implemented?");
+    }
+}
+
+
 
 void Logger::log(unsigned long const & flags
                 ,std::string const & message
@@ -142,6 +159,26 @@ void SimulationLogger::turnEnd(unsigned int const & turn)
         ssMessage << "Turn " << turn << " ends";
         std::string message(ssMessage.str());
         this->delegate.log(Logger::LOG_TURN,colorTurn(message));
+    }
+}
+
+void SimulationLogger::simulationStart(unsigned int const & simulation)
+{
+    if (this->delegate.isEnabled(Logger::LOG_SIMULATION)) {
+        std::stringstream ssMessage;
+        ssMessage << "Simulation " << simulation << " starts";
+        std::string message(ssMessage.str());
+        this->delegate.log(Logger::LOG_SIMULATION,colorSimulation(message));
+    }
+}
+
+void SimulationLogger::simulationEnd(unsigned int const & simulation)
+{
+    if (this->delegate.isEnabled(Logger::LOG_SIMULATION)) {
+        std::stringstream ssMessage;
+        ssMessage << "Simulation " << simulation << " ends";
+        std::string message(ssMessage.str());
+        this->delegate.log(Logger::LOG_SIMULATION,colorSimulation(message));
     }
 }
 
@@ -339,6 +376,12 @@ std::string SimulationLogger::colorTurn(std::string const & str) const
 {
     return this->delegate.colorTurn(str);
 }
+
+std::string SimulationLogger::colorSimulation(std::string const & str) const
+{
+    return this->delegate.colorSimulation(str);
+}
+
 
 void DeckLogger::attackBegin(PlayedCard const & attacker) {
     if(this->delegate.isEnabled(Logger::LOG_ATTACK_BEGIN_END)) {
