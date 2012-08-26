@@ -1,5 +1,5 @@
 #get the operating system
-OS=$(shell uname -s | tr [:upper:] [:lower:])
+OS;=$(shell uname -s | tr [:upper:] [:lower:])
 
 #target platforms
 TARGET_PLATFORMS=linux mingw32
@@ -46,7 +46,7 @@ $(phony IS_PUSHED):
         false; \
     else true; fi
 
-SVN_REVISION=$(shell git svn info | grep "Revision:" | cut -d " " -f 2)
+SVN_REVISION;=$(shell git svn info | grep "Revision:" | cut -d " " -f 2)
 
 $(phony CAN_SVN_RELEASE): IS_CLEAN_HEAD IS_PUSHED IS_TESTED
 
