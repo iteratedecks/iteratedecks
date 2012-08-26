@@ -1327,6 +1327,8 @@ private:
             LOG(this->logger,abilityFlurry(attacker,flurries));
 		}
 
+        for (UCHAR i=0;i<flurries;i++) {
+
         // Is there no unit opposite of the attacking unit, or do we have fear? ...
         if (   (index >= (UCHAR)Def.Units.size()) // unit is right of everything opponent has
             || (!Def.getUnitAt(index).IsAlive()) // opposite unit is dead
@@ -1338,10 +1340,7 @@ private:
             bool const canValorLessUnits = this->GetAliveUnitsCount() < Def.GetAliveUnitsCount();
             bool const doesValor = canValorCardCommander && canValorLessUnits;
             EFFECT_ARGUMENT const valor = doesValor ? attacker.GetAbility(COMBAT_VALOR) : 0;
-			for (UCHAR i=0;i<flurries;i++)
-			{
 				AttackCommanderOnce1(index, attacker, valor, Def);
-			}
 			return; // and thats it!!!
 		}
 		else // there is a unit
@@ -1367,9 +1366,6 @@ private:
 			} else {
 				targets[0] = &Def.getUnitAt(index);
 			}
-			// flurry
-			for (UCHAR iatk=0;iatk<flurries;iatk++)
-			{
 				UCHAR iSwiped = 0;
 				//
 				attacker.CardSkillProc(SPECIAL_ATTACK); // attack counter
@@ -1394,8 +1390,8 @@ private:
 					SkillProcs[COMBAT_SWIPE]++;
 				if (!attacker.IsAlive()) // died from counter? during flurry
 					break;
-			} // end of flurry
 		} // end of "not hit commander directly"
+        } // end of flurry
 	}
 // #############################################################################
 // #############################################################################
