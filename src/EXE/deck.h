@@ -1079,6 +1079,10 @@ private:
 			SkillProcs[COMBAT_BURST]++;
 			LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_BURST,burst);
 		}
+
+        // after the flurry refactor, this should only be entered with a valid target
+        assert(target.IsAlive());
+
 		// if target dies during flurry and slot(s == 1) is aligned to SRC, we deal dmg to commander
 		if (    (!target.IsAlive())
              && ((swipe == 1) || (s == 1))
@@ -1329,24 +1333,37 @@ private:
 
         for (UCHAR i=0;i<flurries;i++) {
 
-            // Is there no unit opposite of the attacking unit, or do we have fear? ...
+            // Check whether attacker is still alive. (Could die, get jammed, whatever during flurry/swipe)
+            if(!attacker.IsDefined() || !attacker.IsAlive() || !attacker.canAttack()) {
+                break; // leave the flurry loop
+            }
+
+            // Is there no unit opposite of the attacking unit, or do we have fear?
+            // This condition is inside the flurry loop as this can change... in both directions:
+            // - obviously during flurry a unit might die
+            // - in theory, after hitting a wall or commander a "summon on attack" or "summon on death" could be triggered
             if (   (index >= (UCHAR)Def.Units.size()) // unit is right of everything opponent has
                 || (!Def.getUnitAt(index).IsAlive()) // opposite unit is dead
                 || (attacker.GetAbility(COMBAT_FEAR)) // unit has fear
             ) {
                 // ... deal DMG to commander directly. BUT STILL PROC50 FLURRY and PROBABLY VALOR
-                bool const canValorCardCommander = VALOR_HITS_COMMANDER && attacker.GetAbility(COMBAT_VALOR);
-                bool const canValorLessUnits = this->GetAliveUnitsCount() < Def.GetAliveUnitsCount();
-                bool const doesValor = canValorCardCommander && canValorLessUnits;
-                EFFECT_ARGUMENT const valor = doesValor ? attacker.GetAbility(COMBAT_VALOR) : 0;
+                bool const canValorCardCommander (VALOR_HITS_COMMANDER && attacker.GetAbility(COMBAT_VALOR));
+                bool const canValorLessUnits (this->GetAliveUnitsCount() < Def.GetAliveUnitsCount());
+                bool const doesValor (canValorCardCommander && canValorLessUnits);
+                EFFECT_ARGUMENT const valor (doesValor ? attacker.GetAbility(COMBAT_VALOR) : 0);
                 AttackCommanderOnce1(index, attacker, valor, Def);
-                return; // and thats it!!!
             } else {
                 // ... there is a unit
-                PlayedCard *targets[3];
-                // flurry + swipe ...
-                UCHAR swipe = (attacker.GetAbility(COMBAT_SWIPE)) ? 3 : 1;
+
+                // Now consider swipe. Swipe always procs after flurry
+                // (E.g.: for flurry 2, targets A B C we have ABCABC, and never AABBCC)
+
+                PlayedCard *targets[3]; //< our potential swipe targets
+
+                // amount of targets
+                UCHAR const swipe = (attacker.GetAbility(COMBAT_SWIPE)) ? 3 : 1;
                 if (swipe > 1) {
+                    // we do swipe
                     if ((index > 0) && (Def.getUnitAt(index-1).IsAlive())) {
                         targets[0] = &Def.getUnitAt(index-1);
                     } else {
@@ -1361,39 +1378,45 @@ private:
                     }
                     LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_SWIPE);
                 } else {
+                    // we do not swipe
                     targets[0] = &Def.getUnitAt(index);
                 }
+
+                // at this point targets[0] to targets[swipe-1] should contain each a valid target to attack
+
                 UCHAR iSwiped = 0;
                 //
                 attacker.CardSkillProc(SPECIAL_ATTACK); // attack counter
-                // swipe
+                // the swipe loop
                 for (UCHAR s=0;s<swipe;s++) {
-                    if (    ((!s) || (s == 2))
-                         && (    (!targets[s])
-                              || (    (!targets[s]->IsAlive())
-                                   && (s != 1)
-                                   && (swipe != 1)
-                                 )
-                            )
-                       ) { // empty slot to the left or right, swipe doesnt proc, if swipe == 1 then targets[0] can't be null
+                    if(s != 1 && targets[s] == NULL) {
+                        // If we have left or right target, and that is not defined
+                        // we skip this one
+                        // (Note that swipe==1 implies targets[0] != NULL)
                         continue;
                     }
-                    UCHAR targetindex = index;
-                    if (swipe > 1) {
-                        targetindex += s;
-                        targetindex--;
+
+                    if (swipe > 1 && (s != 1) && (!targets[s]->IsAlive())) {
+                        // If we have left or right target, we do a real swipe and the target is dead
+                        // we skip this one
+                        continue;
                     }
+
+                    // We either have a target, or we are in the "middle" attack of swipe so we attack the commander/wall
+                    UCHAR targetindex = index + (swipe > 1 ? s-1 : 0);
+
                     bool doContinue = AttackUnitOrCommanderOnce2(attacker, index, *targets[s], targetindex, swipe,s, iSwiped, Def);
                     if(doContinue) {continue;} else {break;}
                 } // end of swipe
+
+                // update stats
                 if (iSwiped > 1) {
                     SkillProcs[COMBAT_SWIPE]++;
                 }
-                if (!attacker.IsAlive()) { // died from counter? during flurry
-                    break;
-                }
             } // end of "not hit commander directly"
         } // end of flurry
+
+        LOG(this->logger,attackEnd(attacker));
 	}
 // #############################################################################
 // #############################################################################
