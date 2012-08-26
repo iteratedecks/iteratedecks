@@ -786,20 +786,28 @@ Valor: Removed after owner ends his turn.
 		else
 			return false;
 	}
-	const bool PlayedCard::IsDiseased() const	{	return Effects[DMGDEPENDANT_DISEASE] > 0; }
-	UCHAR PlayedCard::Heal(EFFECT_ARGUMENT amount,UINT QuestEffectId)
+	bool PlayedCard::IsDiseased() const	{	return Effects[DMGDEPENDANT_DISEASE] > 0; }
+
+    /**
+     *
+     * @param amount amount to heal
+     * @param QuestEffectId the quest effect we have, only relevant is "Invigorate"
+     * @return the actual amount healed
+     */
+    UCHAR PlayedCard::Heal(EFFECT_ARGUMENT amount,UINT QuestEffectId)
 	{
 		_ASSERT(!IsDiseased()); // disallowed
 		if (IsDiseased()) return 0;
-		if (Health + amount >  OriginalCard->GetHealth())
-		{
+		if (Health + amount >  OriginalCard->GetHealth()) {
 			amount = (OriginalCard->GetHealth() - Health);
 			Health =  OriginalCard->GetHealth();
-		}
-		else
+		} else {
 			Health += amount;
-		if (amount && (QuestEffectId == QEFFECT_INVIGORATE))
+        }
+        // If we healed something and we have invigorate, increase attack
+		if (amount && (QuestEffectId == QEFFECT_INVIGORATE)) {
 			Attack += amount;
+        }
 		return amount;
 	}
 	const Card * PlayedCard::GetOriginalCard() const { return OriginalCard; }
@@ -2037,10 +2045,10 @@ public:
 						targets.push_back(PPCARDINDEX(&(this->getUnitAt(Position+1)),Position+1));
                     }
 
-                    // that should always be the case
+                    // there should always be a target for supply: self
                     assert(targets.size() > 0);
-					if (targets.size() > 0)
-					{
+					if (targets.size() > 0)	{
+                        // check each target for disease or full health
 						PPCIV::iterator vi = targets.begin();
 						while (vi != targets.end())	{
 							if ((vi->first->GetHealth() == vi->first->GetMaxHealth())) {
@@ -2053,8 +2061,9 @@ public:
                                 vi++;
                             }
 						}
-						if (!targets.empty())
-						{
+                        // do we still have targets?
+						if (!targets.empty()) {
+                            // yes there are targets
 							if ((!IsMimiced) || bIsSelfMimic)
 								SkillProcs[aid]++;
 							else
@@ -2066,8 +2075,9 @@ public:
 						//FIXME: That variable is unused, yet is has a large right hand side...
 						bool bTributable =  (IsMimiced && IsInTargets(Mimicer,&targets))
                                          || ((!IsMimiced) && IsInTargets(&Src,&targets));
-						for (vi = targets.begin();vi != targets.end();vi++)
-						{
+
+                        // now comes the actual healing
+						for (vi = targets.begin(); vi != targets.end(); vi++) {
                             LOG(this->logger,abilitySupport(EffectType,Src,aid,*(vi->first),effect));
 							if (!IsMimiced) {
 								Src.fsHealed += vi->first->Heal(effect,QuestEffectId);
@@ -2075,26 +2085,31 @@ public:
 								Mimicer->fsHealed += vi->first->Heal(effect,QuestEffectId);
                             }
                             // tribute
-                            bool const notDiseased(!Src.IsDiseased());
-							if (vi->first->GetAbility(DEFENSIVE_TRIBUTE) && PROC50 && notDiseased)
-							{
-								if (IsMimiced)
-								{
-									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != vi->first))
-									{
-										Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
-										vi->first->fsHealed += Mimicer->Heal(effect,QuestEffectId);
-									}
-								}
-								else
-								{
-									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != vi->first))
-									{
-										SkillProcs[DEFENSIVE_TRIBUTE]++;
-										vi->first->fsHealed += Src.Heal(effect,QuestEffectId);
-									}
-								}
-							}
+                            bool const srcIsNotDiseased(!Src.IsDiseased());
+                            bool const targetHasTribute(vi->first->GetAbility(DEFENSIVE_TRIBUTE));
+                            if (targetHasTribute) {
+                                if (PROC50) {
+                                    LOG(this->logger,abilityTribute(EffectType,*(vi->first),Src,aid,effect));
+                                    if (IsMimiced)
+                                    {
+                                        if (    (Mimicer->GetType() == TYPE_ASSAULT)
+                                             && (Mimicer != vi->first)
+                                             && (!Mimicer->IsDiseased())
+                                           ) {
+                                            Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
+                                            vi->first->fsHealed += Mimicer->Heal(effect,QuestEffectId);
+                                        }
+                                    } else {
+                                        if ((Src.GetType() == TYPE_ASSAULT) && (&Src != vi->first) && srcIsNotDiseased)
+                                        {
+                                            SkillProcs[DEFENSIVE_TRIBUTE]++;
+                                            vi->first->fsHealed += Src.Heal(effect,QuestEffectId);
+                                        }
+                                    }
+                                } else {
+                                    LOG(this->logger,abilityFailNoProc(EffectType,*(vi->first),aid,Src));
+                                }// proc
+                            } // tribute
 						}
 					}
 					targets.clear();

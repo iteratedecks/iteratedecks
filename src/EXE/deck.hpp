@@ -179,7 +179,7 @@
             void Berserk(const EFFECT_ARGUMENT amount);
             void Protect(const EFFECT_ARGUMENT amount);
             bool Rush(const EFFECT_ARGUMENT amount);
-            const bool IsDiseased() const;
+            bool IsDiseased() const;
             UCHAR Heal(EFFECT_ARGUMENT amount,UINT QuestEffectId = 0);
             const Card *GetOriginalCard() const;
             PlayedCard();

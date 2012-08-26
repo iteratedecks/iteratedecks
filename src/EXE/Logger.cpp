@@ -200,6 +200,22 @@ void DeckLogger::abilitySummon(EVENT_CONDITION const & eventCondition
     }
 }
 
+void DeckLogger::abilityTribute(EVENT_CONDITION const & eventCondition
+                               ,PlayedCard const & tributer
+                               ,PlayedCard const & tributee
+                               ,AbilityId const & abilityId
+                               ,EFFECT_ARGUMENT const & effectArgument
+                               )
+{
+    if (this->delegate.isEnabled(Logger::LOG_ABILITY)) {
+        std::stringstream ssMessage;
+        ssMessage << " tributes " << colorCard(tributee) << " ";
+        ssMessage << this->delegate.abilityIdToString(abilityId);
+        ssMessage << " " << (unsigned int)effectArgument;
+        this->ability(eventCondition,tributer,ssMessage.str());
+    }
+}
+
 void DeckLogger::abilityFlurry(PlayedCard const & src
                               ,EFFECT_ARGUMENT const & amount
                               )
@@ -294,6 +310,21 @@ void DeckLogger::abilityFailDisease(EVENT_CONDITION const & eventCondition
         }
         ssFailMessage << effectArgument;
         ssFailMessage << " failed for target " << colorCard(target) << " because it is diseased";
+        std::string failMessage(ssFailMessage.str());
+        this->ability(eventCondition,src,failMessage);
+    }
+}
+
+void DeckLogger::abilityFailNoProc(EVENT_CONDITION const & eventCondition
+                                  ,PlayedCard const & src
+                                  ,AbilityId const & aid
+                                  ,PlayedCard const & target
+                                  )
+{
+    if (this->delegate.isEnabled(Logger::LOG_ABILITY_FAILED)) {
+        std::stringstream ssFailMessage;
+        ssFailMessage << this->delegate.abilityIdToString(aid) << " ";
+        ssFailMessage << " failed to tribute " << colorCard(target) << " because it did not proc";
         std::string failMessage(ssFailMessage.str());
         this->ability(eventCondition,src,failMessage);
     }
