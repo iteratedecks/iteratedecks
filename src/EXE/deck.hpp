@@ -127,6 +127,8 @@
             const char *GetName() const;
             void PrintDesc();
             std::string toString() const;
+            static unsigned int const numberOfCardLines;
+            std::string toRectString(unsigned int const w, unsigned int const i) const;
             void SetCardSkillProcBuffer(UCHAR *_SkillProcBuffer);
             const bool GetQuestSplit() const;
             void SetQuestSplit(bool bSplit);
@@ -190,6 +192,7 @@
             PlayedCard(PlayedCard const & original);
 
             bool canAttack() const;
+            unsigned int getUniqueId() const;
     };
 
 

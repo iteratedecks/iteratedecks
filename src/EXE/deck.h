@@ -584,7 +584,10 @@ Valor: Removed after owner ends his turn.
 	}
 	const bool PlayedCard::IsDefined() const
 	{
-		return (OriginalCard && (Attack||Health||Wait||(GetType() == TYPE_COMMANDER)||(GetType() == TYPE_ACTION)));
+		//return (OriginalCard && (Attack||Health||Wait||(GetType() == TYPE_COMMANDER)||(GetType() == TYPE_ACTION)));
+        return (    (OriginalCard != NULL)
+                 && (GetType() != TYPE_NONE)
+               );
 	}
 	bool PlayedCard::OnDeathEvent()
 	{
@@ -992,6 +995,10 @@ private:
             SkillProcs[COMBAT_VALOR]++;
             LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_VALOR,valor);
         }
+
+        // after flurry loop refactoring variant2 should no longer happen
+        assert(variant1);
+
         // This should also be fine in variant2.
         if(variant1) {
             if (src.GetAbility(COMBAT_FEAR) && (Def.Units.size() > index) && Def.getUnitAt(index).IsAlive()) {
@@ -1023,6 +1030,7 @@ private:
         if(variant1) {
             src.CardSkillProc(SPECIAL_ATTACK); // attack counter
         }
+
         // gotta check walls & source onDeath here
         for (LCARDS::iterator iter=Def.Structures.begin(); iter != Def.Structures.end(); iter++) {
             Def.CheckDeathEvents(*iter,*this);
@@ -1080,8 +1088,11 @@ private:
 			LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_BURST,burst);
 		}
 
+        // we should have a valid attacker
+        assert(SRC.IsAlive() && SRC.IsDefined() && SRC.canAttack());
+
         // after the flurry refactor, this should only be entered with a valid target
-        assert(target.IsAlive());
+        assert(target.IsAlive() && target.IsDefined());
 
 		// if target dies during flurry and slot(s == 1) is aligned to SRC, we deal dmg to commander
 		if (    (!target.IsAlive())
@@ -1099,6 +1110,7 @@ private:
             }
 		}
         LOG(this->logger,attackTarget(SRC,target));
+
 		iSwiped++;
 		_ASSERT(target.IsAlive()); // must be alive here
 		// actual attack
@@ -2873,6 +2885,8 @@ public:
             default:
                 // TODO "on attack" stuff needs to be done for damage dependent
                 if (EffectType == EVENT_ATTACKED) {
+                    assert(Src.IsDefined());
+                    assert(target->IsDefined());
                     assert(!IsMimiced);
                     assert(!IsFusioned); // no idea what that is...
                     assert(target != NULL); // we need a target for dmg dependent stuff
@@ -2933,6 +2947,8 @@ public:
 	}
 
     void applyDamageDependentEffectOnAttack(UINT questEffectId, PlayedCard & src, AbilityId const & abilityId, EFFECT_ARGUMENT const & effectArgument, ActiveDeck & otherDeck, PlayedCard & target) {
+        assert(src.IsDefined());
+        assert(target.IsDefined());
         LOG(this->logger,abilityOffensive(EVENT_ATTACKED, src, abilityId, target, effectArgument));
         switch(abilityId) {
             case DMGDEPENDANT_BERSERK: {
@@ -3357,6 +3373,69 @@ public:
 		}
 		std::cout << "]\n";
 	}
+
+    void appendCard(std::stringstream * os
+                   ,PlayedCard const & card
+                   ,unsigned int const w
+                   )
+    {
+        for(unsigned int i = 0; i < PlayedCard::numberOfCardLines; i++) {
+            if(card.IsDefined()) {
+                os[i] << std::setw(w) << card.toRectString(w,i);
+            } else {
+                os[i] << std::setw(w) << "";
+            }
+        }
+    }
+
+    void appendCards(std::stringstream * os, LCARDS const & cards, unsigned int const w)
+    {
+        for(LCARDS::const_iterator iter = cards.begin()
+           ;iter != cards.end()
+           ;iter++
+        ){
+            appendCard(os, *iter, w);
+        }
+    }
+
+    void concatStreams(std::stringstream & os, std::stringstream const * const oss)
+    {
+        for(unsigned int i = 0; i < PlayedCard::numberOfCardLines; i++) {
+            os << oss[i].str() << std::endl;
+        }
+    }
+
+    void appendCards(std::stringstream & os, LCARDS const & cards, unsigned int const w)
+    {
+        std::stringstream oss[PlayedCard::numberOfCardLines];
+        appendCards(oss,cards,w);
+        concatStreams(os,oss);
+    }
+
+    /**
+     * Returns a nice string representation of the deck.
+     */
+    std::string toString(bool const & reversed = false, unsigned int const w = 20)
+    {
+        std::stringstream ssDeck;
+        std::stringstream oss[PlayedCard::numberOfCardLines];
+
+        if(!reversed) {
+            appendCards(ssDeck,this->Units,w);
+            appendCard(oss,this->Commander,w);
+            appendCards(oss,this->Structures,w);
+            appendCards(oss,this->Actions,w);
+            concatStreams(ssDeck,oss);
+        } else {
+            appendCard(oss,this->Commander,w);
+            appendCards(oss,this->Structures,w);
+            appendCards(oss,this->Actions,w);
+            concatStreams(ssDeck,oss);
+            appendCards(ssDeck,this->Units,w);
+        }
+        return ssDeck.str();
+    }
+
 	string GetDeck() const
 	{
 		if (Deck.empty())
@@ -3515,6 +3594,8 @@ protected:
 					vi->SufferDmg(QuestEffectId,Dmg,0,0,0,overkill);
 
                     // probably here wall's "on attacked" skills
+                    assert(vi->IsDefined());
+                    assert(Src.IsDefined());
                     ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*vi,index,otherDeck,false,false,NULL,0,&Src);
 
 					if (vi->GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // counter, dmg from crush can't be countered
