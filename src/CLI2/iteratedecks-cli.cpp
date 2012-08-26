@@ -50,27 +50,64 @@
 
 using namespace EvaluateDecks::CLI;
 
-int mainWithObjects(unsigned int const & numberOfIterations
-                   ,ActiveDeck const & deck1
-                   ,ActiveDeck const & deck2
-                   ,int const achievementIndex
-                   ,unsigned int const & verbosity
-                   ,CliOptions const & options
+
+/**
+ * The main function, little bit higher interface
+ *
+ * We use use the simple arguments provided to construct objects.
+ * They will then be passed to mainWithObjects
+ */
+int mainWithOptions(CliOptions const & options
                    )
 {
-    srand(options.seed);
-	AchievementIndex = achievementIndex; // index, not id
-	bConsoleOutput = (verbosity > 0);
+    // only help, then we are quick
+    if (options.printHelpAndExit) {
+        printUsage();
+        return 0;
+    }
 
-    unsigned int loggingFlags = (verbosity) > 0 ? Logger::LOG_ALL : Logger::LOG_NONE;
+    // so we do a simulation, well we need some data files first
+	DB.LoadAchievementXML("achievements.xml");
+	DB.LoadCardXML("cards.xml");
+	DB.LoadMissionXML("missions.xml");
+	DB.LoadRaidXML("raids.xml");
+	DB.LoadQuestXML("quests.xml");
+
+    // construct the decks
+    // TODO own function for this.
+    // ... first deck
+    assert(options.attackDeck.getType() == DeckArgument::HASH);
+    // FIXME: should not pass c_str
+	ActiveDeck deck1(options.attackDeck.getHash().c_str(), DB.GetPointer());
+	deck1.SetOrderMatters(options.attackDeck.isOrdered());
+
+    // ... second deck
+    assert(options.defenseDeck.getType() == DeckArgument::HASH);
+	ActiveDeck deck2(options.defenseDeck.getHash().c_str(), DB.GetPointer());
+    deck2.SetOrderMatters(options.defenseDeck.isOrdered());
+
+    // set random generator seed. Note that if there was no argument
+    // given we will set to 1, which is equivalent to not calling srand
+	srand(options.seed);
+
+    // TODO need to discover what this does
+	AchievementIndex = (int)(options.achievementOptions); // index, not id
+
+    // TODO will replace console output by better logging system sometime
+	bConsoleOutput = (options.verbosity > 0);
+
+    // Set up logging
+    // TODO add support for more fine grained logging control
+    unsigned int const loggingFlags ((options.verbosity) > 0 ? Logger::LOG_ALL : Logger::LOG_NONE);
     Logger logger(loggingFlags,&DB);
     logger.setColorMode(options.colorMode);
     DeckLogger attackLogger(DeckLogger::ATTACK, logger);
     DeckLogger defenseLogger(DeckLogger::DEFENSE, logger);
     SimulationLogger simulationLogger(logger);
 
+    // Here come the actual simulations
 	RESULTS r;
-	for (UINT k=0;k<numberOfIterations;k++)	{
+	for (UINT k=0;k<options.numberOfIterations;k++)	{
 		ActiveDeck X(deck1);
         X.logger = &attackLogger;
 		ActiveDeck Y(deck2);
@@ -78,9 +115,12 @@ int mainWithObjects(unsigned int const & numberOfIterations
 
 		Simulate(X,Y,r,&simulationLogger);
 	}
+
+    // Print result
 	double winRate = (double)r.Win / (double)r.Games;
 	std::cout << r.Win << "/" << r.Games << std::endl;
 
+    // Do verify, if requested.
     VerifyOptions const & verifyOptions(options.verifyOptions);
 	if(verifyOptions.doVerify) {
 	    if(verifyOptions.min <= winRate && winRate <= verifyOptions.max) {
@@ -92,42 +132,6 @@ int mainWithObjects(unsigned int const & numberOfIterations
     } else {
         return 0;
 	}
-}
-
-
-/******************************************************************************
- ******************************************************************************
- * The main function, little bit higher interface                             *
- *                                                                            *
- * We use use the simple arguments provided to construct objects.             *
- * They will then be passed to mainWithObjects                                *
- ******************************************************************************
- ******************************************************************************/
-
-int mainWithOptions(CliOptions const & options
-                   )
-{
-    if (options.printHelpAndExit) {
-        printUsage();
-        return 0;
-    }
-
-	DB.LoadAchievementXML("achievements.xml");
-	DB.LoadCardXML("cards.xml");
-	DB.LoadMissionXML("missions.xml");
-	DB.LoadRaidXML("raids.xml");
-	DB.LoadQuestXML("quests.xml");
-
-    // FIXME: should not pass c_str
-    assert(options.attackDeck.getType() == DeckArgument::HASH);
-	ActiveDeck deck1(options.attackDeck.getHash().c_str(), DB.GetPointer());
-	deck1.SetOrderMatters(options.attackDeck.isOrdered());
-
-    assert(options.defenseDeck.getType() == DeckArgument::HASH);
-	ActiveDeck deck2(options.defenseDeck.getHash().c_str(), DB.GetPointer());
-    deck2.SetOrderMatters(options.defenseDeck.isOrdered());
-	
-	return mainWithObjects(options.numberOfIterations, deck1, deck2, options.achievementOptions, options.verbosity, options);
 }
 
 /**
