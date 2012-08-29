@@ -69,4 +69,45 @@
     typedef std::map<UINT, CardSet> MSETS;
     typedef std::pair<UINT, CardSet> PAIRMSETS;
     typedef std::vector<UINT> VID;
+
+    class MissionInfo {
+        private:
+            std::string Name;
+            UINT Commander;
+            VID Deck;
+        public:
+            MissionInfo();
+            MissionInfo(const UINT commander, const char *name = 0);
+            void Add(const UINT cardID);
+            bool GetDeck(char *buffer, size_t buffersize);
+            const UINT GetCommander() const;
+            const char *GetName() const;
+            const UINT GetCardCount() const;
+            const UINT GetCardID(UINT Index) const;
+            ~MissionInfo();
+            const bool IsValid() const;
+    };
+
+    class CardPool;
+    typedef std::vector<CardPool> VCARDPOOL;
+
+    class RaidInfo {
+        private:
+            std::string Name;
+            UINT Commander;
+            VID AlwaysInclude;
+            VCARDPOOL Pools;
+        public:
+            RaidInfo();
+            RaidInfo(UINT commander, const char *name);
+            RaidInfo(RaidInfo const &RI);
+            void GetAlways(Card *pCDB, LCARDS &Deck) const;
+            void GetPools(Card *pCDB, LCARDS &Deck) const;
+            const UINT GetCommander();
+            const char *GetName() const;
+            void AddAlways(const UINT cardID);
+            void AddPool(const CardPool &p);
+            bool IsValid();
+            ~RaidInfo();
+    };
 #endif

@@ -207,29 +207,24 @@ struct AchievementRequirement
 		return Type.CheckMissionID(MissionID);
 	}
 #endif
-class MissionInfo
-{
-private:
-	string Name;
-	UINT Commander;
-	VID Deck;
-public:
-	MissionInfo()
+
+#if 1
+	MissionInfo::MissionInfo()
 	{
 		Commander = 0;
 	}
-	MissionInfo(const UINT commander, const char *name = 0)
+	MissionInfo::MissionInfo(const UINT commander, const char *name)
 	{
 		Commander = commander;
 		if (name)
 			Name = string(name);
 		Deck.reserve(DEFAULT_DECK_RESERVE_SIZE);
 	}
-	void Add(const UINT cardID)
+	void MissionInfo::Add(const UINT cardID)
 	{
 		Deck.push_back(cardID);
 	}
-	bool GetDeck(char *buffer, size_t buffersize)
+	bool MissionInfo::GetDeck(char *buffer, size_t buffersize)
 	{
 		char lbuff[10];
 		for (UCHAR i=0;i<Deck.size();i++)
@@ -243,17 +238,17 @@ public:
 		}
 		return (buffer[0] != 0);
 	}
-	const UINT GetCommander() const { return Commander; }
-	const char *GetName() const { return Name.c_str(); }
-	const UINT GetCardCount() const { return (UINT)Deck.size(); }
-	const UINT GetCardID(UINT Index) const { return Deck[Index]; }
-	~MissionInfo()
+	const UINT MissionInfo::GetCommander() const { return Commander; }
+	const char *MissionInfo::GetName() const { return Name.c_str(); }
+	const UINT MissionInfo::GetCardCount() const { return (UINT)Deck.size(); }
+	const UINT MissionInfo::GetCardID(UINT Index) const { return Deck[Index]; }
+	MissionInfo::~MissionInfo()
 	{
 		Commander = 0;
 		Deck.clear();
 	}
-	const bool IsValid() const { return (Commander != 0); }
-};
+	const bool MissionInfo::IsValid() const { return (Commander != 0); }
+#endif
 // helpers
 bool IsCardInDeck(const UINT Id, LCARDS &deck)
 {
@@ -327,17 +322,10 @@ public:
 		tmpPool.clear();
 	}
 };
-typedef vector<CardPool> VCARDPOOL;
-class RaidInfo
-{
-private:
-	string Name;
-	UINT Commander;
-	VID AlwaysInclude;
-	VCARDPOOL Pools;
-public:
-	RaidInfo() {}
-	RaidInfo(UINT commander, const char *name)
+
+#if 1
+	RaidInfo::RaidInfo() {}
+	RaidInfo::RaidInfo(UINT commander, const char *name)
 	{
 		Commander = commander;
 		if (name)
@@ -345,7 +333,7 @@ public:
 		AlwaysInclude.reserve(DEFAULT_DECK_RESERVE_SIZE);
 		Pools.reserve(DEFAULT_POOL_COUNT);
 	}
-	RaidInfo(RaidInfo const &RI)
+	RaidInfo::RaidInfo(RaidInfo const &RI)
 	{
 		Name = RI.Name;
 		Commander = RI.Commander;
@@ -355,34 +343,35 @@ public:
 		for (UCHAR i=0;i<RI.Pools.size();i++)
 			Pools.push_back(RI.Pools[i]);
 	}
-	void GetAlways(Card *pCDB, LCARDS &Deck) const
+	void RaidInfo::GetAlways(Card *pCDB, LCARDS &Deck) const
 	{
 		for (UCHAR i=0;i<AlwaysInclude.size();i++)
 			if (pCDB[AlwaysInclude[i]].IsCard())
 				Deck.push_back(&pCDB[AlwaysInclude[i]]);
 	}
-	void GetPools(Card *pCDB, LCARDS &Deck) const
+	void RaidInfo::GetPools(Card *pCDB, LCARDS &Deck) const
 	{
 		for (UCHAR i=0;i<Pools.size();i++)
 			Pools[i].GetPool(pCDB,Deck);
 	}
-	const UINT GetCommander() { return Commander; };
-	const char *GetName() const { return Name.c_str(); }
-	void AddAlways(const UINT cardID)
+	const UINT RaidInfo::GetCommander() { return Commander; };
+	const char *RaidInfo::GetName() const { return Name.c_str(); }
+	void RaidInfo::AddAlways(const UINT cardID)
 	{
 		AlwaysInclude.push_back(cardID);
 	}
-	void AddPool(const CardPool &p)
+	void RaidInfo::AddPool(const CardPool &p)
 	{
 		Pools.push_back(p);
 	}
-	bool IsValid() { return (Commander != 0); }
-	~RaidInfo()
+	bool RaidInfo::IsValid() { return (Commander != 0); }
+	RaidInfo::~RaidInfo()
 	{ 
 		AlwaysInclude.clear();
 		Pools.clear();
 	}
-};
+#endif
+
 class BgInfo
 {
 	UINT Id;
