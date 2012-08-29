@@ -133,51 +133,36 @@ struct AchievementRequirement
 		Compare = UNDEFINED;
 	};
 };
-class AchievementInfo
-{
-	struct AchievementType
-	{
-		char EnemyID;
-		short MissionID;
-		bool Winner;
-		UCHAR Compare;
-		AchievementType() 		
-		{
-			MissionID = 0;
-			Winner = 0;
-			Compare = 0;
-		};
-		const bool IsValid() const
-		{
-			return (!EnemyID);//(MissionID != 0);
-		}
-		const bool CheckMissionID(short missionID) const
-		{
-			if (!MissionID) return true; // skip if mission ID is undefined
-			if (Compare == UNDEFINED) return true; // ???
-			// checks
-			if ((Compare == EQUAL) && (missionID != MissionID)) return false;
-			if ((Compare == GREATEREQUAL) && (missionID < MissionID)) return false;
-			if ((Compare == GREATER) && (missionID <= MissionID)) return false;
-			if ((Compare == LESSEQUAL) && (missionID > MissionID)) return false;
-			if ((Compare == LESS) && (missionID >= MissionID)) return false;
-			return true;
-		}
-	};
-private:
-	UINT Id;
-	string Name;
-	string Description;
-	UINT Number;
-	AchievementType Type;
-public:
-	vector<AchievementRequirement> Reqs;
-public:
-	AchievementInfo()
+
+#if 1
+    AchievementInfo::AchievementType::AchievementType()
+    {
+        MissionID = 0;
+        Winner = 0;
+        Compare = 0;
+    };
+    const bool AchievementInfo::AchievementType::IsValid() const
+    {
+        return (!EnemyID);//(MissionID != 0);
+    }
+    const bool AchievementInfo::AchievementType::CheckMissionID(short missionID) const
+    {
+        if (!MissionID) return true; // skip if mission ID is undefined
+        if (Compare == UNDEFINED) return true; // ???
+        // checks
+        if ((Compare == EQUAL) && (missionID != MissionID)) return false;
+        if ((Compare == GREATEREQUAL) && (missionID < MissionID)) return false;
+        if ((Compare == GREATER) && (missionID <= MissionID)) return false;
+        if ((Compare == LESSEQUAL) && (missionID > MissionID)) return false;
+        if ((Compare == LESS) && (missionID >= MissionID)) return false;
+        return true;
+    }
+
+	AchievementInfo::AchievementInfo()
 	{
 		Id = 0;
 	};
-	AchievementInfo(const UINT id, const char *name = 0, const char *desc = 0, const UINT number = 0)
+	AchievementInfo::AchievementInfo(const UINT id, const char *name, const char *desc, const UINT number)
 	{
 		Id = id;
 		if (name)
@@ -187,7 +172,7 @@ public:
 		Reqs.clear();
 		Number = number;
 	}
-	void SetType(const char *enemyID, UINT missionID, bool winner, UCHAR compare)
+	void AchievementInfo::SetType(const char *enemyID, UINT missionID, bool winner, UCHAR compare)
 	{
 		if (enemyID && enemyID[0])
 			Type.EnemyID = enemyID[0];
@@ -197,31 +182,31 @@ public:
 		Type.Winner = winner;
 		Type.Compare = compare;
 	}
-	void AddRequirement(AchievementRequirement &r)
+	void AchievementInfo::AddRequirement(AchievementRequirement &r)
 	{
 		Reqs.push_back(r);
 	};
-	const bool IsValid()
+	const bool AchievementInfo::IsValid()
 	{
 		return (Id && Type.IsValid() && (Reqs.size() > 0) && (Number <= 1));
 	}
-	const char *GetName() const
+	const char *AchievementInfo::GetName() const
 	{
 		return Name.c_str();
 	}
-	const char *GetDescription() const
+	const char *AchievementInfo::GetDescription() const
 	{
 		return Description.c_str();
 	}
-	const UINT GetID() const
+	const UINT AchievementInfo::GetID() const
 	{
 		return Id;
 	}
-	const bool CheckMissionID(UINT MissionID) const
+	const bool AchievementInfo::CheckMissionID(UINT MissionID) const
 	{
 		return Type.CheckMissionID(MissionID);
 	}
-};
+#endif
 typedef map<UINT, CardSet> MSETS;
 typedef pair<UINT, CardSet> PAIRMSETS;
 typedef vector<UINT> VID;

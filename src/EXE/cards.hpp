@@ -32,4 +32,36 @@
     struct DeckIndex;
     typedef std::map<DeckIndex, VSTRINGS> MDECKS;
     typedef std::pair<DeckIndex, VSTRINGS> PAIRMDECKS;
+
+    struct AchievementRequirement;
+
+    class AchievementInfo {
+            struct AchievementType {
+                    char EnemyID;
+                    short MissionID;
+                    bool Winner;
+                    UCHAR Compare;
+                    AchievementType();
+                    const bool IsValid() const;
+                    const bool CheckMissionID(short missionID) const;
+            };
+        private:
+            UINT Id;
+            std::string Name;
+            std::string Description;
+            UINT Number;
+            AchievementType Type;
+        public:
+            std::vector<AchievementRequirement> Reqs;
+        public:
+            AchievementInfo();
+            AchievementInfo(const UINT id, const char *name = 0, const char *desc = 0, const UINT number = 0);
+            void SetType(const char *enemyID, UINT missionID, bool winner, UCHAR compare);
+            void AddRequirement(AchievementRequirement &r);
+            const bool IsValid();
+            const char *GetName() const;
+            const char *GetDescription() const;
+            const UINT GetID() const;
+            const bool CheckMissionID(UINT MissionID) const;
+    };
 #endif
