@@ -20,4 +20,12 @@
     #define BATTLEGROUND_MAX_ID		20
     #define STEP_MAX_ID				40
 
+    typedef std::map<std::string, UINT> MSUINT;
+    typedef std::pair<std::string, UINT> PAIRMSUINT;
+    typedef std::vector<std::string> VSTRINGS;
+    typedef std::map<std::string, UCHAR> MSKILLS;
+    typedef std::pair<std::string, UCHAR> PAIRMSKILLS;
+    typedef std::set <UINT> SCID;
+    typedef std::map<UINT, UINT> MUUINT;
+    typedef std::pair<UINT, UINT> PAIRMUUINT;
 #endif

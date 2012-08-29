@@ -29,14 +29,7 @@
 #endif
 
 #include "cards.hpp"
-typedef map<string, UINT> MSUINT;
-typedef pair<string, UINT> PAIRMSUINT;
-typedef vector<string> VSTRINGS;
-typedef map<string, UCHAR> MSKILLS;
-typedef pair<string, UCHAR> PAIRMSKILLS;
-typedef set <UINT>		SCID;
-typedef map<UINT, UINT> MUUINT;
-typedef pair<UINT, UINT> PAIRMUUINT;
+
 struct DeckIndex
 {
 	string Name;
