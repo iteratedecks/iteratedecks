@@ -28,6 +28,7 @@
 #include "pugixml/src/pugixml.cpp"
 #endif
 
+#include "cards.hpp"
 typedef map<string, UINT> MSUINT;
 typedef pair<string, UINT> PAIRMSUINT;
 typedef vector<string> VSTRINGS;
@@ -36,11 +37,6 @@ typedef pair<string, UCHAR> PAIRMSKILLS;
 typedef set <UINT>		SCID;
 typedef map<UINT, UINT> MUUINT;
 typedef pair<UINT, UINT> PAIRMUUINT;
-#define TAG_ANY			-100500
-#define TAG_BATCHEVAL	100500
-#define TAG_CUSTOM		0
-#define TAG_SOMERAID	-1000
-#define TAG_SOMEMISSION	1000
 struct DeckIndex
 {
 	string Name;
