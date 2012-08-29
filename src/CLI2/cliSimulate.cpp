@@ -67,7 +67,7 @@ namespace EvaluateDecks {
             long double const pow1 (powl(p,k));
             long double const pow2 (powl(q,n-k));
             assert(binCo >= 0);
-            assert(!isinf(binCo));
+            assert(!std::isinf(binCo));
             assert(pow1 >= 0);
             assert(pow1 <= 1);
             assert(pow2 >= 0);
