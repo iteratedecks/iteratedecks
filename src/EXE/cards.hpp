@@ -5,6 +5,8 @@
     #include <map>
     #include <vector>
     #include <utility>
+    #include "deck.hpp"
+
     #define TAG_ANY			-100500
     #define TAG_BATCHEVAL	100500
     #define TAG_CUSTOM		0
