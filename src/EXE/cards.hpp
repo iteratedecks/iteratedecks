@@ -64,4 +64,9 @@
             const UINT GetID() const;
             const bool CheckMissionID(UINT MissionID) const;
     };
+
+    struct CardSet;
+    typedef std::map<UINT, CardSet> MSETS;
+    typedef std::pair<UINT, CardSet> PAIRMSETS;
+    typedef std::vector<UINT> VID;
 #endif

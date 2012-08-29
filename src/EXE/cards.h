@@ -207,9 +207,6 @@ struct AchievementRequirement
 		return Type.CheckMissionID(MissionID);
 	}
 #endif
-typedef map<UINT, CardSet> MSETS;
-typedef pair<UINT, CardSet> PAIRMSETS;
-typedef vector<UINT> VID;
 class MissionInfo
 {
 private:
