@@ -1,5 +1,5 @@
-#ifndef _DECK_HPP_
-    #define _DECK_HPP_
+#ifndef DECK_HPP_1
+    #define DECK_HPP_1
 
     #include <vector>
     #include <list>
