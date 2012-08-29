@@ -1357,7 +1357,8 @@ struct REQUIREMENT
 // #############################################################################
 // #############################################################################
 
-	ActiveDeck::ActiveDeck() 
+	ActiveDeck::ActiveDeck()
+    : logger(NULL)
 	{
 		QuestEffectId = 0;
 		Log = 0;
@@ -1416,6 +1417,7 @@ struct REQUIREMENT
 	// please note, contructors don't clean up storages, must do it manually and beforehand, even copy constructor
 	ActiveDeck::ActiveDeck(const char *HashBase64, const Card *pCDB)
 	: pCDB(pCDB)
+    , logger(NULL)
 	{
 		_ASSERT(pCDB);
 		_ASSERT(HashBase64);
@@ -1475,6 +1477,7 @@ struct REQUIREMENT
 		}
 	}
 	ActiveDeck::ActiveDeck(const Card *Cmd)
+    : logger(NULL)
 	{ 
 		QuestEffectId = 0;
 		Log = 0;
