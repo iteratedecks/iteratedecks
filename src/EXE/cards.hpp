@@ -110,4 +110,43 @@
             bool IsValid();
             ~RaidInfo();
     };
+
+    class BgInfo {
+        private:
+            UINT Id;
+            std::string Name;
+            std::string Desc;
+            UINT EffectId;
+        public:
+            BgInfo();
+            BgInfo(const UINT id,const char *name,const char *desc,const UINT effectid);
+            BgInfo(const BgInfo &BI);
+            const char *GetName();
+            const UINT GetEffectId();
+    };
+
+    class StepInfo {
+        private:
+            UINT Id;
+            UINT BgId;
+            UINT Commander;
+            VCARDPOOL Pools;
+        public:
+            StepInfo();
+            StepInfo(UINT id, UINT bgid, UINT commander);
+            StepInfo(StepInfo const &SI);
+            void GetPools(Card *pCDB, LCARDS &Deck) const;
+            const UINT GetCommander();
+            const UINT GetBGId();
+            void AddPool(const CardPool &p);
+            bool IsValid();
+            ~StepInfo();
+    };
+
+    struct SKILL {
+        char SkillName[CARD_NAME_MAX_LENGTH];
+        bool IsPassive;
+        float CardValue;
+        SKILL();
+    };
 #endif

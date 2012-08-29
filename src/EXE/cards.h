@@ -372,53 +372,42 @@ public:
 	}
 #endif
 
-class BgInfo
-{
-	UINT Id;
-	string Name;
-	string Desc;
-	UINT EffectId;
-public:
-	BgInfo() {};
-	BgInfo(const UINT id,const char *name,const char *desc,const UINT effectid)
+#if 1
+	BgInfo::BgInfo() {};
+	BgInfo::BgInfo(const UINT id,const char *name,const char *desc,const UINT effectid)
 	{
 		Id = id;
 		Name = string(name);
 		Desc = string(desc);
 		EffectId = effectid;
 	}
-	BgInfo(const BgInfo &BI) // copy constructor
+	BgInfo::BgInfo(const BgInfo &BI) // copy constructor
 	{
 		Id = BI.Id;
 		Name = BI.Name;
 		Desc = BI.Desc;
 		EffectId = BI.EffectId;
 	}
-	const char *GetName()
+	const char *BgInfo::GetName()
 	{
 		return Name.c_str();
 	}
-	const UINT GetEffectId()
+	const UINT BgInfo::GetEffectId()
 	{
 		return EffectId;
 	}
-};
-class StepInfo
-{
-	UINT Id;
-	UINT BgId;
-	UINT Commander;
-	VCARDPOOL Pools;
-public:
-	StepInfo() {}
-	StepInfo(UINT id, UINT bgid, UINT commander)
+#endif
+
+#if 1
+	StepInfo::StepInfo() {}
+	StepInfo::StepInfo(UINT id, UINT bgid, UINT commander)
 	{
 		Id = id;
 		BgId = bgid;
 		Commander = commander;
 		Pools.reserve(DEFAULT_POOL_COUNT);
 	}
-	StepInfo(StepInfo const &SI)
+	StepInfo::StepInfo(StepInfo const &SI)
 	{
 		Id = SI.Id;
 		BgId = SI.BgId;
@@ -426,35 +415,33 @@ public:
 		for (UCHAR i=0;i<SI.Pools.size();i++)
 			Pools.push_back(SI.Pools[i]);
 	}
-	void GetPools(Card *pCDB, LCARDS &Deck) const
+	void StepInfo::GetPools(Card *pCDB, LCARDS &Deck) const
 	{
 		for (UCHAR i=0;i<Pools.size();i++)
 		{
 			Pools[i].GetPool(pCDB,Deck);
 		}
 	}
-	const UINT GetCommander() { return Commander; };
-	const UINT GetBGId() { return BgId; };
-	void AddPool(const CardPool &p)
+	const UINT StepInfo::GetCommander() { return Commander; };
+	const UINT StepInfo::GetBGId() { return BgId; };
+	void StepInfo::AddPool(const CardPool &p)
 	{
 		Pools.push_back(p);
 	}
-	bool IsValid() { return (Commander && Id && BgId); }
-	~StepInfo()
+	bool StepInfo::IsValid() { return (Commander && Id && BgId); }
+	StepInfo::~StepInfo()
 	{ 
 		Pools.clear();
 	}
-};
-struct SKILL
-{
-	char SkillName[CARD_NAME_MAX_LENGTH];
-	bool IsPassive;
-	float CardValue;
-	SKILL()
+#endif
+
+#if 1
+	SKILL::SKILL()
 	{
 		SkillName[0] = 0;
-	}	
-};
+	}
+#endif
+
 #define CARD_NAME_SYNTAX_EXCLUSION	"Kapak, the Deceiver"
 char *FormatCardName(char *Name)
 {
