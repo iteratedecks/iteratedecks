@@ -3305,7 +3305,7 @@ struct REQUIREMENT
             }
 			std::cout << iter->GetName();
 		}
-		std::cout << "]\n";
+		std::cout << "]" << std::endl;
 	}
 
     void appendCard(std::stringstream * os
