@@ -72,8 +72,8 @@
             DeckLogger(DeckType const & deckType, Logger const & delegate);
         
             void ability(EVENT_CONDITION const & eventCondition,PlayedCard const & src, std::string const & message);
+            void attack(PlayedCard const & src, std::string const & message);
 
-            void abilityAttack(PlayedCard const & src, std::string const & message);
             void abilitySupport(EVENT_CONDITION const & eventCondition,PlayedCard const & src, AbilityId const & aid, PlayedCard const & target, EFFECT_ARGUMENT amount);
             void abilityOffensive(EVENT_CONDITION const & eventCondition,PlayedCard const & src, AbilityId const & aid, PlayedCard const & target, EFFECT_ARGUMENT amount);
 
@@ -89,8 +89,11 @@
 
             void attackBegin(PlayedCard const & attacker);
             void attackTarget(PlayedCard const & attacker, PlayedCard const & target);
+            void attackBonus(PlayedCard const & attacker, PlayedCard const & target, AbilityId abilityId, EFFECT_ARGUMENT amount);
             void attackHit(PlayedCard const & attacker, PlayedCard const & victim, unsigned int const & damage);
             void attackEnd(PlayedCard const & attacker);
+
+            void defensiveAbility(PlayedCard const & victim, PlayedCard const & attacker, AbilityId abilityId, EFFECT_ARGUMENT amount);
     };
 
     #define LOG(logger,command) do { if((logger) != NULL) { (logger)->command; } } while(false)

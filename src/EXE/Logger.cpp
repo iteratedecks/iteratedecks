@@ -216,13 +216,13 @@ void DeckLogger::ability(EVENT_CONDITION const & eventCondition
     }
 }
 
-void DeckLogger::abilityAttack(PlayedCard const & src
+void DeckLogger::attack(PlayedCard const & src
                               ,std::string const & message
                               )
 {
     if (this->delegate.isEnabled(Logger::LOG_ABILITY)) {
-        std::string deckStr = this->getDeckStr();
-        this->delegate.log(Logger::LOG_ABILITY,deckStr + src.toString() + " " + message);
+        //std::string deckStr = this->getDeckStr();
+        this->delegate.log(Logger::LOG_ATTACK,colorCard(src) + " " + message);
     }
 }
 
@@ -262,7 +262,7 @@ void DeckLogger::abilityFlurry(PlayedCard const & src
         ssFlurryMessage << "flurries ";
         ssFlurryMessage << amount;
         std::string flurryMessage(ssFlurryMessage.str());
-        this->abilityAttack(src,flurryMessage);
+        this->attack(src,flurryMessage);
     }
 }
 
@@ -398,30 +398,62 @@ void DeckLogger::attackTarget(PlayedCard const & attacker
 {
     if(this->delegate.isEnabled(Logger::LOG_ATTACK)) {
         std::stringstream ssMessage;
-        ssMessage << colorCard(attacker);
-        ssMessage << " tries to attack ";
+        ssMessage << "tries to attack ";
         ssMessage << colorCard(target);
         ssMessage << " ...";
-        this->delegate.log(Logger::LOG_ATTACK,ssMessage.str());
+        this->attack(attacker, ssMessage.str());
     }
 }
+
+void DeckLogger::attackBonus(PlayedCard const & attacker
+                            ,PlayedCard const & target
+                            ,AbilityId abilityId
+                            ,EFFECT_ARGUMENT amount
+                            )
+{
+    if(this->delegate.isEnabled(Logger::LOG_ATTACK)) {
+        std::stringstream ssMessage;
+        ssMessage << "gains ";
+        ssMessage << this->delegate.abilityIdToString(abilityId);
+        ssMessage << " ";
+        ssMessage << (unsigned int)amount;
+        ssMessage << " against ";
+        ssMessage << colorCard(target);
+        this->attack(attacker,ssMessage.str());
+    }
+}
+
 
 void DeckLogger::attackHit(PlayedCard const & attacker, PlayedCard const & victim, unsigned int const & damage) {
     if(this->delegate.isEnabled(Logger::LOG_ATTACK)) {
         std::stringstream ssMessage;
-        ssMessage << colorCard(attacker);
-        ssMessage << " attacks ";
+        ssMessage << "attacks ";
         ssMessage << colorCard(victim);
         ssMessage << " for " << damage << " damage";
-        this->delegate.log(Logger::LOG_ATTACK,ssMessage.str());
+        this->attack(attacker, ssMessage.str());
     }
 }
 
 void DeckLogger::attackEnd(PlayedCard const & attacker) {
     if(this->delegate.isEnabled(Logger::LOG_ATTACK_BEGIN_END)) {
+        this->attack(attacker, "ends attack");
+    }
+}
+
+void DeckLogger::defensiveAbility(PlayedCard const & victim
+                                 ,PlayedCard const & attacker
+                                 ,AbilityId abilityId
+                                 ,EFFECT_ARGUMENT amount
+                                 )
+{
+    if(this->delegate.isEnabled(Logger::LOG_ATTACK)) {
         std::stringstream ssMessage;
+        ssMessage << "has ";
+        ssMessage << this->delegate.abilityIdToString(abilityId);
+        ssMessage << " ";
+        ssMessage << (unsigned int)amount;
+        ssMessage << " against ";
         ssMessage << colorCard(attacker);
-        ssMessage << " ends attack";
-        this->delegate.log(Logger::LOG_ATTACK_BEGIN_END,ssMessage.str());
+        this->attack(victim,ssMessage.str());
     }
 }

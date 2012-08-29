@@ -917,16 +917,11 @@ struct REQUIREMENT
             LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_VALOR,valor);
         }
 
-        // after flurry loop refactoring variant2 should no longer happen
-        assert(variant1);
-
-        // This should also be fine in variant2.
-        if(variant1) {
-            if (src.GetAbility(COMBAT_FEAR) && (Def.Units.size() > index) && Def.getUnitAt(index).IsAlive()) {
-                SkillProcs[COMBAT_FEAR]++;
-                LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_FEAR);
-            }
+        if (src.GetAbility(COMBAT_FEAR) && (Def.Units.size() > index) && Def.getUnitAt(index).IsAlive()) {
+            SkillProcs[COMBAT_FEAR]++;
+            LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_FEAR);
         }
+
         UCHAR overkill = 0;
         UCHAR cdmg = src.GetAttack()+valor;
         // Update strongest attack
@@ -1012,8 +1007,7 @@ struct REQUIREMENT
         // we should have a valid attacker
         assert(SRC.IsAlive() && SRC.IsDefined() && SRC.canAttack());
 
-        // after the flurry refactor, this should only be entered with a valid target
-        assert(target.IsAlive() && target.IsDefined());
+        // after the flurry refactor, this should only be entered with a valid target unless the middle target died during a swipe.
 
 		// if target dies during flurry and slot(s == 1) is aligned to SRC, we deal dmg to commander
 		if (    (!target.IsAlive())
@@ -1037,10 +1031,10 @@ struct REQUIREMENT
 		// actual attack
 		// must check valor before every attack
 		UCHAR valor = (SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
-		if (valor > 0)
-		{
+		if (valor > 0) {
 			SkillProcs[COMBAT_VALOR]++;
 			LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_VALOR,valor);
+            LOG(this->logger,attackBonus(SRC,target,COMBAT_VALOR,valor));
 		}
 		// attacking flyer
 		UCHAR antiair = SRC.GetAbility(COMBAT_ANTIAIR);
@@ -1059,6 +1053,7 @@ struct REQUIREMENT
 		{
 			SkillProcs[COMBAT_ANTIAIR]++;
 			LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_ANTIAIR,antiair);
+            LOG(this->logger,attackBonus(SRC,target,COMBAT_ANTIAIR,antiair));
 		}
 		// enfeeble is taken into account before armor
 		UCHAR enfeeble = target.GetEffect(ACTIVATION_ENFEEBLE);
@@ -1153,6 +1148,7 @@ struct REQUIREMENT
 		{
 			UCHAR overkill = 0;
 			UCHAR cdmg = target.GetAbility(DEFENSIVE_COUNTER) + SRC.GetEffect(ACTIVATION_ENFEEBLE);
+            LOG(this->logger,defensiveAbility(target,SRC,DEFENSIVE_COUNTER,cdmg));
 			target.fsDmgDealt += SRC.SufferDmg(QuestEffectId,cdmg,0,0,0,&overkill); // counter dmg is enhanced by enfeeble
 			LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DEFENSIVE_COUNTER,cdmg);
 			target.fsOverkill += overkill;
@@ -2602,6 +2598,7 @@ struct REQUIREMENT
 									vi->first->PrintDesc();
 									printf(" for %d\n",effect);
 								}
+                                LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect));
 								UCHAR overkill = 0;
 								UCHAR sdmg = vi->first->StrikeDmg(QuestEffectId,effect,&overkill);
 								Dest.CheckDeathEvents(*vi->first,*this);
