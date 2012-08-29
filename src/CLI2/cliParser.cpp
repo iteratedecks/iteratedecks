@@ -111,8 +111,8 @@ namespace EvaluateDecks {
                                     }
                                 } break;
                             case 6: {
-                                // TODO better logic
-                                options.colorMode = Logger::COLOR_ANSI;
+                                    // TODO better logic
+                                    options.colorMode = Logger::COLOR_ANSI;
                                 } break;
                             default: {
                                     std::stringstream message;
