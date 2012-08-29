@@ -38,6 +38,8 @@
                     struct DeckArgumentHashData {
                         std::string hash;
                         bool ordered;
+
+                        DeckArgumentHashData();
                     };
                     DeckArgumentHashData hashData;
                     unsigned int missionId;

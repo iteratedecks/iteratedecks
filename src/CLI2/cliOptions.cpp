@@ -44,6 +44,12 @@ namespace EvaluateDecks {
             }
         }
 
+        DeckArgument::DeckArgumentHashData::DeckArgumentHashData()
+        : hash()
+        , ordered(false)
+        {
+        }
+
         DeckArgument::DeckArgument()
         : type(HASH)
         {
