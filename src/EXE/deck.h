@@ -111,27 +111,8 @@ const UINT BASE642ID(const unsigned short base64)
 	return DecodeBase64((base64 & 0xFF)) + DecodeBase64((base64 >> 8)) * 64;
 }
 
-class Card
-{
-private:
-	UINT Id; 
-	char Name[CARD_NAME_MAX_LENGTH];
-	char Picture[FILENAME_MAX_LENGTH];
-	UCHAR Type;
-	UCHAR Wait;
-	UINT Set;
-	UCHAR Faction;
-	UCHAR Attack;
-	UCHAR Health;
-	UCHAR Rarity;
-	EFFECT_ARGUMENT Effects[CARD_ABILITIES_MAX];
-	UCHAR TargetCounts[CARD_ABILITIES_MAX];
-	UCHAR TargetFactions[CARD_ABILITIES_MAX]; // reserved negative values for faction
-	UCHAR AbilityEvent[CARD_ABILITIES_MAX];
-#define RESERVE_ABILITIES_COUNT	3
-	vector<UCHAR> AbilitiesOrdered;
-protected:
-	void CopyName(const char *name)
+#if 1
+	void Card::CopyName(const char *name)
 	{
 		if (name)
 		{
@@ -142,7 +123,7 @@ protected:
 		else
 			memcpy(Name,UNDEFINED_NAME,sizeof(UNDEFINED_NAME)+1);
 	}
-	void CopyPic(const char *pic)
+	void Card::CopyPic(const char *pic)
 	{
 		if (pic)
 		{
@@ -153,8 +134,7 @@ protected:
 		else
 			memcpy(Picture,UNDEFINED_NAME,sizeof(UNDEFINED_NAME)+1);
 	}
-public:
-	Card()
+	Card::Card()
 	{
 		Id = 0;
 		memset(Name,0,CARD_NAME_MAX_LENGTH);
@@ -164,7 +144,7 @@ public:
 		memset(AbilityEvent,0,CARD_ABILITIES_MAX);		
 		//AbilitiesOrdered.reserve(RESERVE_ABILITIES_COUNT);
 	}
-	Card(const UINT id, const char* name, const char* pic, const UCHAR rarity, const UCHAR type, const UCHAR faction, const UCHAR attack, const UCHAR health, const UCHAR wait, const UINT set)
+	Card::Card(const UINT id, const char* name, const char* pic, const UCHAR rarity, const UCHAR type, const UCHAR faction, const UCHAR attack, const UCHAR health, const UCHAR wait, const UINT set)
 	{
 		Id = id;
 		//UINT temp = ID2BASE64(4000);
@@ -185,7 +165,7 @@ public:
 		memset(AbilityEvent,0,CARD_ABILITIES_MAX);	
 		AbilitiesOrdered.reserve(RESERVE_ABILITIES_COUNT);
 	}
-	Card(const Card &card)
+	Card::Card(const Card &card)
 	{
 		Id = card.Id;
 		memcpy(Name,card.Name,CARD_NAME_MAX_LENGTH);
@@ -206,7 +186,7 @@ public:
 			for (UCHAR i=0;i<card.AbilitiesOrdered.size();i++)
 				AbilitiesOrdered.push_back(card.AbilitiesOrdered[i]);
 	}
-	Card& operator=(const Card &card)
+	Card& Card::operator=(const Card &card)
 	{
 		Id = card.Id;
 		memcpy(Name,card.Name,CARD_NAME_MAX_LENGTH);
@@ -228,7 +208,7 @@ public:
 				AbilitiesOrdered.push_back(card.AbilitiesOrdered[i]);
 		return *this;
 	}
-	void AddAbility(const UCHAR id, const EFFECT_ARGUMENT effect, const UCHAR targetcount, const UCHAR targetfaction, const UCHAR skillevent = EVENT_EMPTY)
+	void Card::AddAbility(const UCHAR id, const EFFECT_ARGUMENT effect, const UCHAR targetcount, const UCHAR targetfaction, const UCHAR skillevent)
 	{
 		Effects[id] = effect;
 		TargetCounts[id] = targetcount;
@@ -236,7 +216,7 @@ public:
 		AbilityEvent[id] = skillevent;
 		AbilitiesOrdered.push_back(id);
 	}
-	void AddAbility(const UCHAR id, const UCHAR targetcount, const UCHAR targetfaction)
+	void Card::AddAbility(const UCHAR id, const UCHAR targetcount, const UCHAR targetfaction)
 	{
 		Effects[id] = ABILITY_ENABLED;
 		TargetCounts[id] = targetcount;
@@ -244,30 +224,30 @@ public:
 		AbilityEvent[id] = EVENT_EMPTY;
 		AbilitiesOrdered.push_back(id);
 	}
-	void AddAbility(const UCHAR id, const EFFECT_ARGUMENT effect)
+	void Card::AddAbility(const UCHAR id, const EFFECT_ARGUMENT effect)
 	{
 		Effects[id] = effect;
 		AbilityEvent[id] = EVENT_EMPTY;
 		AbilitiesOrdered.push_back(id);
 	}
-	void AddAbility(const UCHAR id)
+	void Card::AddAbility(const UCHAR id)
 	{
 		Effects[id] = ABILITY_ENABLED;
 		AbilityEvent[id] = EVENT_EMPTY;
 		AbilitiesOrdered.push_back(id);
 	}
-	void PrintAbilities()
+	void Card::PrintAbilities()
 	{
 		for (UCHAR i=0;i<CARD_ABILITIES_MAX;i++)
 			if (Effects[i] > 0)
 				printf("%d ",i);
 		printf("\n");
 	}
-	void Destroy() {	Id = 0;	}
-	~Card()	{ Destroy(); }
-	const bool IsCard() const { return (Id != 0); }
-	const UINT GetId() const { return Id; }
-	const char* GetID16(UINT &ID16Storage, bool bLowerCase = false) const
+	void Card::Destroy() {	Id = 0;	}
+	Card::~Card()	{ Destroy(); }
+	const bool Card::IsCard() const { return (Id != 0); }
+	const UINT Card::GetId() const { return Id; }
+	const char* Card::GetID16(UINT &ID16Storage, bool bLowerCase) const
 	{
 		UCHAR c = Id & 0xF;
 		UCHAR baseA = (bLowerCase) ? ('a' - 10) : ('A' - 10); // I thought I told I don't like this style ;)
@@ -283,26 +263,26 @@ public:
 		ptr[3] = 0;
 		return (const char*)ptr;
 	}
-	const unsigned short GetID64() const
+	const unsigned short Card::GetID64() const
 	{
 		return ID2BASE64(Id);
 	}
-	const char* GetID64(UINT &ID64Storage) const
+	const char* Card::GetID64(UINT &ID64Storage) const
 	{
 		//ID64Storage = 0; // is it nessesary?
 		ID64Storage = GetID64();
 		return (char *)&ID64Storage;
 	}
-	const UCHAR GetAttack() const	{	return Attack;	}
-	const UCHAR GetHealth() const	{	return Health;	}
-	const UCHAR GetWait() const		{	return Wait;	}
-	const UCHAR GetType() const		{	return Type;	}
-	const UCHAR GetSet() const		{	return Set;		}
-	const UCHAR GetRarity() const { return Rarity; }
-	const UCHAR GetFaction() const { return Faction; }
-	const EFFECT_ARGUMENT GetAbility(const UCHAR id) const { return Effects[id]; }
-	const UCHAR GetAbilitiesCount() const { return (UCHAR)AbilitiesOrdered.size(); }
-	const UCHAR GetAbilityInOrder(const UCHAR order) const
+	const UCHAR Card::GetAttack() const	{	return Attack;	}
+	const UCHAR Card::GetHealth() const	{	return Health;	}
+	const UCHAR Card::GetWait() const		{	return Wait;	}
+	const UCHAR Card::GetType() const		{	return Type;	}
+	const UCHAR Card::GetSet() const		{	return Set;		}
+	const UCHAR Card::GetRarity() const { return Rarity; }
+	const UCHAR Card::GetFaction() const { return Faction; }
+	const EFFECT_ARGUMENT Card::GetAbility(const UCHAR id) const { return Effects[id]; }
+	const UCHAR Card::GetAbilitiesCount() const { return (UCHAR)AbilitiesOrdered.size(); }
+	const UCHAR Card::GetAbilityInOrder(const UCHAR order) const
 	{
 		//_ASSERT(AbilitiesOrdered.size() > order); DISABLED FOR THE PURPOSE OF QUEST EFFECT TIME SURGE
 		if (AbilitiesOrdered.size() <= order)
@@ -310,12 +290,12 @@ public:
 		else
 			return AbilitiesOrdered[order];
 	}
-	const UCHAR GetTargetCount(const UCHAR id) const { return TargetCounts[id]; }
-	const UCHAR GetTargetFaction(const UCHAR id) const { return TargetFactions[id]; }
-	const UCHAR GetAbilityEvent(const UCHAR id) const { return AbilityEvent[id]; }
-	const char *GetName() const { return Name; }
-	const char *GetPicture() const { return Picture; }
-};
+	const UCHAR Card::GetTargetCount(const UCHAR id) const { return TargetCounts[id]; }
+	const UCHAR Card::GetTargetFaction(const UCHAR id) const { return TargetFactions[id]; }
+	const UCHAR Card::GetAbilityEvent(const UCHAR id) const { return AbilityEvent[id]; }
+	const char * Card::GetName() const { return Name; }
+	const char * Card::GetPicture() const { return Picture; }
+#endif
 
 //class PlayedCard
 #if 1
