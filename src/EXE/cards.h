@@ -457,32 +457,15 @@ char *FormatCardName(char *Name)
 		}
 	return Name;
 }
-class CardDB
-{	
-	Card CDB[CARD_MAX_ID]; // this can cause stack overflow, but should work fastest
-	MissionInfo MDB[MISSION_MAX_ID];
-	AchievementInfo ADB[ACHIEVEMENT_MAX_COUNT];
-	RaidInfo RDB[RAID_MAX_ID];
-	BgInfo BGDB[BATTLEGROUND_MAX_ID];
-	StepInfo STDB[STEP_MAX_ID];
-	MSUINT MIIndex;
-	MSUINT AIIndex;
-	MSUINT RIIndex;
-	MSUINT Index;
-	MDECKS DIndex;
-	//char SKILLS[CARD_ABILITIES_MAX][CARD_NAME_MAX_LENGTH];
-	MSKILLS SIndex;
-	MSKILLS QuestEffectIndex;
-public://protected:
-	SKILL Skills[CARD_ABILITIES_MAX];
-	MSETS SetIndex;
-	CardDB() 
+
+#if 1
+	CardDB::CardDB()
 	{
 		memset(CDB,0,CARD_MAX_ID * sizeof(Card));
 		Initialize(); 
 	};
-private: // helper functions
-	bool SaveIndex(const char *FileName, MDECKS &index)
+
+	bool CardDB::SaveIndex(const char *FileName, MDECKS &index)
 	{
 		FILE *f;
 		if (!fopen_s(&f,FileName,"w"))
@@ -502,7 +485,7 @@ private: // helper functions
 		}
 		return false;
 	}
-	UCHAR DetectTypeByID(UINT ID)
+	UCHAR CardDB::DetectTypeByID(UINT ID)
 	{
 		// Card ID < 1000 = Creature, Card ID < 2000 = Commander, Card ID < 3000 = Building, else Spell.
 		if (ID < 1000)
@@ -513,7 +496,7 @@ private: // helper functions
 			return TYPE_STRUCTURE;
 		return TYPE_ACTION;
 	}
-	UCHAR RemapFaction(UCHAR XmlID)
+	UCHAR CardDB::RemapFaction(UCHAR XmlID)
 	{
 	//<unitType> <id>1</id> <name>Imperial</name> <image>CardImperialStyled</image> </unitType> -<unitType> 
 	//<unitType> <id>3</id> <name>Bloodthirsty</name> <image>CardBloodthirstyStyle</image> </unitType>
@@ -531,7 +514,7 @@ private: // helper functions
 			return FACTION_RAIDER;
 		return FACTION_NONE;
 	}
-	UCHAR RemapRarity(UCHAR XmlID, UCHAR UniqueFlag = 0)
+	UCHAR CardDB::RemapRarity(UCHAR XmlID, UCHAR UniqueFlag)
 	{
 		if (XmlID == 1)
 			return RARITY_COMMON;
@@ -556,9 +539,8 @@ private: // helper functions
 		// rarity UNKNOWN
 		return RARITY_COMMON;
 	}
-public:
-	const Card *GetPointer() const { return (const Card *)&CDB[0]; }
-	bool LoadCardXML(const char *FileName, char *returnnewcards = 0, size_t MaxBufferSize = 0)
+	const Card *CardDB::GetPointer() const { return (const Card *)&CDB[0]; }
+	bool CardDB::LoadCardXML(const char *FileName, char *returnnewcards, size_t MaxBufferSize)
 	{
 		pugi::xml_document doc;
 		if (returnnewcards)
@@ -689,7 +671,7 @@ public:
 		}
 		return (loaded > 0);
 	}
-	static const UCHAR RemapUnitType(const UCHAR unitType)
+	const UCHAR CardDB::RemapUnitType(const UCHAR unitType)
 	{
 		switch (unitType)
 		{
@@ -700,7 +682,7 @@ public:
 		}
 		return 0;
 	};
-	bool LoadAchievementXML(const char *FileName)
+	bool CardDB::LoadAchievementXML(const char *FileName)
 	{
 		pugi::xml_document doc;
 		if (!doc.load_file(FileName)) return false;
@@ -797,7 +779,7 @@ public:
 		}
 		return (loaded > 0);
 	}
-	bool LoadMissionXML(const char *FileName)
+	bool CardDB::LoadMissionXML(const char *FileName)
 	{
 		pugi::xml_document doc;
 		if (!doc.load_file(FileName)) return false;
@@ -831,7 +813,7 @@ public:
 		}
 		return (loaded > 0);
 	}
-	bool LoadRaidXML(const char *FileName)
+	bool CardDB::LoadRaidXML(const char *FileName)
 	{
 		pugi::xml_document doc;
 		if (!doc.load_file(FileName)) return false;
@@ -877,7 +859,7 @@ public:
 		}
 		return (loaded > 0);
 	}
-	bool LoadQuestXML(const char *FileName)
+	bool CardDB::LoadQuestXML(const char *FileName)
 	{
 		pugi::xml_document doc;
 		if (!doc.load_file(FileName)) return false;
@@ -938,14 +920,14 @@ public:
 		}
 		return (loaded > 0);
 	}
-	const UINT GetQuestEffectId(UINT QuestId)
+	const UINT CardDB::GetQuestEffectId(UINT QuestId)
 	{
 		_ASSERT(QuestId < STEP_MAX_ID);
 		UINT bg = STDB[QuestId].GetBGId();
 		_ASSERT(bg < BATTLEGROUND_MAX_ID);
 		return BGDB[bg].GetEffectId();
 	}
-	bool RateCard(const UINT Id, double &OffenceValue, double &DefenceValue, const UCHAR iFormulaVersion = 0)
+	bool CardDB::RateCard(const UINT Id, double &OffenceValue, double &DefenceValue, const UCHAR iFormulaVersion)
 	{
 		const Card *c = &CDB[Id];
 		if (!c->IsCard()) // invalid
@@ -992,7 +974,7 @@ public:
 		}
 		return true;
 	}
-	void GenRaidDeck(ActiveDeck &D, UINT RaidID)
+	void CardDB::GenRaidDeck(ActiveDeck &D, UINT RaidID)
 	{
 		_ASSERT(RaidID < RAID_MAX_ID);
 		_ASSERT(RDB[RaidID].IsValid());
@@ -1001,7 +983,7 @@ public:
 		RDB[RaidID].GetAlways(CDB,D.Deck);
 		RDB[RaidID].GetPools(CDB,D.Deck);
 	}
-	void GenQuestDeck(ActiveDeck &D, UINT QuestID)
+	void CardDB::GenQuestDeck(ActiveDeck &D, UINT QuestID)
 	{
 		_ASSERT(QuestID < STEP_MAX_ID);
 		_ASSERT(STDB[QuestID].IsValid());
@@ -1009,7 +991,7 @@ public:
 		D = ActiveDeck(&CDB[commanderId]); // replace
 		STDB[QuestID].GetPools(CDB,D.Deck);
 	}
-	DWORD LoadPointers(Card **Ptr, DWORD MaxCount)
+	DWORD CardDB::LoadPointers(Card **Ptr, DWORD MaxCount)
 	{
 		DWORD cnt = 0;
 		for (DWORD i=0;(i<CARD_MAX_ID) && (cnt<MaxCount);i++)
@@ -1020,7 +1002,7 @@ public:
 			}
 		return cnt;
 	}
-	void Initialize()
+	void CardDB::Initialize()
 	{
 		// must load skills earlier than anything
 		AddSkill(ACTIVATION_CHAOS,"Chaos");
@@ -1090,7 +1072,7 @@ public:
 		AddQuestEffect(QEFFECT_INVIGORATE,"invigorate");
 		AddQuestEffect(QEFFECT_CLONE_PROJECT,"clone_project");
 	}
-	void AddSkill(UCHAR Id, const char *Name)
+	void CardDB::AddSkill(UCHAR Id, const char *Name)
 	{
 		char buffer[CARD_NAME_MAX_LENGTH];
 		strcpy_s(buffer,CARD_NAME_MAX_LENGTH,Name);
@@ -1098,18 +1080,18 @@ public:
 		strcpy_s(Skills[Id].SkillName,CARD_NAME_MAX_LENGTH,Name);
 		SIndex.insert(PAIRMSKILLS(buffer,Id));
 	}
-	void AddQuestEffect(UCHAR Id, const char *Name)
+	void CardDB::AddQuestEffect(UCHAR Id, const char *Name)
 	{
 		char buffer[CARD_NAME_MAX_LENGTH];
 		strcpy_s(buffer,CARD_NAME_MAX_LENGTH,Name);
 		strlwr(buffer);		
 		QuestEffectIndex.insert(PAIRMSKILLS(buffer,Id));
 	}
-	const char *GetSkill(UCHAR Indx) const
+	const char *CardDB::GetSkill(UCHAR Indx) const
 	{
 		return Skills[Indx].SkillName;
 	}
-	UCHAR GetSkillID(const char *Name)
+	UCHAR CardDB::GetSkillID(const char *Name)
 	{
 		char buffer[CARD_NAME_MAX_LENGTH];
 		strcpy_s(buffer,CARD_NAME_MAX_LENGTH,Name);
@@ -1120,18 +1102,18 @@ public:
 		else
 			return it->second;
 	}
-	UCHAR GetSkillIDSlow(const char *Name)
+	UCHAR CardDB::GetSkillIDSlow(const char *Name)
 	{
 		for (UCHAR i=0;i<CARD_ABILITIES_MAX;i++)
 			if (!_strcmpi(Name,Skills[i].SkillName))
 				return i;
 		return 0; // not found
 	}
-	size_t GetSize()
+	size_t CardDB::GetSize()
 	{
 		return Index.size();
 	}
-	bool Insert(Card &c)
+	bool CardDB::Insert(Card &c)
 	{
 		if (c.GetId())
 		{
@@ -1147,7 +1129,7 @@ public:
 		}
 		return false;
 	}
-	bool CreateDeck(const char *CardsList, ActiveDeck &D)
+	bool CardDB::CreateDeck(const char *CardsList, ActiveDeck &D)
 	{
 		char buffer[4096];
 		strcpy_s(buffer,4096,CardsList);
@@ -1181,7 +1163,7 @@ public:
 		D.pCDB = this->GetPointer();
 		return cnt > 0;
 	}
-	char *trim(char *str, char c=' ')
+	char *CardDB::trim(char *str, char c) const
 	{
 		size_t len = strlen(str);
 		int beg=0;
@@ -1190,8 +1172,8 @@ public:
 		if(beg) memmove(str, str+beg, len-beg+1);
 		return str;
 	}
-	bool SaveCustomDecks(const char *FileName) { return SaveIndex(FileName,DIndex); }
-	bool SaveMissionDecks(const char *FileName)
+	bool CardDB::SaveCustomDecks(const char *FileName) { return SaveIndex(FileName,DIndex); }
+	bool CardDB::SaveMissionDecks(const char *FileName)
 	{
 		FILE *f;
 		if (!fopen_s(&f,FileName,"w"))
@@ -1211,12 +1193,12 @@ public:
 		}
 		return false;
 	}
-	bool ClearDeckIndex()
+	bool CardDB::ClearDeckIndex()
 	{
 		DIndex.clear();
 		return DIndex.empty();
 	}
-	int LoadDecks(const char *FileName, bool bRewrite = false)
+	int CardDB::LoadDecks(const char *FileName, bool bRewrite)
 	{
 		FILE *f;
 		int errline = -1, cline = 0; // no errors
@@ -1286,7 +1268,7 @@ public:
 		}
 		return -2; // fnf
 	}
-	int LoadOwnedCards(const char *FileName, MUUINT &OwnedCards)
+	int CardDB::LoadOwnedCards(const char *FileName, MUUINT &OwnedCards)
 	{
 		FILE *f;
 		int errline = -1, cline = 0; // no errors
@@ -1342,7 +1324,7 @@ public:
 		}
 		return -2; // fnf
 	}
-	int LoadCardList(const char *FileName, SCID &CardPool)
+	int CardDB::LoadCardList(const char *FileName, SCID &CardPool) const
 	{
 		FILE *f;
 		int errline = -1, cline = 0; // no errors
@@ -1379,7 +1361,7 @@ public:
 		}
 		return -2; // fnf
 	}
-	bool InsertDeck(int Tag, const char *List, char *output_id_buffer = 0)
+	bool CardDB::InsertDeck(int Tag, const char *List, char *output_id_buffer)
 	{
 		VSTRINGS cardlist;
 		MDECKS *Into = &DIndex;
@@ -1562,7 +1544,7 @@ public:
 					}
 		return (!output_id_buffer) || (output_id_buffer[0]);
 	}
-	void GetAchievementList(char *Buffer, DWORD MaxBufferSize)
+	void CardDB::GetAchievementList(char *Buffer, DWORD MaxBufferSize)
 	{
 		Buffer[0]=0;
 		for (UINT i=0;i<ACHIEVEMENT_MAX_COUNT;i++)
@@ -1577,28 +1559,28 @@ public:
 			}
 		}
 	}
-	const char *GetAchievementDescription(DWORD AchievementIndex)
+	const char *CardDB::GetAchievementDescription(DWORD AchievementIndex)
 	{
 		if ((AchievementIndex < ACHIEVEMENT_MAX_COUNT) && (ADB[AchievementIndex].IsValid()))
 			return ADB[AchievementIndex].GetDescription();
 		else
 			return 0;
 	}
-	const UINT GetAchievementID(DWORD AchievementIndex)
+	const UINT CardDB::GetAchievementID(DWORD AchievementIndex)
 	{
 		if ((AchievementIndex < ACHIEVEMENT_MAX_COUNT) && (ADB[AchievementIndex].IsValid()))
 			return ADB[AchievementIndex].GetID();
 		else
 			return 0;
 	}
-	bool CheckAchievementMission(UINT AchievementIndex, UINT MissionID)
+	bool CardDB::CheckAchievementMission(UINT AchievementIndex, UINT MissionID)
 	{
 		if ((AchievementIndex < ACHIEVEMENT_MAX_COUNT) && (ADB[AchievementIndex].IsValid()))
 			return ADB[AchievementIndex].CheckMissionID(MissionID);
 		else
 			return 0;
 	}
-	void Print()
+	void CardDB::Print()
 	{
 		for (UINT i=0;i<CARD_MAX_ID;i++)
 			if (CDB[i].IsCard())
@@ -1626,7 +1608,7 @@ public:
 			printf("\n");
 		}
 	}
-	const Card *CARD(const char *Name)
+	const Card *CardDB::CARD(const char *Name)
 	{
 		MSUINT::iterator it=Index.find(Name);
 		if (it != Index.end())
@@ -1634,10 +1616,13 @@ public:
 		else
 			return 0;
 	}
-	const Card *GetCard(string Name) { return GetCard(Name.c_str()); }
-	const Card *GetCard(const char *Name)
+	const Card *CardDB::GetCard(string Name) const
+    {
+        return GetCard(Name.c_str());
+    }
+	const Card *CardDB::GetCard(const char *Name) const
 	{
-		MSUINT::iterator it=Index.find(Name);
+		MSUINT::const_iterator it=Index.find(Name);
 		if (it != Index.end())
 			return &CDB[it->second];
 		else
@@ -1654,14 +1639,14 @@ public:
 		else
 			return -1;
 	}*/
-	const Card &GetCard(const UINT Id)
+	const Card &CardDB::GetCard(const UINT Id) const
 	{
 		if (Id > CARD_MAX_ID)
 			throw 0;
 
 		return CDB[Id];
 	}
-	const Card *GetCardSmart(const char *Name)
+	const Card *CardDB::GetCardSmart(const char *Name) const
 	{
 		const char* i=strchr(Name,'[');
 		if (!i)
@@ -1676,7 +1661,7 @@ public:
 		}
 		return GetCard(Name);			
 	}
-	const bool GetCardListSorted(char *buffer, DWORD size)
+	const bool CardDB::GetCardListSorted(char *buffer, DWORD size)
 	{
 		string s;
 		char lbuff[50];
@@ -1704,7 +1689,7 @@ public:
 		strcpy(buffer,s.c_str());
 		return (!s.empty());
 	}
-	const char* GetCustomDecksList(char *buffer, size_t size, int byTag = TAG_ANY)
+	const char* CardDB::GetCustomDecksList(char *buffer, size_t size, int byTag)
 	{
 		buffer[0] = 0;
 		for (MDECKS::iterator mi = DIndex.begin(); mi != DIndex.end(); mi++)
@@ -1719,7 +1704,7 @@ public:
 		}
 		return buffer;
 	}
-	const char* GetMissionDecksList(char *buffer, size_t size, bool bSortById = false)
+	const char* CardDB::GetMissionDecksList(char *buffer, size_t size, bool bSortById)
 	{
 		buffer[0] = 0;
 		if (bSortById)
@@ -1745,7 +1730,7 @@ public:
 			}
 		return buffer;
 	}
-	const char* GetCustomDeck(const char* DeckName, const int Tag, char *buffer, size_t size)
+	const char* CardDB::GetCustomDeck(const char* DeckName, const int Tag, char *buffer, size_t size)
 	{
 		buffer[0] = 0;
 		MDECKS::iterator mi = DIndex.find(DeckIndex(DeckName,Tag));
@@ -1765,7 +1750,7 @@ public:
 		}
 		return buffer;
 	}
-	const char* GetMissionDeck(const char* DeckName, char *buffer, size_t size)
+	const char* CardDB::GetMissionDeck(const char* DeckName, char *buffer, size_t size)
 	{
 		buffer[0] = 0;
 		MSUINT::iterator mi = MIIndex.find(DeckName);
@@ -1775,14 +1760,14 @@ public:
 		MDB[mi->second].GetDeck(buffer,size);
 		return buffer;
 	}
-	const UINT GetMissionDeckIndex(const char* DeckName)
+	const UINT CardDB::GetMissionDeckIndex(const char* DeckName)
 	{
 		MSUINT::iterator mi = MIIndex.find(DeckName);
 		if (mi == MIIndex.end())	
 			return 0; // not found
 		return mi->second;
 	}
-	const char* GetRaidDecksList(char *buffer, size_t size)
+	const char* CardDB::GetRaidDecksList(char *buffer, size_t size)
 	{
 		buffer[0] = 0;
 		for (UCHAR i=0;i<RAID_MAX_ID;i++)
@@ -1796,7 +1781,7 @@ public:
 			}
 		return buffer;
 	}
-	const char* GetQuestDecksList(char *buffer, size_t size)
+	const char* CardDB::GetQuestDecksList(char *buffer, size_t size)
 	{
 		buffer[0] = 0;
 		for (UCHAR i=0;i<STEP_MAX_ID;i++)
@@ -1819,15 +1804,15 @@ public:
 			}
 		return buffer;
 	}
-	const UINT GetRaidCommanderID(UINT RaidIndex)
+	const UINT CardDB::GetRaidCommanderID(UINT RaidIndex)
 	{
 		return RDB[RaidIndex].GetCommander();
 	}
-	const UINT GetQuestCommanderID(UINT QuestIndex)
+	const UINT CardDB::GetQuestCommanderID(UINT QuestIndex)
 	{
 		return STDB[QuestIndex].GetCommander();
 	}
-	void GenRandomDeckFromCard(VCARDS &Deck,size_t i)
+	void CardDB::GenRandomDeckFromCard(VCARDS &Deck,size_t i)
 	{
 		MSUINT::iterator mi = Index.begin();
 		for (; mi != Index.end(); mi++)
@@ -1841,7 +1826,7 @@ public:
 			for (UCHAR k=0;k<DEFAULT_DECK_SIZE;k++)
 				Deck.push_back(&CDB[mi->second]);
 	}
-	const UINT GetCustomCount()
+	const UINT CardDB::GetCustomCount()
 	{
 		UINT c = 0;
 		for (MDECKS::iterator mi = DIndex.begin(); mi != DIndex.end(); mi++)
@@ -1849,7 +1834,7 @@ public:
 				c++;
 		return c;
 	}
-	bool GetCustomDeck(UINT Index, ActiveDeck &R)
+	bool CardDB::GetCustomDeck(UINT Index, ActiveDeck &R)
 	{
 		for (MDECKS::iterator mi = DIndex.begin(); mi != DIndex.end(); mi++)
 			//if (mi->first.Tag == TAG_CUSTOM) GET ANY DECK
@@ -1869,7 +1854,7 @@ public:
 			}
 		return false;
 	}
-	bool CheckAchievement(int achievementIndex, const UINT iTurn, ActiveDeck &Atk, ActiveDeck &Def)
+	bool CardDB::CheckAchievement(int achievementIndex, const UINT iTurn, ActiveDeck &Atk, ActiveDeck &Def)
 	{
 		if (achievementIndex < 0) return true;
 		for (vector<AchievementRequirement>::iterator vi = ADB[achievementIndex].Reqs.begin(); vi != ADB[achievementIndex].Reqs.end(); vi++)
@@ -2022,7 +2007,7 @@ public:
 		return true;
 	}
 	// named decks
-	ActiveDeck GetNamedDeck(const char* DeckName, const int Tag)
+	ActiveDeck CardDB::GetNamedDeck(const char* DeckName, const int Tag)
 	{
 		MDECKS::iterator mi = DIndex.find(DeckIndex(DeckName,Tag));
 		if (mi == DIndex.end())	
@@ -2037,7 +2022,7 @@ public:
 			r.Add(GetCard(*vi));
 		return r;
 	}
-};
+#endif
 
 // FIXME: After fixing class CardDB, move this to Logger.cpp
 #include "Logger.hpp"
