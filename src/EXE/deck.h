@@ -34,15 +34,9 @@
 #include "results.h"
 #include "log.h"
 #include "Logger.hpp"
+#include "cards.hpp"
 
 #define FANCY_STATS_COUNT		5
-
-#define CARD_MAX_ID				4000 // sizes of storage arrays
-#define MISSION_MAX_ID			400
-#define ACHIEVEMENT_MAX_COUNT	300
-#define RAID_MAX_ID				30
-#define BATTLEGROUND_MAX_ID		20
-#define STEP_MAX_ID				40
 
 #define RARITY_COMMON			0
 #define RARITY_UNCOMMON			1
