@@ -38,13 +38,6 @@
 
 #define FANCY_STATS_COUNT		5
 
-#define RARITY_COMMON			0
-#define RARITY_UNCOMMON			1
-#define RARITY_RARE				2
-#define RARITY_UNIQUE			3
-#define RARITY_LEGENDARY		4
-#define RARITY_STORYCOMMANDER	10
-
 #define FACTION_NONE			0
 #define FACTION_IMPERIAL		1
 #define FACTION_RAIDER			2

@@ -96,6 +96,13 @@
     #define TYPE_STRUCTURE			3
     #define TYPE_ACTION				4
 
+    #define RARITY_COMMON			0
+    #define RARITY_UNCOMMON			1
+    #define RARITY_RARE				2
+    #define RARITY_UNIQUE			3
+    #define RARITY_LEGENDARY		4
+    #define RARITY_STORYCOMMANDER	10
+
     typedef	unsigned char UCHAR;
     typedef	unsigned int UINT;
     typedef UINT EFFECT_ARGUMENT;         // that is usally the amount (i.e, the 3 in weaken 3), but also the card to summon in summon
