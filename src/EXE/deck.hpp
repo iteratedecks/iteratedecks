@@ -1,3 +1,23 @@
+#ifndef DECK_HPP_2
+    #define DECK_HPP_2
+    /**
+     * Conditions for an event, pseudo bit feld, value 0 is special.
+     */
+    typedef unsigned char EVENT_CONDITION;
+    /**
+     * Event conditions.
+     * This is a bit field, new elements should be powers of two.
+     * Zero is a special case. Would be easer if it were not.
+     */
+    #define EVENT_EMPTY				0
+    #define EVENT_DIED				1
+    #define EVENT_PLAYED			2
+    //#define EVENT_BOTH				3 // bad name, but means: on play on death. no longer used.
+    #define EVENT_ATTACKED          4 // on attacked
+    // next EVENT_SOMETHING         8
+
+#endif
+
 #ifndef DECK_HPP_1
     #define DECK_HPP_1
 
@@ -325,22 +345,3 @@
     };
 #endif
 
-#ifndef DECK_HPP_2
-    #define DECK_HPP_2
-    /**
-     * Conditions for an event, pseudo bit feld, value 0 is special.
-     */
-    typedef unsigned char EVENT_CONDITION;
-    /**
-     * Event conditions.
-     * This is a bit field, new elements should be powers of two.
-     * Zero is a special case. Would be easer if it were not.
-     */
-    #define EVENT_EMPTY				0
-    #define EVENT_DIED				1
-    #define EVENT_PLAYED			2
-    //#define EVENT_BOTH				3 // bad name, but means: on play on death. no longer used.
-    #define EVENT_ATTACKED          4 // on attacked
-    // next EVENT_SOMETHING         8
-
-#endif
