@@ -60,7 +60,7 @@ using namespace EvaluateDecks::CLI;
 int mainWithOptions(CliOptions const & options
                    )
 {
-    // only help, then we are quick
+    // only help, then we quit
     if (options.printHelpAndExit) {
         printUsage();
         return 0;
