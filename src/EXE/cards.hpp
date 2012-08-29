@@ -1,6 +1,10 @@
 #ifndef CARDS_HPP_
     #define CARDS_HPP_
 
+    #include <set>
+    #include <map>
+    #include <vector>
+    #include <utility>
     #define TAG_ANY			-100500
     #define TAG_BATCHEVAL	100500
     #define TAG_CUSTOM		0
