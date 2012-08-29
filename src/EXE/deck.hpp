@@ -90,6 +90,12 @@
     #define SPECIAL_MIST			64 // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
     #define SPECIAL_BLIZZARD		65 // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
 
+    #define TYPE_NONE				0
+    #define TYPE_COMMANDER			1
+    #define TYPE_ASSAULT			2
+    #define TYPE_STRUCTURE			3
+    #define TYPE_ACTION				4
+
     typedef	unsigned char UCHAR;
     typedef	unsigned int UINT;
     typedef UINT EFFECT_ARGUMENT;         // that is usally the amount (i.e, the 3 in weaken 3), but also the card to summon in summon

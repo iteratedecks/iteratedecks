@@ -57,14 +57,6 @@
 #define TARGETSCOUNT_ONE		0				
 #define TARGETSCOUNT_ALL		10	
 
-
-
-#define TYPE_NONE				0
-#define TYPE_COMMANDER			1
-#define TYPE_ASSAULT			2
-#define TYPE_STRUCTURE			3
-#define TYPE_ACTION				4
-
 #define QEFFECT_TIME_SURGE		1
 #define QEFFECT_COPYCAT			2
 #define QEFFECT_QUICKSILVER		3
