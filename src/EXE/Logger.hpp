@@ -3,6 +3,7 @@
 
     #include <string>
     #include "deck.hpp"
+    #include "playedCard.hpp"
 
     class Logger {
         public:

@@ -28,9 +28,7 @@
 #include "exceptions.hpp"
 #include <iomanip>
 
-#define DEFAULT_DECK_SIZE		10
-#define DEFAULT_DECK_RESERVE_SIZE	15 // up to 20? kinda deck max size for structures
-#define DEFAULT_HAND_SIZE		3
+
 
 
 #include "results.h"
@@ -873,43 +871,8 @@ struct REQUIREMENT
 	REQUIREMENT() { SkillID = 0; };
 };
 
-class ActiveDeck
-{
-public:
-	PlayedCard Commander;
-	LCARDS Deck;
-	LCARDS Units;
-	LCARDS Structures;
-	LCARDS Actions;
-	//
-	bool bOrderMatters;
-	MSID Hand;
-	bool bDelayFirstCard; // tournament-like
-	//
-	const UCHAR *CSIndex;
-	RESULT_BY_CARD *CSResult;
-    /**
-     *  Each deck counts the number of times a skill is proced. This buffer will be provided to every PlayedCard in this deck.
-     */
-	UCHAR SkillProcs[CARD_ABILITIES_MAX];
-	//
-	UINT CardPicks[DEFAULT_DECK_RESERVE_SIZE];
-	UINT CardDeaths[DEFAULT_DECK_RESERVE_SIZE];
-	//
-	UINT DamageToCommander; // for points calculation - damage dealt to ENEMY commander
-	UINT FullDamageToCommander;
-	UINT StrongestAttack;
-	// logging related stuff
-	UCHAR LogDeckID;
-	VLOG *Log;
-	// Quest effects
-	UINT QuestEffectId;
-    // used to get the actual card for summon
-    Card const * pCDB;
-    // logging
-    DeckLogger * logger;
-public:
-    PlayedCard & getUnitAt(unsigned int const index)
+#if 1
+    PlayedCard & ActiveDeck::getUnitAt(unsigned int const index)
     {
         LCARDS::iterator iter = this->Units.begin();
         for(unsigned int i = 0; i < index; i++) {
@@ -918,7 +881,7 @@ public:
         return *iter;
     }
 
-    PlayedCard & getCardAt(unsigned int const index)
+    PlayedCard & ActiveDeck::getCardAt(unsigned int const index)
     {
         LCARDS::iterator iter = this->Deck.begin();
         for(unsigned int i = 0; i < index; i++) {
@@ -927,7 +890,7 @@ public:
         return *iter;
     }
 
-    PlayedCard const & getCardAt(unsigned int const index) const
+    PlayedCard const & ActiveDeck::getCardAt(unsigned int const index) const
     {
         LCARDS::const_iterator iter = this->Deck.begin();
         for(unsigned int i = 0; i < index; i++) {
@@ -935,15 +898,14 @@ public:
         }
         return *iter;
     }
-private:
-	void Reserve()
+	void ActiveDeck::Reserve()
 	{
 		//Deck.reserve(DEFAULT_DECK_RESERVE_SIZE);
 		//Units.reserve(DEFAULT_DECK_RESERVE_SIZE);
 		//Structures.reserve(DEFAULT_DECK_RESERVE_SIZE);
 		//Actions.reserve(DEFAULT_DECK_RESERVE_SIZE);
 	}
-	LOG_RECORD* LogAdd(LOG_CARD src, UCHAR AbilityID, UCHAR Effect = ABILITY_ENABLED)
+	LOG_RECORD* ActiveDeck::LogAdd(LOG_CARD src, UCHAR AbilityID, UCHAR Effect)
 	{
 		if (!Log) return 0;
 		Log->push_back(LOG_RECORD(src,LOG_CARD(),AbilityID,Effect));
@@ -951,7 +913,7 @@ private:
 		//printf("%d: %d[%d] - %d - = %d\n",src.DeckID,src.DeckID,src.RowID,AbilityID,Effect);
 		return &(Log->back());
 	}
-	LOG_RECORD* LogAdd(LOG_CARD src, LOG_CARD dest, UCHAR AbilityID, UCHAR Effect = ABILITY_ENABLED)
+	LOG_RECORD* ActiveDeck::LogAdd(LOG_CARD src, LOG_CARD dest, UCHAR AbilityID, UCHAR Effect)
 	{
 		if (!Log) return 0;
 		Log->push_back(LOG_RECORD(src,dest,AbilityID,Effect));
@@ -959,7 +921,7 @@ private:
 		//printf("%d: %d[%d] - %d -> %d: %d[%d] = %d\n",src.DeckID,src.DeckID,src.RowID,dest.DeckID,dest.DeckID,dest.RowID,AbilityID,Effect);
 		return &(Log->back());
 	}
-	UCHAR GetAliveUnitsCount()
+	UCHAR ActiveDeck::GetAliveUnitsCount()
 	{
 		UCHAR c = 0;
         for(LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
@@ -979,7 +941,7 @@ private:
 // ok let's assume it does
 #define VALOR_HITS_COMMANDER	true
 
-    void AttackCommanderOnce(UCHAR const & index
+    void ActiveDeck::AttackCommanderOnce(UCHAR const & index
                             ,PlayedCard & src
                             ,EFFECT_ARGUMENT const & valor
                             ,ActiveDeck & Def
@@ -1047,7 +1009,7 @@ private:
         }
     }
 // #############################################################################
-    void AttackCommanderOnce1(UCHAR const & index
+    void ActiveDeck::AttackCommanderOnce1(UCHAR const & index
                              ,PlayedCard & SRC
                              ,EFFECT_ARGUMENT const & valor
                              ,ActiveDeck & Def
@@ -1056,7 +1018,7 @@ private:
         AttackCommanderOnce(index, SRC, valor, Def, true);
     }
 // #############################################################################
-    void AttackCommanderOnce2(UCHAR const & index
+    void ActiveDeck::AttackCommanderOnce2(UCHAR const & index
                              ,PlayedCard & SRC
                              ,EFFECT_ARGUMENT const & valor
                              ,ActiveDeck & Def
@@ -1068,7 +1030,7 @@ private:
     /**
      * @returns true iff we should continue in the swipe loop
      */
-    bool AttackUnitOrCommanderOnce2(PlayedCard & SRC
+    bool ActiveDeck::AttackUnitOrCommanderOnce2(PlayedCard & SRC
                                    ,UCHAR const & index
                                    ,PlayedCard & target
                                    ,UCHAR const & targetindex
@@ -1319,7 +1281,7 @@ private:
         return true;
     }
 // #############################################################################
-	void Attack(UCHAR index, ActiveDeck &Def)
+	void ActiveDeck::Attack(UCHAR index, ActiveDeck &Def)
 	{
         PlayedCard & attacker = this->getUnitAt(index);
 
@@ -1436,8 +1398,7 @@ private:
 // #############################################################################
 // #############################################################################
 
-public:
-	ActiveDeck() 
+	ActiveDeck::ActiveDeck() 
 	{
 		QuestEffectId = 0;
 		Log = 0;
@@ -1453,10 +1414,9 @@ public:
 		memset(CardDeaths,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 		pCDB = NULL;
 	}
-	~ActiveDeck() { Deck.clear(); Units.clear(); Structures.clear(); Actions.clear(); }
-public:
+	ActiveDeck::~ActiveDeck() { Deck.clear(); Units.clear(); Structures.clear(); Actions.clear(); }
 #define REQ_MAX_SIZE			5
-	bool CheckRequirements(const REQUIREMENT *Reqs)
+	bool ActiveDeck::CheckRequirements(const REQUIREMENT *Reqs)
 	{
 		if (!Reqs) return true;
 		for (UCHAR i=0;(i<REQ_MAX_SIZE) && (Reqs[i].SkillID);i++)
@@ -1464,7 +1424,7 @@ public:
 				return false;
 		return true;
 	}
-	bool IsAnnihilated()
+	bool ActiveDeck::IsAnnihilated()
 	{
 		if (!Deck.empty()) return false;
 		for (LCARDS::iterator vi = Units.begin(); vi != Units.end(); vi++)
@@ -1475,12 +1435,12 @@ public:
 				return false;
 		return true;
 	}
-	void SetFancyStatsBuffer(const UCHAR *resindex, RESULT_BY_CARD *res)
+	void ActiveDeck::SetFancyStatsBuffer(const UCHAR *resindex, RESULT_BY_CARD *res)
 	{
 		CSIndex = resindex;
 		CSResult = res;
 	}
-	UCHAR GetCountInDeck(UINT Id)
+	UCHAR ActiveDeck::GetCountInDeck(UINT Id)
 	{
 		if (Commander.GetId() == Id)
 			return 1;
@@ -1490,12 +1450,12 @@ public:
 				c++;
 		return c;
 	}
-	void SetQuestEffect(UINT EffectId)
+	void ActiveDeck::SetQuestEffect(UINT EffectId)
 	{
 		QuestEffectId = EffectId;
 	}
 	// please note, contructors don't clean up storages, must do it manually and beforehand, even copy constructor
-	ActiveDeck(const char *HashBase64, const Card *pCDB)
+	ActiveDeck::ActiveDeck(const char *HashBase64, const Card *pCDB)
 	: pCDB(pCDB)
 	{
 		_ASSERT(pCDB);
@@ -1555,7 +1515,7 @@ public:
 			}
 		}
 	}
-	ActiveDeck(const Card *Cmd)
+	ActiveDeck::ActiveDeck(const Card *Cmd)
 	{ 
 		QuestEffectId = 0;
 		Log = 0;
@@ -1573,7 +1533,7 @@ public:
 		memset(CardPicks,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 		memset(CardDeaths,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 	};
-	ActiveDeck(const ActiveDeck &D) // need copy constructor
+	ActiveDeck::ActiveDeck(const ActiveDeck &D) // need copy constructor
 	: pCDB(D.pCDB)
     , logger(D.logger)
 	{
@@ -1618,7 +1578,7 @@ public:
 		//for (VCARDS::iterator vi = D.Deck.begin();vi != D.Deck.end();vi++)
 		//	Deck.push_back(*vi);
 	}
-	bool operator==(const ActiveDeck &D) const
+	bool ActiveDeck::operator==(const ActiveDeck &D) const
 	{
 		if (strcmp(GetHash64().c_str(),D.GetHash64().c_str()))
 			return false;
@@ -1633,7 +1593,7 @@ public:
         }
 		return true;
 	}
-	bool operator<(const ActiveDeck &D) const
+	bool ActiveDeck::operator<(const ActiveDeck &D) const
 	{
 		int sr = strcmp(GetHash64().c_str(),D.GetHash64().c_str());
 		if (sr)
@@ -1670,7 +1630,7 @@ public:
         }
 		return false;
 	}
-	const bool IsValid(bool bSoftCheck = false) const
+	const bool ActiveDeck::IsValid(bool bSoftCheck) const
 	{
 		if (!Commander.IsDefined())
 			return false;
@@ -1701,26 +1661,26 @@ public:
 		}
 		return true;
 	}
-	void SetOrderMatters(const bool bMatters)
+	void ActiveDeck::SetOrderMatters(const bool bMatters)
 	{
 		bOrderMatters = bMatters;
 	}
-	void DelayFirstCard()
+	void ActiveDeck::DelayFirstCard()
 	{
 		bDelayFirstCard = true;
 	}
-	void Add(const Card *c)
+	void ActiveDeck::Add(const Card *c)
 	{
 		Deck.push_back(c);
 	}
-	bool IsInTargets(PlayedCard *pc, PPCIV *targets) // helper
+	bool ActiveDeck::IsInTargets(PlayedCard *pc, PPCIV *targets) // helper
 	{
 		for (PPCIV::iterator vi=targets->begin();vi!=targets->end();vi++)
 			if (pc == vi->first)
 				return true;
 		return false;
 	}
-	UCHAR Intercept(PPCIV &targets, UCHAR destindex, ActiveDeck &Dest)
+	UCHAR ActiveDeck::Intercept(PPCIV &targets, UCHAR destindex, ActiveDeck &Dest)
 	{
 		if (targets.size() < 2)
 			return destindex;
@@ -1744,7 +1704,7 @@ public:
 			}
 		return destindex;
 	}
-	void ApplyEffects(UINT QuestEffectId,EVENT_CONDITION EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false,PlayedCard *Mimicer=0,UCHAR StructureIndex = 0, PlayedCard * target=NULL)
+	void ActiveDeck::ApplyEffects(UINT QuestEffectId,EVENT_CONDITION EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced,bool IsFusioned,PlayedCard *Mimicer,UCHAR StructureIndex, PlayedCard * target)
 	{
 		UCHAR destindex,aid,faction;
 		PPCIV targets;
@@ -2946,7 +2906,7 @@ public:
 		}
 	}
 
-    void applyDamageDependentEffectOnAttack(UINT questEffectId, PlayedCard & src, AbilityId const & abilityId, EFFECT_ARGUMENT const & effectArgument, ActiveDeck & otherDeck, PlayedCard & target) {
+    void ActiveDeck::applyDamageDependentEffectOnAttack(UINT questEffectId, PlayedCard & src, AbilityId const & abilityId, EFFECT_ARGUMENT const & effectArgument, ActiveDeck & otherDeck, PlayedCard & target) {
         assert(src.IsDefined());
         assert(target.IsDefined());
         LOG(this->logger,abilityOffensive(EVENT_ATTACKED, src, abilityId, target, effectArgument));
@@ -2979,7 +2939,7 @@ public:
         }
     }
 
-	void SweepFancyStats(PlayedCard &pc)
+	void ActiveDeck::SweepFancyStats(PlayedCard &pc)
 	{
 		if (!CSIndex) return;
 		if (!CSResult) return;
@@ -2992,7 +2952,7 @@ public:
 		CSResult[CSIndex[pc.GetId()]].FSOverkill += pc.fsOverkill;
 		CSResult[CSIndex[pc.GetId()]].FSDeaths += pc.fsDeaths;
 	}
-	void SweepFancyStatsRemaining()
+	void ActiveDeck::SweepFancyStatsRemaining()
 	{
 		if (!CSIndex) return;
 		if (!CSResult) return;
@@ -3002,7 +2962,7 @@ public:
 		for (LCARDS::iterator vi = Structures.begin();vi != Structures.end();vi++)
 			SweepFancyStats(*vi);
 	}
-	const Card *PickNextCard(bool bNormalPick = true)
+	const Card *ActiveDeck::PickNextCard(bool bNormalPick)
 	{
 		// pick a random card
 		LCARDS::iterator vi = Deck.begin();
@@ -3126,12 +3086,12 @@ public:
 		}
 		return 0; // no cards for u
 	}
-	void CheckDeathEvents(PlayedCard &src, ActiveDeck &Def)
+	void ActiveDeck::CheckDeathEvents(PlayedCard &src, ActiveDeck &Def)
 	{
 		if (src.OnDeathEvent())
 			ApplyEffects(QuestEffectId,EVENT_DIED,src,-1,Def);
 	}
-	void AttackDeck(ActiveDeck &Def, bool bSkipCardPicks = false)
+	void ActiveDeck::AttackDeck(ActiveDeck &Def, bool bSkipCardPicks)
 	{
 		// process poison
         for (LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
@@ -3359,7 +3319,7 @@ public:
 		// check if delete record from vector via iterator and then browse forward REALLY WORKS????
 		// shift cards
 	}
-	void PrintShort()
+	void ActiveDeck::PrintShort()
 	{
 		std::cout << Commander.GetName() << " [";
         bool first = true;
@@ -3415,7 +3375,7 @@ public:
     /**
      * Returns a nice string representation of the deck.
      */
-    std::string toString(bool const & reversed = false, unsigned int const w = 20)
+    std::string ActiveDeck::toString(bool const & reversed, unsigned int const w)
     {
         std::stringstream ssDeck;
         std::stringstream oss[PlayedCard::numberOfCardLines];
@@ -3436,7 +3396,7 @@ public:
         return ssDeck.str();
     }
 
-	string GetDeck() const
+	string ActiveDeck::GetDeck() const
 	{
 		if (Deck.empty())
 			return string();
@@ -3455,7 +3415,7 @@ public:
 		}
 		return s;
 	}
-	string GetHash64(bool bCardPicks = false) const
+	string ActiveDeck::GetHash64(bool bCardPicks) const
 	{
 #define HASH_SAVES_ORDER	1
 		if (Deck.empty() && ((!bCardPicks) || (!CardPicks[0])))
@@ -3536,8 +3496,7 @@ public:
 		while (si != ids.end());
 		return s;
 	}
-protected:
-	void GetTargets(LCARDS &From, UCHAR TargetFaction, PPCIV &GetTo, bool bForInfuse = false)
+	void ActiveDeck::GetTargets(LCARDS &From, UCHAR TargetFaction, PPCIV &GetTo, bool bForInfuse)
 	{
 		if (!bForInfuse)
 			GetTo.clear();
@@ -3549,7 +3508,7 @@ protected:
 			pos++;
 		}
 	}
-};
+#endif
 
     /**
      * Hit the commander.

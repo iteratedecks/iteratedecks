@@ -22,18 +22,10 @@
 #endif
 
 #include "deck.hpp"
+#include "results.hpp"
 
-typedef unsigned long       DWORD;
-struct RESULTS
-{
-	DWORD Win;
-	DWORD Loss;
-	DWORD Games;
-	DWORD Points;
-	DWORD AutoPoints;
-	DWORD LPoints;
-	DWORD LAutoPoints;
-	RESULTS()
+// struct RESULTS
+	RESULTS::RESULTS()
 	{
 		Win = 0;
 		Loss = 0;
@@ -43,7 +35,7 @@ struct RESULTS
 		LPoints = 0;
 		LAutoPoints = 0;
 	}
-	void Add(const RESULTS rAdd)
+	void RESULTS::Add(const RESULTS rAdd)
 	{
 		Win += rAdd.Win;
 		Loss += rAdd.Loss;
@@ -53,7 +45,6 @@ struct RESULTS
 		LPoints += rAdd.LPoints;
 		LAutoPoints += rAdd.LAutoPoints;
 	}
-};
 //
 struct PICK_STATS
 {

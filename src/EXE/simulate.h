@@ -107,14 +107,14 @@ void MergeBuffers(UINT *Dest, const UCHAR *Src, UINT Size = CARD_ABILITIES_MAX)
 void Simulate(ActiveDeck &tAtk
              ,ActiveDeck &tDef
              ,RESULTS &r
-             ,SimulationLogger * logger = NULL
-             ,const UCHAR *CSIndex = NULL
-             ,RESULT_BY_CARD *rbc = NULL
-             ,bool bSurge = false
-             ,REQUIREMENT *Reqs = 0
-             ,UINT *SkillProcs = 0
-             ,bool bAnnihilator = false
-             ,bool bSurrenderAtLoss = false
+             ,SimulationLogger * logger
+             ,const UCHAR *CSIndex
+             ,RESULT_BY_CARD *rbc
+             ,bool bSurge
+             ,REQUIREMENT *Reqs
+             ,UINT *SkillProcs
+             ,bool bAnnihilator
+             ,bool bSurrenderAtLoss
              )
 {
 /*
