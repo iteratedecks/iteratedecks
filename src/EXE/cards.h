@@ -61,8 +61,7 @@ struct DeckIndex
 				return Tag < DI.Tag;
 	}
 };
-typedef map<DeckIndex, VSTRINGS> MDECKS;
-typedef pair<DeckIndex, VSTRINGS> PAIRMDECKS;
+
 struct CardSet
 {
 	char Name[CARD_NAME_MAX_LENGTH];

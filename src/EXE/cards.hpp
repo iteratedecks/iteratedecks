@@ -28,4 +28,8 @@
     typedef std::set <UINT> SCID;
     typedef std::map<UINT, UINT> MUUINT;
     typedef std::pair<UINT, UINT> PAIRMUUINT;
+
+    struct DeckIndex;
+    typedef std::map<DeckIndex, VSTRINGS> MDECKS;
+    typedef std::pair<DeckIndex, VSTRINGS> PAIRMDECKS;
 #endif
