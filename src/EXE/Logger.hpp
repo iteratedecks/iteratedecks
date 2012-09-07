@@ -88,6 +88,7 @@
 
 
             void attackBegin(PlayedCard const & attacker);
+            void attackSwipe(PlayedCard const & attacker);
             void attackTarget(PlayedCard const & attacker, PlayedCard const & target);
             void attackBonus(PlayedCard const & attacker, PlayedCard const & target, AbilityId abilityId, EFFECT_ARGUMENT amount);
             void attackHit(PlayedCard const & attacker, PlayedCard const & victim, unsigned int const & damage);

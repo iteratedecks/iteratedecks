@@ -294,7 +294,7 @@ const UINT BASE642ID(const unsigned short base64)
     std::string PlayedCard::toString() const
     {
         if (!IsDefined()) {
-            throw logic_error("toString: undefined card");
+            assertX(IsDefined());
         } else {
             std::stringstream ss;
             ss << "[";
@@ -1000,6 +1000,7 @@ struct REQUIREMENT
 		{
 			SkillProcs[COMBAT_BURST]++;
 			LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_BURST,burst);
+            LOG(this->logger,attackBonus(SRC,target,COMBAT_BURST,burst));
 		}
 
         // we should have a valid attaker
@@ -1306,6 +1307,7 @@ struct REQUIREMENT
                         targets[2] = NULL;
                     }
                     LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_SWIPE);
+                    LOG(this->logger,attackSwipe(attacker));
                 } else {
                     // we do not swipe
                     targets[0] = &Def.getUnitAt(index);

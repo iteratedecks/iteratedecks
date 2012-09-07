@@ -392,6 +392,17 @@ void DeckLogger::attackBegin(PlayedCard const & attacker) {
     }
 }
 
+void DeckLogger::attackSwipe(PlayedCard const & attacker)
+{
+    if(this->delegate.isEnabled(Logger::LOG_ATTACK)) {
+        std::stringstream ssMessage;
+        ssMessage << colorCard(attacker);
+        ssMessage << " swipes";
+        this->delegate.log(Logger::LOG_ATTACK,ssMessage.str());
+    }
+}
+
+
 void DeckLogger::attackTarget(PlayedCard const & attacker
                              ,PlayedCard const & target
                              )
