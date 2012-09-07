@@ -8,7 +8,7 @@ while read line
 do
     echo -n ${ITERATEDECKS} ${line}
     echo -ne "\t"
-    ${ITERATEDECKS} ${line} > /dev/null
+    ${ITERATEDECKS} ${line} > /dev/null 2>/dev/null
     retval=$?
     if [ $retval -eq 0 ]
     then
@@ -17,7 +17,7 @@ do
         echo -e "\033[1;31mbad\033[0m"
         SUCCESS=1
         exit
-    fi       
+    fi
 done
 
     if [ $SUCCESS -eq 0 ]
@@ -29,7 +29,7 @@ done
         echo -ne "\033[1;31m"
         echo -n "Overall result: Bad"
         echo -e "\033[0m"
-    fi       
+    fi
 
 
 cd ../../src/TEST
