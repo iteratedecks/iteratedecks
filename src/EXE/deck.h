@@ -1142,7 +1142,7 @@ struct REQUIREMENT
 		}
 
         // Moraku suggests that "on attack" triggers after crush
-        ApplyEffects(QuestEffectId,EVENT_ATTACKED,target,targetindex,*this,false,false,NULL,0,&SRC);
+        Def.ApplyEffects(QuestEffectId,EVENT_ATTACKED,target,targetindex,*this,false,false,NULL,0,&SRC);
 
 		// counter
 		if ((dmg > 0) && target.GetAbility(DEFENSIVE_COUNTER))
@@ -2001,19 +2001,19 @@ struct REQUIREMENT
                    )
 				{
 					targets.clear();
-                    // If we are not left most, add unit left of us
+                    // If we are not left most, add unit left of us a target
 					if (Position > 0) {
 						targets.push_back(PPCARDINDEX(&(this->getUnitAt(Position-1)),Position-1));
                     }
                     // we are a target
 					targets.push_back(PPCARDINDEX(&(this->getUnitAt(Position)),Position));
-                    // if there is a unit right of us, add it
+                    // if there is a unit right of us, add it as a target
 					if ((DWORD)Position+1 < Units.size()) {
 						targets.push_back(PPCARDINDEX(&(this->getUnitAt(Position+1)),Position+1));
                     }
 
                     // there should always be a target for supply: self
-                    assert(targets.size() > 0);
+                    assertX(targets.size() > 0);
 					if (targets.size() > 0)	{
                         // check each target for disease or full health
 						PPCIV::iterator vi = targets.begin();
@@ -2045,7 +2045,9 @@ struct REQUIREMENT
 
                         // now comes the actual healing
 						for (vi = targets.begin(); vi != targets.end(); vi++) {
-                            LOG(this->logger,abilitySupport(EffectType,Src,aid,*(vi->first),effect));
+                            PlayedCard & target = *(vi->first);
+                            assertX(target.IsDefined());
+                            LOG(this->logger,abilitySupport(EffectType,Src,aid,target,effect));
 							if (!IsMimiced) {
 								Src.fsHealed += vi->first->Heal(effect,QuestEffectId);
 							} else {

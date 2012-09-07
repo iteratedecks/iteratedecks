@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <sstream>
+#include "assert.hpp"
 
 static int logInit=0;
 unsigned long const Logger::LOG_NONE                     (0);
@@ -77,6 +78,7 @@ void Logger::setColorMode(ColorMode const & colorMode)
 
 std::string Logger::colorCard(PlayedCard const & playedCard) const
 {
+    assertX(playedCard.IsDefined());
     switch (this->colorMode) {
         case COLOR_NONE:
             return playedCard.toString();
@@ -274,6 +276,8 @@ void DeckLogger::abilitySupport(EVENT_CONDITION const & eventCondition
                                )
 {
     if (this->delegate.isEnabled(Logger::LOG_ABILITY)) {
+        assertX(src.IsDefined());
+        assertX(target.IsDefined());
         std::stringstream ssMessage;
         ssMessage << this->delegate.abilityIdToString(aid) << " ";
         ssMessage << (unsigned int)amount << " ";
