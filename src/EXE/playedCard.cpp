@@ -24,6 +24,7 @@ unsigned int const PlayedCard::numberOfCardLines(6);
 std::string PlayedCard::toRectString(unsigned int const w, unsigned int const i) const
 {
     std::stringstream ssLine;
+    unsigned int const type = this->GetType();
     switch(i) {
         case 0: case 5: {
             ssLine << "+" << std::setw(w-2);
@@ -64,8 +65,14 @@ std::string PlayedCard::toRectString(unsigned int const w, unsigned int const i)
         case 4: {
             ssLine << "|";
             ssLine << std::setw(w-2-5) << "";
-            ssLine << std::setw(2) << (unsigned int)this->GetAttack();
-            ssLine << "/";
+            ssLine << std::setw(2);
+            if(type==TYPE_ASSAULT) {
+                ssLine << (unsigned int)this->GetAttack();
+                ssLine << "/";
+            } else {
+                ssLine << "";
+                ssLine << " ";
+            }
             ssLine << std::setw(2) << (unsigned int)this->GetHealth();
             ssLine << "|";
         } break;
