@@ -7,9 +7,9 @@
 #CXX=${TOOLCHAIN_PREFIX}g++
 
 # Some flags
-COMMON_FLAGS= -ggdb
-CXXFLAGS+=${COMMON_FLAGS}
-LDFLAGS+=${COMMON_FLAGS}
+COMMON_FLAGS= -g -ggdb
+CXXFLAGS+=${COMMON_FLAGS} -O0
+LDFLAGS+=${COMMON_FLAGS} -ldl -rdynamic
 
 # Our release
 RELEASE_BINARY_CLI=iteratedecks-cli

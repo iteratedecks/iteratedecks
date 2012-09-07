@@ -13,36 +13,34 @@ std::string dtos(double const d) {
     return ss.str();
 }
 
-AssertionError::AssertionError(std::string message
-                              ,std::string file
-                              ,unsigned int line
-                              ,std::string function
+AssertionError::AssertionError(std::string const & message
+                              ,std::string const & file
+                              ,unsigned int const line
+                              ,std::string const & function
                               )
-: std::logic_error(message + " in file " + file + ":" + itos(line) + "(" + function + ")")
+: LogicError(message + " in file " + file + ":" + itos(line) + "(" + function + ")", 3)
 {
 }
 
-
-AssertionError::AssertionError(double const a
-                              ,double const b
-                              ,double const delta
-                              ,std::string file
-                              ,unsigned int line
-                              ,std::string function
-                              )
-: std::logic_error("doubles not close enough a=" +dtos(a) + ", b=" + dtos(b) + ", delta=" + dtos(delta) + " in file " + file + ":" + itos(line) + "(" + function + ")")
-{
-}
-
-
-AssertionError assertGE_(double a
-              ,double b
-              ,std::string sa
-              ,std::string sb
-              ,std::string file
-              ,unsigned int line
-              ,std::string function
-              )
+AssertionError assertGE_(double const a
+                        ,double const b
+                        ,std::string const & sa
+                        ,std::string const & sb
+                        ,std::string const & file
+                        ,unsigned int const line
+                        ,std::string const & function
+                        )
 {
     return AssertionError(sa + "== " + dtos(a) + " >= " + dtos(b) + " == " + sb,file,line,function);
+}
+
+AssertionError assertDEE_(double const a
+                         ,double const b
+                         ,double const delta
+                         ,std::string const & file
+                         ,unsigned int const line
+                         ,std::string const & function
+                         )
+{
+    return AssertionError("doubles not close enough a=" +dtos(a) + ", b=" + dtos(b) + ", delta=" + dtos(delta),file,line,function);
 }

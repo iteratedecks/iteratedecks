@@ -2,12 +2,12 @@
 #define ASSERT_HPP_
 
     #ifndef NDEBUG
-        #include <stdexcept>
+        #include "exceptions.hpp"
         #include <string>
         //#include <cassert>
 
         #define assertX(b) do { if(!(b)) { throw AssertionError(#b,__FILE__,__LINE__,FUNCTION_NAME); } } while(false)
-        #define assertDEE(a,b,c) do { if(std::fabs(a-b) > c) { throw AssertionError(a,b,c,__FILE__,__LINE__,FUNCTION_NAME); } } while(false)
+        #define assertDEE(a,b,c) do { if(std::fabs(a-b) > c) { throw assertDEE_(a,b,c,__FILE__,__LINE__,FUNCTION_NAME); } } while(false)
         #define assertGE(a,b) do { if(!(a>=b)) { throw assertGE_(a,b,#a,#b,__FILE__,__LINE__,FUNCTION_NAME); } } while(false)
 
         #if defined(__GNUC__)
@@ -16,24 +16,30 @@
             #define FUNCTION_NAME "<unknown>"
         #endif
 
-        class AssertionError : public std::logic_error {
+        class AssertionError : public LogicError {
             public:
-                AssertionError(std::string message
-                              ,std::string file
-                              ,unsigned int line
-                              ,std::string function
-                              );
-
-                AssertionError(double const a
-                              ,double const b
-                              ,double const delta
-                              ,std::string file
-                              ,unsigned int line
-                              ,std::string function
+                AssertionError(std::string const & message
+                              ,std::string const & file
+                              ,unsigned int const line
+                              ,std::string const &function
                               );
         };
 
-        AssertionError assertGE_(double a, double b, std::string sa, std::string sb, std::string file, unsigned int line, std::string function);
+        AssertionError assertGE_(double const a
+                                ,double const b
+                                ,std::string const & sa
+                                ,std::string const & sb
+                                ,std::string const & file
+                                ,unsigned int const line
+                                ,std::string const & function
+                                );
+        AssertionError assertDEE_(double const a
+                                 ,double const b
+                                 ,double const delta
+                                 ,std::string const & file
+                                 ,unsigned int const line
+                                 ,std::string const & function
+                                 );
 
     #endif
 #endif

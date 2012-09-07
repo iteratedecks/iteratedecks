@@ -14,7 +14,6 @@ namespace EvaluateDecks {
     namespace CLI {
 
         #define assertDE(a,b) assert(a-DBL_EPSILON < b && b < a+DBL_EPSILON)
-        #define assertDEE(a,b,c) assert(std::abs(a-b) <= c)
 
         /**
          * @see http://en.wikipedia.org/wiki/Binomial_coefficient

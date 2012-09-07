@@ -142,16 +142,27 @@ int main(int const argc, char * const * const argv)
 
     try {
         return mainWithOptions(options);
-    } catch(std::runtime_error const & e) {
-        std::cerr << "Runtime error:" << std::endl;
-        std::cerr << e.what() << std::endl;
-        return E_RUNTIME_ERROR;
     } catch(AssertionError const & e) {
         std::cerr << "Assertion failed:" << std::endl;
         std::cerr << e.what() << std::endl;
+        e.printStacktrace(std::cerr);
         return E_LOGIC_ERROR;
-    } catch(std::logic_error const & e) {
+    } catch(RuntimeError const & e) {
+        std::cerr << "Runtime error:" << std::endl;
+        std::cerr << e.what() << std::endl;
+        e.printStacktrace(std::cerr);
+        return E_RUNTIME_ERROR;
+    } catch(LogicError const & e) {
         std::cerr << "Logic error:" << std::endl;
+        std::cerr << e.what() << std::endl;
+        e.printStacktrace(std::cerr);
+        return E_LOGIC_ERROR;
+    } catch(std::runtime_error const & e) {
+        std::cerr << "Runtime error (deprecated!):" << std::endl;
+        std::cerr << e.what() << std::endl;
+        return E_RUNTIME_ERROR;
+    } catch(std::logic_error const & e) {
+        std::cerr << "Logic error (deprecated!):" << std::endl;
         std::cerr << e.what() << std::endl;
         return E_LOGIC_ERROR;
     }
