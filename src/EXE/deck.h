@@ -295,6 +295,7 @@ const UINT BASE642ID(const unsigned short base64)
     {
         if (!IsDefined()) {
             assertX(IsDefined());
+            return "<undefined>";
         } else {
             std::stringstream ss;
             ss << "[";
