@@ -9,6 +9,8 @@ bool PlayedCard::canAttack() const {
         return false;
     } else if (this->GetEffect(ACTIVATION_FREEZE) > 0) {
         return false;
+    } else if (this->GetAttack() <= 0) {
+        return false;
     }
     return true;
 }

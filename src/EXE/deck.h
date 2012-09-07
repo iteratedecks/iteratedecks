@@ -27,7 +27,7 @@
 #include <stdexcept>
 #include "exceptions.hpp"
 #include <iomanip>
-
+#include "assert.hpp"
 
 
 
@@ -907,10 +907,8 @@ struct REQUIREMENT
                             ,bool const variant1
                             )
     {
-        if(src.GetAttack() <= 0) {
-            // can't attack with zero attack, this indicates an error
-            throw std::invalid_argument("Zero attack in ActiveDeck::AttackCommanderOnce!");
-        }
+        // can't attack with zero attack, this indicates an error
+        assertX(src.GetAttack() > 0);
 
         if (valor > 0) {
             SkillProcs[COMBAT_VALOR]++;
@@ -1016,6 +1014,7 @@ struct REQUIREMENT
 		{
             if (SRC.GetAttack() > 0) {
                 EFFECT_ARGUMENT valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
+                assertX(SRC.GetAttack() > 0);
                 AttackCommanderOnce2(index, SRC, valor, Def);
                 // might want to add here check:
                 // if (!Def.Commander.IsAlive()) return;
@@ -1280,6 +1279,7 @@ struct REQUIREMENT
                 bool const canValorLessUnits (this->GetAliveUnitsCount() < Def.GetAliveUnitsCount());
                 bool const doesValor (canValorCardCommander && canValorLessUnits);
                 EFFECT_ARGUMENT const valor (doesValor ? attacker.GetAbility(COMBAT_VALOR) : 0);
+                assertX(attacker.GetAttack() > 0);
                 AttackCommanderOnce1(index, attacker, valor, Def);
             } else {
                 // ... there is a unit
