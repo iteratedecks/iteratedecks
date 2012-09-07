@@ -24,12 +24,19 @@ std::string PlayedCard::toRectString(unsigned int const w, unsigned int const i)
     std::stringstream ssLine;
     switch(i) {
         case 0: case 5: {
-            ssLine << "+" << std::setw(w-2) << std::setfill('-') << "" << "+";
+            ssLine << "+" << std::setw(w-2);
+            ssLine << std::setfill('-') << "" << "+";
         } break;
         case 1: {
             ssLine << "|";
-            ssLine << std::setw(3) << this->getUniqueId();
-            ssLine << std::setw(w-3-2) << (unsigned int)this->GetWait() << "|";
+            ssLine << std::setw(4) << this->getUniqueId();
+            ssLine << std::setw(w-4-2-2) << "";
+            if (this->GetWait() > 0) {
+                ssLine << std::setw(2) << (unsigned int)this->GetWait();
+            } else {
+                ssLine << "  ";
+            }
+            ssLine << "|";
         } break;
         case 2: {
             ssLine << "|" << std::setw(w-2) << std::left << this->GetName() << "|";
@@ -37,6 +44,10 @@ std::string PlayedCard::toRectString(unsigned int const w, unsigned int const i)
         case 3: {
             ssLine << "|";
             int l = w-2;
+            if(!this->IsAlive()) {
+                ssLine << "Dead ";
+                l-=5;
+            }
             if(this->IsDiseased()) {
                 ssLine << "D ";
                 l-=2;
@@ -53,7 +64,7 @@ std::string PlayedCard::toRectString(unsigned int const w, unsigned int const i)
             ssLine << std::setw(w-2-5) << "";
             ssLine << std::setw(2) << (unsigned int)this->GetAttack();
             ssLine << "/";
-            ssLine << std::setw(2) << (unsigned int)this->GetAttack();
+            ssLine << std::setw(2) << (unsigned int)this->GetHealth();
             ssLine << "|";
         } break;
     }

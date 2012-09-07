@@ -298,7 +298,7 @@ const UINT BASE642ID(const unsigned short base64)
         } else {
             std::stringstream ss;
             ss << "[";
-            ss << std::setw(3) << this->uniqueId;
+            ss << std::setw(4) << this->uniqueId;
             ss << "|";
             switch(this->GetType()){
                 case TYPE_ACTION   : ss << 'A'; break;
