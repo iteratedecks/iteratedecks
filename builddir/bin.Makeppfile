@@ -2,4 +2,4 @@ XML_FILES=achievements.xml cards.xml missions.xml quests.xml raids.xml
 $(phony XML): ${XML_FILES} 
 
 %.xml: ../../bin/%.xml
-    cp -lf $(input) $(output)
+    cp -f $(input) $(output)

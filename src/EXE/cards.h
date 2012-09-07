@@ -979,7 +979,7 @@ char *FormatCardName(char *Name)
 		_ASSERT(RaidID < RAID_MAX_ID);
 		_ASSERT(RDB[RaidID].IsValid());
         unsigned int const & commanderId(RDB[RaidID].GetCommander());
-		D = ActiveDeck(&CDB[commanderId]); // replace
+		D = ActiveDeck(&CDB[commanderId],CDB); // replace
 		RDB[RaidID].GetAlways(CDB,D.Deck);
 		RDB[RaidID].GetPools(CDB,D.Deck);
 	}
@@ -988,7 +988,7 @@ char *FormatCardName(char *Name)
 		_ASSERT(QuestID < STEP_MAX_ID);
 		_ASSERT(STDB[QuestID].IsValid());
         unsigned int const & commanderId(STDB[QuestID].GetCommander());
-		D = ActiveDeck(&CDB[commanderId]); // replace
+		D = ActiveDeck(&CDB[commanderId],CDB); // replace
 		STDB[QuestID].GetPools(CDB,D.Deck);
 	}
 	DWORD CardDB::LoadPointers(Card **Ptr, DWORD MaxCount)
@@ -2017,7 +2017,7 @@ char *FormatCardName(char *Name)
 			printf("Deck %s has 0 cards\n",DeckName);
 		_ASSERT(!mi->second.empty());
 		VSTRINGS::iterator vi = mi->second.begin();
-		ActiveDeck r(GetCard(*vi));
+		ActiveDeck r(GetCard(*vi), this->CDB);
 		for (vi++;vi != mi->second.end();vi++)
 			r.Add(GetCard(*vi));
 		return r;

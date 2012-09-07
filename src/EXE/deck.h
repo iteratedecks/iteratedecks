@@ -1483,8 +1483,9 @@ struct REQUIREMENT
 			}
 		}
 	}
-	ActiveDeck::ActiveDeck(const Card *Cmd)
-    : logger(NULL)
+	ActiveDeck::ActiveDeck(const Card *Cmd, Card const * const pCDB)
+    : pCDB(pCDB)
+    , logger(NULL)
 	{ 
 		QuestEffectId = 0;
 		Log = 0;
@@ -2643,21 +2644,29 @@ struct REQUIREMENT
 			// summon
             case ACTIVATION_SUMMON: {
                 effect = Src.GetAbility(ACTIVATION_SUMMON);
-                if (effect > 0)	{
-                    Card const * const summonedCard = &pCDB[effect];
-                    if(summonedCard->GetType() == TYPE_ASSAULT) {
-                        Units.push_back(summonedCard);
-                        LOG(this->logger,abilitySummon(EffectType,Src,Units.back()));
-                        Units.back().SetCardSkillProcBuffer(SkillProcs);
-                        ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
-                    } else if (summonedCard->GetType() == TYPE_STRUCTURE) {
-                        Structures.push_back(summonedCard);
-                        LOG(this->logger,abilitySummon(EffectType,Src,Structures.back()));
-                        Structures.back().SetCardSkillProcBuffer(SkillProcs);
-                        ApplyEffects(QuestEffectId,EVENT_PLAYED,Structures.back(),-1,Dest);
-                    } else {
-                        throw logic_error("Summoned something that is neither assault unit nor structure");
-                    }
+                assert(effect > 0);
+                assert(effect < CARD_MAX_ID);
+                assert(pCDB != NULL);
+                Card const * const summonedCard = &pCDB[effect];
+                if(summonedCard->GetType() == TYPE_ASSAULT) {
+                    Units.push_back(summonedCard);
+                    LOG(this->logger,abilitySummon(EffectType,Src,Units.back()));
+                    Units.back().SetCardSkillProcBuffer(SkillProcs);
+                    ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
+                } else if (summonedCard->GetType() == TYPE_STRUCTURE) {
+                    Structures.push_back(summonedCard);
+                    LOG(this->logger,abilitySummon(EffectType,Src,Structures.back()));
+                    Structures.back().SetCardSkillProcBuffer(SkillProcs);
+                    ApplyEffects(QuestEffectId,EVENT_PLAYED,Structures.back(),-1,Dest);
+                } else {
+                    std::cerr << "EventCondition=" << (unsigned int)EffectType << " ";
+                    std::cerr << "mimic=" << IsMimiced << " mimicer=" << Mimicer << std::endl;
+                    std::cerr << "source: " << Src.toString() << " ";
+                    std::cerr << "effect argument=" << effect << " ";
+                    std::cerr << "card id=" << summonedCard->GetId() << " ";
+                    std::cerr << "card name=" << summonedCard->GetName();
+                    std::cerr << std::endl;
+                    throw logic_error("Summoned something that is neither assault unit nor structure");
                 }
             } break;
 			// weaken

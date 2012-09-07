@@ -380,7 +380,7 @@
         void SetQuestEffect(UINT EffectId);
         // please note, contructors don't clean up storages, must do it manually and beforehand, even copy constructor
         ActiveDeck(const char *HashBase64, const Card *pCDB);
-        ActiveDeck(const Card *Cmd);
+        ActiveDeck(const Card *Cmd, Card const * const pCDB);
         ActiveDeck(const ActiveDeck &D);
         bool operator==(const ActiveDeck &D) const;
         bool operator<(const ActiveDeck &D) const;

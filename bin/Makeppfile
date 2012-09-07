@@ -1,0 +1,2 @@
+achievements.xml cards.xml missions.xml raids.xml quests.xml:
+	./updatexml.sh
