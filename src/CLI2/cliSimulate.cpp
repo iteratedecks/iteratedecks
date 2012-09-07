@@ -5,8 +5,10 @@
 #include <iostream>
 #include <iomanip>
 #include <ios>
+#include <limits>
 
 #include "../EXE/simulate.hpp"
+#include "../EXE/assert.hpp"
 
 namespace EvaluateDecks {
     namespace CLI {
@@ -17,10 +19,11 @@ namespace EvaluateDecks {
         /**
          * @see http://en.wikipedia.org/wiki/Binomial_coefficient
          */
-        long double binomialCoefficient(unsigned int const n
-                                       ,unsigned int k
-                                       )
+        unsigned long binomialCoefficient(unsigned int const n
+                                         ,unsigned int k
+                                         )
         {
+            assert(n <= 34); // else we overflow
             assert(k <= n);
             if (n == 0) {
                 return 0;
@@ -31,12 +34,35 @@ namespace EvaluateDecks {
             } else if (k == 1) {
                 return n;
             }
-            long double result = 1;
+            unsigned long nomProd = 1;
+            unsigned long denomProd = 1;
             for(unsigned int i = 1; i <= k; i++) {
                 unsigned long const nom = n-k+i;
                 unsigned long const denom = i;
-                result = result * nom / denom;
+
+                if (denomProd % nom == 0) {
+                    denomProd /= nom;
+                } else {
+                    if (nomProd > std::numeric_limits<unsigned long>::max() / nom) {
+                        std::cerr << "nom overflow for n=" << n << " nomProd="<< nomProd << " nom=" << nom << std::endl;
+                        std::cerr << "max=" << std::numeric_limits<unsigned long>::max() << " max/nom=" << std::numeric_limits<unsigned long>::max() / nom << std::endl;
+                        assert(false);
+                    }
+                    nomProd *= nom;
+                }
+                if (nomProd % denom == 0) {
+                    nomProd /= denom;
+                } else {
+                    if(denomProd > std::numeric_limits<unsigned long>::max() / denom) {
+                        std::cerr << "denom overflow for n=" << n << " denomProd="<< denomProd << " denom=" << denom << std::endl;
+                        std::cerr << "max=" << std::numeric_limits<unsigned long>::max() << " max/denom=" << std::numeric_limits<unsigned long>::max() / denom << std::endl;
+                        assert(false);
+                    }
+                    denomProd *= denom;
+                }
             }
+            assert(nomProd % denomProd == 0);
+            unsigned long result = nomProd / denomProd;
             //std::clog << "BinCo(" << n << "," << k << ") = ";
             //std::clog << result << std::endl;
             return result;
@@ -54,15 +80,15 @@ namespace EvaluateDecks {
             assert(p <= 1);
             assert(k <= n);
             long double const q(1-p);
-            long double const binCo(binomialCoefficient(n,k));
-            assert(binomialCoefficient(12,6) == 924);
-            assert(binomialCoefficient(11,5) == 462);
+            unsigned long const binCo(binomialCoefficient(n,k));
+            //assert(binomialCoefficient(12,6) == 924);
+            //assert(binomialCoefficient(11,5) == 462);
             if(0 < k && k < n) {
-                long double const _bc1 = binomialCoefficient(n-1,k);
-                long double const _bc2 = binomialCoefficient(n-1,k-1);
-                long double const _bc = _bc1 + _bc2;
+                unsigned long const bc1 = binomialCoefficient(n-1,k);
+                unsigned long const bc2 = binomialCoefficient(n-1,k-1);
+                unsigned long const bc = bc1 + bc2;
                 //std::clog << binCo << " " << _bc << "  " << (binCo/_bc) << std::endl;
-                assert(fabs(binCo / _bc - 1) <= 1e-8);
+                assert(binCo == bc);
             }
             long double const pow1 (powl(p,k));
             long double const pow2 (powl(q,n-k));
@@ -98,8 +124,8 @@ namespace EvaluateDecks {
                           ,unsigned int const n
                           )
         {
-            assertDE(Bin(0.125,12,12),1.4551915228366851807E-11);
-            assertDE(Bin(0.125,6,12),1.5819048858247697353E-3);
+            //assertDE(Bin(0.125,12,12),1.4551915228366851807E-11);
+            //assertDE(Bin(0.125,6,12),1.5819048858247697353E-3);
 
             long double sumL = 0.0d;
             long double sumU = 0.0d;
@@ -145,13 +171,13 @@ namespace EvaluateDecks {
             assert(0 <= x);
             assert(x <= 1);
 
-            assertDEE(cumBin(0.5,9,12),0.9807128906,1e-8);
+            //assertDEE(cumBin(0.5,9,12),0.9807128906,1e-8);
 
             // use search...
             double pl(0);
             double pu(1);
 
-            double const eps(DBL_EPSILON);
+            double const eps(1e-4);
             while (pl + eps < pu) {
                 double const pm = (pl+pu)/2;
                 double const testX(cumBin(pm,k,n));
@@ -174,7 +200,7 @@ namespace EvaluateDecks {
                 //std::clog << "delta=" << (x-testX) << std::endl;
             }
             double const pm = (pl+pu)/2;
-            assertDEE(cumBin(pm,k,n),x,1e-12);
+            assertDEE(cumBin(pm,k,n),x,1e-3);
             return pm;
         }
 
@@ -244,17 +270,50 @@ namespace EvaluateDecks {
             assert(0 <= gamma);
             assert(gamma <= 1);
             double const alpha(1-gamma);
+            double result;
             if (k == 0) {
                 return 0.0d;
-            } else if (n <= 1000) {
+            } else if (n <= 34) {
                 // unfortunately this will become numerically unstable for large n
-                return cumBinInv(1-alpha/2,k-1,n);
+                result = cumBinInv(1-alpha/2,k-1,n);
+                assertX(result >= 0);
+            } else if (true) {
+                // wilson
+                double const estimator ((double)k / (double)n);
+                double const c = normInv(1-alpha/2);;
+                assertX(!std::isinf(c));
+                double const cSquare = c*c;
+                double const factor1 = 1 / (1 + cSquare / n);
+                double const summand2 = cSquare / 2 / n;
+                assertX(!std::isinf(estimator * (1-estimator) / n));
+                assertX(!std::isinf(cSquare));
+                assertX(n>0);
+                assertX(4*n*n > 0);
+                assertX(!std::isinf(cSquare / (4*n*n)));
+                double const radicand = estimator * (1-estimator) / n  + cSquare / (4*n*n);
+                assertX(!std::isinf(c));
+                assertX(!std::isinf(radicand));
+                double const summand3 = c * sqrt(radicand);
+                assertX(estimator >= 0);
+                assertX(summand2 >= 0);
+                assertX(!std::isinf(summand3));
+                assertGE(estimator + summand2, summand3);
+                double const factor2 = estimator + summand2 - summand3;
+                assertX(factor1 >= 0);
+                assertX(factor2 >= 0);
+                result = factor1 * factor2;
             } else {
+                // normal distribution
                 double const estimator ((double)k / (double)n);
                 double const c = normInv(1-alpha/2);
+                assertX(!std::isinf(c));
                 double const squareroot = sqrt(estimator * (1-estimator) / n);
-                return estimator - c * squareroot;
+                assertX(estimator >= 0);
+                assertX(c*squareroot <= estimator);
+                result = estimator - c * squareroot;
             }
+            assertX(result >= 0);
+            return result;
         }
 
         double upperBound(unsigned int const k  //< successfull results
@@ -268,9 +327,20 @@ namespace EvaluateDecks {
             double const alpha(1-gamma);
             if (k == n) {
                 return 1.0d;
-            } else if (n <= 1000) {
+            } else if (n <= 34) {
                 // unfortunately this will become numerically unstable for large n
                 return cumBinInv(alpha/2,k,n);
+            } else if (true) {
+                // wilson
+                double const estimator ((double)k / (double)n);
+                double const c = normInv(1-alpha/2);;
+                double const cSquare = c*c;
+                double const factor1 = 1 / (1 + cSquare / n);
+                double const summand2 = cSquare / 2 / n;
+                double const radicand = estimator * (1-estimator) / n  + cSquare / (4*n*n);
+                double const summand3 = c * sqrt(radicand);
+                double const factor2 = estimator + summand2 + summand3;
+                return factor1 * factor2;
             } else {
                 double const estimator ((double)k / (double)n);
                 double const c = normInv(1-alpha/2);
