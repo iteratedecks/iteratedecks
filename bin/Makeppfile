@@ -1,2 +1,4 @@
-achievements.xml cards.xml missions.xml raids.xml quests.xml:
+achievements.xml cards.xml missions.xml raids.xml quests.xml: FORCE
 	./updatexml.sh
+
+$(phony FORCE):
