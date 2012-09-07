@@ -1004,7 +1004,7 @@ struct REQUIREMENT
 			LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_BURST,burst);
 		}
 
-        // we should have a valid attacker
+        // we should have a valid attaker
         assert(SRC.IsAlive() && SRC.IsDefined() && SRC.canAttack());
 
         // after the flurry refactor, this should only be entered with a valid target unless the middle target died during a swipe.
