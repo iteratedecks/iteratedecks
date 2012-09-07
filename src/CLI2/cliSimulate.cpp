@@ -260,6 +260,62 @@ namespace EvaluateDecks {
             return x;
         }
 
+        /**
+         * Compute centered two sided confidence interval.
+         */
+        void twoSidedBounds(unsigned int const k    //< wins
+                           ,unsigned int const n    //< games
+                           ,double const gamma      //< confidence level
+                           ,double & lower          //< output: lower bound
+                           ,double & upper          //< output: upper bound
+                           )
+        {
+            assertX(k <= n);
+            assertX(0 <= gamma);
+            assertX(gamma <= 1);
+            double const alpha = 1-gamma;
+            if(n <= 34) {
+                if (k == 0) {
+                    lower = 0;
+                } else {
+                    lower = cumBinInv(1-alpha/2,k-1,n);
+                }
+                if (k == n) {
+                    upper = 1;
+                } else {
+                    upper = cumBinInv(alpha/2,k,n);
+                }
+            } else {
+                // wilson
+                double const estimator ((double)k / (double)n);
+                double const c = normInv(1-alpha/2);
+                assertX(!std::isinf(c));
+                double const cSquare = c*c;
+                double const factor1 = 1 / (1 + cSquare / n);
+                double const summand2 = cSquare / 2 / n;
+                assertX(!std::isinf(estimator * (1-estimator) / n));
+                assertX(!std::isinf(cSquare));
+                assertX(n>0);
+                assertX(4*n*n > 0);
+                assertX(!std::isinf(cSquare / (4*n*n)));
+                double const radicand = estimator * (1-estimator) / n  + cSquare / (4*n*n);
+                assertX(!std::isinf(c));
+                assertX(!std::isinf(radicand));
+                double const summand3 = c * sqrt(radicand);
+                assertX(estimator >= 0);
+                assertX(summand2 >= 0);
+                assertX(!std::isinf(summand3));
+                assertGE(estimator + summand2, summand3);
+                double const factor2l = estimator + summand2 - summand3;
+                double const factor2u = estimator + summand2 + summand3;
+                assertX(factor1 >= 0);
+                assertX(factor2l >= 0);
+                assertX(factor2u >= 0);
+                lower = factor1 * factor2l;
+                upper = factor1 * factor2u;
+            }
+        }
+
         double lowerBound(unsigned int const k  //< wins
                          ,unsigned int const n  //< games
                          ,double const gamma    //< confidence level
@@ -376,9 +432,9 @@ namespace EvaluateDecks {
             double const winRate = (double)r.Win / (double)r.Games; // estimator
             std::cout << "estimator=" << std::setiosflags(std::ios::fixed) << std::setprecision(4) << winRate << " ";
             std::cout.flush();
-            double const gamma(0.95); // confidence level
-            double const lBound(lowerBound(r.Win,r.Games,gamma));
-            double const uBound(upperBound(r.Win,r.Games,gamma));
+            double const gamma(0.90); // confidence level
+            double lBound, uBound;
+            twoSidedBounds(r.Win, r.Games, gamma, lBound, uBound);
             std::cout << "confidence [" << lBound << ";" << uBound << "]";
             assert(0 <= lBound);
             assert(lBound <= winRate);
