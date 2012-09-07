@@ -10494,9 +10494,9 @@
 		<attack>0</attack>
 		<health>15</health>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='cleanse' y='1' />
 		<skill id='protect' x='2' y='1' />
 		<skill id='rally' x='1' all='1' y='1' />
-		<skill id='cleanse' y='1' />
 		<type>1</type>
 	</unit>
 
@@ -13371,6 +13371,53 @@
 
 <!-- END Block 21 -->
 
+<!-- Block 22 Raider -->
+
+	<unit> <!-- Inquisitor -->
+		<id>450</id>
+		<name>Gearhead</name>
+		<picture>inquistor.jpg</picture>
+		<attack>3</attack>
+		<health>1</health>
+		<cost>1</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='pierce' x='2' />
+		<skill id='summon' x='88' died='1' />
+		<type>9</type>
+		<set>5001</set>
+	</unit>
+
+	<unit> <!-- Battle Spirit -->
+		<id>451</id>
+		<name>Vulture</name>
+		<picture>battlespirit.jpg</picture>
+		<attack>3</attack>
+		<health>6</health>
+		<cost>3</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='flying' />
+		<skill id='rally' x='1' all='1' played='1' />
+		<skill id='burst' x='2' />
+		<type>9</type>
+		<set>5001</set>
+	</unit>
+
+	<unit> <!-- Hungry Hippos -->
+		<id>453</id>
+		<name>Cog Fist</name>
+		<picture>hippo.jpg</picture>
+		<attack>1</attack>
+		<health>6</health>
+		<cost>2</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='swipe' />
+		<skill id='siege' x='1' all='1' />
+		<type>9</type>
+		<set>5001</set>
+	</unit>
+
+<!-- END Block 22 Raider -->
+
 <!-- END PROMO Cards -->
 	<!-- Distraction -->
 	
@@ -13452,7 +13499,7 @@
 		<health>10</health>
 		<cost>0</cost>
 		<rarity>1</rarity> <gold_cost>10000</gold_cost>
-		<skill id='summon' x='1' />
+		<skill id='summon' x='138' />
 		<type>1</type>
 	</unit>
 	
@@ -13463,7 +13510,7 @@
 		<attack>0</attack>
 		<health>15</health>
 		<rarity>1</rarity> <gold_cost>1000</gold_cost>
-		<skill id='mist' />
+		<skill id='refresh' />
 	</unit>
 	
 	<unit>
@@ -13490,11 +13537,10 @@
 		<id>138</id>
 		<name>X-Dog, Lord of the Apocalypse</name>
 		<picture>xdog.jpg</picture>
-		<attack>1</attack>
+		<attack>0</attack>
 		<health>10</health>
 		<cost>0</cost>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
-		<skill id='jam' attacked='1' />
 		<type>4</type> 
 	</unit>
 

@@ -9976,10 +9976,10 @@
 		<commander>1188</commander>
 		<desc>Xeno are attempting to blockade you from leaving the island.</desc>
 		<speech>
-			<line commander='1042'>We’re almost to the transport , but the Xenos are coming at us at full force. Why do they want the bomb so badly?</line>
+			<line commander='1042'>We're almost to the transport , but the Xenos are coming at us at full force. Why do they want the bomb so badly?</line>
 		</speech>
 		<speechComplete>
-			<line commander='1042'>We’re clear. Lets wipe that last Nexus off the map.</line>
+			<line commander='1042'>We're clear. Lets wipe that last Nexus off the map.</line>
 		</speechComplete>
 		<deck>
 			<card>746</card>
@@ -10318,7 +10318,7 @@
 		<desc>Raiders are willing to give up their lives just to stall you from reaching the Nexus.</desc>
 		<speech>
 			<line commander='1097'>A bomb? How do you expect to get something like that so close? It's giving off such a huge psionic signal that it will attract the wrong attention.</line>
-			<line commander='1153'>Its faster then one of your rituals. Who knows what could happen while your performing it? Rituals are long and drawn out. The Giga Bomb just needs a button press...</line>
+			<line commander='1153'>Its faster then one of your rituals. Who knows what could happen while you're performing it? Rituals are long and drawn out. The Giga Bomb just needs a button press...</line>
 		</speech>
 		<deck>
 			<card>521</card>
