@@ -1318,6 +1318,12 @@ struct REQUIREMENT
                 attacker.CardSkillProc(SPECIAL_ATTACK); // attack counter
                 // the swipe loop
                 for (UCHAR s=0;s<swipe;s++) {
+                    if(!attacker.IsAlive() || !attacker.IsDefined() || !attacker.canAttack()) {
+                        // can no longer attack most likely because of
+                        // an "on attack" or "on death" ability by a previous swipe target
+                        break;
+                    }
+
                     if(s != 1 && targets[s] == NULL) {
                         // If we have left or right target, and that is not defined
                         // we skip this one
@@ -1333,6 +1339,11 @@ struct REQUIREMENT
 
                     // We either have a target, or we are in the "middle" attack of swipe so we attack the commander/wall
                     UCHAR targetindex = index + (swipe > 1 ? s-1 : 0);
+
+                    std::cout.flush();
+                    //std::cerr << Def.toString(true);
+                    //std::cerr << this->toString();
+                    assert(attacker.IsAlive() && attacker.IsDefined() && attacker.canAttack());
 
                     bool doContinue = AttackUnitOrCommanderOnce2(attacker, index, *targets[s], targetindex, swipe,s, iSwiped, Def);
                     if(doContinue) {continue;} else {break;}
