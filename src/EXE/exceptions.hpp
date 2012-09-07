@@ -4,7 +4,7 @@
     #include <stdexcept>
     #include <ostream>
 
-    #if defined(__GNUC__)
+    #if defined(__GNUC__) && defined(__linux__)
         #define WITH_BACKTRACE
     #endif
 
@@ -12,9 +12,11 @@
     class Exception : public std::exception {
         private:
             std::string _msg;
-            int _traced;
-            unsigned int skipFirstSymbols;
-            void *_stacktrace[64];
+            #ifdef WITH_BACKTRACE
+                int _traced;
+                unsigned int skipFirstSymbols;
+                void *_stacktrace[64];
+            #endif
         public:
             /** \fn Exception(std::string msg)
              * \brief Constructor awaiting your error message as a std::string

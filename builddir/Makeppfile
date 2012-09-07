@@ -20,7 +20,7 @@ $(phony TEST): ../src/TEST/test
 ########################################################################
 
 DIRTY_RELEASES:=$(foreach ext,${ARCHIVE_EXTENSIONS},$(foreach platform,${TARGET_PLATFORMS},DIRTY_${platform}${ext}))
-$(phony DIRTY_RELEASES): DIRTY_RELEASES
+$(phony DIRTY_RELEASES): $(DIRTY_RELEASES)
 
 #dirty head releases
 DIRTY_${foreach}.tar.gz: ${foreach}-on-${OS}/release.tar.gz : foreach ${TARGET_PLATFORMS}

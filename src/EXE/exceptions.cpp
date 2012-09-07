@@ -11,16 +11,24 @@
 // class Exception taken from http://markus-mazurczak.de/?p=17 under GPL v3
 Exception::Exception(std::string const & msg)
 : _msg(msg)
+#ifdef WITH_BACKTRACE
 , skipFirstSymbols(0)
+#endif
 {
-	_traced = backtrace(_stacktrace, 64);
+    #ifdef WITH_BACKTRACE
+        _traced = backtrace(_stacktrace, 64);
+    #endif
 }
 
 Exception::Exception(std::string const & msg, unsigned int const skipFirstSymbols)
 : _msg(msg)
+#ifdef WITH_BACKTRACE
 , skipFirstSymbols(skipFirstSymbols)
+#endif
 {
-	_traced = backtrace(_stacktrace, 64);
+	#ifdef WITH_BACKTRACE
+        _traced = backtrace(_stacktrace, 64);
+    #endif
 }
 
 std::string Exception::getError() const throw()
@@ -73,6 +81,7 @@ void Exception::printStacktrace(std::ostream & os) const throw() {
         }
     #else
         os << "Stacktrace not available. Not supported on your platform?" << std::endl;
+        os << "Thats YOUR chance to do something for us: Implement it." << std::endl;
     #endif
 }
 
