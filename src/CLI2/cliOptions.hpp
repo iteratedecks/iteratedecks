@@ -14,8 +14,8 @@
                 std::string comment;
             };
 
-            extern CommentedOption const options[];
-            extern size_t const numberOfOptions;
+            //extern CommentedOption const options[];
+            //extern size_t const numberOfOptions;
 
             void printUsage();
 
