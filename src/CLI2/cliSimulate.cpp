@@ -17,12 +17,12 @@
 #endif
 
 #if defined(__windows__)
-	#include "boost/math/special_functions/erf.hpp"
-	#define erfc boost::math::erfc
+    #include "boost/math/special_functions/erf.hpp"
+    #define erfc boost::math::erfc
 
-	#define isinf(x) (!_finite(x))
+    #define isinf(x) (!_finite(x))
 #else
-	#define isinf(x) (std::isinf(x))
+    #define isinf(x) (std::isinf(x))
 #endif
 
 #include "../EXE/simulate.hpp"
@@ -366,13 +366,13 @@ namespace EvaluateDecks {
             }
         }
 
-
         RESULTS simulate(ActiveDeck const & deck1
                         ,ActiveDeck const & deck2
                         ,DeckLogger & attackLogger
                         ,DeckLogger & defenseLogger
                         ,SimulationLogger & simulationLogger
                         ,unsigned int const & numberOfIterations
+                        ,bool surge
                         )
         {
             // Here comes the actual simulations
@@ -384,13 +384,38 @@ namespace EvaluateDecks {
                 Y.logger = &defenseLogger;
 
                 simulationLogger.simulationStart(k);
-                Simulate(X,Y,r,&simulationLogger);
+                Simulate(X,Y,r,&simulationLogger, NULL, NULL, surge);
                 simulationLogger.simulationEnd(k);
             }
+            return r;
+        }
+        
+        RESULTS simulateRaid(ActiveDeck const & deck1
+                            , unsigned int const & raidId
+                            , DeckLogger & attackLogger
+                            , SimulationLogger & simulationLogger
+                            , unsigned int const & numberOfIterations
+                            )
+        {
+            // Here comes the actual simulations
+            RESULTS r;
+            for (UINT k=0;k<numberOfIterations;k++)	{
+                ActiveDeck X(deck1);
+                X.logger = &attackLogger;
 
+                simulationLogger.simulationStart(k);
+                EvaluateRaidQuestOnce(deck1,r,0,0,(DWORD)raidId,0);
+                simulationLogger.simulationEnd(k);
+            }
+            return r;
+        }
+
+        void printResults(RESULTS r) {
             // Print result
-            std::cout << "Games won: " << std::setw(11) << r.Win << "/" << std::setw(11) << r.Games << " ";
-            std::cout.flush();
+            std::cout << "Games won:   " << std::setw(11) << r.Win << " /" << std::setw(11) << r.Games << " " << std::endl;
+            std::cout << "Games lost:  " << std::setw(11) << r.Loss << " /" << std::setw(11) << r.Games << " " << std::endl;
+            std::cout << "Games drawn: " << std::setw(11) << r.Games - r.Loss - r.Win << " /" << std::setw(11) << r.Games << " " << std::endl;
+
             double const winRate = (double)r.Win / (double)r.Games; // estimator
             std::cout << "estimator=" << std::setiosflags(std::ios::fixed) << std::setprecision(4) << winRate << " ";
             std::cout.flush();
@@ -406,8 +431,6 @@ namespace EvaluateDecks {
             double const averageNetPoints ((double)r.Points / (double)r.Games);
             std::cout << "ANP=" << averageNetPoints;
             std::cout << std::endl;
-            return r;
         }
-
     } // namespace CLI
 } // namespace EvaluateDecks
