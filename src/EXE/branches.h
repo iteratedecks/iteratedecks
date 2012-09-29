@@ -331,6 +331,49 @@ typedef vector<Node *> VPBN;
 		set<UINT> clones;
 		if (!atk->Deck.empty())
 		{
+			//*
+			//UCHAR size = (UCHAR)atk->Deck.size();
+			LCARDS atkDeck = atk->Deck;
+			UCHAR size = (UCHAR)atkDeck.size();
+			//for (UCHAR idx = 0; idx < size; idx++)
+			UCHAR idx = 0;
+			LCARDS::iterator deckIterator;
+			for (deckIterator = atkDeck.begin(); deckIterator != atkDeck.end(); deckIterator++)
+			{
+				idx++;
+				PlayedCard atkCard = *deckIterator;
+				if (clones.find(atkCard.GetId()) != clones.end())
+				{
+					Children.back().Weight += Weight; // increase it's chance
+					continue; // skip same card picks
+				}
+				else
+					clones.insert(atkCard.GetId());
+				ActiveDeck tmpA(*atk);
+				ActiveDeck tmpD(*def);
+				//VCARDS::iterator vi = tmpA.Deck.begin() + idx; // this is bad
+				LCARDS::iterator vi = tmpA.Deck.begin();
+				for(UCHAR i = 0; i <= idx ; i++) vi++;
+				if (vi->GetType() == TYPE_ASSAULT)
+					tmpA.Units.push_back(*vi);
+				if (vi->GetType() == TYPE_STRUCTURE)
+					tmpA.Structures.push_back(*vi);
+				if (vi->GetType() == TYPE_ACTION)
+					tmpA.Actions.push_back(*vi);
+				UINT pickedid = vi->GetId();
+				tmpA.Deck.erase(vi);
+				// add branch
+				// tmpD is same exact copy as def! can optimize here
+				if (bNormal)
+					AddChild(tmpA,tmpD);
+				else
+					AddChild(tmpD,tmpA);
+				Children.back().SetPickNode(pickedid); // mark this nodes, they are special
+				Children.back().SetTurn(iTurn);
+			}
+
+			/*/
+
 			UCHAR size = (UCHAR)atk->Deck.size();
 			for (UCHAR idx = 0; idx < size; idx++)
 			{
@@ -361,6 +404,7 @@ typedef vector<Node *> VPBN;
 				Children.back().SetPickNode(pickedid); // mark this nodes, they are special
 				Children.back().SetTurn(iTurn);
 			}
+			//*/
 			for (UINT i=0;i<Children.size();i++)
 				Children[i].Weight /= size;
 		}
@@ -529,12 +573,14 @@ private:
 				}
 				if (csrc.GetTargetCount(aid) != TARGETSCOUNT_ALL)
 				{
+					LCARDS units = def->Units;
 					// single target
-					for (UCHAR i=0;i<def->Units.size();i++)
+					for (UCHAR i=0;i<units.size();i++)
 					{
-						if (((def->Units[i].GetFaction() == faction) || (faction == FACTION_NONE)) && def->Units[i].IsAlive())
+						PlayedCard card = def->getUnitAt(i);
+						if (((card.GetFaction() == faction) || (faction == FACTION_NONE)) && card.IsAlive())
 						{						
-							if (def->Units[i].GetAbility(DEFENSIVE_EVADE))
+							if (card.GetAbility(DEFENSIVE_EVADE))
 							{
 								// evaded - variation
 								if (bNormal)
@@ -544,16 +590,16 @@ private:
 							}
 							ActiveDeck tmpA(*atk);
 							ActiveDeck tmpD(*def);
-							tmpD.Units[i].SetEffect(aid,tmpD.Units[i].GetEffect(aid) + effect);
+							tmpD.getUnitAt(i).SetEffect(aid,tmpD.getUnitAt(i).GetEffect(aid) + effect);
 							// normal variation
 							if (bNormal)
 								Leaves[idx]->AddChild(tmpA,tmpD);
 							else
 								Leaves[idx]->AddChild(tmpD,tmpA);							
-							if ((cardindex >= 0) && (tmpD.Units[i].GetAbility(DEFENSIVE_PAYBACK) && (tmpA.Units[cardindex].GetType() == TYPE_ASSAULT)))  
+							if ((cardindex >= 0) && (tmpD.getUnitAt(i).GetAbility(DEFENSIVE_PAYBACK) && (tmpA.getUnitAt(cardindex).GetType() == TYPE_ASSAULT)))  
 							{
 								// payback variation
-								tmpA.Units[cardindex].SetEffect(aid,tmpA.Units[cardindex].GetEffect(aid) + effect);
+								tmpA.getUnitAt(cardindex).SetEffect(aid,tmpA.getUnitAt(cardindex).GetEffect(aid) + effect);
 								if (bNormal)
 									Leaves[idx]->AddChild(tmpA,tmpD);
 								else
@@ -580,36 +626,36 @@ private:
 						for (UCHAR i=0;i<tmpD.Units.size();i++)
 						{
 							UCHAR isplit = 0;
-							if (((tmpD.Units[i].GetFaction() == faction) || (faction == FACTION_NONE)) && tmpD.Units[i].IsAlive())
+							if (((tmpD.getUnitAt(i).GetFaction() == faction) || (faction == FACTION_NONE)) && tmpD.getUnitAt(i).IsAlive())
 							{
 								// can't have both evade and payback
-								_ASSERT(!((tmpD.Units[i].GetAbility(DEFENSIVE_EVADE)) && 
-									(tmpD.Units[i].GetAbility(DEFENSIVE_PAYBACK))));
+								_ASSERT(!((tmpD.getUnitAt(i).GetAbility(DEFENSIVE_EVADE)) && 
+									(tmpD.getUnitAt(i).GetAbility(DEFENSIVE_PAYBACK))));
 								// determine whether skill procs in this iteration or not
 								bool proc = ((b >> isplit) & 0x1);
 								if (proc)
 								{
 									// it was evade that proc'd
-									if ((tmpD.Units[i].GetAbility(DEFENSIVE_EVADE)) && proc)
+									if ((tmpD.getUnitAt(i).GetAbility(DEFENSIVE_EVADE)) && proc)
 									{
 										// don't change
 									}
 									else
-										tmpD.Units[i].SetEffect(aid,tmpD.Units[i].GetEffect(aid) + effect);
+										tmpD.getUnitAt(i).SetEffect(aid,tmpD.getUnitAt(i).GetEffect(aid) + effect);
 									// it was payback
-									if ((cardindex >= 0) && ((tmpD.Units[i].GetAbility(DEFENSIVE_PAYBACK) && (tmpA.Units[cardindex].GetType() == TYPE_ASSAULT))))
+									if ((cardindex >= 0) && ((tmpD.getUnitAt(i).GetAbility(DEFENSIVE_PAYBACK) && (tmpA.getUnitAt(cardindex).GetType() == TYPE_ASSAULT))))
 									{
 										// apply payback
-										tmpA.Units[cardindex].SetEffect(aid,tmpA.Units[cardindex].GetEffect(aid) + effect);
+										tmpA.getUnitAt(cardindex).SetEffect(aid,tmpA.getUnitAt(cardindex).GetEffect(aid) + effect);
 									}
 								}
 								else
 								{
 									// nothing proc'd - apply effect
-									tmpD.Units[i].SetEffect(aid,tmpD.Units[i].GetEffect(aid) + effect);
+									tmpD.getUnitAt(i).SetEffect(aid,tmpD.getUnitAt(i).GetEffect(aid) + effect);
 								}
-								if ((tmpD.Units[i].GetAbility(DEFENSIVE_EVADE)) || 
-									((cardindex >= 0) && tmpD.Units[i].GetAbility(DEFENSIVE_PAYBACK) && (tmpA.Units[cardindex].GetType() == TYPE_ASSAULT))) 
+								if ((tmpD.getUnitAt(i).GetAbility(DEFENSIVE_EVADE)) || 
+									((cardindex >= 0) && tmpD.getUnitAt(i).GetAbility(DEFENSIVE_PAYBACK) && (tmpA.getUnitAt(cardindex).GetType() == TYPE_ASSAULT))) 
 								{
 									if (!bCntIsSet)
 										bcnt *= 2;
@@ -657,12 +703,12 @@ private:
 					// single target
 					for (UCHAR i=0;i<atk->Units.size();i++)
 					{
-						if (((atk->Units[i].GetFaction() == faction) || (faction == FACTION_NONE)) && (atk->Units[i].IsAlive()) &&
-							 (atk->Units[i].GetHealth() != atk->Units[i].GetMaxHealth()))
+						if (((atk->getUnitAt(i).GetFaction() == faction) || (faction == FACTION_NONE)) && (atk->getUnitAt(i).IsAlive()) &&
+							 (atk->getUnitAt(i).GetHealth() != atk->getUnitAt(i).GetMaxHealth()))
 						{
 							ActiveDeck tmpA(*atk); // local copies
 							ActiveDeck tmpD(*def);
-							tmpA.Units[i].Heal(effect);
+							tmpA.getUnitAt(i).Heal(effect);
 							if (bNormal)
 								Leaves[idx]->AddChild(tmpA,tmpD);
 							else
@@ -677,10 +723,10 @@ private:
 					ActiveDeck tmpD(*def);
 					for (UCHAR i=0;i<tmpA.Units.size();i++)
 					{
-						if (((tmpA.Units[i].GetFaction() == faction) || (faction == FACTION_NONE)) && (tmpA.Units[i].IsAlive()) &&
-							 (tmpA.Units[i].GetHealth() != tmpA.Units[i].GetMaxHealth()))
+						if (((tmpA.getUnitAt(i).GetFaction() == faction) || (faction == FACTION_NONE)) && (tmpA.getUnitAt(i).IsAlive()) &&
+							 (tmpA.getUnitAt(i).GetHealth() != tmpA.getUnitAt(i).GetMaxHealth()))
 						{							
-							tmpA.Units[i].Heal(effect);
+							tmpA.getUnitAt(i).Heal(effect);
 						}
 					}
 					if (bNormal)
@@ -724,11 +770,11 @@ private:
 					// single target
 					for (UCHAR i=0;i<def->Units.size();i++)
 					{
-						if (((def->Units[i].GetFaction() == faction) || (faction == FACTION_NONE)) && (def->Units[i].IsAlive()) &&
-							(!def->Units[i].GetEffect(aid)) && (!def->Units[i].GetWait()))
+						if (((def->getUnitAt(i).GetFaction() == faction) || (faction == FACTION_NONE)) && (def->getUnitAt(i).IsAlive()) &&
+							(!def->getUnitAt(i).GetEffect(aid)) && (!def->getUnitAt(i).GetWait()))
 						{	
 							bHit = true;
-							if (def->Units[i].GetAbility(DEFENSIVE_EVADE))
+							if (def->getUnitAt(i).GetAbility(DEFENSIVE_EVADE))
 							{
 								basechance *= PROC_CHANCE;
 								// evaded - variation
@@ -739,8 +785,8 @@ private:
 							}
 							ActiveDeck tmpA(*atk);
 							ActiveDeck tmpD(*def);
-							tmpD.Units[i].SetEffect(aid,effect);					
-							if ((cardindex >= 0) && (tmpD.Units[i].GetAbility(DEFENSIVE_PAYBACK) && (tmpA.Units[cardindex].GetType() == TYPE_ASSAULT)))  
+							tmpD.getUnitAt(i).SetEffect(aid,effect);					
+							if ((cardindex >= 0) && (tmpD.getUnitAt(i).GetAbility(DEFENSIVE_PAYBACK) && (tmpA.getUnitAt(cardindex).GetType() == TYPE_ASSAULT)))  
 							{
 								basechance *= PROC_CHANCE;
 								// normal variation
@@ -749,7 +795,7 @@ private:
 								else
 									Leaves[idx]->AddChild(tmpD,tmpA,false,basechance);
 								// payback variation
-								tmpA.Units[cardindex].SetEffect(aid,effect);
+								tmpA.getUnitAt(cardindex).SetEffect(aid,effect);
 								if (bNormal)
 									Leaves[idx]->AddChild(tmpA,tmpD,false,basechance);
 								else
@@ -787,37 +833,37 @@ private:
 						for (UCHAR i=0;i<tmpD.Units.size();i++)
 						{
 							UCHAR isplit = 0;
-							if (((tmpD.Units[i].GetFaction() == faction) || (faction == FACTION_NONE)) && (tmpD.Units[i].IsAlive()) &&
-								(!tmpD.Units[i].GetEffect(aid)) && (!tmpD.Units[i].GetWait()))
+							if (((tmpD.getUnitAt(i).GetFaction() == faction) || (faction == FACTION_NONE)) && (tmpD.getUnitAt(i).IsAlive()) &&
+								(!tmpD.getUnitAt(i).GetEffect(aid)) && (!tmpD.getUnitAt(i).GetWait()))
 							{
 								// can't have both evade and payback
-								_ASSERT(!((tmpD.Units[i].GetAbility(DEFENSIVE_EVADE)) && 
-									(tmpD.Units[i].GetAbility(DEFENSIVE_PAYBACK))));
+								_ASSERT(!((tmpD.getUnitAt(i).GetAbility(DEFENSIVE_EVADE)) && 
+									(tmpD.getUnitAt(i).GetAbility(DEFENSIVE_PAYBACK))));
 								// determine whether skill procs in this iteration or not
 								bool proc = ((b >> isplit) & 0x1);
 								if (proc)
 								{
 									// it was evade that proc'd
-									if ((tmpD.Units[i].GetAbility(DEFENSIVE_EVADE)) && proc)
+									if ((tmpD.getUnitAt(i).GetAbility(DEFENSIVE_EVADE)) && proc)
 									{
 										// don't change
 									}
 									else
-										tmpD.Units[i].SetEffect(aid,effect);
+										tmpD.getUnitAt(i).SetEffect(aid,effect);
 									// it was payback
-									if ((cardindex >= 0) && ((tmpD.Units[i].GetAbility(DEFENSIVE_PAYBACK) && (tmpA.Units[cardindex].GetType() == TYPE_ASSAULT))))
+									if ((cardindex >= 0) && ((tmpD.getUnitAt(i).GetAbility(DEFENSIVE_PAYBACK) && (tmpA.getUnitAt(cardindex).GetType() == TYPE_ASSAULT))))
 									{
 										// apply payback
-										tmpA.Units[cardindex].SetEffect(aid,effect);
+										tmpA.getUnitAt(cardindex).SetEffect(aid,effect);
 									}
 								}
 								else
 								{
 									// nothing proc'd - apply effect
-									tmpD.Units[i].SetEffect(aid,tmpD.Units[i].GetEffect(aid) + effect);
+									tmpD.getUnitAt(i).SetEffect(aid,tmpD.getUnitAt(i).GetEffect(aid) + effect);
 								}
-								if ((tmpD.Units[i].GetAbility(DEFENSIVE_EVADE)) || 
-									((cardindex >= 0) && tmpD.Units[i].GetAbility(DEFENSIVE_PAYBACK) && (tmpA.Units[cardindex].GetType() == TYPE_ASSAULT))) 
+								if ((tmpD.getUnitAt(i).GetAbility(DEFENSIVE_EVADE)) || 
+									((cardindex >= 0) && tmpD.getUnitAt(i).GetAbility(DEFENSIVE_PAYBACK) && (tmpA.getUnitAt(cardindex).GetType() == TYPE_ASSAULT))) 
 								{
 									if (!bCntIsSet)
 										bcnt *= 2;
@@ -868,13 +914,13 @@ private:
 				// mimic is always single target
 				for (UCHAR i=0;i<def->Units.size();i++)
 				{
-					if (((def->Units[i].GetFaction() == faction) || (faction == FACTION_NONE)) && def->Units[i].IsAlive())
+					if (((def->getUnitAt(i).GetFaction() == faction) || (faction == FACTION_NONE)) && def->getUnitAt(i).IsAlive())
 					{			
 						// this will split selected node and add more leaves	
 						// NEED A CHILD EVEN IF NOTHING WAS MIMICED
 						// normal variation
-						bool bLocalApply = ApplyEffects(def->Units[i],*Leaves[idx],i,bNormal,true);
-						if ((!bLocalApply) || (def->Units[i].GetAbility(DEFENSIVE_EVADE)))
+						bool bLocalApply = ApplyEffects(def->getUnitAt(i),*Leaves[idx],i,bNormal,true);
+						if ((!bLocalApply) || (def->getUnitAt(i).GetAbility(DEFENSIVE_EVADE)))
 						{
 							// evaded - variation
 							if (bNormal)
@@ -882,7 +928,7 @@ private:
 							else
 								Leaves[idx]->AddChild(*def,*atk,true);
 							/* WTF?
-							if ((!bLocalApply) && (def->Units[i].GetAbility(DEFENSIVE_EVADE)))
+							if ((!bLocalApply) && (def->getUnitAt(i).GetAbility(DEFENSIVE_EVADE)))
 								Leaves[idx]->IncreaseLastChildWeight(); // increase chance of nothing changing
 								*/
 						}
@@ -922,12 +968,12 @@ private:
 					// single target
 					for (UCHAR i=0;i<atk->Units.size();i++)
 					{
-						if (((atk->Units[i].GetFaction() == faction) || (faction == FACTION_NONE)) && atk->Units[i].IsAlive() &&
-							((!atk->Units[i].GetWait()) && (!atk->Units[i].GetPlayed())))
+						if (((atk->getUnitAt(i).GetFaction() == faction) || (faction == FACTION_NONE)) && atk->getUnitAt(i).IsAlive() &&
+							((!atk->getUnitAt(i).GetWait()) && (!atk->getUnitAt(i).GetPlayed())))
 						{
 							ActiveDeck tmpA(*atk); // local copies
 							ActiveDeck tmpD(*def);
-							tmpA.Units[i].Rally(effect);
+							tmpA.getUnitAt(i).Rally(effect);
 							if (bNormal)
 								Leaves[idx]->AddChild(tmpA,tmpD);
 							else
@@ -942,10 +988,10 @@ private:
 					ActiveDeck tmpD(*def);
 					for (UCHAR i=0;i<tmpA.Units.size();i++)
 					{
-						if (((tmpA.Units[i].GetFaction() == faction) || (faction == FACTION_NONE)) && tmpA.Units[i].IsAlive() &&
-							 ((!tmpA.Units[i].GetWait()) && (!tmpA.Units[i].GetPlayed())))
+						if (((tmpA.getUnitAt(i).GetFaction() == faction) || (faction == FACTION_NONE)) && tmpA.getUnitAt(i).IsAlive() &&
+							 ((!tmpA.getUnitAt(i).GetWait()) && (!tmpA.getUnitAt(i).GetPlayed())))
 						{							
-							tmpA.Units[i].Rally(effect);
+							tmpA.getUnitAt(i).Rally(effect);
 						}
 					}
 					if (bNormal)
@@ -1015,12 +1061,12 @@ private:
 					// single target
 					for (UCHAR i=0;i<atk->Structures.size();i++)
 					{
-						if (((atk->Structures[i].GetFaction() == faction) || (faction == FACTION_NONE)) && atk->Structures[i].IsAlive() &&
-							 (atk->Structures[i].GetHealth() != atk->Structures[i].GetMaxHealth()))
+						if (((atk->getStructureAt(i).GetFaction() == faction) || (faction == FACTION_NONE)) && atk->getStructureAt(i).IsAlive() &&
+							 (atk->getStructureAt(i).GetHealth() != atk->getStructureAt(i).GetMaxHealth()))
 						{
 							ActiveDeck tmpA(*atk); // local copies
 							ActiveDeck tmpD(*def);
-							tmpA.Structures[i].Heal(effect);
+							tmpA.getStructureAt(i).Heal(effect);
 							if (bNormal)
 								Leaves[idx]->AddChild(tmpA,tmpD);
 							else
@@ -1035,10 +1081,10 @@ private:
 					ActiveDeck tmpD(*def);
 					for (UCHAR i=0;i<tmpA.Structures.size();i++)
 					{
-						if (((tmpA.Structures[i].GetFaction() == faction) || (faction == FACTION_NONE)) && tmpA.Structures[i].IsAlive() &&
-							 (tmpA.Structures[i].GetHealth() != tmpA.Structures[i].GetMaxHealth()))
+						if (((tmpA.getStructureAt(i).GetFaction() == faction) || (faction == FACTION_NONE)) && tmpA.getStructureAt(i).IsAlive() &&
+							 (tmpA.getStructureAt(i).GetHealth() != tmpA.getStructureAt(i).GetMaxHealth()))
 						{							
-							tmpA.Structures[i].Heal(effect);
+							tmpA.getStructureAt(i).Heal(effect);
 						}
 					}
 					if (bNormal)
@@ -1091,9 +1137,9 @@ private:
 					// single target
 					for (UCHAR i=0;i<def->Structures.size();i++)
 					{				
-						if (!def->Structures[i].IsAlive())
+						if (!def->getStructureAt(i).IsAlive())
 							continue;
-						if (def->Structures[i].GetAbility(DEFENSIVE_EVADE))
+						if (def->getStructureAt(i).GetAbility(DEFENSIVE_EVADE))
 						{
 							// evaded - variation
 							if (bNormal)
@@ -1103,7 +1149,7 @@ private:
 						}
 						ActiveDeck tmpA(*atk);
 						ActiveDeck tmpD(*def);
-						tmpD.Structures[i].SufferDmg(0,effect);
+						tmpD.getStructureAt(i).SufferDmg(0,effect);
 						// normal variation
 						if (bNormal)
 							Leaves[idx]->AddChild(tmpA,tmpD);
@@ -1128,7 +1174,7 @@ private:
 						// iterate through every possible variation
 						for (UCHAR i=0;i<tmpD.Structures.size();i++)
 						{
-							if (!tmpD.Structures[i].IsAlive())
+							if (!tmpD.getStructureAt(i).IsAlive())
 								continue;
 							UCHAR isplit = 0;
 							// determine whether skill procs in this iteration or not
@@ -1136,19 +1182,19 @@ private:
 							if (proc)
 							{
 								// it was evade that proc'd
-								if ((tmpD.Structures[i].GetAbility(DEFENSIVE_EVADE)) && proc)
+								if ((tmpD.getStructureAt(i).GetAbility(DEFENSIVE_EVADE)) && proc)
 								{
 									// don't change
 								}
 								else
-									tmpD.Structures[i].SufferDmg(0,effect);
+									tmpD.getStructureAt(i).SufferDmg(0,effect);
 							}
 							else
 							{
 								// nothing proc'd - apply effect
-								tmpD.Structures[i].SufferDmg(0,effect);
+								tmpD.getStructureAt(i).SufferDmg(0,effect);
 							}
-							if (tmpD.Structures[i].GetAbility(DEFENSIVE_EVADE)) 
+							if (tmpD.getStructureAt(i).GetAbility(DEFENSIVE_EVADE)) 
 							{
 								if (!bCntIsSet)
 									bcnt *= 2;
@@ -1213,11 +1259,11 @@ private:
 					// single target
 					for (UCHAR i=0;i<def->Units.size();i++)
 					{
-						if (((def->Units[i].GetFaction() == faction) || (faction == FACTION_NONE)) && def->Units[i].IsAlive())
+						if (((def->getUnitAt(i).GetFaction() == faction) || (faction == FACTION_NONE)) && def->getUnitAt(i).IsAlive())
 						{	
 							bHit = true;
 							double basechance = 1.0;
-							if (def->Units[i].GetAbility(DEFENSIVE_EVADE))
+							if (def->getUnitAt(i).GetAbility(DEFENSIVE_EVADE))
 							{
 								basechance *= PROC_CHANCE;
 								// evaded - variation
@@ -1228,8 +1274,8 @@ private:
 							}
 							ActiveDeck tmpA(*atk);
 							ActiveDeck tmpD(*def);
-							tmpD.Units[i].StrikeDmg(0,effect);							
-							if ((cardindex >= 0) && (tmpD.Units[i].GetAbility(DEFENSIVE_PAYBACK) && (tmpA.Units[cardindex].GetType() == TYPE_ASSAULT)))  
+							tmpD.getUnitAt(i).StrikeDmg(0,effect);							
+							if ((cardindex >= 0) && (tmpD.getUnitAt(i).GetAbility(DEFENSIVE_PAYBACK) && (tmpA.getUnitAt(cardindex).GetType() == TYPE_ASSAULT)))  
 							{
 								basechance *= PROC_CHANCE;
 								// normal variation
@@ -1238,7 +1284,7 @@ private:
 								else
 									Leaves[idx]->AddChild(tmpD,tmpA,false,basechance);
 								// payback variation
-								tmpA.Units[cardindex].StrikeDmg(0,effect);
+								tmpA.getUnitAt(cardindex).StrikeDmg(0,effect);
 								if (bNormal)
 									Leaves[idx]->AddChild(tmpA,tmpD,false,basechance);
 								else
@@ -1276,36 +1322,36 @@ private:
 						for (UCHAR i=0;i<tmpD.Units.size();i++)
 						{
 							UCHAR isplit = 0;
-							if (((tmpD.Units[i].GetFaction() == faction) || (faction == FACTION_NONE)) && tmpD.Units[i].IsAlive())
+							if (((tmpD.getUnitAt(i).GetFaction() == faction) || (faction == FACTION_NONE)) && tmpD.getUnitAt(i).IsAlive())
 							{
 								// can't have both evade and payback
-								_ASSERT(!((tmpD.Units[i].GetAbility(DEFENSIVE_EVADE)) && 
-									(tmpD.Units[i].GetAbility(DEFENSIVE_PAYBACK))));
+								_ASSERT(!((tmpD.getUnitAt(i).GetAbility(DEFENSIVE_EVADE)) && 
+									(tmpD.getUnitAt(i).GetAbility(DEFENSIVE_PAYBACK))));
 								// determine whether skill procs in this iteration or not
 								bool proc = ((b >> isplit) & 0x1);
 								if (proc)
 								{
 									// it was evade that proc'd
-									if ((tmpD.Units[i].GetAbility(DEFENSIVE_EVADE)) && proc)
+									if ((tmpD.getUnitAt(i).GetAbility(DEFENSIVE_EVADE)) && proc)
 									{
 										// don't change
 									}
 									else
-										tmpD.Units[i].StrikeDmg(0,effect);
+										tmpD.getUnitAt(i).StrikeDmg(0,effect);
 									// it was payback
-									if ((cardindex >= 0) && ((tmpD.Units[i].GetAbility(DEFENSIVE_PAYBACK) && (tmpA.Units[cardindex].GetType() == TYPE_ASSAULT))))
+									if ((cardindex >= 0) && ((tmpD.getUnitAt(i).GetAbility(DEFENSIVE_PAYBACK) && (tmpA.getUnitAt(cardindex).GetType() == TYPE_ASSAULT))))
 									{
 										// apply payback
-										tmpA.Units[cardindex].StrikeDmg(0,effect);
+										tmpA.getUnitAt(cardindex).StrikeDmg(0,effect);
 									}
 								}
 								else
 								{
 									// nothing proc'd - apply effect
-									tmpD.Units[i].StrikeDmg(0,effect);
+									tmpD.getUnitAt(i).StrikeDmg(0,effect);
 								}
-								if ((tmpD.Units[i].GetAbility(DEFENSIVE_EVADE)) || 
-									((cardindex >= 0) && tmpD.Units[i].GetAbility(DEFENSIVE_PAYBACK) && (tmpA.Units[cardindex].GetType() == TYPE_ASSAULT))) 
+								if ((tmpD.getUnitAt(i).GetAbility(DEFENSIVE_EVADE)) || 
+									((cardindex >= 0) && tmpD.getUnitAt(i).GetAbility(DEFENSIVE_PAYBACK) && (tmpA.getUnitAt(cardindex).GetType() == TYPE_ASSAULT))) 
 								{
 									if (!bCntIsSet)
 										bcnt *= 2;
@@ -1360,14 +1406,14 @@ private:
 					// single target
 					for (UCHAR i=0;i<def->Units.size();i++)
 					{
-						if (((def->Units[i].GetFaction() == faction) || (faction == FACTION_NONE)) &&
-							 def->Units[i].IsAlive() &&
-							(def->Units[i].GetWait() <= 1) &&
-							(def->Units[i].GetAttack() >= 1) && // at least 1 Attack
-							(!def->Units[i].GetEffect(ACTIVATION_JAM)) && // neither Jammed
-							(!def->Units[i].GetEffect(DMGDEPENDANT_IMMOBILIZE)))    // nor Immobilized
+						if (((def->getUnitAt(i).GetFaction() == faction) || (faction == FACTION_NONE)) &&
+							 def->getUnitAt(i).IsAlive() &&
+							(def->getUnitAt(i).GetWait() <= 1) &&
+							(def->getUnitAt(i).GetAttack() >= 1) && // at least 1 Attack
+							(!def->getUnitAt(i).GetEffect(ACTIVATION_JAM)) && // neither Jammed
+							(!def->getUnitAt(i).GetEffect(DMGDEPENDANT_IMMOBILIZE)))    // nor Immobilized
 						{						
-							if (def->Units[i].GetAbility(DEFENSIVE_EVADE))
+							if (def->getUnitAt(i).GetAbility(DEFENSIVE_EVADE))
 							{
 								// evaded - variation
 								if (bNormal)
@@ -1377,16 +1423,16 @@ private:
 							}
 							ActiveDeck tmpA(*atk);
 							ActiveDeck tmpD(*def);
-							tmpD.Units[i].Weaken(effect);
+							tmpD.getUnitAt(i).Weaken(effect);
 							// normal variation
 							if (bNormal)
 								Leaves[idx]->AddChild(tmpA,tmpD);
 							else
 								Leaves[idx]->AddChild(tmpD,tmpA);							
-							if ((cardindex >= 0) && (tmpD.Units[i].GetAbility(DEFENSIVE_PAYBACK) && (tmpA.Units[cardindex].GetType() == TYPE_ASSAULT)))  
+							if ((cardindex >= 0) && (tmpD.getUnitAt(i).GetAbility(DEFENSIVE_PAYBACK) && (tmpA.getUnitAt(cardindex).GetType() == TYPE_ASSAULT)))  
 							{
 								// payback variation
-								tmpA.Units[cardindex].Weaken(effect);
+								tmpA.getUnitAt(cardindex).Weaken(effect);
 								if (bNormal)
 									Leaves[idx]->AddChild(tmpA,tmpD);
 								else
@@ -1413,41 +1459,41 @@ private:
 						for (UCHAR i=0;i<tmpD.Units.size();i++)
 						{
 							UCHAR isplit = 0;
-							if (((tmpD.Units[i].GetFaction() == faction) || (faction == FACTION_NONE)) &&
-								 def->Units[i].IsAlive() &&
-								 (tmpD.Units[i].GetWait() <= 1) &&
-								 (tmpD.Units[i].GetAttack() >= 1) && // at least 1 Attack
-								 (!tmpD.Units[i].GetEffect(ACTIVATION_JAM)) && // neither Jammed
-								 (!tmpD.Units[i].GetEffect(DMGDEPENDANT_IMMOBILIZE)))    // nor Immobilized
+							if (((tmpD.getUnitAt(i).GetFaction() == faction) || (faction == FACTION_NONE)) &&
+								 def->getUnitAt(i).IsAlive() &&
+								 (tmpD.getUnitAt(i).GetWait() <= 1) &&
+								 (tmpD.getUnitAt(i).GetAttack() >= 1) && // at least 1 Attack
+								 (!tmpD.getUnitAt(i).GetEffect(ACTIVATION_JAM)) && // neither Jammed
+								 (!tmpD.getUnitAt(i).GetEffect(DMGDEPENDANT_IMMOBILIZE)))    // nor Immobilized
 							{
 								// can't have both evade and payback
-								_ASSERT(!((tmpD.Units[i].GetAbility(DEFENSIVE_EVADE)) && 
-									(tmpD.Units[i].GetAbility(DEFENSIVE_PAYBACK))));
+								_ASSERT(!((tmpD.getUnitAt(i).GetAbility(DEFENSIVE_EVADE)) && 
+									(tmpD.getUnitAt(i).GetAbility(DEFENSIVE_PAYBACK))));
 								// determine whether skill procs in this iteration or not
 								bool proc = ((b >> isplit) & 0x1);
 								if (proc)
 								{
 									// it was evade that proc'd
-									if ((tmpD.Units[i].GetAbility(DEFENSIVE_EVADE)) && proc)
+									if ((tmpD.getUnitAt(i).GetAbility(DEFENSIVE_EVADE)) && proc)
 									{
 										// don't change
 									}
 									else
-										tmpD.Units[i].Weaken(effect);
+										tmpD.getUnitAt(i).Weaken(effect);
 									// it was payback
-									if ((cardindex >= 0) && ((tmpD.Units[i].GetAbility(DEFENSIVE_PAYBACK) && (tmpA.Units[cardindex].GetType() == TYPE_ASSAULT))))
+									if ((cardindex >= 0) && ((tmpD.getUnitAt(i).GetAbility(DEFENSIVE_PAYBACK) && (tmpA.getUnitAt(cardindex).GetType() == TYPE_ASSAULT))))
 									{
 										// apply payback
-										tmpA.Units[cardindex].Weaken(effect);
+										tmpA.getUnitAt(cardindex).Weaken(effect);
 									}
 								}
 								else
 								{
 									// nothing proc'd - apply effect
-									tmpD.Units[i].Weaken(effect);
+									tmpD.getUnitAt(i).Weaken(effect);
 								}
-								if ((tmpD.Units[i].GetAbility(DEFENSIVE_EVADE)) || 
-									((cardindex >= 0) && tmpD.Units[i].GetAbility(DEFENSIVE_PAYBACK) && (tmpA.Units[cardindex].GetType() == TYPE_ASSAULT))) 
+								if ((tmpD.getUnitAt(i).GetAbility(DEFENSIVE_EVADE)) || 
+									((cardindex >= 0) && tmpD.getUnitAt(i).GetAbility(DEFENSIVE_PAYBACK) && (tmpA.getUnitAt(cardindex).GetType() == TYPE_ASSAULT))) 
 								{
 									if (!bCntIsSet)
 										bcnt *= 2;
@@ -1496,9 +1542,9 @@ private:
 			// procs are 50%
 			// so it is at 4 * 3 * 2 * 2
 			// also, flurry may proc or not... ah ok, previous line is fine
-#define SRC	tmpA.Units[index]
+#define SRC	tmpA.getUnitAt(index)
 			bool bExit = false;
-			for (UCHAR iiflurry=0;((iiflurry<2) && (iiflurry<(atk->Units[index].GetAbility(COMBAT_FLURRY)+1)));iiflurry++)
+			for (UCHAR iiflurry=0;((iiflurry<2) && (iiflurry<(atk->getUnitAt(index).GetAbility(COMBAT_FLURRY)+1)));iiflurry++)
 			{
 				ActiveDeck tmpA(*atk);
 				ActiveDeck tmpD(*def);
@@ -1510,12 +1556,12 @@ private:
 				UCHAR iflurry = 1;
 				if (iiflurry > 0)
 					iflurry = SRC.GetAbility(COMBAT_FLURRY)+1;
-				if ((index >= (UCHAR)tmpD.Units.size()) || (!tmpD.Units[index].IsAlive()) || (SRC.GetAbility(COMBAT_FEAR)))
+				if ((index >= (UCHAR)tmpD.Units.size()) || (!tmpD.getUnitAt(index).IsAlive()) || (SRC.GetAbility(COMBAT_FEAR)))
 				{
 					// Deal DMG To Commander BUT STILL PROC50 FLURRY and PROBABLY VALOR
 					UCHAR valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (tmpA.Units.size() < tmpD.Units.size())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
 					for (UCHAR i=0;i<iflurry;i++)
-						tmpD.Commander.HitCommander(0,SRC.GetAttack()+valor,SRC,tmpD);
+						tmpD.Commander.HitCommander(0,SRC.GetAttack()+valor,SRC,tmpD,tmpA,false);
 					if (bNormal)
 						Leaves[idx]->AddChild(tmpA,tmpD);
 					else
@@ -1569,19 +1615,19 @@ private:
 					tmpD = ActiveDeck(*def);
 					if (swipe > 1)
 					{
-						if ((index > 0) && (tmpD.Units[index-1].IsAlive()))
-							targets[0] = &tmpD.Units[index-1];
+						if ((index > 0) && (tmpD.getUnitAt(index-1).IsAlive()))
+							targets[0] = &tmpD.getUnitAt(index-1);
 						else
 							targets[0] = 0;
-						targets[1] = &tmpD.Units[index];
+						targets[1] = &tmpD.getUnitAt(index);
 						_ASSERT(targets[1]); // this is aligned to SRC and must be present
-						if ((index+1 < (UCHAR)tmpD.Units.size()) && (tmpD.Units[index+1].IsAlive()))
-							targets[2] = &tmpD.Units[index+1];
+						if ((index+1 < (UCHAR)tmpD.Units.size()) && (tmpD.getUnitAt(index+1).IsAlive()))
+							targets[2] = &tmpD.getUnitAt(index+1);
 						else
 							targets[2] = 0;
 					}
 					else
-						targets[0] = &tmpD.Units[index];
+						targets[0] = &tmpD.getUnitAt(index);
 				}
 				//*****************************					
 				// swipe
@@ -1591,7 +1637,7 @@ private:
 				if ((!targets[iswipe]->IsAlive()) && ((swipe == 1) || (iswipe == 1)))
 				{
 					UCHAR valor = (VALOR_HITS_COMMANDER && SRC.GetAbility(COMBAT_VALOR) && (tmpA.Units.size() < tmpD.Units.size())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
-					tmpD.Commander.HitCommander(0,SRC.GetAttack()+valor,SRC,tmpD);
+					tmpD.Commander.HitCommander(0,SRC.GetAttack()+valor,SRC,tmpD,tmpA,false);
 					// might want to add here check:
 					// if (!Def.Commander.IsAlive()) return;
 					continue;
@@ -1645,7 +1691,7 @@ private:
 							tmpD.Commander.SufferDmg(0,targets[iswipe]->GetAbility(SPECIAL_BACKFIRE));
 						// crush
 						if (SRC.GetAbility(DMGDEPENDANT_CRUSH))
-							tmpD.Commander.HitCommander(0,SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,tmpD,false);
+							tmpD.Commander.HitCommander(0,SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,tmpD,tmpA,false);
 					}
 					// counter
 					if (targets[iswipe]->GetAbility(DEFENSIVE_COUNTER))
@@ -1794,7 +1840,7 @@ private:
 			else
 				atk = &Leaves[i]->Def;
 			for (UCHAR i=0;i<atk->Units.size();i++)
-				atk->Units[i].ProcessPoison(0);
+				atk->getUnitAt(i).ProcessPoison(0);
 		}
 		printf("B");
 		// pick
@@ -1830,7 +1876,7 @@ private:
 			for (UCHAR i=0;i<atk->Actions.size();i++)
 			{
 				// apply actions somehow ...
-				ApplyEffects(atk->Actions[i],(*Leaves[l]),-1,bNormal);
+				ApplyEffects(atk->getActionAt(i),(*Leaves[l]),-1,bNormal);
 			}
 		}
 		printf("D");
@@ -1924,7 +1970,7 @@ private:
 			UCHAR iFusionCount = 0;
 			for (UCHAR i=0;i<atk->Structures.size();i++)
 			{
-				if (atk->Structures[i].GetAbility(SPECIAL_FUSION) > 0)
+				if (atk->getStructureAt(i).GetAbility(SPECIAL_FUSION) > 0)
 					iFusionCount++;
 			}
 			// structure cards
@@ -1942,8 +1988,8 @@ private:
 						latk = &localLeaves[z]->Atk;
 					else
 						latk = &localLeaves[z]->Def;
-					if (latk->Structures[i].BeginTurn())
-						ApplyEffects(latk->Structures[i],(*localLeaves[z]),-1,bNormal,false,(iFusionCount >= 3));
+					if (latk->getStructureAt(i).BeginTurn())
+						ApplyEffects(latk->getStructureAt(i),(*localLeaves[z]),-1,bNormal,false,(iFusionCount >= 3));
 
 					Node::VPBN localILeaves;
 					localILeaves.reserve(RESERVE_SMALL_COUNT);
@@ -1956,7 +2002,7 @@ private:
 							liatk = &localILeaves[x]->Atk;
 						else
 							liatk = &localILeaves[x]->Def;
-						liatk->Structures[i].EndTurn();
+						liatk->getStructureAt(i).EndTurn();
 					}
 				}
 			}
@@ -1993,10 +2039,10 @@ private:
 						latk = &localLeaves[z]->Atk;
 					else
 						latk = &localLeaves[z]->Def;
-					if (latk->Units[i].BeginTurn())
+					if (latk->getUnitAt(i).BeginTurn())
 					{
 						//if (!Units[i].GetEffect(ACTIVATION_JAM)) // jammed - checked in beginturn
-						ApplyEffects(latk->Units[i],(*localLeaves[z]),i,bNormal);
+						ApplyEffects(latk->getUnitAt(i),(*localLeaves[z]),i,bNormal);
 						Node::VPBN localILeaves;
 						localILeaves.reserve(RESERVE_SMALL_COUNT);
 						localLeaves[z]->GetLeaves(localILeaves);
@@ -2008,9 +2054,9 @@ private:
 								liatk = &localILeaves[x]->Atk;
 							else
 								liatk = &localILeaves[x]->Def;							
-							if ((!liatk->Units[i].GetEffect(DMGDEPENDANT_IMMOBILIZE)) ) 
+							if ((!liatk->getUnitAt(i).GetEffect(DMGDEPENDANT_IMMOBILIZE)) ) 
 							{
-								if (liatk->Units[i].IsAlive() && liatk->Units[i].GetAttack()) // can't attack with dead unit ;) also if attack = 0 then dont attack at all
+								if (liatk->getUnitAt(i).IsAlive() && liatk->getUnitAt(i).GetAttack()) // can't attack with dead unit ;) also if attack = 0 then dont attack at all
 									Attack(i, (*localILeaves[x]), bNormal);
 							}							
 						}
@@ -2026,7 +2072,7 @@ private:
 							liiatk = &localIILeaves[y]->Atk;
 						else
 							liiatk = &localIILeaves[y]->Def;
-						liiatk->Units[i].EndTurn();
+						liiatk->getUnitAt(i).EndTurn();
 					}
 				}
 			}
@@ -2059,7 +2105,7 @@ private:
 			}
 
 			// clear dead units here yours and enemy
-			VCARDS::iterator vi = atk->Units.begin();
+			LCARDS::iterator vi = atk->Units.begin();
 			while (vi != atk->Units.end())
 				if (!vi->IsAlive())
 					vi = atk->Units.erase(vi);

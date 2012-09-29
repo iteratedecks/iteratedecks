@@ -18,6 +18,9 @@
 #include <stdlib.h>
 #endif
 
+#include <iostream>
+#include <sstream>
+
 #include "compat.h"
 
 #include <vector>
@@ -27,9 +30,8 @@
 #include <stdexcept>
 #include "exceptions.hpp"
 #include <iomanip>
+#include <assert.h>
 #include "assert.hpp"
-
-
 
 #include "results.h"
 #include "log.h"
@@ -714,6 +716,7 @@ Valor: Removed after owner ends his turn.
 	void PlayedCard::ResetPlayedFlag() { bPlayed = false; }
 	void PlayedCard::SetAttack(const UCHAR attack) { Attack = attack; }
 	void PlayedCard::SetEffect(const UCHAR id, const UCHAR value) { Effects[id] = value; }
+	void PlayedCard::SetHealth(const UCHAR health) { Health = health; }
 	void PlayedCard::Rally(const EFFECT_ARGUMENT amount)
 	{
 		Effects[ACTIVATION_RALLY] += amount;
@@ -841,6 +844,24 @@ struct REQUIREMENT
         return *iter;
     }
 
+    PlayedCard & ActiveDeck::getActionAt(unsigned int const index)
+    {
+        LCARDS::iterator iter = this->Actions.begin();
+        for(unsigned int i = 0; i < index; i++) {
+            iter++;
+        }
+        return *iter;
+    }
+
+    PlayedCard & ActiveDeck::getStructureAt(unsigned int const index)
+    {
+        LCARDS::iterator iter = this->Structures.begin();
+        for(unsigned int i = 0; i < index; i++) {
+            iter++;
+        }
+        return *iter;
+    }
+
     PlayedCard & ActiveDeck::getCardAt(unsigned int const index)
     {
         LCARDS::iterator iter = this->Deck.begin();
@@ -850,7 +871,7 @@ struct REQUIREMENT
         return *iter;
     }
 
-    PlayedCard const & ActiveDeck::getCardAt(unsigned int const index) const
+	PlayedCard const & ActiveDeck::getCardAt(unsigned int const index) const
     {
         LCARDS::const_iterator iter = this->Deck.begin();
         for(unsigned int i = 0; i < index; i++) {

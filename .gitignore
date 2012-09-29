@@ -1,1 +1,4 @@
 .makepp/
+bin/*.log
+bin/*.*build*
+bin/*.idb

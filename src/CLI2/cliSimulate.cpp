@@ -1,11 +1,29 @@
 #include "cliSimulate.hpp"
 #include <cfloat>
+#define _USE_MATH_DEFINES // Needed for VSC++ to pick up M_PI. Do not move this below erf.hpp
 #include <cmath>
+
 #include <cassert>
 #include <iostream>
 #include <iomanip>
 #include <ios>
 #include <limits>
+
+#ifdef _WIN32
+    #define __windows__
+#endif
+#ifdef _WIN64
+    #define __windows__
+#endif
+
+#if defined(__windows__)
+	#include "boost/math/special_functions/erf.hpp"
+	#define erfc boost::math::erfc
+
+	#define isinf(x) (!_finite(x))
+#else
+	#define isinf(x) (std::isinf(x))
+#endif
 
 #include "../EXE/simulate.hpp"
 #include "../EXE/assert.hpp"
@@ -92,7 +110,7 @@ namespace EvaluateDecks {
             long double const pow1 (powl(p,k));
             long double const pow2 (powl(q,n-k));
             assert(binCo >= 0);
-            assert(!std::isinf(binCo));
+            assert(!isinf(binCo));
             assert(pow1 >= 0);
             assert(pow1 <= 1);
             assert(pow2 >= 0);
@@ -126,8 +144,8 @@ namespace EvaluateDecks {
             //assertDE(Bin(0.125,12,12),1.4551915228366851807E-11);
             //assertDE(Bin(0.125,6,12),1.5819048858247697353E-3);
 
-            long double sumL = 0.0d;
-            long double sumU = 0.0d;
+            long double sumL = 0.0;
+            long double sumU = 0.0;
             for(unsigned int i = 0; i <= n; i++) {
                 if (i <= k) {
                     sumL += Bin(p,i,n);
@@ -260,82 +278,10 @@ namespace EvaluateDecks {
             return x;
         }
 
-        /**
-         * Compute centered two sided confidence interval.
-         */
-        void wilson(unsigned int const k    //< wins
-                   ,unsigned int const n    //< games
-                   ,double const gamma      //< confidence
-                   ,bool const twoSided
-                   ,double & lower          //< output: lower bound
-                   ,double & upper          //< output: upper bound
-                   )
-        {
-            assertX(k <= n);
-            assertX(0 <= gamma);
-            assertX(gamma <= 1);
-            double const alpha = 1-gamma;
-            // wilson
-            double const estimator ((double)k / (double)n);
-            double const confArg = twoSided ? 1-alpha/2 : 1-alpha;
-            double const c = normInv(confArg);
-            assertX(!std::isinf(c));
-            double const cSquare = c*c;
-            double const factor1 = 1 / (1 + cSquare / n);
-            double const summand2 = cSquare / 2 / n;
-            assertX(!std::isinf(estimator * (1-estimator) / n));
-            assertX(!std::isinf(cSquare));
-            assertX(n>0);
-            assertX(4*n*n > 0);
-            assertX(!std::isinf(cSquare / (4*n*n)));
-            double const radicand = estimator * (1-estimator) / n  + cSquare / (4*n*n);
-            assertX(!std::isinf(c));
-            assertX(!std::isinf(radicand));
-            double const summand3 = c * sqrt(radicand);
-            assertX(estimator >= 0);
-            assertX(summand2 >= 0);
-            assertX(!std::isinf(summand3));
-            assertGE(estimator + summand2, summand3);
-            double const factor2l = estimator + summand2 - summand3;
-            double const factor2u = estimator + summand2 + summand3;
-            assertX(factor1 >= 0);
-            assertX(factor2l >= 0);
-            assertX(factor2u >= 0);
-            lower = factor1 * factor2l;
-            upper = factor1 * factor2u;
-        }
-
-        void twoSidedBounds(unsigned int const k    //< wins
-                   ,unsigned int const n    //< games
-                   ,double const gamma      //< confidence level
-                   ,double & lower          //< output: lower bound
-                   ,double & upper          //< output: upper bound
-                   )
-        {
-            double const alpha = 1 - gamma;
-            if(n <= 34) {
-                if (k == 0) {
-                    lower = 0;
-                } else {
-                    double const alphaL = alpha/2;
-                    lower = cumBinInv(1-alphaL,k-1,n);
-                }
-                if (k == n) {
-                    upper = 1;
-                } else {
-                    double const alphaU = alpha/2;
-                    upper = cumBinInv(alphaU,k,n);
-                }
-            } else {
-                wilson(k,n,gamma,true,lower,upper);
-            }
-        }
-
-
-        double oneSidedLowerBound(unsigned int const k  //< wins
-                                 ,unsigned int const n  //< games
-                                 ,double const gamma    //< confidence level
-                                 )
+        double lowerBound(unsigned int const k  //< wins
+                         ,unsigned int const n  //< games
+                         ,double const gamma    //< confidence level
+                         )
         {
             assert(k <= n);
             assert(0 <= gamma);
@@ -343,38 +289,80 @@ namespace EvaluateDecks {
             double const alpha(1-gamma);
             double result;
             if (k == 0) {
-                return 0.0d;
+                return 0.0;
             } else if (n <= 34) {
                 // unfortunately this will become numerically unstable for large n
                 result = cumBinInv(1-alpha/2,k-1,n);
                 assertX(result >= 0);
+            } else if (true) {
+                // wilson
+                double const estimator ((double)k / (double)n);
+                double const c = normInv(1-alpha/2);;
+                assertX(!isinf(c));
+                double const cSquare = c*c;
+                double const factor1 = 1 / (1 + cSquare / n);
+                double const summand2 = cSquare / 2 / n;
+                assertX(!isinf(estimator * (1-estimator) / n));
+                assertX(!isinf(cSquare));
+                assertX(n>0);
+                assertX(4*n*n > 0);
+                assertX(!isinf(cSquare / (4*n*n)));
+                double const radicand = estimator * (1-estimator) / n  + cSquare / (4*n*n);
+                assertX(!isinf(c));
+                assertX(!isinf(radicand));
+                double const summand3 = c * sqrt(radicand);
+                assertX(estimator >= 0);
+                assertX(summand2 >= 0);
+                assertX(!isinf(summand3));
+                assertGE(estimator + summand2, summand3);
+                double const factor2 = estimator + summand2 - summand3;
+                assertX(factor1 >= 0);
+                assertX(factor2 >= 0);
+                result = factor1 * factor2;
             } else {
-                double upper;
-                wilson(k,n,gamma,false,result,upper);
+                // normal distribution
+                double const estimator ((double)k / (double)n);
+                double const c = normInv(1-alpha/2);
+                assertX(!isinf(c));
+                double const squareroot = sqrt(estimator * (1-estimator) / n);
+                assertX(estimator >= 0);
+                assertX(c*squareroot <= estimator);
+                result = estimator - c * squareroot;
             }
             assertX(result >= 0);
             return result;
         }
 
-        double oneSidedUpperBound(unsigned int const k  //< successfull results
-                                 ,unsigned int const n  //< total tries
-                                 ,double const gamma    //< confidence level
-                                 )
+        double upperBound(unsigned int const k  //< successfull results
+                         ,unsigned int const n  //< total tries
+                         ,double const gamma    //< confidence level
+                         )
         {
             assert(k <= n);
             assert(0 <= gamma);
             assert(gamma <= 1);
             double const alpha(1-gamma);
             if (k == n) {
-                return 1.0d;
+                return 1.0;
             } else if (n <= 34) {
                 // unfortunately this will become numerically unstable for large n
                 return cumBinInv(alpha/2,k,n);
+            } else if (true) {
+                // wilson
+                double const estimator ((double)k / (double)n);
+                double const c = normInv(1-alpha/2);;
+                double const cSquare = c*c;
+                double const factor1 = 1 / (1 + cSquare / n);
+                double const summand2 = cSquare / 2 / n;
+                double const radicand = estimator * (1-estimator) / n  + cSquare / (4*n*n);
+                double const summand3 = c * sqrt(radicand);
+                double const factor2 = estimator + summand2 + summand3;
+                return factor1 * factor2;
             } else {
-                double lower;
-                double upper;
-                wilson(k,n,gamma,false,lower,upper);
-                return upper;
+                double const estimator ((double)k / (double)n);
+                double const c = normInv(1-alpha/2);
+                double const squareroot = sqrt(estimator * (1-estimator) / n);
+                return estimator + c * squareroot;
             }
         }
 
@@ -387,7 +375,7 @@ namespace EvaluateDecks {
                         ,unsigned int const & numberOfIterations
                         )
         {
-            // Here come the actual simulations
+            // Here comes the actual simulations
             RESULTS r;
             for (UINT k=0;k<numberOfIterations;k++)	{
                 ActiveDeck X(deck1);
@@ -406,9 +394,9 @@ namespace EvaluateDecks {
             double const winRate = (double)r.Win / (double)r.Games; // estimator
             std::cout << "estimator=" << std::setiosflags(std::ios::fixed) << std::setprecision(4) << winRate << " ";
             std::cout.flush();
-            double const gamma(0.90); // confidence level
-            double lBound, uBound;
-            twoSidedBounds(r.Win, r.Games, gamma, lBound, uBound);
+            double const gamma(0.95); // confidence level
+            double const lBound(lowerBound(r.Win,r.Games,gamma));
+            double const uBound(upperBound(r.Win,r.Games,gamma));
             std::cout << "confidence [" << lBound << ";" << uBound << "]";
             assert(0 <= lBound);
             assert(lBound <= winRate);

@@ -19,7 +19,7 @@ unsigned int PlayedCard::getUniqueId() const {
     return this->uniqueId;
 }
 
-unsigned int const PlayedCard::numberOfCardLines(6);
+//unsigned int const PlayedCard::numberOfCardLines(6U);
 
 std::string PlayedCard::toRectString(unsigned int const w, unsigned int const i) const
 {
