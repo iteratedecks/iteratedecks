@@ -7,6 +7,18 @@
 
     namespace EvaluateDecks {
         namespace CLI {
+
+
+            /**
+             * Compute centered two sided confidence interval.
+             */
+            void twoSidedBounds(unsigned int const k    //< wins
+                               ,unsigned int const n    //< games
+                               ,double const gamma      //< confidence level
+                               ,double & lower          //< output: lower bound
+                               ,double & upperBound     //< output: upper bound
+                               );
+            
             /**
              * p, such that B(X >= k   | p,n ) = alpha/2   (a small value)
              * p, such that B(X <  k   | p,n ) = 1-alpha/2 (a large value)
