@@ -387,7 +387,7 @@ namespace EvaluateDecks {
                         ,unsigned int const & numberOfIterations
                         )
         {
-            // Here comes the actual simulations
+            // Here come the actual simulations
             RESULTS r;
             for (UINT k=0;k<numberOfIterations;k++)	{
                 ActiveDeck X(deck1);
