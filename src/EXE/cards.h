@@ -1771,7 +1771,7 @@ char *FormatCardName(char *Name)
 		MSUINT::iterator mi = MIIndex.find(DeckName);
 		if (mi == MIIndex.end())	
 			return buffer; // not found
-		_itoa_s(MDB[mi->second].GetCommander(),buffer,size,10);
+		_itoa_s(MDB[mi->second].GetCommander(),buffer,size);
 		MDB[mi->second].GetDeck(buffer,size);
 		return buffer;
 	}
