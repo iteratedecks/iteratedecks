@@ -8,7 +8,7 @@ namespace EvaluateDecks {
         /**
          * Option table
          */
-        CommentedOption const options[] =
+        static CommentedOption const options[] =
             { { { "number-of-iterations" , required_argument, 0, 'n' }, "sets the number of simulations to do" }
             , { { "first-deck-is-ordered", no_argument      , 0, 'o' }, "marks the first deck (player deck) as ordered" }
             , { { "achievement-index"    , required_argument, 0, 'a' }, "index (not id) of achievement. not sure where the difference is" }
@@ -19,7 +19,7 @@ namespace EvaluateDecks {
             , { { "help"                 , no_argument      , 0, 'h' }, "print help" }
             };
 
-        size_t const numberOfOptions(sizeof(options)/sizeof(CommentedOption));
+        static size_t const numberOfOptions(sizeof(options)/sizeof(CommentedOption));
 
         void printUsage()
         {
