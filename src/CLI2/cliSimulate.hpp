@@ -20,24 +20,24 @@
                                );
             
             /**
-             * p, such that B(X >= k   | p,n ) = alpha/2   (a small value)
-             * p, such that B(X <  k   | p,n ) = 1-alpha/2 (a large value)
-             * p, such that B(X <= k-1 | p,n ) = 1-alpha/2 (a large value)
+             * p, such that B(X >= k   | p,n ) = 1-gamma
+             * p, such that B(X <  k   | p,n ) = gamma
+             * p, such that B(X <= k-1 | p,n ) = gamma
              * where B is the Binomial distribution.
              */
-            double lowerBound(unsigned int const k  //< wins
-                             ,unsigned int const n  //< games
-                             ,double const gamma    //< confidence level
-                             );
+            double oneSidedLowerBound(unsigned int const k  //< wins
+                                     ,unsigned int const n  //< games
+                                     ,double const gamma    //< confidence level
+                                     );
 
             /**
-             * p, such that B(X <= k | p,n ) = alpha/2
+             * p, such that B(X <= k | p,n ) = 1-gamma
              * where B is the Binomial distribution.
              */
-            double upperBound(unsigned int const k  //< successfull results
-                             ,unsigned int const n  //< total tries
-                             ,double const gamma    //< confidence level
-                             );
+            double oneSidedUpperBound(unsigned int const k  //< successfull results
+                                     ,unsigned int const n  //< total tries
+                                     ,double const gamma    //< confidence level
+                                     );
 
             RESULTS simulate(ActiveDeck const & deck1
                              ,ActiveDeck const & deck2
