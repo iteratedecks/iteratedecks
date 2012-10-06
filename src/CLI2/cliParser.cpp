@@ -103,6 +103,18 @@ namespace EvaluateDecks {
                     case 'h': {
                             options.printHelpAndExit = true;
                         } break;
+                    case 's': {
+                            options.surge = true;
+                        } break;
+                    case 'r': {
+                            std::stringstream ssRaidId(optarg);
+                            int raidId;
+                            ssRaidId>> raidId;
+                            if(ssRaidId.fail()) {
+                                throw std::invalid_argument ("-r --raid-id requires an integer argument");
+                            }
+							options.defenseDeck.setRaid(raidId);
+                        } break;
                     case '?':
                         throw std::invalid_argument("no such option");
                     case 0:
@@ -141,6 +153,9 @@ namespace EvaluateDecks {
             }
             if (options.printHelpAndExit) {
                 // no more arguments expected
+			} else if(options.defenseDeck.getType() == DeckArgument::RAID_ID && optind+1 == argc) {
+				// if we are raid deck, we only need the attack hash
+                options.attackDeck.setHash(argv[optind+0]);
             } else if(optind+2 == argc) {
                 // other arguments, we expect exactly two decks
                 options.attackDeck.setHash(argv[optind+0]);

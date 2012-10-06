@@ -32,6 +32,8 @@
             static CommentedOption const options[] =
 				{ { { "number-of-iterations" , required_argument, 0, 'n' }, "sets the number of simulations to do" }
 				, { { "first-deck-is-ordered", no_argument      , 0, 'o' }, "marks the first deck (player deck) as ordered" }
+				, { { "surge"                , no_argument      , 0, 's' }, "first deck will surge" }
+				, { { "raid-id"              , required_argument, 0, 'r' }, "raid id" }
 				, { { "achievement-index"    , required_argument, 0, 'a' }, "index (not id) of achievement. not sure where the difference is" }
 				, { { "verify"               , required_argument, 0, 0   }, "verify a result, provide an accepted range in the form <lower bound>:<upper bound>, like \"--verify 1:1\" if the deck should win all the time" }
 				, { { "verbose"              , no_argument      , 0, 'v' }, "verbose output" }
@@ -76,9 +78,11 @@
 
                     DeckArgumentType getType() const;
                     std::string getHash() const throw (InvalidState);
+					int getRaidId() const throw (InvalidState);
                     bool isOrdered() const throw (InvalidState);
 
                     void setHash(std::string const & hash);
+					void setRaid(int const & raidId);
                     void setOrdered(bool const & ordered);
             };
 
@@ -105,6 +109,7 @@
                 unsigned int seed;
                 Logger::ColorMode colorMode;
                 bool printHelpAndExit;
+				bool surge;
 
                 CliOptions();
             };

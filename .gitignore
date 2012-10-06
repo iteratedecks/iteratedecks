@@ -1,4 +1,8 @@
 .makepp/
-bin/*.log
+bin/*.*log
 bin/*.*build*
 bin/*.idb
+bin/*.obj
+bin/*.lib
+bin/*.pdb
+*.vcxproj.user

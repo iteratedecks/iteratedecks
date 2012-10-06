@@ -10,3 +10,14 @@ void Simulate(ActiveDeck &tAtk
              ,bool bAnnihilator = false
              ,bool bSurrenderAtLoss = false
              );
+
+void EvaluateRaidQuestOnce(const ActiveDeck gAtk
+						   , RESULTS &r
+						   , const UCHAR *CSIndex/* = 0*/
+						   , RESULT_BY_CARD *rbc/* = 0*/
+						   , DWORD RaidID
+						   , DWORD QuestID
+						   , REQUIREMENT *Reqs = 0
+						   , UINT *SkillProcs = 0
+						   , bool bAnnihilator = false
+						   , bool bSurrenderAtLoss = false);

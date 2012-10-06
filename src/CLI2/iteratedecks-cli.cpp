@@ -75,19 +75,6 @@ int mainWithOptions(CliOptions const & options
 	DB.LoadRaidXML("raids.xml");
 	DB.LoadQuestXML("quests.xml");
 
-    // construct the decks
-    // TODO own function for this.
-    // ... first deck
-    assert(options.attackDeck.getType() == DeckArgument::HASH);
-    // FIXME: should not pass c_str
-	ActiveDeck deck1(options.attackDeck.getHash().c_str(), DB.GetPointer());
-	deck1.SetOrderMatters(options.attackDeck.isOrdered());
-
-    // ... second deck
-    assert(options.defenseDeck.getType() == DeckArgument::HASH);
-	ActiveDeck deck2(options.defenseDeck.getHash().c_str(), DB.GetPointer());
-    deck2.SetOrderMatters(options.defenseDeck.isOrdered());
-
     // set random generator seed. Note that if there was no argument
     // given we will set to 1, which is equivalent to not calling srand
 	srand(options.seed);
@@ -107,8 +94,30 @@ int mainWithOptions(CliOptions const & options
     DeckLogger defenseLogger(DeckLogger::DEFENSE, logger);
     SimulationLogger simulationLogger(logger);
 
-    RESULTS r;
-    r = simulate(deck1,deck2,attackLogger,defenseLogger,simulationLogger,options.numberOfIterations);
+    // construct the decks
+    // TODO own function for this.
+    // ... first deck
+    assert(options.attackDeck.getType() == DeckArgument::HASH);
+    // FIXME: should not pass c_str
+	ActiveDeck deck1(options.attackDeck.getHash().c_str(), DB.GetPointer());
+	deck1.SetOrderMatters(options.attackDeck.isOrdered());
+
+	RESULTS r;
+
+    // ... second deck
+	switch(options.defenseDeck.getType()) {
+	case DeckArgument::HASH: {
+		ActiveDeck deck2(options.defenseDeck.getHash().c_str(), DB.GetPointer());
+		deck2.SetOrderMatters(options.defenseDeck.isOrdered());
+	    r = simulate(deck1,deck2,attackLogger,defenseLogger,simulationLogger,options.numberOfIterations,options.surge);
+							 } break;
+
+	case DeckArgument::RAID_ID: {
+		r = simulateRaid(deck1, options.defenseDeck.getRaidId(), attackLogger, simulationLogger, options.numberOfIterations);
+								} break;
+	}
+
+	printResults(r);
 
     // Do verify, if requested.
     VerifyOptions const & verifyOptions(options.verifyOptions);

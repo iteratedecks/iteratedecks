@@ -65,6 +65,14 @@ namespace EvaluateDecks {
             return this->hashData.hash;
         }
 
+        int DeckArgument::getRaidId() const throw (InvalidState)
+        {
+            if(this->type != RAID_ID) {
+                throw InvalidState("Only raid decks can have a raid id.");
+            }
+			return this->raidId;
+        }
+
         bool DeckArgument::isOrdered() const throw (InvalidState)
         {
             if(this->type != HASH) {
@@ -87,6 +95,11 @@ namespace EvaluateDecks {
             this->hashData.hash = hash;
         }
 
+		void DeckArgument::setRaid(int const & raidId)
+        {
+            this->type = RAID_ID;
+			this->raidId = raidId;
+        }
 
         AchievementOptions::AchievementOptions()
         : doAchievementCheck(false)
@@ -121,6 +134,7 @@ namespace EvaluateDecks {
         , seed(1)
         , colorMode(Logger::COLOR_NONE)
         , printHelpAndExit(false)
+		, surge(false)
         {
         }
     } // namespace CLI
