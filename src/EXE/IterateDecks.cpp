@@ -48,7 +48,7 @@ using namespace std;
 #include <direct.h>
 #endif
 
-#if __windows__
+#ifdef __windows__
 int _tmain(int argc, char* argv[])
 {
 /*
@@ -573,7 +573,7 @@ int _tmain(int argc, char* argv[])
 		ActiveDeck X(x);
 		ActiveDeck Y(z);
 
-		Simulate(X,Y,r);
+		Simulate(X,Y,r,NULL,NULL,NULL,false,NULL,NULL,false,false);
 	}
 	return r.Win;
 	}
@@ -586,7 +586,7 @@ int _tmain(int argc, char* argv[])
 	DB.GenRaidDeck(Y,1);
 	//DB.LoadDecks("C:\\Users\\NT\\Documents\\Visual Studio 2008\\Projects\\EvaluateDecks\\bin\\decks\\_defence\\crash.txt");
 	//DB.GetCustomDeck(0,Y);
-	Simulate(X,Y,r);
+	Simulate(X,Y,r,NULL,NULL,NULL,false,NULL,NULL,false,false);
 	}
 	
 	//printf("%d %d %d\n",sizeof(PICK_STATS),sizeof(RESULT_BY_CARD),sizeof(EVAL_PARAMS));
@@ -606,7 +606,7 @@ int _tmain(int argc, char* argv[])
 	{
 		UCHAR idx = 0;
 		for (idx=0;idx<DEFAULT_DECK_RESERVE_SIZE+1;idx++)
-			if (rbc[idx].Id == x.Deck[i].GetId())
+			if (rbc[idx].Id == x.getCardAt(i).GetId())
 				break;
 			else
 				if (!rbc[idx].IsValid())
@@ -615,8 +615,8 @@ int _tmain(int argc, char* argv[])
 					break;
 				}
 		_ASSERT(idx);
-		CSIndex[x.Deck[i].GetId()] = idx;
-		rbc[idx].Id = x.Deck[i].GetId();
+		CSIndex[x.getCardAt(i).GetId()] = idx;
+		rbc[idx].Id = x.getCardAt(i).GetId();
 	}
 	{
 	RESULTS r;
@@ -625,7 +625,7 @@ int _tmain(int argc, char* argv[])
 		ActiveDeck X(x);
 		ActiveDeck Y(z);
 
-		Simulate(X,Y,r,NULL,CSIndex,rbc);
+		Simulate(X,Y,r,NULL,CSIndex,rbc,false,NULL,NULL,false,false);
 	}
 	return r.Win;
 	}
@@ -637,7 +637,7 @@ int _tmain(int argc, char* argv[])
 		a.LogDeckID = 0;
 		b.Log = &log;
 		b.LogDeckID = 1;
-		Simulate(a,b,r,NULL,CSIndex,rbc);
+		Simulate(a,b,r,NULL,CSIndex,rbc,false,NULL,NULL,false,false);
 		//
 		// print log
 		char death[] = "dies";
@@ -953,7 +953,7 @@ int _tmain(int argc, char* argv[])
 		{
 			UCHAR idx = 0;
 			for (idx=0;idx<DEFAULT_DECK_SIZE+1;idx++)
-				if (rescs[idx].Id == X.Deck[i].GetId())
+				if (rescs[idx].Id == X.getCardAt(i).GetId())
 					break;
 				else
 					if (!rescs[idx].IsValid())
@@ -962,8 +962,8 @@ int _tmain(int argc, char* argv[])
 						break;
 					}
 			_ASSERT(idx);
-			CSIndex[X.Deck[i].GetId()] = idx;
-			rescs[idx].Id = X.Deck[i].GetId();
+			CSIndex[X.getCardAt(i).GetId()] = idx;
+			rescs[idx].Id = X.getCardAt(i).GetId();
 		}
 		//
 		UINT games = 1000;
@@ -981,7 +981,7 @@ int _tmain(int argc, char* argv[])
 				if (x.Deck.size() == 1)
 				{
 					// last card is about to be played
-					UINT id = x.Deck[0].GetId(); // it's ID
+					UINT id = x.getCardAt(0).GetId(); // it's ID
 					// play variation without this card
 					rescs[CSIndex[id]].WLGames++;
 					ActiveDeck xwl(x),ywl(y);
@@ -1045,11 +1045,11 @@ int _tmain(int argc, char* argv[])
 				for (UINT k=0;k<GAMES_COUNT;k++)
 				{
 					ActiveDeck tm(m119);
-					ActiveDeck a(DB.CARD("Dracorex"));		
+					ActiveDeck a(DB.CARD("Dracorex"),DB.GetPointer());		
 					for (UCHAR l=0;l<GAMES_EMUL;l++)
 						a.Add(c);
 
-					Simulate(a,tm,res);
+					Simulate(a,tm,res,NULL,NULL,NULL,false,NULL,NULL,false,false);
 				}
 				if (res.Win < (GAMES_COUNT / 2))
 					break; // chance is lower then half, drop this
@@ -1147,11 +1147,11 @@ int _tmain(int argc, char* argv[])
 	Y.Deck.push_back(DB.CARD("Kraken"));
 	Y.Deck.push_back(DB.CARD("Kraken"));*/
 
-	ActiveDeck X(DB.CARD("Vyander"));
+	ActiveDeck X(DB.CARD("Vyander"),DB.GetPointer());
 	X.Deck.push_back(DB.CARD("Stealthy Niaq"));
 	X.Deck.push_back(DB.CARD("Stealthy Niaq"));
 	//X.Deck.push_back(DB.CARD("Heavy Infantry"));
-	ActiveDeck Y(DB.CARD("Vyander"));
+	ActiveDeck Y(DB.CARD("Vyander"),DB.GetPointer());
 	//Y.Deck.push_back(DB.CARD("Chopper"));
 	Y.Deck.push_back(DB.CARD("Predator"));
 	Y.Deck.push_back(DB.CARD("Predator"));

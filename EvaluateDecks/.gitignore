@@ -1,0 +1,6 @@
+Debug
+Debug Dll
+*.suo
+*.sdf
+*.vcxproj.user
+*.opensdf

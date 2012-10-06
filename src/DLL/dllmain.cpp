@@ -404,7 +404,7 @@ extern "C"
 	}
 	IDAPI void SpeedTest() // just a check, should take 12-16 sec in exe
 	{
-		ActiveDeck X(DB.CARD("Thadius"));
+		ActiveDeck X(DB.CARD("Thadius"), DB.GetPointer());
 		X.Deck.push_back(DB.CARD("Sharpshooter"));
 		X.Deck.push_back(DB.CARD("Sharpshooter"));
 		X.Deck.push_back(DB.CARD("Sharpshooter"));
@@ -415,7 +415,7 @@ extern "C"
 		X.Deck.push_back(DB.CARD("Sharpshooter"));
 		X.Deck.push_back(DB.CARD("Sharpshooter"));
 		X.Deck.push_back(DB.CARD("Rocket Infantry"));
-		ActiveDeck Y(DB.CARD("Vyander"));
+		ActiveDeck Y(DB.CARD("Vyander"), DB.GetPointer());
 		Y.Deck.push_back(DB.CARD("Vaporwing"));
 		Y.Deck.push_back(DB.CARD("Vaporwing"));
 		Y.Deck.push_back(DB.CARD("Vaporwing"));
@@ -570,7 +570,7 @@ extern "C"
 			return false;
 
 		UINT DeckChecksum = X.Commander.GetId();
-		for (VCARDS::iterator vi = X.Deck.begin();vi!=X.Deck.end();vi++)
+		for (LCARDS::iterator vi = X.Deck.begin();vi!=X.Deck.end();vi++)
 			DeckChecksum += vi->GetId();
 /*
 Everything is in base64

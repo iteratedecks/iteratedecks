@@ -23,7 +23,19 @@
 #include "cliParser.hpp"
 #include "../EXE/exceptions.hpp"
 
-#include <getopt.h>
+#ifdef _WIN32
+    #define __windows__
+#endif
+#ifdef _WIN64
+    #define __windows__
+#endif
+
+#if defined(__windows__)
+	#include "../../EvaluateDecks/getopt_mb_uni_vc10/getopt_mb_uni_vc10/getopt.h"
+#else
+	#include <getopt.h>
+#endif
+
 #include <sstream>
 #include <ctime>
 
@@ -33,7 +45,7 @@ namespace EvaluateDecks {
         CliOptions parseCliOptions(int const & argc, char * const argv[]) throw (std::invalid_argument, std::logic_error)
         {
             // get option table
-            option long_options[numberOfOptions];
+			option long_options[numberOfOptions];
             std::string shortOptions;
             for(unsigned int i = 0; i < numberOfOptions; i++) {
                 long_options[i] = options[i].getOptPart;

@@ -4,8 +4,8 @@
 
 VerifyOptions::VerifyOptions()
 : doVerify(false)
-, min(0.0d)
-, max(1.0d)
+, min(0.0)
+, max(1.0)
 {}
     
 //VerifyOptions::VerifyOptions(double const min

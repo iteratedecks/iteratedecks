@@ -219,7 +219,7 @@
             const char *GetName() const;
             void PrintDesc();
             std::string toString() const;
-            static unsigned int const numberOfCardLines;
+            static unsigned int const numberOfCardLines = 6;
             std::string toRectString(unsigned int const w, unsigned int const i) const;
             void SetCardSkillProcBuffer(UCHAR *_SkillProcBuffer);
             const bool GetQuestSplit() const;
@@ -268,6 +268,7 @@
             void ResetPlayedFlag();
             void SetAttack(const UCHAR attack);
             void SetEffect(const UCHAR id, const UCHAR value);
+            void SetHealth(const UCHAR health);
             void Rally(const EFFECT_ARGUMENT amount);
             EFFECT_ARGUMENT Weaken(const EFFECT_ARGUMENT amount);
             void Berserk(const EFFECT_ARGUMENT amount);
@@ -329,6 +330,8 @@
         DeckLogger * logger;
     public:
         PlayedCard & getUnitAt(unsigned int const index);
+        PlayedCard & getActionAt(unsigned int const index);
+        PlayedCard & getStructureAt(unsigned int const index);
         PlayedCard & getCardAt(unsigned int const index);
         PlayedCard const & getCardAt(unsigned int const index) const;
     private:

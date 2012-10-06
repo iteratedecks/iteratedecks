@@ -195,7 +195,7 @@ STDMETHODIMP CEvaluateDecksCOM::SetEffect(USHORT DeckIndex, USHORT CardPosition,
 		*ret = 0;
 		return S_FALSE;
 	}
-	d->Units[CardPosition].SetEffect(AbilityID,(UCHAR)EffectValue);
+	d->getUnitAt(CardPosition).SetEffect(AbilityID,(UCHAR)EffectValue);
 	*ret = (UCHAR)EffectValue;
 	return S_OK;
 }
@@ -223,7 +223,7 @@ STDMETHODIMP CEvaluateDecksCOM::GetCardAttack(USHORT DeckIndex, USHORT RowIndex,
 			return S_FALSE;
 		}
 		else
-			*ret = d->Units[CardPosition].GetNativeAttack();
+			*ret = d->getUnitAt(CardPosition).GetNativeAttack();
 	}
 	else
 		// Commander or Structure
@@ -251,7 +251,7 @@ STDMETHODIMP CEvaluateDecksCOM::GetCardHealth(USHORT DeckIndex, USHORT RowIndex,
 				return S_FALSE;
 			}
 			else
-				*ret = d->Structures[CardPosition].GetHealth();
+				*ret = d->getStructureAt(CardPosition).GetHealth();
 		}
 		else
 		{
@@ -262,7 +262,7 @@ STDMETHODIMP CEvaluateDecksCOM::GetCardHealth(USHORT DeckIndex, USHORT RowIndex,
 				return S_FALSE;
 			}
 			else
-				*ret = d->Units[CardPosition].GetHealth();
+				*ret = d->getUnitAt(CardPosition).GetHealth();
 		}
 	return S_OK;	
 }
@@ -277,12 +277,12 @@ STDMETHODIMP CEvaluateDecksCOM::GetCardEffect(USHORT DeckIndex, USHORT CardPosit
 		
 		UCHAR ano = 0;
 		for (UCHAR i=0;i<CARD_ABILITIES_MAX;i++)
-			if (d->Units[CardPosition].GetEffect(i))
+			if (d->getUnitAt(CardPosition).GetEffect(i))
 			{
 				ano++;
 				if (ano > EffectNo)
 				{
-					*ret = d->Units[CardPosition].GetEffect(i);
+					*ret = d->getUnitAt(CardPosition).GetEffect(i);
 					CComBSTR ret1(DB.Skills[i].SkillName);
 					*EffectName = ret1.Copy();
 					::SysFreeString(ret1);

@@ -1,6 +1,13 @@
 // IterateDecksCGI.cpp : Defines the entry point for the console application.
 //
 
+#ifdef _WIN32
+#define __windows__
+#endif
+#ifdef _WIN64
+#define __windows__
+#endif
+
 #include "stdafx.h"
 
 #include "..\EXE\deck.h"
@@ -48,7 +55,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	RESULTS r;
 
-	EvaluateInThreads(Seed,X,Y,RaidID,r,0,State,GamesPerThread,Threads);
+	//EvaluateInThreads(Seed,X,Y,RaidID,r,0,State,GamesPerThread,Threads);
+	EvaluateInThreads(Seed,X,Y,RaidID,0,r,0,State,GamesPerThread,Threads,false);
 
 	//cout << r.Win << "/" << r.Loss << "/" << r.Games << endl;
 	printf("%d/%d/%d\n",r.Win,r.Loss,r.Games);

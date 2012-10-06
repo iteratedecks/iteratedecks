@@ -545,7 +545,10 @@ char *FormatCardName(char *Name)
 		pugi::xml_document doc;
 		if (returnnewcards)
 			returnnewcards[0] = 0;
-		if (!doc.load_file(FileName)) return false;
+		if (!doc.load_file(FileName)) {
+			_ASSERT(false);
+			return false;
+		}
 
 		size_t loaded = 0;
 		// FIXME: unused variable
@@ -685,7 +688,10 @@ char *FormatCardName(char *Name)
 	bool CardDB::LoadAchievementXML(const char *FileName)
 	{
 		pugi::xml_document doc;
-		if (!doc.load_file(FileName)) return false;
+		if (!doc.load_file(FileName)) {
+			_ASSERT(false);
+			return false;
+		}
 
 		size_t loaded = 0;
 		AIIndex.clear(); // clean index, we don't really need to clean array, it doesn't take too much space and cleaning it up will take time
@@ -782,7 +788,10 @@ char *FormatCardName(char *Name)
 	bool CardDB::LoadMissionXML(const char *FileName)
 	{
 		pugi::xml_document doc;
-		if (!doc.load_file(FileName)) return false;
+		if (!doc.load_file(FileName)) {
+			_ASSERT(false);
+			return false;
+		}
 
 		size_t loaded = 0;
 		MIIndex.clear(); // clean index, we don't really need to clean array, it doesn't take too much space and cleaning it up will take time
@@ -816,7 +825,10 @@ char *FormatCardName(char *Name)
 	bool CardDB::LoadRaidXML(const char *FileName)
 	{
 		pugi::xml_document doc;
-		if (!doc.load_file(FileName)) return false;
+		if (!doc.load_file(FileName)) {
+			_ASSERT(false);
+			return false;
+		}
 
 		size_t loaded = 0;
 		RIIndex.clear(); // clean index, we don't really need to clean array, it doesn't take too much space and cleaning it up will take time
@@ -862,7 +874,10 @@ char *FormatCardName(char *Name)
 	bool CardDB::LoadQuestXML(const char *FileName)
 	{
 		pugi::xml_document doc;
-		if (!doc.load_file(FileName)) return false;
+		if (!doc.load_file(FileName)) {
+			_ASSERT(false);
+			return false;
+		}
 
 		size_t loaded = 0;
 		RIIndex.clear(); // clean index, we don't really need to clean array, it doesn't take too much space and cleaning it up will take time
@@ -1756,7 +1771,7 @@ char *FormatCardName(char *Name)
 		MSUINT::iterator mi = MIIndex.find(DeckName);
 		if (mi == MIIndex.end())	
 			return buffer; // not found
-		_itoa_s(MDB[mi->second].GetCommander(),buffer,10);
+		_itoa_s(MDB[mi->second].GetCommander(),buffer,size,10);
 		MDB[mi->second].GetDeck(buffer,size);
 		return buffer;
 	}
