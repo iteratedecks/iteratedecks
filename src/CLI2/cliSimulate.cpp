@@ -16,7 +16,7 @@
     #define __windows__
 #endif
 
-#if defined(__windows__)
+#if defined(__windows__) && !defined(__MINGW32__)
     #include "boost/math/special_functions/erf.hpp"
     #define erfc boost::math::erfc
 

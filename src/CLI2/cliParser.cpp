@@ -30,7 +30,7 @@
     #define __windows__
 #endif
 
-#if defined(__windows__)
+#if defined(__windows__) && !defined(__MINGW32__)
 	#include "../../EvaluateDecks/getopt_mb_uni_vc10/getopt_mb_uni_vc10_dll/getopt.h"
 #else
 	#include <getopt.h>
