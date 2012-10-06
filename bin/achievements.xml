@@ -1107,7 +1107,7 @@
 		<name>Trick or Treat 1</name>
 		<type faction_war_id='*' winner='1' />
 		<number>50</number>
-		<desc>Gain 50 Loyalty</desc>
+		<desc>Gain 50 Loyalty from Faction Wars (not Conquest)</desc>
 		<gold_reward>1000</gold_reward>
 		<card_reward>510</card_reward>
 	</achievement>
@@ -1116,7 +1116,7 @@
 		<name>Trick or Treat 2</name>
 		<type faction_war_id='*' winner='1' />
 		<number>100</number>
-		<desc>Gain 100 Loyalty</desc>
+		<desc>Gain 100 Loyalty from Faction Wars (not Conquest)</desc>
 		<gold_reward>2500</gold_reward>
 		<card_reward>512</card_reward>
 	</achievement>

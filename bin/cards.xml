@@ -10488,15 +10488,28 @@
 <!-- MISSION COMMANDERS -->
 
 	<unit>
+		<id>1194</id>
+		<name>Dracorex</name>
+		<picture>bloodthirstywarlord.jpg</picture>
+		<attack>0</attack>
+		<health>18</health>
+		<rarity>3</rarity> <gold_cost>1000</gold_cost>
+		<skill id='counter' x='1' />
+		<skill id='strike' x='1' all='1' />
+		<skill id='weaken' x='1' all='1' />
+		<type>3</type>
+	</unit>
+
+	<unit>
 		<id>1187</id>
 		<name>Gabriel</name>
 		<picture>imperialscientist.jpg</picture>
 		<attack>0</attack>
 		<health>15</health>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
-		<skill id='cleanse' y='1' />
-		<skill id='protect' x='2' y='1' />
-		<skill id='rally' x='1' all='1' y='1' />
+		<skill id='cleanse' />
+		<skill id='protect' x='2' />
+		<skill id='rally' x='1' all='1' />
 		<type>1</type>
 	</unit>
 
@@ -10572,8 +10585,8 @@
 		<attack>0</attack>
 		<health>17</health>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
-		<skill id='rally' x='1' all='1' y='4' />
-		<skill id='heal' x='1' y='4' all='1' />
+		<skill id='rally' x='1' all='1' />
+		<skill id='heal' x='1' all='1' />
 		<skill id='mimic' />
 		<type>4</type>
 	</unit>
@@ -12255,6 +12268,54 @@
 
 <!-- END FACTION REWARDS -->
 
+<!-- Conquest Rewards -->
+
+		<unit>
+		<id>384</id>
+		<name>Spirited Conscript</name>
+		<picture>imperialshocker.jpg</picture>
+		<attack>2</attack>
+		<health>6</health>
+		<cost>2</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='valor' x='4' />
+		<type>1</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>549</id>
+		<name>Engulfing Horror</name>
+		<picture>BTganesha.jpg</picture>
+		<attack>2</attack>
+		<health>8</health>
+		<cost>4</cost>
+		<unique>1</unique>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='refresh' />
+		<skill id='enfeeble' x='2' all='1' />
+		<type>3</type>
+		<set>5000</set>
+	</unit>
+
+	<unit>
+		<id>767</id>
+		<name>Splicer</name>
+		<picture>emptynester.jpg</picture>
+		<attack>3</attack>
+		<health>5</health>
+		<cost>3</cost>
+		<unique>1</unique>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='regenerate' x='2' />
+		<skill id='mimic' />
+		<skill id='summon' x='548' died='1' />
+		<type>4</type>
+		<set>5000</set>
+	</unit>
+
+<!-- END CONQUEST REWARDS -->
+
 <!-- Level Rewards -->
 
 	<unit>
@@ -13418,6 +13479,102 @@
 
 <!-- END Block 22 Raider -->
 
+<!-- Block 23 - Right, BT, Imp -->
+
+	<unit>
+		<id>457</id>
+		<name>Outfitted Scow</name>
+		<picture>rightbaristabeat.jpg</picture>
+		<attack>3</attack>
+		<health>3</health>
+		<cost>1</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='cleanse' />
+		<type>8</type>
+		<set>5001</set>
+	</unit>
+
+	<unit>
+		<id>458</id>
+		<name>Araquanid</name>
+		<picture>btwaterstalker.jpg</picture>
+		<attack>1</attack>
+		<health>6</health>
+		<cost>2</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='poison' x='1' attacked='1' />
+		<skill id='berserk' x='1' attacked='1' />
+		<skill id='refresh' />
+		<type>3</type>
+		<set>5001</set>
+	</unit>
+
+	<unit>
+		<id>461</id>
+		<name>STOVL Carrier</name>
+		<picture>impbigship.jpg</picture>
+		<attack>2</attack>
+		<health>6</health>
+		<cost>3</cost>
+		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='evade' />
+		<skill id='summon' x='701' />
+		<skill id='supply' x='2' />
+		<type>1</type>
+		<set>5001</set>
+	</unit>
+
+<!-- END Block 23 -->
+
+<!-- Block 24 Xeno -->
+
+	<unit>
+		<id>809</id>
+		<name>Phaseid</name>
+		<picture>xenotanko.jpg</picture>
+		<attack>2</attack>
+		<health>3</health>
+		<cost>1</cost>
+		<rarity>3</rarity>
+		<skill id='armored' x='1' />
+		<skill id='siege' x='2' />
+		<skill id='mimic' />
+		<type>4</type>
+		<set>5001</set>
+	</unit>
+
+	<unit>
+		<id>810</id>
+		<name>Snareslip</name>
+		<picture>xenoterror.jpg</picture>
+		<attack>2</attack>
+		<health>6</health>
+		<cost>2</cost>
+		<rarity>3</rarity>
+		<skill id='intercept' />
+		<skill id='payback' />
+		<skill id='burst' x='3' />
+		<type>4</type>
+		<set>5001</set>
+	</unit>
+
+	<unit>
+		<id>811</id>
+		<name>Ferrojack</name>
+		<picture>xentrola.jpg</picture>
+		<attack>4</attack>
+		<health>7</health>
+		<cost>3</cost>
+		<rarity>3</rarity>
+		<skill id='chaos' attacked='1' />
+		<skill id='enfeeble' x='2' />
+		<skill id='crush' x='4' />
+		<type>4</type>
+		<set>5001</set>
+	</unit>
+
+<!-- END Block 24 -->
+
 <!-- END PROMO Cards -->
 	<!-- Distraction -->
 	
@@ -13450,41 +13607,41 @@
 	</unit>
 	
 	<unit>
-		<id>767</id>
+		<id>817</id>
 		<name>Use This One</name>
 		<picture>alex.jpg</picture>
 		<attack>1</attack>
 		<health>1</health>
 		<cost>3</cost>
-		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<rarity>3</rarity>
 		<type>3</type>
 	</unit>
 	
 	<unit>
-		<id>1194</id>
+		<id>1200</id>
 		<name>Use This One Commander</name>
 		<picture>alex.jpg</picture>
 		<attack>0</attack>
 		<health>1</health>
-		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<rarity>3</rarity>
 		<type>9</type>
 	</unit>
 	
 	<unit>
-		<id>2120</id>
+		<id>2127</id>
 		<name>Use This One Structure</name>
 		<picture>alex.jpg</picture>
 		<health>1</health>
 		<cost>1</cost>
-		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<rarity>3</rarity>
 		<type>9</type>
 	</unit>
 	
 	<unit>
-		<id>3053</id>
+		<id>3055</id>
 		<name>Use This One Action</name>
 		<picture>alex.jpg</picture>
-		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<rarity>3</rarity>
 	</unit>
 
 <!-- Other potential rewards -->
@@ -13495,9 +13652,9 @@
 		<id>182</id>
 		<name>TEST</name>
 		<picture>alex.jpg</picture>
-		<attack>1</attack>
+		<attack>0</attack>
 		<health>10</health>
-		<cost>0</cost>
+		<cost>1</cost>
 		<rarity>1</rarity> <gold_cost>10000</gold_cost>
 		<skill id='summon' x='138' />
 		<type>1</type>
@@ -13508,7 +13665,7 @@
 		<name>TEST COMMANDER</name>
 		<picture>general1.jpg</picture>
 		<attack>0</attack>
-		<health>15</health>
+		<health>40</health>
 		<rarity>1</rarity> <gold_cost>1000</gold_cost>
 		<skill id='refresh' />
 	</unit>
@@ -13520,8 +13677,7 @@
 		<health>5</health>
 		<cost>1</cost>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
-		<skill id='wall' />
-		<skill id='poison' x='2' attacked='1' />
+		<skill id='jam' />
 		<type>9</type>
 	</unit>
 	
@@ -13539,8 +13695,9 @@
 		<picture>xdog.jpg</picture>
 		<attack>0</attack>
 		<health>10</health>
-		<cost>0</cost>
+		<cost>3</cost>
 		<rarity>3</rarity> <gold_cost>10000</gold_cost>
+		<skill id='protect' x='1' />
 		<type>4</type> 
 	</unit>
 
@@ -16087,6 +16244,7 @@
 		<health>13</health>
 		<cost>0</cost>
 		<rarity>10</rarity>
+		<skill id='siege' x='10' />
 		<skill id='fear' />
 	</unit>
 	

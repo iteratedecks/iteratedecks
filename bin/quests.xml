@@ -73,6 +73,78 @@ Clone Project = clone_project
 		<icon>cloneprojecticon.png</icon>
 		<effect>clone_project</effect>
 	</battleground>
+	<battleground>
+		<id>9</id>
+		<name>Friendly Fire</name>
+		<desc>All Assault units that do not have "Strike" gain the skill "Strike 1" Both Commanders gain the skill "Chaos All"</desc>
+		<icon>friendlyfireicon.png</icon>
+		<effect>friendly_fire</effect>
+	</battleground>
+	<battleground>
+		<id>10</id>
+		<name>Genesis</name>
+		<desc>At the beginning of each Player's turn that Player's Commander gains the skill "Summon X" until end of turn (where X is a random Assault card)</desc>
+		<icon>genesisprojecticon.png</icon>
+		<effect>genesis</effect>
+	</battleground>
+	 <battleground>
+		<id>11</id>
+		<name>Artillery Strike</name>
+		<desc>On the Attacking Player's 5th turn, that Player's Commander gains the skill "Strike All 3" (replaces any other instance of Strike)</desc>
+		<icon>artillerystrikeicon.png</icon>
+		<effect>artillery_strike</effect>
+		<conquest>1</conquest>
+	</battleground>
+	<battleground>
+		<id>12</id>
+		<name>Photon Shield</name>
+		<desc>All of Defending Player's units that do not have Armor gain the skill "Armor 2"</desc>
+		<icon>photonshieldicon.png</icon>
+		<effect>photon_shield</effect>
+		<conquest>1</conquest>
+	</battleground>
+	<battleground>
+		<id>13</id>
+		<name>Decrepit</name>
+		<desc>Both Commanders gain the skill "Enfeeble All 1" (replaces any instance of Enfeeble)</desc>
+		<icon>enfeeble.png</icon>
+		<effect>enfeeble_all</effect>
+		<conquest>1</conquest>
+	</battleground>
+	<battleground>
+		<id>14</id>
+		<name>Forcefield</name>
+		<desc>Both Commanders gain the skill "Protect All 1" (replaces any instance of Protect)</desc>
+		<icon>protect.png</icon>
+		<effect>protect_all</effect>
+		<conquest>1</conquest>
+	</battleground>
+	<battleground>
+		<id>15</id>
+		<name>Chilling Touch</name>
+		<desc>Both Commanders gain the skill "Freeze"</desc>
+		<icon>freeze.png</icon>
+		<effect>commander_freeze</effect>
+		<conquest>1</conquest>
+	</battleground>
+	<battleground>
+		<id>16</id>
+		<name>Clone Experiment</name>
+		<desc>On each Player's 5th turn, one of that Player's Active Assault Units gains the skill "Split" until end of turn</desc>
+		<icon>split.png</icon>
+		<effect>split_five</effect>
+		<conquest>1</conquest>
+	</battleground>
+	<battleground>
+		<id>17</id>
+		<name>Toxic</name>
+		<desc>All units enter play with status "Poisoned 1"</desc>
+		<icon>poison1.png</icon>
+		<effect>poison_all</effect>
+		<conquest>1</conquest>
+	</battleground>
+	
+	<!-- add <conquest>1</conquest> tag to BG effects that are not in quests -->
 
 	<step>
 		<id>1</id>
@@ -116,6 +188,8 @@ Clone Project = clone_project
 				<card>646</card>
 				<card>681</card>
 				<card>690</card>
+				<card>757</card>
+				<card>720</card>
 			</card_pool>
 			<card_pool amount="4"> <!-- 2 Drops -->
 				<card>47</card>
@@ -152,6 +226,7 @@ Clone Project = clone_project
 				<card>637</card>
 				<card>634</card>
 				<card>633</card>
+				<card>739</card>
 			</card_pool>
 			<card_pool amount="2"> <!-- 3 Drops -->
 				<card>173</card>
@@ -172,6 +247,7 @@ Clone Project = clone_project
 				<card>615</card>
 				<card>571</card>
 				<card>655</card>
+				<card>761</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- 4 Drops -->
 				<card>322</card>
@@ -193,6 +269,9 @@ Clone Project = clone_project
 				<card>247</card>
 				<card>344</card>
 				<card>263</card>
+				<card>698</card>
+				<card>748</card>
+				<card>738</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- Raid only card -->
 				<card>224</card>
@@ -249,6 +328,9 @@ Clone Project = clone_project
 				<card>511</card>
 				<card>582</card>
 				<card>688</card>
+				<card>721</card>
+				<card>687</card>
+				<card>755</card>
 			</card_pool>
 			<card_pool amount="4"> <!-- 3 Drops -->
 				<card>23</card>
@@ -268,6 +350,8 @@ Clone Project = clone_project
 				<card>632</card>
 				<card>648</card>
 				<card>655</card>
+				<card>761</card>
+				<card>642</card>
 			</card_pool>
 			<card_pool amount="3"> <!-- 4 Drops -->
 				<card>54</card>
@@ -286,6 +370,9 @@ Clone Project = clone_project
 				<card>537</card>
 				<card>635</card>
 				<card>689</card>
+				<card>763</card>
+				<card>706</card>
+				<card>737</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- Legendary -->
 				<card>156</card>
@@ -300,6 +387,8 @@ Clone Project = clone_project
 				<card>599</card>
 				<card>581</card>
 				<card>585</card>
+				<card>711</card>
+				<card>717</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- Raid only card -->
 				<card>557</card>
@@ -340,6 +429,7 @@ Clone Project = clone_project
 				<card>509</card>
 				<card>529</card>
 				<card>566</card>
+				<card>639</card>
 			</card_pool>
 			<card_pool amount="4"> <!-- 2 Drops -->
 				<card>637</card>
@@ -350,6 +440,7 @@ Clone Project = clone_project
 				<card>314</card>
 				<card>105</card>
 				<card>47</card>
+				<card>709</card>
 			</card_pool>
 			<card_pool amount="3"> <!-- 3 Drops -->
 				<card>568</card>
@@ -363,6 +454,7 @@ Clone Project = clone_project
 				<card>130</card>
 				<card>121</card>
 				<card>23</card>
+				<card>734</card>
 			</card_pool>
 			<card_pool amount="2"> <!-- 4 Drops -->
 				<card>680</card>
@@ -372,6 +464,8 @@ Clone Project = clone_project
 				<card>260</card>
 				<card>257</card>
 				<card>448</card>
+				<card>737</card>
+				<card>763</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- Legendary -->
 				<card>73</card>
@@ -380,6 +474,7 @@ Clone Project = clone_project
 				<card>449</card>
 				<card>518</card>
 				<card>585</card>
+				<card>738</card>
 			</card_pool>
 			<card_pool amount="2"> <!-- Support Drops -->
 				<card>2006</card>
@@ -395,6 +490,7 @@ Clone Project = clone_project
 				<card>3047</card>
 				<card>3030</card>
 				<card>3004</card>
+				<card>2116</card>
 			</card_pool>
 		</deck>
 	</step>
@@ -428,6 +524,7 @@ Clone Project = clone_project
 				<card>240</card>
 				<card>99</card>
 				<card>496</card>
+				<card>642</card>
 			</card_pool>
 			<card_pool amount="6"> <!-- 4 Drops -->
 				<card>54</card>
@@ -441,6 +538,8 @@ Clone Project = clone_project
 				<card>483</card>
 				<card>190</card>
 				<card>522</card>
+				<card>751</card>
+				<card>737</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- Legendary -->
 				<card>247</card>
@@ -452,6 +551,7 @@ Clone Project = clone_project
 				<card>449</card>
 				<card>685</card>
 				<card>552</card>
+				<card>711</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- Support Drops -->
 				<card>2092</card>
@@ -465,6 +565,9 @@ Clone Project = clone_project
 				<card>3049</card>
 				<card>3022</card>
 				<card>3030</card>
+				<card>2117</card>
+				<card>2110</card>
+				<card>2110</card>
 			</card_pool>
 		</deck>
 	</step>
@@ -482,6 +585,7 @@ Clone Project = clone_project
 				<card>103</card>
 				<card>30</card>
 				<card>225</card>
+				<card>720</card>
 			</card_pool>
 			<card_pool amount="5"> <!-- 2 Drops -->
 				<card>430</card>
@@ -494,6 +598,7 @@ Clone Project = clone_project
 				<card>536</card>
 				<card>688</card>
 				<card>508</card>
+				<card>747</card>
 			</card_pool>
 			<card_pool amount="2"> <!-- 3 Drops -->
 				<card>121</card>
@@ -502,6 +607,7 @@ Clone Project = clone_project
 				<card>330</card>
 				<card>335</card>
 				<card>683</card>
+				<card>692</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- 4 Drops -->
 				<card>680</card>
@@ -517,6 +623,9 @@ Clone Project = clone_project
 				<card>449</card>
 				<card>332</card>
 				<card>513</card>
+				<card>748</card>
+				<card>698</card>
+				<card>738</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- Support Drops -->
 				<card>2038</card>
@@ -529,6 +638,8 @@ Clone Project = clone_project
 				<card>3041</card>
 				<card>3018</card>
 				<card>3022</card>
+				<card>2115</card>
+				<card>2108</card>
 			</card_pool>
 		</deck>
 	</step>
@@ -566,6 +677,7 @@ Clone Project = clone_project
 				<card>621</card>
 				<card>224</card>
 				<card>387</card>
+				<card>720</card>
 			</card_pool>
 			<card_pool amount="5"> <!-- 2 Drops -->
 				<card>41</card>
@@ -598,6 +710,13 @@ Clone Project = clone_project
 				<card>678</card>
 				<card>688</card>
 				<card>682</card>
+				<card>687</card>
+				<card>686</card>
+				<card>766</card>
+				<card>764</card>
+				<card>760</card>
+				<card>709</card>
+				<card>755</card>
 			</card_pool>
 			<card_pool amount="2"> <!-- 3 Drops -->
 				<card>23</card>
@@ -638,6 +757,9 @@ Clone Project = clone_project
 				<card>606</card>
 				<card>648</card>
 				<card>676</card>
+				<card>752</card>
+				<card>716</card>
+				<card>734</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- 4 Drops -->
 				<card>62</card>
@@ -663,6 +785,11 @@ Clone Project = clone_project
 				<card>680</card>
 				<card>635</card>
 				<card>625</card>
+				<card>763</card>
+				<card>706</card>
+				<card>704</card>
+				<card>737</card>
+				<card>735</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- Legendary -->
 				<card>247</card>
@@ -683,6 +810,13 @@ Clone Project = clone_project
 				<card>463</card>
 				<card>599</card>
 				<card>677</card>
+				<card>748</card>
+				<card>758</card>
+				<card>738</card>
+				<card>718</card>
+				<card>725</card>
+				<card>698</card>
+				<card>711</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- Raid only card -->
 				<card>402</card>
@@ -709,6 +843,7 @@ Clone Project = clone_project
 				<card>3041</card>
 				<card>3030</card>
 				<card>3002</card>
+				<card>2110</card>
 			</card_pool>
 		</deck>
 	</step>
@@ -726,6 +861,7 @@ Clone Project = clone_project
 				<card>670</card>
 				<card>578</card>
 				<card>223</card>
+				<card>726</card>
 			</card_pool>
 			<card_pool amount="5"> <!-- 2 Drops -->
 				<card>688</card>
@@ -745,6 +881,9 @@ Clone Project = clone_project
 				<card>63</card>
 				<card>34</card>
 				<card>537</card>
+				<card>766</card>
+				<card>721</card>
+				<card>691</card>
 			</card_pool>
 			<card_pool amount="3"> <!-- 3 Drops -->
 				<card>40</card>
@@ -757,6 +896,7 @@ Clone Project = clone_project
 				<card>631</card>
 				<card>615</card>
 				<card>573</card>
+				<card>692</card>
 			</card_pool>
 			<card_pool amount="2"> <!-- 4 Drops -->
 				<card>186</card>
@@ -772,6 +912,7 @@ Clone Project = clone_project
 				<card>535</card>
 				<card>220</card>
 				<card>344</card>
+				<card>758</card>
 			</card_pool>
 			<card_pool amount="2"> <!-- Support Drops -->
 				<card>2013</card>
@@ -779,6 +920,7 @@ Clone Project = clone_project
 				<card>2077</card>
 				<card>2086</card>
 				<card>2010</card>
+				<card>2091</card>
 			</card_pool>
 		</deck>
 	</step>
@@ -860,6 +1002,8 @@ Clone Project = clone_project
 				<card>641</card>
 				<card>648</card>
 				<card>655</card>
+				<card>642</card>
+				<card>719</card>
 			</card_pool>
 			<card_pool amount="2"> <!-- 4 Drops -->
 				<card>180</card>
@@ -879,6 +1023,9 @@ Clone Project = clone_project
 				<card>625</card>
 				<card>618</card>
 				<card>680</card>
+				<card>706</card>
+				<card>735</card>
+				<card>763</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- Legendary -->
 				<card>247</card>
@@ -890,6 +1037,10 @@ Clone Project = clone_project
 				<card>599</card>
 				<card>610</card>
 				<card>651</card>
+				<card>705</card>
+				<card>711</card>
+				<card>717</card>
+				<card>738</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- Raid only card -->
 				<card>223</card>
@@ -958,6 +1109,7 @@ Clone Project = clone_project
 				<card>221</card>
 				<card>164</card>
 				<card>641</card>
+				<card>719</card>
 			</card_pool>
 			<card_pool amount="2"> <!-- 4 Drops -->
 				<card>94</card>
@@ -966,6 +1118,8 @@ Clone Project = clone_project
 				<card>618</card>
 				<card>527</card>
 				<card>319</card>
+				<card>735</card>
+				<card>751</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- Legendary -->
 				<card>263</card>
@@ -1005,6 +1159,7 @@ Clone Project = clone_project
 				<card>493</card>
 				<card>320</card>
 				<card>233</card> <!-- Raid Only -->
+				<card>720</card>
 			</card_pool>
 			<card_pool amount="4"> <!-- 2 Drops -->
 				<card>72</card>
@@ -1034,6 +1189,9 @@ Clone Project = clone_project
 				<card>683</card>
 				<card>104</card>
 				<card>136</card>
+				<card>642</card>
+				<card>752</card>
+				<card>752</card>
 			</card_pool>
 			<card_pool amount="2"> <!-- 4 Drops -->
 				<card>116</card>
@@ -1080,6 +1238,7 @@ Clone Project = clone_project
 				<card>629</card>
 				<card>215</card>
 				<card>103</card>
+				<card>714</card>
 			</card_pool>
 			<card_pool amount="5"> <!-- 2 Drops -->
 				<card>554</card> <!-- Raid Only -->
@@ -1093,6 +1252,8 @@ Clone Project = clone_project
 				<card>545</card>
 				<card>678</card>
 				<card>307</card>
+				<card>687</card>
+				<card>687</card>
 			</card_pool>
 			<card_pool amount="3"> <!-- 3 Drops -->
 				<card>218</card> <!-- Raid Only -->
@@ -1104,6 +1265,9 @@ Clone Project = clone_project
 				<card>164</card>
 				<card>254</card>
 				<card>641</card>
+				<card>752</card>
+				<card>752</card>
+				<card>719</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- 4 Drops -->
 				<card>557</card> <!-- Raid Only -->
@@ -1141,6 +1305,8 @@ Clone Project = clone_project
 				<card>89</card>
 				<card>493</card>
 				<card>658</card>
+				<card>720</card>
+				<card>712</card>
 			</card_pool>
 			<card_pool amount="5"> <!-- 2 Drops -->
 				<card>126</card>
@@ -1153,6 +1319,7 @@ Clone Project = clone_project
 				<card>139</card>
 				<card>582</card>
 				<card>570</card>
+				<card>688</card>
 			</card_pool>
 			<card_pool amount="3"> <!-- 3 + 4 Drops -->
 				<card>326</card>
@@ -1199,12 +1366,16 @@ Clone Project = clone_project
 				<card>573</card>
 				<card>188</card>
 				<card>120</card>
+				<card>751</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- Legendary -->
 				<card>677</card>
 				<card>2051</card>
 				<card>552</card>
 				<card>156</card>
+				<card>748</card>
+				<card>711</card>
+				<card>2109</card>
 			</card_pool>
 			<card_pool amount="12"> <!-- Support Drops -->
 				<card>2020</card>
@@ -1225,6 +1396,11 @@ Clone Project = clone_project
 				<card>2059</card>
 				<card>2042</card>
 				<card>2045</card>
+				<card>2117</card>
+				<card>2110</card>
+				<card>2117</card>
+				<card>2110</card>
+				<card>2118</card>
 			</card_pool>
 		</deck>
 	</step>
@@ -1244,6 +1420,7 @@ Clone Project = clone_project
 				<card>636</card>
 				<card>534</card>
 				<card>493</card>
+				<card>726</card>
 			</card_pool>
 			<card_pool amount="2"> <!-- 2 Drops -->
 				<card>353</card>
@@ -1255,6 +1432,8 @@ Clone Project = clone_project
 				<card>166</card>
 				<card>548</card>
 				<card>570</card>
+				<card>750</card>
+				<card>766</card>
 			</card_pool>
 			<card_pool amount="2"> <!-- 3 Drops -->
 				<card>104</card>
@@ -1266,6 +1445,7 @@ Clone Project = clone_project
 				<card>573</card>
 				<card>240</card>
 				<card>568</card>
+				<card>642</card>
 			</card_pool>
 			<card_pool amount="2"> <!-- 4 Drops -->
 				<card>680</card>
@@ -1300,6 +1480,9 @@ Clone Project = clone_project
 				<card>2083</card>
 				<card>2079</card>
 				<card>2092</card>
+				<card>2110</card>
+				<card>2118</card>
+				<card>3045</card>
 			</card_pool>
 		</deck>
 	</step>
@@ -1316,6 +1499,7 @@ Clone Project = clone_project
 				<card>690</card>
 				<card>409</card>
 				<card>436</card>
+				<card>742</card>
 			</card_pool>
 			<card_pool amount="3"> <!-- 2 Drops -->
 				<card>467</card>
@@ -1326,6 +1510,11 @@ Clone Project = clone_project
 				<card>323</card>
 				<card>214</card>
 				<card>564</card>
+				<card>755</card>
+				<card>691</card>
+				<card>550</card>
+				<card>721</card>
+				<card>764</card>
 			</card_pool>
 			<card_pool amount="4"> <!-- 3 Drops -->
 				<card>136</card>
@@ -1340,6 +1529,10 @@ Clone Project = clone_project
 				<card>308</card>
 				<card>352</card>
 				<card>377</card>
+				<card>746</card>
+				<card>734</card>
+				<card>692</card>
+				<card>761</card>
 			</card_pool>
 			<card_pool amount="2"> <!-- 4 Drops -->
 				<card>500</card>
@@ -1350,6 +1543,7 @@ Clone Project = clone_project
 				<card>689</card>
 				<card>635</card>
 				<card>190</card>
+				<card>737</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- Legendary -->
 				<card>535</card>
@@ -1358,6 +1552,9 @@ Clone Project = clone_project
 				<card>327</card>
 				<card>492</card>
 				<card>585</card>
+				<card>748</card>
+				<card>717</card>
+				<card>698</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- Raid only card -->
 				<card>403</card>
@@ -1388,6 +1585,9 @@ Clone Project = clone_project
 				<card>607</card>
 				<card>646</card>
 				<card>681</card>
+				<card>742</card>
+				<card>742</card>
+				<card>639</card>
 			</card_pool>
 			<card_pool amount="3"> <!-- 2 Drops -->
 				<card>214</card>
@@ -1396,6 +1596,8 @@ Clone Project = clone_project
 				<card>497</card>
 				<card>564</card>
 				<card>437</card>
+				<card>764</card>
+				<card>739</card>
 			</card_pool>
 			<card_pool amount="4"> <!-- 3 Drops -->
 				<card>136</card>
@@ -1430,6 +1632,7 @@ Clone Project = clone_project
 				<card>332</card>
 				<card>350</card>
 				<card>463</card>
+				<card>698</card>
 			</card_pool>
 			<card_pool amount="2"> <!-- Support Drops -->
 				<card>2104</card>
@@ -1438,6 +1641,7 @@ Clone Project = clone_project
 				<card>2062</card>
 				<card>2036</card>
 				<card>2095</card>
+				<card>2111</card>
 			</card_pool>
 		</deck>
 	</step>
@@ -1532,6 +1736,9 @@ Clone Project = clone_project
 				<card>376</card>
 				<card>538</card>
 				<card>576</card>
+				<card>720</card>
+				<card>726</card>
+				<card>639</card>
 			</card_pool>
 			<card_pool amount="4"> <!-- 2 Drops -->
 				<card>467</card>
@@ -1545,6 +1752,9 @@ Clone Project = clone_project
 				<card>626</card>
 				<card>634</card>
 				<card>678</card>
+				<card>764</card>
+				<card>709</card>
+				<card>739</card>
 			</card_pool>
 			<card_pool amount="2"> <!-- 3 + 4 Drops -->
 				<card>23</card>
@@ -1562,6 +1772,10 @@ Clone Project = clone_project
 				<card>535</card>
 				<card>579</card>
 				<card>327</card>
+				<card>748</card>
+				<card>725</card>
+				<card>698</card>
+				<card>738</card>
 			</card_pool>
 			<card_pool amount="2"> <!-- Support Drops -->
 				<card>2088</card>
@@ -1591,6 +1805,7 @@ Clone Project = clone_project
 				<card>374</card>
 				<card>476</card>
 				<card>436</card>
+				<card>726</card>
 			</card_pool>
 			<card_pool amount="3"> <!-- 2 Drops -->
 				<card>105</card>
@@ -1603,6 +1818,9 @@ Clone Project = clone_project
 				<card>467</card>
 				<card>139</card>
 				<card>437</card>
+				<card>687</card>
+				<card>687</card>
+				<card>721</card>
 			</card_pool>
 			<card_pool amount="3"> <!-- 3 Drops -->
 				<card>23</card>
@@ -1616,6 +1834,9 @@ Clone Project = clone_project
 				<card>573</card>
 				<card>571</card>
 				<card>237</card>
+				<card>719</card>
+				<card>761</card>
+				<card>716</card>
 			</card_pool>
 			<card_pool amount="3"> <!-- 4 Drops -->
 				<card>205</card>
@@ -1628,6 +1849,11 @@ Clone Project = clone_project
 				<card>530</card>
 				<card>527</card>
 				<card>469</card>
+				<card>735</card>
+				<card>751</card>
+				<card>737</card>
+				<card>731</card>
+				<card>704</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- Legendary -->
 				<card>327</card>
@@ -1636,6 +1862,11 @@ Clone Project = clone_project
 				<card>463</card>
 				<card>484</card>
 				<card>247</card>
+				<card>758</card>
+				<card>755</card>
+				<card>711</card>
+				<card>717</card>
+				<card>718</card>
 			</card_pool>
 			<card_pool amount="2"> <!-- Support Drops -->
 				<card>2104</card>
@@ -1664,6 +1895,7 @@ Clone Project = clone_project
 				<card>409</card>
 				<card>524</card>
 				<card>629</card>
+				<card>742</card>
 			</card_pool>
 			<card_pool amount="4"> <!-- 2 Drops -->
 				<card>111</card>
@@ -1677,6 +1909,8 @@ Clone Project = clone_project
 				<card>603</card>
 				<card>656</card>
 				<card>682</card>
+				<card>739</card>
+				<card>764</card>
 			</card_pool>
 			<card_pool amount="2"> <!-- 3 Drops -->
 				<card>641</card>
@@ -1696,6 +1930,7 @@ Clone Project = clone_project
 				<card>242</card>
 				<card>205</card>
 				<card>116</card>
+				<card>706</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- Legendary -->
 				<card>484</card>
@@ -1704,6 +1939,8 @@ Clone Project = clone_project
 				<card>677</card>
 				<card>193</card>
 				<card>2051</card>
+				<card>711</card>
+				<card>698</card>
 			</card_pool>
 			<card_pool amount="1"> <!-- Raid only card -->
 				<card>386</card>
@@ -1727,6 +1964,322 @@ Clone Project = clone_project
 				<card>3024</card>
 				<card>3041</card>
 				<card>3046</card>
+				<card>2111</card>
+			</card_pool>
+		</deck>
+	</step>
+	<step>
+		<id>21</id>
+		<battleground_id>9</battleground_id>
+		<commander>1139</commander>
+		<deck>
+			<card_pool amount="2"> <!-- 0 & 1 Drops -->
+				<card>433</card>
+				<card>576</card>
+				<card>376</card>
+				<card>376</card>
+				<card>646</card>
+				<card>757</card>
+			</card_pool>
+			<card_pool amount="4"> <!-- 2 Drops -->
+				<card>214</card>
+				<card>437</card>
+				<card>592</card>
+				<card>564</card>
+				<card>526</card>
+				<card>497</card>
+				<card>609</card>
+				<card>687</card>
+				<card>755</card>
+			</card_pool>
+			<card_pool amount="4"> <!-- 3 Drops -->
+				<card>136</card>
+				<card>330</card>
+				<card>352</card>
+				<card>494</card>
+				<card>532</card>
+				<card>686</card>
+				<card>632</card>
+				<card>542</card>
+				<card>655</card>
+				<card>716</card>
+				<card>743</card>
+				<card>761</card>
+			</card_pool>
+			<card_pool amount="2"> <!-- 4 Drops -->
+				<card>379</card>
+				<card>469</card>
+				<card>597</card>
+				<card>553</card>
+				<card>543</card>
+				<card>530</card>
+				<card>704</card>
+			</card_pool>
+			<card_pool amount="1"> <!-- Legendary -->
+				<card>463</card>
+				<card>210</card>
+				<card>350</card>
+				<card>291</card>
+				<card>581</card>
+			</card_pool>
+			<card_pool amount="2"> <!-- Support Drops -->
+				<card>2104</card>
+				<card>2095</card>
+				<card>2095</card>
+				<card>2090</card>
+				<card>2079</card>
+				<card>2079</card>
+				<card>3049</card>
+				<card>3042</card>
+				<card>3030</card>
+			</card_pool>
+		</deck>
+	</step>
+	<step>
+		<id>22</id>
+		<battleground_id>9</battleground_id>
+		<commander>1187</commander>
+		<deck>
+			<card_pool amount="3"> <!-- 0 & 1 Drops -->
+				<card>376</card>
+				<card>476</card>
+				<card>726</card>
+				<card>726</card>
+				<card>636</card>
+				<card>674</card>
+				<card>381</card>
+				<card>498</card>
+				<card>644</card>
+				<card>636</card>
+			</card_pool>
+			<card_pool amount="4"> <!-- 2 Drops -->
+				<card>536</card>
+				<card>766</card>
+				<card>721</card>
+				<card>86</card>
+				<card>214</card>
+				<card>139</card>
+				<card>261</card>
+				<card>314</card>
+				<card>345</card>
+				<card>353</card>
+				<card>637</card>
+				<card>587</card>
+			</card_pool>
+			<card_pool amount="3"> <!-- 3 Drops -->
+				<card>686</card>
+				<card>240</card>
+				<card>136</card>
+				<card>173</card>
+				<card>324</card>
+				<card>431</card>
+				<card>573</card>
+				<card>571</card>
+				<card>641</card>
+				<card>606</card>
+				<card>761</card>
+				<card>719</card>
+			</card_pool>
+			<card_pool amount="2"> <!-- 4 Drops -->
+				<card>537</card>
+				<card>631</card>
+				<card>205</card>
+				<card>379</card>
+				<card>551</card>
+				<card>680</card>
+				<card>618</card>
+				<card>735</card>
+				<card>706</card>
+				<card>704</card>
+				<card>624</card>
+			</card_pool>
+			<card_pool amount="1"> <!-- Legendary -->
+				<card>738</card>
+				<card>718</card>
+				<card>717</card>
+				<card>711</card>
+				<card>677</card>
+				<card>581</card>
+				<card>552</card>
+				<card>535</card>
+				<card>291</card>
+			</card_pool>
+			<card_pool amount="2"> <!-- Support Drops -->
+				<card>2068</card>
+				<card>2115</card>
+				<card>2104</card>
+				<card>2117</card>
+				<card>2110</card>
+				<card>2096</card>
+				<card>2066</card>
+				<card>2058</card>
+				<card>2049</card>
+				<card>2020</card>
+				<card>2009</card>
+				<card>3024</card>
+				<card>3041</card>
+			</card_pool>
+		</deck>
+	</step>
+	<step>
+		<id>23</id>
+		<battleground_id>10</battleground_id>
+		<commander>1193</commander>
+		<deck>
+			<card_pool amount="2"> <!-- 0 & 1 Drops -->
+				<card>89</card>
+				<card>756</card>
+				<card>726</card>
+				<card>636</card>
+				<card>605</card>
+				<card>576</card>
+				<card>534</card>
+				<card>436</card>
+				<card>381</card>
+				<card>92</card>
+			</card_pool>
+			<card_pool amount="4"> <!-- 2 Drops -->
+				<card>755</card>
+				<card>721</card>
+				<card>709</card>
+				<card>687</card>
+				<card>634</card>
+				<card>592</card>
+				<card>497</card>
+				<card>378</card>
+				<card>656</card>
+				<card>473</card>
+				<card>214</card>
+			</card_pool>
+			<card_pool amount="4"> <!-- 3 Drops -->
+				<card>40</card>
+				<card>104</card>
+				<card>240</card>
+				<card>352</card>
+				<card>330</card>
+				<card>423</card>
+				<card>494</card>
+				<card>496</card>
+				<card>615</card>
+				<card>692</card>
+				<card>686</card>
+				<card>683</card>
+				<card>632</card>
+			</card_pool>
+			<card_pool amount="3"> <!-- 4 Drops -->
+				<card>737</card>
+				<card>706</card>
+				<card>704</card>
+				<card>643</card>
+				<card>597</card>
+				<card>537</card>
+				<card>516</card>
+				<card>379</card>
+				<card>242</card>
+				<card>322</card>
+				<card>313</card>
+			</card_pool>
+			<card_pool amount="1"> <!-- Legendary -->
+				<card>2109</card>
+				<card>748</card>
+				<card>711</card>
+				<card>581</card>
+				<card>552</card>
+				<card>463</card>
+				<card>426</card>
+				<card>291</card>
+			</card_pool>
+			<card_pool amount="1"> <!-- Support Drops -->
+				<card>2088</card>
+				<card>2010</card>
+				<card>3049</card>
+				<card>3041</card>
+				<card>3030</card>
+				<card>3021</card>
+				<card>3018</card>
+				<card>3002</card>
+			</card_pool>
+		</deck>
+	</step>
+	<step>
+		<id>24</id>
+		<battleground_id>10</battleground_id>
+		<commander>1194</commander> 
+		<deck>
+			<card_pool amount="2"> <!-- 0 & 1 Drops -->
+				<card>225</card>
+				<card>301</card>
+				<card>320</card>
+				<card>493</card>
+				<card>576</card>
+				<card>714</card>
+				<card>757</card>
+			</card_pool>
+			<card_pool amount="4"> <!-- 2 Drops -->
+				<card>63</card>
+				<card>296</card>
+				<card>536</card>
+				<card>592</card>
+				<card>688</card>
+				<card>626</card>
+				<card>550</card>
+				<card>495</card>
+				<card>548</card>
+				<card>739</card>
+			</card_pool>
+			<card_pool amount="3"> <!-- 3 Drops -->
+				<card>254</card>
+				<card>173</card>
+				<card>290</card>
+				<card>417</card>
+				<card>568</card>
+				<card>573</card>
+				<card>606</card>
+				<card>719</card>
+				<card>642</card>
+			</card_pool>
+			<card_pool amount="3"> <!-- 4 Drops -->
+				<card>54</card>
+				<card>190</card>
+				<card>346</card>
+				<card>397</card>
+				<card>483</card>
+				<card>643</card>
+				<card>624</card>
+				<card>618</card>
+				<card>567</card>
+				<card>551</card>
+				<card>751</card>
+			</card_pool>
+			<card_pool amount="1"> <!-- Legendary -->
+				<card>2051</card>
+				<card>748</card>
+				<card>725</card>
+				<card>717</card>
+				<card>711</card>
+				<card>705</card>
+				<card>513</card>
+				<card>579</card>
+				<card>552</card>
+				<card>484</card>
+				<card>289</card>
+				<card>156</card>
+				<card>263</card>
+			</card_pool>
+			<card_pool amount="2"> <!-- Support Drops -->
+				<card>2117</card>
+				<card>2110</card>
+				<card>2083</card>
+				<card>2076</card>
+				<card>2009</card>
+				<card>2020</card>
+				<card>3047</card>
+				<card>3046</card>
+				<card>3045</card>
+				<card>3038</card>
+				<card>3028</card>
+				<card>3024</card>
+				<card>3004</card>
 			</card_pool>
 		</deck>
 	</step>
