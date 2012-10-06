@@ -31,7 +31,7 @@
 #endif
 
 #if defined(__windows__)
-	#include "../../EvaluateDecks/getopt_mb_uni_vc10/getopt_mb_uni_vc10/getopt.h"
+	#include "../../EvaluateDecks/getopt_mb_uni_vc10/getopt_mb_uni_vc10_dll/getopt.h"
 #else
 	#include <getopt.h>
 #endif
@@ -68,15 +68,16 @@ namespace EvaluateDecks {
                 if(c == -1) {
                     break;
                 }
-          
+
                 switch(c) {
                     case 'n': {
-                            std::stringstream ssNumberOfIterations(optarg);
-                            ssNumberOfIterations >> options.numberOfIterations;
-                            if(ssNumberOfIterations.fail()) {
-                                throw std::invalid_argument("-n --number-of-iterations requires an integer argument");
-                            }
-                        } break;
+                        std::stringstream ssNumberOfIterations(optarg);
+                        //std::stringstream ssNumberOfIterations("10");
+                        ssNumberOfIterations >> options.numberOfIterations;
+                        if(ssNumberOfIterations.fail()) {
+                            throw std::invalid_argument("-n --number-of-iterations requires an integer argument");
+                        }
+                            } break;
                     case 'o': {
                             if (options.attackDeck.getType() == DeckArgument::HASH) {
                                 options.attackDeck.setOrdered(true);

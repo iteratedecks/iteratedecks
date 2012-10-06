@@ -45,17 +45,17 @@
                              ,DeckLogger & defenseLogger
                              ,SimulationLogger & simulationLogger
                              ,unsigned int const & numberOfIterations
-							 ,bool surge = false
+                             ,bool surge = false
                              );
 
-			RESULTS simulateRaid(ActiveDeck const & deck1
-								, unsigned int const & raidId
-								, DeckLogger & attackLogger
-								, SimulationLogger & simulationLogger
-								, unsigned int const & numberOfIterations
-								);
+            RESULTS simulateRaid(ActiveDeck const & deck1
+                                , unsigned int const & raidId
+                                , DeckLogger & attackLogger
+                                , SimulationLogger & simulationLogger
+                                , unsigned int const & numberOfIterations
+                                );
 
-			void printResults(RESULTS r);
+            void printResults(RESULTS r);
 
         } // namespace CLI
     } // namespace EvaluateDecks
