@@ -60,6 +60,16 @@
 #define QEFFECT_IMPENETRABLE	6
 #define QEFFECT_INVIGORATE		7
 #define QEFFECT_CLONE_PROJECT	8
+#define QEFFECT_FRIENDLY_FIRE   9
+#define QEFFECT_GENESIS         10
+#define QEFFECT_ARTILLERY_STRIKE    11
+#define QEFFECT_PHOTON_SHIELD   12
+#define QEFFECT_ENFEEBLE_ALL    13
+#define QEFFECT_PROTECT_ALL     14
+#define QEFFECT_COMMANDER_FREEZE    15
+#define QEFFECT_SPLIT_FIVE      16
+#define QEFFECT_POISON_ALL      17
+
 
 #define UNDEFINED_NAME			"UNDEFINED"
 
@@ -2751,6 +2761,7 @@ struct REQUIREMENT
 							if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos))
 							{
 								// evaded
+                                LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
 								Dest.SkillProcs[DEFENSIVE_EVADE]++;
 							}
 							else
@@ -2865,7 +2876,8 @@ struct REQUIREMENT
 			// can it be mimiced? it only presents on structures and commanders atm
 			// it shouldn't be tributable
             // P: Now thats some really strange encoding for quest effect ....
-			if ((aid == ACTIVATION_RUSH) || ((QuestEffectId == QEFFECT_TIME_SURGE) && (!aindex)))
+            // If the unit actually has Rush OR we are in a Time Surge quest AND this is its first activation AND it is the commander
+            if ((aid == ACTIVATION_RUSH) || ((QuestEffectId == QEFFECT_TIME_SURGE) && (!aindex) && (Src.GetType() == TYPE_COMMANDER)))
 			{
 				effect = Src.GetAbility(aid);
 				if (aid != ACTIVATION_RUSH)
@@ -2879,11 +2891,12 @@ struct REQUIREMENT
 						PPCIV::iterator vi = targets.begin();
 						while (vi != targets.end())
 						{
-							if (!vi->first->GetWait())
+							if (!vi->first->GetWait()) // if wait is 0, remove it from targets
 								vi = targets.erase(vi);
 							else vi++;
 						}
-						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+                        // we only care about Rush All; if we got here by Quest effect, ignore the All flag
+						if (((aid != ACTIVATION_RUSH) || (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL)) && (!targets.empty()))
 						{
 							destindex = UCHAR(rand() % targets.size());
 							tmp = targets[destindex];

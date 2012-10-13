@@ -451,6 +451,7 @@ void EvaluateRaidQuestOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSInd
 		tAtk.SetQuestEffect(DB.GetQuestEffectId(QuestID));
 		tDef.SetQuestEffect(DB.GetQuestEffectId(QuestID));
 	}
+    tDef.logger = tAtk.logger;
 
 	if (CSIndex && rbc)
 		tAtk.SetFancyStatsBuffer(CSIndex,rbc);

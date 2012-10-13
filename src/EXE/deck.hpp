@@ -89,6 +89,7 @@
     #define SPECIAL_AUGMENT			63
     #define SPECIAL_MIST			64 // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
     #define SPECIAL_BLIZZARD		65 // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
+    #define SPECIAL_BLITZ			66 // showed up in cards.xml; not implemented
 
     #define TYPE_NONE				0
     #define TYPE_COMMANDER			1

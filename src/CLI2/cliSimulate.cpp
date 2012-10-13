@@ -435,7 +435,27 @@ namespace EvaluateDecks {
                 X.logger = &attackLogger;
 
                 simulationLogger.simulationStart(k);
-                EvaluateRaidQuestOnce(deck1,r,0,0,(DWORD)raidId,0);
+                EvaluateRaidQuestOnce(X,r,0,0,(DWORD)raidId,0);
+                simulationLogger.simulationEnd(k);
+            }
+            return r;
+        }
+
+        RESULTS simulateQuest(ActiveDeck const & deck1
+                            , unsigned int const & questId
+                            , DeckLogger & attackLogger
+                            , SimulationLogger & simulationLogger
+                            , unsigned int const & numberOfIterations
+                            )
+        {
+            // Here comes the actual simulations
+            RESULTS r;
+            for (UINT k=0;k<numberOfIterations;k++)    {
+                ActiveDeck X(deck1);
+                X.logger = &attackLogger;
+
+                simulationLogger.simulationStart(k);
+                EvaluateRaidQuestOnce(X,r,0,0,0,(DWORD)questId);
                 simulationLogger.simulationEnd(k);
             }
             return r;

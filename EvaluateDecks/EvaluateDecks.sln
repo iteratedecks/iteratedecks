@@ -25,6 +25,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3572EE28-69EC-40BA-AE75-89A7A0625951}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "getopt_mb_uni_vc10_dll", "getopt_mb_uni_vc10\getopt_mb_uni_vc10_dll\getopt_mb_uni_vc10_dll.vcxproj", "{4BBAEAA1-9AD1-42D2-B6DC-7F73C4B3D238}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AAE21437-396B-4985-A5CB-72A2F7DDF1A7} = {AAE21437-396B-4985-A5CB-72A2F7DDF1A7}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "getopt_mb_uni_vc10", "getopt_mb_uni_vc10\getopt_mb_uni_vc10\getopt_mb_uni_vc10.vcxproj", "{AAE21437-396B-4985-A5CB-72A2F7DDF1A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -174,6 +179,24 @@ Global
 		{4BBAEAA1-9AD1-42D2-B6DC-7F73C4B3D238}.Release|Win32.ActiveCfg = Release Lib|Win32
 		{4BBAEAA1-9AD1-42D2-B6DC-7F73C4B3D238}.Release|Win32.Build.0 = Release Lib|Win32
 		{4BBAEAA1-9AD1-42D2-B6DC-7F73C4B3D238}.Release|x64.ActiveCfg = Release Lib|Win32
+		{AAE21437-396B-4985-A5CB-72A2F7DDF1A7}.Debug Dll|Win32.ActiveCfg = Debug Dll|Win32
+		{AAE21437-396B-4985-A5CB-72A2F7DDF1A7}.Debug Dll|Win32.Build.0 = Debug Dll|Win32
+		{AAE21437-396B-4985-A5CB-72A2F7DDF1A7}.Debug Dll|x64.ActiveCfg = Debug Dll|Win32
+		{AAE21437-396B-4985-A5CB-72A2F7DDF1A7}.Debug Lib|Win32.ActiveCfg = Debug Lib|Win32
+		{AAE21437-396B-4985-A5CB-72A2F7DDF1A7}.Debug Lib|Win32.Build.0 = Debug Lib|Win32
+		{AAE21437-396B-4985-A5CB-72A2F7DDF1A7}.Debug Lib|x64.ActiveCfg = Debug Lib|Win32
+		{AAE21437-396B-4985-A5CB-72A2F7DDF1A7}.Debug|Win32.ActiveCfg = Debug Dll|Win32
+		{AAE21437-396B-4985-A5CB-72A2F7DDF1A7}.Debug|Win32.Build.0 = Debug Dll|Win32
+		{AAE21437-396B-4985-A5CB-72A2F7DDF1A7}.Debug|x64.ActiveCfg = Debug Dll|Win32
+		{AAE21437-396B-4985-A5CB-72A2F7DDF1A7}.Release Dll|Win32.ActiveCfg = Release Dll|Win32
+		{AAE21437-396B-4985-A5CB-72A2F7DDF1A7}.Release Dll|Win32.Build.0 = Release Dll|Win32
+		{AAE21437-396B-4985-A5CB-72A2F7DDF1A7}.Release Dll|x64.ActiveCfg = Release Dll|Win32
+		{AAE21437-396B-4985-A5CB-72A2F7DDF1A7}.Release Lib|Win32.ActiveCfg = Release Lib|Win32
+		{AAE21437-396B-4985-A5CB-72A2F7DDF1A7}.Release Lib|Win32.Build.0 = Release Lib|Win32
+		{AAE21437-396B-4985-A5CB-72A2F7DDF1A7}.Release Lib|x64.ActiveCfg = Release Lib|Win32
+		{AAE21437-396B-4985-A5CB-72A2F7DDF1A7}.Release|Win32.ActiveCfg = Release Lib|Win32
+		{AAE21437-396B-4985-A5CB-72A2F7DDF1A7}.Release|Win32.Build.0 = Release Lib|Win32
+		{AAE21437-396B-4985-A5CB-72A2F7DDF1A7}.Release|x64.ActiveCfg = Release Lib|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
