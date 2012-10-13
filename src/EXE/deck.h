@@ -1774,6 +1774,20 @@ struct REQUIREMENT
             }
         }
 
+        if(QuestEffectId == QEFFECT_GENESIS && EffectType == EVENT_EMPTY) {
+            if(Src.GetType() == TYPE_COMMANDER) {
+                questAbilityId = ACTIVATION_SUMMON;
+                // get random assault card; make sure they are not special dev only cards
+                do {
+                    questAbilityEffect = UCHAR(rand() % CARD_MAX_ID);
+                } while(questAbilityEffect == 0
+                    || ((Card const * const)&pCDB[questAbilityEffect])->GetType() != TYPE_ASSAULT
+                    || ((Card const * const)&pCDB[questAbilityEffect])->GetSet() == 0);
+                questAbilityTargets = 0;
+                questAbilityCount++;
+            }
+        }
+
 		for (UCHAR aindex=0;aindex<(ac+questAbilityCount);aindex++)
 		{
 			if (!IsMimiced)
