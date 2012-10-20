@@ -55,6 +55,13 @@
                                 , unsigned int const & numberOfIterations
                                 );
 
+            RESULTS simulateQuest(ActiveDeck const & deck1
+                                , unsigned int const & questId
+                                , DeckLogger & attackLogger
+                                , SimulationLogger & simulationLogger
+                                , unsigned int const & numberOfIterations
+                                );
+
             void printResults(RESULTS r);
 
         } // namespace CLI

@@ -31,9 +31,9 @@
 #endif
 
 #if defined(__windows__) && !defined(__MINGW32__)
-	#include "../../EvaluateDecks/getopt_mb_uni_vc10/getopt_mb_uni_vc10_dll/getopt.h"
+    #include "../../EvaluateDecks/getopt_mb_uni_vc10/getopt_mb_uni_vc10_dll/getopt.h"
 #else
-	#include <getopt.h>
+    #include <getopt.h>
 #endif
 
 #include <sstream>
@@ -45,7 +45,7 @@ namespace EvaluateDecks {
         CliOptions parseCliOptions(int const & argc, char * const argv[]) throw (std::invalid_argument, std::logic_error)
         {
             // get option table
-			option long_options[numberOfOptions];
+            option long_options[numberOfOptions];
             std::string shortOptions;
             for(unsigned int i = 0; i < numberOfOptions; i++) {
                 long_options[i] = options[i].getOptPart;
@@ -107,6 +107,15 @@ namespace EvaluateDecks {
                     case 's': {
                             options.surge = true;
                         } break;
+                    case 'q': {
+                            std::stringstream ssQuestId(optarg);
+                            int questId;
+                            ssQuestId>> questId;
+                            if(ssQuestId.fail()) {
+                                throw std::invalid_argument ("-q --quest-id requires an integer argument");
+                            }
+                            options.defenseDeck.setQuest(questId);
+                        } break;
                     case 'r': {
                             std::stringstream ssRaidId(optarg);
                             int raidId;
@@ -114,7 +123,7 @@ namespace EvaluateDecks {
                             if(ssRaidId.fail()) {
                                 throw std::invalid_argument ("-r --raid-id requires an integer argument");
                             }
-							options.defenseDeck.setRaid(raidId);
+                            options.defenseDeck.setRaid(raidId);
                         } break;
                     case '?':
                         throw std::invalid_argument("no such option");
@@ -154,8 +163,10 @@ namespace EvaluateDecks {
             }
             if (options.printHelpAndExit) {
                 // no more arguments expected
-			} else if(options.defenseDeck.getType() == DeckArgument::RAID_ID && optind+1 == argc) {
-				// if we are raid deck, we only need the attack hash
+            } else if((options.defenseDeck.getType() == DeckArgument::RAID_ID
+                        || options.defenseDeck.getType() == DeckArgument::QUEST_IDy)
+                      && optind+1 == argc) {
+                // if we are raid deck, we only need the attack hash
                 options.attackDeck.setHash(argv[optind+0]);
             } else if(optind+2 == argc) {
                 // other arguments, we expect exactly two decks

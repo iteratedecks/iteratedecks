@@ -115,6 +115,10 @@ int mainWithOptions(CliOptions const & options
     case DeckArgument::RAID_ID: {
         r = simulateRaid(deck1, options.defenseDeck.getRaidId(), attackLogger, simulationLogger, options.numberOfIterations);
                                 } break;
+
+    case DeckArgument::QUEST_IDy: {
+        r = simulateQuest(deck1, options.defenseDeck.getQuestId(), attackLogger, simulationLogger, options.numberOfIterations);
+                                } break;
     }
 
     printResults(r);

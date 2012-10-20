@@ -75,7 +75,7 @@
             void attack(PlayedCard const & src, std::string const & message);
 
             void abilitySupport(EVENT_CONDITION const & eventCondition,PlayedCard const & src, AbilityId const & aid, PlayedCard const & target, EFFECT_ARGUMENT amount);
-            void abilityOffensive(EVENT_CONDITION const & eventCondition,PlayedCard const & src, AbilityId const & aid, PlayedCard const & target, EFFECT_ARGUMENT amount);
+            void abilityOffensive(EVENT_CONDITION const & eventCondition,PlayedCard const & src, AbilityId const & aid, PlayedCard const & target, EFFECT_ARGUMENT amount, bool evaded = false);
 
             void abilitySummon(EVENT_CONDITION const & eventCondition, PlayedCard const & src, PlayedCard const & summonedCard);
             void abilityFlurry(PlayedCard const & src, EFFECT_ARGUMENT const & amount);

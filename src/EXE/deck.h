@@ -60,6 +60,16 @@
 #define QEFFECT_IMPENETRABLE	6
 #define QEFFECT_INVIGORATE		7
 #define QEFFECT_CLONE_PROJECT	8
+#define QEFFECT_FRIENDLY_FIRE   9
+#define QEFFECT_GENESIS         10
+#define QEFFECT_ARTILLERY_STRIKE    11
+#define QEFFECT_PHOTON_SHIELD   12
+#define QEFFECT_ENFEEBLE_ALL    13
+#define QEFFECT_PROTECT_ALL     14
+#define QEFFECT_COMMANDER_FREEZE    15
+#define QEFFECT_SPLIT_FIVE      16
+#define QEFFECT_POISON_ALL      17
+
 
 #define UNDEFINED_NAME			"UNDEFINED"
 
@@ -1700,7 +1710,7 @@ struct REQUIREMENT
 	}
 	void ActiveDeck::ApplyEffects(UINT QuestEffectId,EVENT_CONDITION EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced,bool IsFusioned,PlayedCard *Mimicer,UCHAR StructureIndex, PlayedCard * target)
 	{
-		UCHAR destindex,aid,faction;
+		UCHAR destindex,aid,faction,targetCount;
 		PPCIV targets;
 		targets.reserve(DEFAULT_DECK_RESERVE_SIZE);
 		PPCARDINDEX tmp;
@@ -1739,7 +1749,46 @@ struct REQUIREMENT
 		UCHAR ac = Src.GetAbilitiesCount();
 		if ((!ac) && (QuestEffectId == QEFFECT_TIME_SURGE) && (!IsMimiced) && (EffectType == EVENT_EMPTY))
 			ac = 1;
-		for (UCHAR aindex=0;aindex<ac;aindex++)
+
+        UCHAR questAbilityCount = 0;
+        UCHAR questAbilityId = SPECIAL_ATTACK; // TODO need better placeholder
+        EFFECT_ARGUMENT questAbilityEffect = 0;
+        UCHAR questAbilityTargets = 0;
+        if(QuestEffectId == QEFFECT_FRIENDLY_FIRE && EffectType == EVENT_EMPTY) {
+            switch(Src.GetType()) {
+            case TYPE_COMMANDER: {
+                questAbilityId = ACTIVATION_CHAOS;
+                questAbilityEffect = 1;
+                questAbilityTargets = TARGETSCOUNT_ALL;
+                questAbilityCount++;
+                                 } break;
+            case TYPE_ASSAULT: {
+                // if the unit already has strike, don't give it to them again
+                if(Src.GetAbility(ACTIVATION_STRIKE) == 0) {
+                    questAbilityId = ACTIVATION_STRIKE;
+                    questAbilityEffect = 1;
+                    questAbilityTargets = TARGETSCOUNT_ONE;
+                    questAbilityCount++;
+                }
+                               } break;
+            }
+        }
+
+        if(QuestEffectId == QEFFECT_GENESIS && EffectType == EVENT_EMPTY) {
+            if(Src.GetType() == TYPE_COMMANDER) {
+                questAbilityId = ACTIVATION_SUMMON;
+                // get random assault card; make sure they are not special dev only cards
+                do {
+                    questAbilityEffect = UCHAR(rand() % CARD_MAX_ID);
+                } while(questAbilityEffect == 0
+                    || ((Card const * const)&pCDB[questAbilityEffect])->GetType() != TYPE_ASSAULT
+                    || ((Card const * const)&pCDB[questAbilityEffect])->GetSet() == 0);
+                questAbilityTargets = 0;
+                questAbilityCount++;
+            }
+        }
+
+		for (UCHAR aindex=0;aindex<(ac+questAbilityCount);aindex++)
 		{
 			if (!IsMimiced)
 			{
@@ -1750,40 +1799,49 @@ struct REQUIREMENT
 			}
 			UCHAR chaos = Src.GetEffect(ACTIVATION_CHAOS); // I need to check this every time card uses skill because it could be paybacked chaos - such as Pulsifier with payback, chaos and mimic
 
-			aid = Src.GetAbilityInOrder(aindex);
+            if(aindex < ac) {
+                aid = Src.GetAbilityInOrder(aindex);
 
-			// filter certain types of skills
-			/*EMPTY - EMPTY
-			DIED - DIED
-			DIED - BOTH
-			PLAY - PLAY
-			PLAY - BOTH*/
-			EVENT_CONDITION AbilityEventType(Src.GetAbilityEvent(aid));
-			// in general: we only continue if the event type for the skill is the same as the event we process
-			// EMPTY is a special case...
-			if (EffectType == EVENT_EMPTY && AbilityEventType != EVENT_EMPTY) {
-			    // ... this is a normal (empty) event handling run, but the card has something different
-			    continue;
-			}
-			// ... for non empty we use binary and
-			if (   EffectType != EVENT_EMPTY
-			    && ((EffectType & AbilityEventType) == 0)
-			   ) {
-			    // ... this is a non-normal event handling run, but the card does not have this event
-			    continue;
-			}
+                // filter certain types of skills
+                /*EMPTY - EMPTY
+                DIED - DIED
+                DIED - BOTH
+                PLAY - PLAY
+                PLAY - BOTH*/
+                EVENT_CONDITION AbilityEventType(Src.GetAbilityEvent(aid));
+                // in general: we only continue if the event type for the skill is the same as the event we process
+                // EMPTY is a special case...
+                if (EffectType == EVENT_EMPTY && AbilityEventType != EVENT_EMPTY) {
+                    // ... this is a normal (empty) event handling run, but the card has something different
+                    continue;
+                }
+                // ... for non empty we use binary and
+                if (   EffectType != EVENT_EMPTY
+                    && ((EffectType & AbilityEventType) == 0)
+                    ) {
+                        // ... this is a non-normal event handling run, but the card does not have this event
+                        continue;
+                }
+
+                effect = Src.GetAbility(aid); // fusion is applied in the SWTITCH below
+                faction = Src.GetTargetFaction(aid);
+                targetCount = Src.GetTargetCount(aid);
+            } else {
+                aid = questAbilityId;
+                effect = questAbilityEffect;
+                targetCount = questAbilityTargets;
+                faction = FACTION_NONE;
+            }
 
             switch(aid) {
 			// cleanse
 			case ACTIVATION_CLEANSE: {
                 if (QuestEffectId != QEFFECT_DECAY) {
-                    effect = Src.GetAbility(aid) * FusionMultiplier; // will it be fusioned? who knows
+                    effect *= FusionMultiplier;
                     if (effect > 0)
                     {
                         if (IsMimiced)
                             faction = FACTION_NONE;
-                        else
-                            faction = Src.GetTargetFaction(aid);
                         GetTargets(Units,faction,targets);
                         LOG_CARD lc(LogDeckID,TYPE_ASSAULT,100);
                         if (targets.size())
@@ -1796,7 +1854,7 @@ struct REQUIREMENT
                                 else vi++;
                             }
                             bool bTributable = (IsMimiced && IsInTargets(Mimicer,&targets)) || ((!IsMimiced) && IsInTargets(&Src,&targets));
-                            if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+                            if ((targetCount != TARGETSCOUNT_ALL) && (!targets.empty()))
                             {
                                 destindex = UCHAR(rand() % targets.size());
                                 tmp = targets[destindex];
@@ -1864,13 +1922,11 @@ struct REQUIREMENT
             } break;
             // enfeeble
 			case ACTIVATION_ENFEEBLE: {
-				effect = Src.GetAbility(aid) * FusionMultiplier;
+                effect *= FusionMultiplier;
 				if (effect > 0)
 				{
 					if (IsMimiced)
 						faction = FACTION_NONE;
-					else
-						faction = Src.GetTargetFaction(aid);
 					LOG_CARD lc(LogDeckID,TYPE_ASSAULT,100);
 					if (chaos > 0)
 					{
@@ -1884,7 +1940,7 @@ struct REQUIREMENT
 					}
 					if (targets.size())
 					{
-						if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL)
+						if (targetCount != TARGETSCOUNT_ALL)
 						{
 							destindex = UCHAR(rand() % targets.size());
 							if (!chaos)
@@ -1942,13 +1998,11 @@ struct REQUIREMENT
 			} break;
 			// heal
 			case ACTIVATION_HEAL: {
-				effect = Src.GetAbility(aid) * FusionMultiplier;
+                effect *= FusionMultiplier;
 				if (effect > 0)
 				{
 					if (IsMimiced)
 						faction = FACTION_NONE;
-					else
-						faction = Src.GetTargetFaction(aid);
 					GetTargets(Units,faction,targets);
 					if (targets.size())
 					{
@@ -1960,7 +2014,7 @@ struct REQUIREMENT
 							else vi++;
 						}
 						bool bTributable = (IsMimiced && IsInTargets(Mimicer,&targets)) || ((!IsMimiced) && IsInTargets(&Src,&targets));
-						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+						if ((targetCount != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
 							destindex = UCHAR(rand() % targets.size());
 							tmp = targets[destindex];
@@ -2013,7 +2067,7 @@ struct REQUIREMENT
 			} break;
 			// supply
 			case ACTIVATION_SUPPLY:	{
-				effect = Src.GetAbility(aid) * FusionMultiplier;
+                effect *= FusionMultiplier;
 				if (    (effect > 0)
                      && (Position >= 0)
                      && (    (!IsMimiced)
@@ -2107,13 +2161,11 @@ struct REQUIREMENT
 			} break;
 			// protect
 			case ACTIVATION_PROTECT: {
-				effect = Src.GetAbility(aid) * FusionMultiplier; // will it be fusioned? who knows
+                effect *= FusionMultiplier;
 				if (effect > 0)
 				{
 					if (IsMimiced)
 						faction = FACTION_NONE;
-					else
-						faction = Src.GetTargetFaction(aid);
 					GetTargets(Units,faction,targets);
 					if (targets.size())
 					{
@@ -2125,7 +2177,7 @@ struct REQUIREMENT
 									vi = targets.erase(vi);
 								else vi++;
 							}*/
-						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+						if ((targetCount != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
 							destindex = UCHAR(rand() % targets.size());
 							tmp = targets[destindex];
@@ -2183,13 +2235,10 @@ struct REQUIREMENT
 			// ******
 			// jam
 			case ACTIVATION_JAM: {
-				effect = Src.GetAbility(aid);
 				if (effect > 0)
 				{
 					if (IsMimiced)
 						faction = FACTION_NONE;
-					else
-						faction = Src.GetTargetFaction(aid);
 					if (chaos > 0)
 						GetTargets(Units,faction,targets);
 					else
@@ -2203,7 +2252,7 @@ struct REQUIREMENT
 								vi = targets.erase(vi);
 							else vi++;
 						}
-						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+						if ((targetCount != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
 							destindex = UCHAR(rand() % targets.size());
 							if (!chaos)
@@ -2256,13 +2305,10 @@ struct REQUIREMENT
 			} break;
 			// freeze
 			case ACTIVATION_FREEZE:	{
-				effect = Src.GetAbility(aid);
 				if (effect > 0)
 				{
 					if (IsMimiced)
 						faction = FACTION_NONE;
-					else
-						faction = Src.GetTargetFaction(aid);
 					if (chaos > 0)
 						GetTargets(Units,faction,targets);
 					else
@@ -2276,7 +2322,7 @@ struct REQUIREMENT
 								vi = targets.erase(vi);
 							else vi++;
 						}
-						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+						if ((targetCount != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
 							destindex = UCHAR(rand() % targets.size());
 							if (!chaos)
@@ -2327,20 +2373,17 @@ struct REQUIREMENT
 			} break;
 			// mimic - could be tricky
 			case ACTIVATION_MIMIC: {
-				effect = Src.GetAbility(aid);
 				if ((effect > 0) && (!IsMimiced))
 				{
 					if (IsMimiced) // mimic can't be mimiced ;) it's just sad copypaste, previous line prevents this being mimiced
 						faction = FACTION_NONE;
-					else
-						faction = Src.GetTargetFaction(aid);
 					if ((chaos > 0) || (QuestEffectId == QEFFECT_COPYCAT))
 						GetTargets(Units,faction,targets);
 					else
 						GetTargets(Dest.Units,faction,targets);
 					if (targets.size())
 					{
-						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL))
+						if ((targetCount != TARGETSCOUNT_ALL))
 						{
 							destindex = UCHAR(rand() % targets.size());
 							// can Mimic be intercepted?
@@ -2378,13 +2421,11 @@ struct REQUIREMENT
 			} break;
 			// rally
 			case ACTIVATION_RALLY: {
-				effect = Src.GetAbility(aid) * FusionMultiplier;
+                effect *= FusionMultiplier;
 				if (effect > 0)
 				{
 					if (IsMimiced)
 						faction = FACTION_NONE;
-					else
-						faction = Src.GetTargetFaction(aid);
 					GetTargets(Units,faction,targets);
                     // If we have targets at all
                     if (targets.size() > 0) {
@@ -2403,7 +2444,7 @@ struct REQUIREMENT
                             }
                         } // while
 						bool bTributable = (IsMimiced && IsInTargets(Mimicer,&targets)) || ((!IsMimiced) && IsInTargets(&Src,&targets));
-						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+						if ((targetCount != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
 							destindex = UCHAR(rand() % targets.size());
 							tmp = targets[destindex];
@@ -2459,13 +2500,11 @@ struct REQUIREMENT
 			} break;
 			// repair
 			case ACTIVATION_REPAIR:	{
-				effect = Src.GetAbility(aid) * FusionMultiplier;
+                effect *= FusionMultiplier;
 				if (effect > 0)
 				{
 					if (IsMimiced)
 						faction = FACTION_NONE;
-					else
-						faction = Src.GetTargetFaction(aid);
 					GetTargets(Structures,faction,targets);
 					if (targets.size())
 					{
@@ -2476,7 +2515,7 @@ struct REQUIREMENT
 								vi = targets.erase(vi);
 							else vi++;
 						}
-						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+						if ((targetCount != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
 							destindex = UCHAR(rand() % targets.size());
 							tmp = targets[destindex];
@@ -2504,7 +2543,7 @@ struct REQUIREMENT
 			} break;
 			// shock
 			case ACTIVATION_SHOCK: {
-				effect = Src.GetAbility(aid) * FusionMultiplier;
+                effect *= FusionMultiplier;
 				if (effect > 0)
 				{
 					Src.fsDmgDealt += Dest.Commander.SufferDmg(QuestEffectId,effect);
@@ -2514,20 +2553,18 @@ struct REQUIREMENT
 			} break;
 			// siege
 			case ACTIVATION_SIEGE: {
-				effect = Src.GetAbility(aid) * FusionMultiplier;
+                effect *= FusionMultiplier;
 				if (effect > 0)
 				{
 					if (IsMimiced)
 						faction = FACTION_NONE;
-					else
-						faction = Src.GetTargetFaction(aid);
 					if (chaos > 0)
 						GetTargets(Structures,faction,targets);
 					else	
 						GetTargets(Dest.Structures,faction,targets);
 					if (targets.size())
 					{
-						if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL)
+						if (targetCount != TARGETSCOUNT_ALL)
 						{
 							destindex = UCHAR(rand() % targets.size());
 							tmp = targets[destindex];
@@ -2571,7 +2608,7 @@ struct REQUIREMENT
 			} break;
 			// split
             case ACTIVATION_SPLIT: {
-				effect = Src.GetAbility(ACTIVATION_SPLIT);
+                effect *= FusionMultiplier;
 				if ((effect > 0) && (!IsMimiced))
 				{
                     // vectors can be reallocated, lists not, so do it right now
@@ -2583,13 +2620,11 @@ struct REQUIREMENT
 			} break;
 			// strike
 			case ACTIVATION_STRIKE: {
-				effect = Src.GetAbility(aid) * FusionMultiplier;
+                effect *= FusionMultiplier;
 				if (effect > 0) {
                     // mimiced strike?
 					if (IsMimiced) {
 						faction = FACTION_NONE;
-					}else {
-						faction = Src.GetTargetFaction(aid);
                     }
                     // chaosed strike?
 					if (chaos > 0) {
@@ -2600,7 +2635,7 @@ struct REQUIREMENT
                     // do we have a target at all
 					if (targets.size() > 0)	{
                         // is it not strike all?
-						if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) {
+						if (targetCount != TARGETSCOUNT_ALL) {
                             // pick a random target
 							destindex = UCHAR(rand() % targets.size());
 							if (!chaos) {
@@ -2624,6 +2659,7 @@ struct REQUIREMENT
 							if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos))
 							{
 								// evaded
+                                LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
 								vi->first->fsAvoided += effect;
 								Dest.SkillProcs[DEFENSIVE_EVADE]++;
 							}
@@ -2669,7 +2705,6 @@ struct REQUIREMENT
 			} break;
 			// summon
             case ACTIVATION_SUMMON: {
-                effect = Src.GetAbility(ACTIVATION_SUMMON);
                 assert(effect > 0);
                 assert(effect < CARD_MAX_ID);
                 assert(pCDB != NULL);
@@ -2704,13 +2739,11 @@ struct REQUIREMENT
 			// I fucking hate random ...
 			// no, that not true, AI is dumb
 			case ACTIVATION_WEAKEN:	{
-				effect = Src.GetAbility(aid) * FusionMultiplier;
+                effect *= FusionMultiplier;
 				if (effect > 0)
 				{
 					if (IsMimiced)
 						faction = FACTION_NONE;
-					else
-						faction = Src.GetTargetFaction(aid);
 					if (chaos > 0)
 						GetTargets(Units,faction,targets);
 					else
@@ -2731,7 +2764,7 @@ struct REQUIREMENT
 							else
 								vi = targets.erase(vi);
 						}
-						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+						if ((targetCount != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
 							destindex = UCHAR(rand() % targets.size());
 							if (!chaos)
@@ -2751,6 +2784,7 @@ struct REQUIREMENT
 							if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos))
 							{
 								// evaded
+                                LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
 								Dest.SkillProcs[DEFENSIVE_EVADE]++;
 							}
 							else
@@ -2773,13 +2807,10 @@ struct REQUIREMENT
 			} break;
             // Chaos
 			case ACTIVATION_CHAOS: {
-				effect = Src.GetAbility(aid);
 				if (effect > 0)
 				{
 					if (IsMimiced)
 						faction = FACTION_NONE;
-					else
-						faction = Src.GetTargetFaction(aid);
 					if (chaos > 0)
 						GetTargets(Units,faction,targets);
 					else
@@ -2798,7 +2829,7 @@ struct REQUIREMENT
 							else
 								vi = targets.erase(vi);
 						}
-						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+						if ((targetCount != TARGETSCOUNT_ALL) && (!targets.empty()))
 						{
 							destindex = UCHAR(rand() % targets.size());
 							if (!chaos)
@@ -2865,25 +2896,25 @@ struct REQUIREMENT
 			// can it be mimiced? it only presents on structures and commanders atm
 			// it shouldn't be tributable
             // P: Now thats some really strange encoding for quest effect ....
-			if ((aid == ACTIVATION_RUSH) || ((QuestEffectId == QEFFECT_TIME_SURGE) && (!aindex)))
+            // If the unit actually has Rush OR we are in a Time Surge quest AND this is its first activation AND it is the commander
+            if ((aid == ACTIVATION_RUSH) || ((QuestEffectId == QEFFECT_TIME_SURGE) && (!aindex) && (Src.GetType() == TYPE_COMMANDER)))
 			{
-				effect = Src.GetAbility(aid);
 				if (aid != ACTIVATION_RUSH)
 					effect = 1;
 				if (effect > 0)
 				{
-					faction = Src.GetTargetFaction(aid);
 					GetTargets(Units,faction,targets);
 					if (targets.size())
 					{
 						PPCIV::iterator vi = targets.begin();
 						while (vi != targets.end())
 						{
-							if (!vi->first->GetWait())
+							if (!vi->first->GetWait()) // if wait is 0, remove it from targets
 								vi = targets.erase(vi);
 							else vi++;
 						}
-						if ((Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) && (!targets.empty()))
+                        // we only care about Rush All; if we got here by Quest effect, ignore the All flag
+						if (((aid != ACTIVATION_RUSH) || (targetCount != TARGETSCOUNT_ALL)) && (!targets.empty()))
 						{
 							destindex = UCHAR(rand() % targets.size());
 							tmp = targets[destindex];
@@ -2907,8 +2938,10 @@ struct REQUIREMENT
 					}
 					targets.clear();
 				}
-			}
-		}
+			} // end RUSH
+		} // end for(aindex:ac)
+
+
 	}
 
     void ActiveDeck::applyDamageDependentEffectOnAttack(UINT questEffectId, PlayedCard & src, AbilityId const & abilityId, EFFECT_ARGUMENT const & effectArgument, ActiveDeck & otherDeck, PlayedCard & target) {

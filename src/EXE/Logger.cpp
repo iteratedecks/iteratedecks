@@ -291,6 +291,7 @@ void DeckLogger::abilityOffensive(EVENT_CONDITION const & eventCondition
                                  ,AbilityId const & aid
                                  ,PlayedCard const & target
                                  ,EFFECT_ARGUMENT amount
+                                 ,bool evaded
                                  )
 {
     if (this->delegate.isEnabled(Logger::LOG_ABILITY)) {
@@ -298,6 +299,9 @@ void DeckLogger::abilityOffensive(EVENT_CONDITION const & eventCondition
         ssMessage << this->delegate.abilityIdToString(aid) << " ";
         ssMessage << (unsigned int)amount << " ";
         ssMessage << colorCard(target);
+        if(evaded) {
+            ssMessage << " evaded";
+        }
         this->ability(eventCondition,src,ssMessage.str());
     }
 }

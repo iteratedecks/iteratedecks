@@ -5,20 +5,20 @@
 namespace EvaluateDecks {
     namespace CLI {
 
-	    //CommentedOption const options[] =
-		//		{ { { "number-of-iterations" , required_argument, 0, 'n' }, "sets the number of simulations to do" }
-		//		, { { "first-deck-is-ordered", no_argument      , 0, 'o' }, "marks the first deck (player deck) as ordered" }
-		//		, { { "achievement-index"    , required_argument, 0, 'a' }, "index (not id) of achievement. not sure where the difference is" }
-		//		, { { "verify"               , required_argument, 0, 0   }, "verify a result, provide an accepted range in the form <lower bound>:<upper bound>, like \"--verify 1:1\" if the deck should win all the time" }
-		//		, { { "verbose"              , no_argument      , 0, 'v' }, "verbose output" }
-		//		, { { "seed"                 , optional_argument, 0, 0   }, "set the seed, takes an optional argument. if none given use seed based on time." }
-		//		, { { "color"                , optional_argument, 0, 0   }, "color the output, currently only ANSI colors supported" }
-		//		, { { "help"                 , no_argument      , 0, 'h' }, "print help" }
-		//		};
+        //CommentedOption const options[] =
+        //		{ { { "number-of-iterations" , required_argument, 0, 'n' }, "sets the number of simulations to do" }
+        //		, { { "first-deck-is-ordered", no_argument      , 0, 'o' }, "marks the first deck (player deck) as ordered" }
+        //		, { { "achievement-index"    , required_argument, 0, 'a' }, "index (not id) of achievement. not sure where the difference is" }
+        //		, { { "verify"               , required_argument, 0, 0   }, "verify a result, provide an accepted range in the form <lower bound>:<upper bound>, like \"--verify 1:1\" if the deck should win all the time" }
+        //		, { { "verbose"              , no_argument      , 0, 'v' }, "verbose output" }
+        //		, { { "seed"                 , optional_argument, 0, 0   }, "set the seed, takes an optional argument. if none given use seed based on time." }
+        //		, { { "color"                , optional_argument, 0, 0   }, "color the output, currently only ANSI colors supported" }
+        //		, { { "help"                 , no_argument      , 0, 'h' }, "print help" }
+        //		};
 
-	    //size_t const numberOfOptions(sizeof(options)/sizeof(CommentedOption));
+        //size_t const numberOfOptions(sizeof(options)/sizeof(CommentedOption));
 
-		void printUsage()
+        void printUsage()
         {
             std::cout << "Usage:" << std::endl;
             for(unsigned int i = 0; i < numberOfOptions; i++) {
@@ -65,12 +65,20 @@ namespace EvaluateDecks {
             return this->hashData.hash;
         }
 
+        int DeckArgument::getQuestId() const throw (InvalidState)
+        {
+            if(this->type != QUEST_IDy) {
+                throw InvalidState("Only raid decks can have a raid id.");
+            }
+            return this->questId;
+        }
+
         int DeckArgument::getRaidId() const throw (InvalidState)
         {
             if(this->type != RAID_ID) {
                 throw InvalidState("Only raid decks can have a raid id.");
             }
-			return this->raidId;
+            return this->raidId;
         }
 
         bool DeckArgument::isOrdered() const throw (InvalidState)
@@ -95,10 +103,16 @@ namespace EvaluateDecks {
             this->hashData.hash = hash;
         }
 
-		void DeckArgument::setRaid(int const & raidId)
+        void DeckArgument::setQuest(int const & questId)
+        {
+            this->type = QUEST_IDy;
+            this->questId = questId;
+        }
+
+        void DeckArgument::setRaid(int const & raidId)
         {
             this->type = RAID_ID;
-			this->raidId = raidId;
+            this->raidId = raidId;
         }
 
         AchievementOptions::AchievementOptions()
@@ -134,7 +148,7 @@ namespace EvaluateDecks {
         , seed(1)
         , colorMode(Logger::COLOR_NONE)
         , printHelpAndExit(false)
-		, surge(false)
+        , surge(false)
         {
         }
     } // namespace CLI

@@ -260,15 +260,17 @@ bool IsCardInDeck(const UINT Id, LCARDS &deck)
 		}
 	return false;
 }
-void PickACard(Card *pCDB, VID &fromIDpool, LCARDS &topool)
+void PickACard(Card *pCDB, VID &fromIDpool, LCARDS &topool, bool checkLegendaries = true)
 {
 	bool bLegendary = false;
 	if (!fromIDpool.empty())
 	{
 		UCHAR indx = 0;
-		for (LCARDS::iterator vi = topool.begin();vi != topool.end();vi++)
-			if (vi->GetRarity() == RARITY_LEGENDARY)
-				bLegendary = true;
+		if(checkLegendaries) {
+			for (LCARDS::iterator vi = topool.begin();vi != topool.end();vi++)
+				if (vi->GetRarity() == RARITY_LEGENDARY)
+					bLegendary = true;
+		}
 		UINT iPreventLoop = 0;
 		do
 		{
@@ -276,7 +278,7 @@ void PickACard(Card *pCDB, VID &fromIDpool, LCARDS &topool)
 			iPreventLoop++;
 			if (iPreventLoop > 1000)
 			{
-				printf("Looping has been prevented...");
+                printf("Looping has been prevented when choosing %s...\n", pCDB[fromIDpool[indx]].GetName());
 				break;
 			}
 		}
@@ -308,7 +310,7 @@ public:
 			Pool.push_back(C.Pool[i]);
 	}
 	~CardPool() { Pool.clear(); };
-	void GetPool(Card *pCDB, LCARDS &Deck) const
+	void GetPool(Card *pCDB, LCARDS &Deck, bool checkLegendaries = true) const
 	{
 		_ASSERT(Amount); // invalid pool
 		_ASSERT(!Pool.empty()); // invalid pool
@@ -318,7 +320,7 @@ public:
 		for (UCHAR i=0;i<Pool.size();i++)
 			tmpPool.push_back(Pool[i]);
 		for (UCHAR i=0;i<Amount;i++)
-			PickACard(pCDB,tmpPool,Deck);
+			PickACard(pCDB,tmpPool,Deck,checkLegendaries);
 		tmpPool.clear();
 	}
 };
@@ -419,7 +421,7 @@ public:
 	{
 		for (UCHAR i=0;i<Pools.size();i++)
 		{
-			Pools[i].GetPool(pCDB,Deck);
+			Pools[i].GetPool(pCDB,Deck, false);
 		}
 	}
 	const UINT StepInfo::GetCommander() { return Commander; };
@@ -1075,6 +1077,7 @@ char *FormatCardName(char *Name)
 		AddSkill(SPECIAL_AUGMENT,"Augment");
 		AddSkill(SPECIAL_MIST,"Mist");
 		AddSkill(SPECIAL_BLIZZARD,"Blizzard");
+		AddSkill(SPECIAL_BLITZ,"Blitz");
 
 		AddSkill(SPECIAL_ATTACK,"Attack");
 
@@ -1086,6 +1089,15 @@ char *FormatCardName(char *Name)
 		AddQuestEffect(QEFFECT_IMPENETRABLE,"impenetrable");
 		AddQuestEffect(QEFFECT_INVIGORATE,"invigorate");
 		AddQuestEffect(QEFFECT_CLONE_PROJECT,"clone_project");
+        AddQuestEffect(QEFFECT_FRIENDLY_FIRE,"friendly_fire");
+        AddQuestEffect(QEFFECT_GENESIS,"genesis");
+        AddQuestEffect(QEFFECT_ARTILLERY_STRIKE,"artillery_strike");
+        AddQuestEffect(QEFFECT_PHOTON_SHIELD,"photon_shield");
+        AddQuestEffect(QEFFECT_ENFEEBLE_ALL,"enfeeble_all");
+        AddQuestEffect(QEFFECT_PROTECT_ALL,"protect_all");
+        AddQuestEffect(QEFFECT_COMMANDER_FREEZE,"commander_freeze");
+        AddQuestEffect(QEFFECT_SPLIT_FIVE,"split_five");
+        AddQuestEffect(QEFFECT_POISON_ALL,"poison_all");
 	}
 	void CardDB::AddSkill(UCHAR Id, const char *Name)
 	{

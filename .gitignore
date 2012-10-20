@@ -5,4 +5,10 @@ bin/*.idb
 bin/*.obj
 bin/*.lib
 bin/*.pdb
+bin/*.exe
+bin/*.exp
+bin/*.ilk
+bin/*.tlb
+bin/*.cache
+bin/debug.txt
 *.vcxproj.user
