@@ -476,7 +476,7 @@ namespace EvaluateDecks {
             std::cout << "confidence [" << lBound << ";" << uBound << "]";
             assert(0 <= lBound);
             assert(lBound <= winRate);
-            assert(winRate <= uBound);
+            assert((uBound - winRate) > -.00001);
             assert(uBound <= 1);
             std::cout << "; ";
             double const averageNetPoints ((double)r.Points / (double)r.Games);

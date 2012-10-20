@@ -202,7 +202,7 @@
             UCHAR DeathEvents;
         public:
             // fancy stats
-            UINT fsDmgDealt; // attack, counter, strike, poison is not here(hard to track the source of poison)
+            UINT fsDmgDealt; // attack, counter, strike; poison is not here(hard to track the source of poison)
             UINT fsDmgMitigated; // obvious - before it died, should we include overkill?
             UINT fsAvoided; // evade, armor, flying, protect - absorbed damage, this always IGNORES protect and ignores armor if it's a flying miss
             UINT fsHealed; // supply, heal, leech, regenerate
@@ -393,7 +393,10 @@
         void DelayFirstCard();
         void Add(const Card *c);
         bool IsInTargets(PlayedCard *pc, PPCIV *targets);
+        bool ActiveDeck::Evade(PlayedCard *defender, UINT QuestEffectId, bool chaos);
         UCHAR Intercept(PPCIV &targets, UCHAR destindex, ActiveDeck &Dest);
+        bool Payback(PlayedCard *defender, PlayedCard &Src, ActiveDeck &dest, EVENT_CONDITION EffectType, UCHAR effectId, EFFECT_ARGUMENT effect, bool chaos);
+        bool Tribute(PlayedCard *tributeCard, PlayedCard *targetCard, ActiveDeck *procDeck, EVENT_CONDITION EffectType, AbilityId effectId, EFFECT_ARGUMENT effect);
         void ApplyEffects(UINT QuestEffectId,EVENT_CONDITION EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false,PlayedCard *Mimicer=0,UCHAR StructureIndex = 0, PlayedCard * target=NULL);
         void applyDamageDependentEffectOnAttack(UINT questEffectId, PlayedCard & src, AbilityId const & abilityId, EFFECT_ARGUMENT const & effectArgument, ActiveDeck & otherDeck, PlayedCard & target);
         void SweepFancyStats(PlayedCard &pc);
@@ -415,6 +418,8 @@
         std::string GetHash64(bool bCardPicks = false) const;
     protected:
         void GetTargets(LCARDS &From, UCHAR TargetFaction, PPCIV &GetTo, bool bForInfuse = false);
+    	void FilterTargets(PPCIV &targets, EFFECT_ARGUMENT skipEffects[], const int waitMin, const int waitMax, const int attackLimit, bool skipPlayed);
+    	void RandomizeTarget(PPCIV &targets, UCHAR targetCount, ActiveDeck &Dest, bool canIntercept);
     };
 #endif
 
