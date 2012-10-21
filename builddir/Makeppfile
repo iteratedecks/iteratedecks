@@ -60,6 +60,9 @@ ${SVN_REVISION}_${foreach}.tar.gz: ${foreach}-on-${OS}/release.tar.gz CAN_SVN_RE
 ${SVN_REVISION}_${foreach}.zip: ${foreach}-on-${OS}/release.zip CAN_SVN_RELEASE : foreach ${TARGET_PLATFORMS}
     cp -f $(input) $(output)
 
+${SVN_REVISION}_src.tar.gz: CAN_SVN_RELEASE
+    git archive --format=tar.gz HEAD > $(output)
+
 ########################################################################
 ########################################################################
 ########################################################################
