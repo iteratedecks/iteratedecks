@@ -14,12 +14,12 @@ include bin.Makeppfile
 
 $(phony PACKAGE): release.tar.gz
 
-release.tar: ${RELEASE_BINARY_CLI} ${XML_FILES}
+release.tar: ${RELEASE_BINARY_CLI}
     tar --create --file=$(output) $(inputs)
 
 release.tar.gz: release.tar
     gzip --best --no-name --to-stdout $(input) > $(output)
 
-release.zip: ${RELEASE_BINARY_CLI} ${XML_FILES}
+release.zip: ${RELEASE_BINARY_CLI}
     @if [ -e $(output) ]; then echo rm $(output); rm $(output); fi
     zip -9 $(output) $(inputs)
