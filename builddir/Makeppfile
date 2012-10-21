@@ -5,7 +5,7 @@ OS;=$(shell uname -s | tr [:upper:] [:lower:])
 TARGET_PLATFORMS=linux mingw32
 ARCHIVE_EXTENSIONS=.tar.gz .zip
 
-$(phony ALL): DIRTY_RELEASES SVN_RELEASES
+$(phony ALL): DIRTY_RELEASES GIT_RELEASES
 
 $(phony UPLOAD): UPLOAD_ALPHA
 
@@ -65,6 +65,28 @@ ${SVN_REVISION}_${foreach}.zip: ${foreach}-on-${OS}/release.zip CAN_SVN_RELEASE 
 
 ${SVN_REVISION}_src.tar.gz: CAN_SVN_RELEASE
     cd ..; git archive --format=tar.gz `git rev-parse HEAD` > builddir/$(output)
+
+########################################################################
+
+$(phony GIT_RELEASES): GIT_ALPHA_RELEASES
+
+GIT_HASH;=$(shell git rev-parse HEAD)
+
+$(phony CAN_GIT_RELEASE): IS_CLEAN_HEAD IS_TESTED
+
+GIT_ALPHA_RELEASES:=$(foreach ext,${ARCHIVE_EXTENSIONS},$(foreach platform,${TARGET_PLATFORMS},${GIT_HASH}_${platform}${ext}))
+
+$(phony GIT_ALPHA_RELEASES): ${GIT_ALPHA_RELEASES}
+
+${GIT_HASH}_${foreach}.tar.gz: ${foreach}-on-${OS}/release.tar.gz CAN_GIT_RELEASE : foreach ${TARGET_PLATFORMS}
+    cp -f $(input) $(output)
+
+${GIT_HASH}_${foreach}.zip: ${foreach}-on-${OS}/release.zip CAN_GIT_RELEASE : foreach ${TARGET_PLATFORMS}
+    cp -f $(input) $(output)
+
+${GIT_HASH}_src.tar.gz: CAN_GIT_RELEASE
+    cd ..; git archive --format=tar.gz ${GIT_HASH} > builddir/$(output)
+
 
 ########################################################################
 ########################################################################
