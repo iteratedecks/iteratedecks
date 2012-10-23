@@ -1,7 +1,7 @@
 #ifndef __COMPAT_H_
 #define __COMPAT_H_
 
-#if !defined(_MSC_VER )
+#if !defined(_MSC_VER)
 
 #include <errno.h>
 
