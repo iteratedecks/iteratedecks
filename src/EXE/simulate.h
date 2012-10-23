@@ -91,15 +91,15 @@ void InsertOrder(string Order, int State)
 // routines
 void MergeBuffers(UINT *Dest, const UINT *Src, UINT Size = CARD_ABILITIES_MAX)
 {
-	_ASSERT(Dest);
-	_ASSERT(Src);
+	assertX(Dest);
+	assertX(Src);
 	for (UINT i=0;i<Size;i++)
 		Dest[i] += Src[i];
 }
 void MergeBuffers(UINT *Dest, const UCHAR *Src, UINT Size = CARD_ABILITIES_MAX)
 {
-	_ASSERT(Dest);
-	_ASSERT(Src);	
+	assertX(Dest);
+	assertX(Src);	
 	for (UINT i=0;i<Size;i++)
 		Dest[i] += Src[i];
 }
@@ -656,7 +656,7 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 						rbc[idx].Id = i;
 						break;
 					}
-			_ASSERT(idx);
+			assertX(idx);
 			CSIndex[gAtk.getCardAt(i).GetId()] = idx;
 			rbc[idx].Id = gAtk.getCardAt(i).GetId();
 			// summon target ID

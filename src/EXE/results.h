@@ -13,12 +13,9 @@
 // this module contains interfaces used by API, DLL and EXE to exchange evaluation results 
 // this structure is used to store and return simulation result
 
-#if defined(__linux__) || defined(__MINGW32__)
+#if !defined(_MSC_VER)
 // contains memset
 #include <string.h>
-// contains assert
-#include <assert.h>
-#define _ASSERT(x) assert(x)
 #endif
 
 #include "deck.hpp"
@@ -137,7 +134,7 @@ struct RESULT_BY_CARD
 	}
 	void Add(const RESULT_BY_CARD &rAdd)
 	{
-		_ASSERT(Id == rAdd.Id);
+		assertX(Id == rAdd.Id);
 		WLGames += rAdd.WLGames;
 		WLWin += rAdd.WLWin;
 		WLLoss += rAdd.WLLoss;
