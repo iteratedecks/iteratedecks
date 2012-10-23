@@ -27,12 +27,14 @@ int fopen_s(FILE** pFile, const char *filename, const char *mode) {
 
 #include <ctype.h>
 
+#if defined(__linux__)
 char* strlwr( char* s )
-  {
-  char* p = s;
-  while ((*p = tolower( *p ))) p++;
-  return s;
-  }
+{
+    char* p = s;
+    while ((*p = tolower( *p ))) p++;
+    return s;
+}
+#endif
 
 #define fprintf_s fprintf
 
