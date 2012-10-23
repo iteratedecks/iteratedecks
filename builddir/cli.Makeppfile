@@ -4,7 +4,7 @@ repository ../../src
 $(phony CLI): ${RELEASE_BINARY_CLI} XML PACKAGE
 
 ${RELEASE_BINARY_CLI}: $(infer_objects CLI2/iteratedecks-cli.o, CLI2/*.o EXE/*.o)
-    ${CXX} ${inputs} ${LDFLAGS} ${LDLIBTS} ${LIBS} -o ${output}
+    ${CXX} ${inputs} ${LDFLAGS} ${LDLIBS} ${LIBS} -o ${output}
 
 makepp_percent_subdirs=1
 %.o: %.cpp
