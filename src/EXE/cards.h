@@ -312,8 +312,8 @@ public:
 	~CardPool() { Pool.clear(); };
 	void GetPool(Card *pCDB, LCARDS &Deck, bool checkLegendaries = true) const
 	{
-		_ASSERT(Amount); // invalid pool
-		_ASSERT(!Pool.empty()); // invalid pool
+		assertX(Amount); // invalid pool
+		assertX(!Pool.empty()); // invalid pool
 		// we must copy a pool into temporary
 		VID tmpPool;
 		tmpPool.reserve(Pool.size());
@@ -548,7 +548,7 @@ char *FormatCardName(char *Name)
 		if (returnnewcards)
 			returnnewcards[0] = 0;
 		if (!doc.load_file(FileName)) {
-			_ASSERT(false);
+			assertX(false);
 			return false;
 		}
 
@@ -623,7 +623,7 @@ char *FormatCardName(char *Name)
 					if (!_strcmpi(child.name(),"skill"))
 					{
 						UCHAR Id = GetSkillID(child.attribute("id").value());
-						_ASSERT(Id); // unknown skill
+						assertX(Id); // unknown skill
 						if (!Id)
 							continue;
 						EFFECT_ARGUMENT Effect = child.attribute("x").as_uint();
@@ -691,7 +691,7 @@ char *FormatCardName(char *Name)
 	{
 		pugi::xml_document doc;
 		if (!doc.load_file(FileName)) {
-			_ASSERT(false);
+			assertX(false);
 			return false;
 		}
 
@@ -712,7 +712,7 @@ char *FormatCardName(char *Name)
 				if (!it->child("type").attribute("tournament_id").empty()) continue; // skip <type tournament_id='*' />
 
 				UINT index = (UINT)AIIndex.size();
-				_ASSERT(index < ACHIEVEMENT_MAX_COUNT);
+				assertX(index < ACHIEVEMENT_MAX_COUNT);
 
 				
 				AchievementInfo ai(Id,Name,Desc,Number);
@@ -791,7 +791,7 @@ char *FormatCardName(char *Name)
 	{
 		pugi::xml_document doc;
 		if (!doc.load_file(FileName)) {
-			_ASSERT(false);
+			assertX(false);
 			return false;
 		}
 
@@ -806,7 +806,7 @@ char *FormatCardName(char *Name)
 				UINT Id = atoi(it->child("id").child_value());
 				UINT Commander = atoi(it->child("commander").child_value());
 
-				_ASSERT(Id < MISSION_MAX_ID);
+				assertX(Id < MISSION_MAX_ID);
 				if (Id >= MISSION_MAX_ID)
 					continue;
 				MDB[Id] = MissionInfo(Commander,Name);
@@ -815,7 +815,7 @@ char *FormatCardName(char *Name)
 				pugi::xml_node deck = it->child("deck");
 				for (pugi::xml_node_iterator di = deck.begin(); di != deck.end(); ++di)
 				{
-					_ASSERT(!_strcmpi(di->name(),"card")); // all siblings must be "card", but, i'd better check
+					assertX(!_strcmpi(di->name(),"card")); // all siblings must be "card", but, i'd better check
 					MDB[Id].Add(atoi(di->child_value()));
 					//printf("%d : %s\n",Id,di->child_value());
 				}
@@ -828,7 +828,7 @@ char *FormatCardName(char *Name)
 	{
 		pugi::xml_document doc;
 		if (!doc.load_file(FileName)) {
-			_ASSERT(false);
+			assertX(false);
 			return false;
 		}
 
@@ -843,7 +843,7 @@ char *FormatCardName(char *Name)
 				UINT Id = atoi(it->child("id").child_value());
 				UINT Commander = atoi(it->child("commander").child_value());
 
-				_ASSERT(Id < RAID_MAX_ID);
+				assertX(Id < RAID_MAX_ID);
 				RDB[Id] = RaidInfo(Commander,Name);
 				RIIndex.insert(PAIRMSUINT(Name,Id));
 				loaded++;
@@ -852,7 +852,7 @@ char *FormatCardName(char *Name)
 				pugi::xml_node alwaysinclude = deck.child("always_include");
 				for (pugi::xml_node_iterator di = alwaysinclude.begin(); di != alwaysinclude.end(); ++di)
 				{
-					_ASSERT(!_strcmpi(di->name(),"card")); // all siblings must be "card", but, i'd better check
+					assertX(!_strcmpi(di->name(),"card")); // all siblings must be "card", but, i'd better check
 					RDB[Id].AddAlways(atoi(di->child_value()));
 				}
 				for (pugi::xml_node_iterator di = deck.begin(); di != deck.end(); ++di)
@@ -861,7 +861,7 @@ char *FormatCardName(char *Name)
 						CardPool p(di->attribute("amount").as_int());
 						for (pugi::xml_node_iterator ti = di->begin(); ti != di->end(); ++ti)
 						{
-							//_ASSERT(!_strcmpi(ti->name(),"card")); // all siblings must be "card", but, i'd better check
+							//assertX(!_strcmpi(ti->name(),"card")); // all siblings must be "card", but, i'd better check
 							// ok here can be mistakes, gotta seed them out
 							if (!_strcmpi(ti->name(),"card"))
 								p.Pool.push_back(atoi(ti->child_value()));
@@ -877,8 +877,7 @@ char *FormatCardName(char *Name)
 	{
 		pugi::xml_document doc;
 		if (!doc.load_file(FileName)) {
-			_ASSERT(false);
-			return false;
+			throw LogicError("");
 		}
 
 		size_t loaded = 0;
@@ -903,7 +902,7 @@ char *FormatCardName(char *Name)
 					else
 						effect = si->second;
 				}
-				_ASSERT(Id < BATTLEGROUND_MAX_ID);
+				assertX(Id < BATTLEGROUND_MAX_ID);
 				BGDB[Id] = BgInfo(Id,Name,Desc,effect);
 				loaded++;						
 			}
@@ -914,7 +913,7 @@ char *FormatCardName(char *Name)
 					UINT BgId = atoi(it->child("battleground_id").child_value());
 					UINT Commander = atoi(it->child("commander").child_value());
 
-					_ASSERT(Id < RAID_MAX_ID);
+					assertX(Id < RAID_MAX_ID);
 					STDB[Id] = StepInfo(Id,BgId,Commander);
 					loaded++;
 
@@ -925,7 +924,7 @@ char *FormatCardName(char *Name)
 							CardPool p(di->attribute("amount").as_int());
 							for (pugi::xml_node_iterator ti = di->begin(); ti != di->end(); ++ti)
 							{
-								//_ASSERT(!_strcmpi(ti->name(),"card")); // all siblings must be "card", but, i'd better check
+								//assertX(!_strcmpi(ti->name(),"card")); // all siblings must be "card", but, i'd better check
 								// ok here can be mistakes, gotta seed them out
 								if (!_strcmpi(ti->name(),"card"))
 									p.Pool.push_back(atoi(ti->child_value()));
@@ -939,9 +938,9 @@ char *FormatCardName(char *Name)
 	}
 	const UINT CardDB::GetQuestEffectId(UINT QuestId)
 	{
-		_ASSERT(QuestId < STEP_MAX_ID);
+		assertX(QuestId < STEP_MAX_ID);
 		UINT bg = STDB[QuestId].GetBGId();
-		_ASSERT(bg < BATTLEGROUND_MAX_ID);
+		assertX(bg < BATTLEGROUND_MAX_ID);
 		return BGDB[bg].GetEffectId();
 	}
 	bool CardDB::RateCard(const UINT Id, double &OffenceValue, double &DefenceValue, const UCHAR iFormulaVersion)
@@ -993,8 +992,8 @@ char *FormatCardName(char *Name)
 	}
 	void CardDB::GenRaidDeck(ActiveDeck &D, UINT RaidID)
 	{
-		_ASSERT(RaidID < RAID_MAX_ID);
-		_ASSERT(RDB[RaidID].IsValid());
+		assertX(RaidID < RAID_MAX_ID);
+		assertX(RDB[RaidID].IsValid());
         unsigned int const & commanderId(RDB[RaidID].GetCommander());
 		D = ActiveDeck(&CDB[commanderId],CDB); // replace
 		RDB[RaidID].GetAlways(CDB,D.Deck);
@@ -1002,8 +1001,8 @@ char *FormatCardName(char *Name)
 	}
 	void CardDB::GenQuestDeck(ActiveDeck &D, UINT QuestID)
 	{
-		_ASSERT(QuestID < STEP_MAX_ID);
-		_ASSERT(STDB[QuestID].IsValid());
+		assertX(QuestID < STEP_MAX_ID);
+		assertX(STDB[QuestID].IsValid());
         unsigned int const & commanderId(STDB[QuestID].GetCommander());
 		D = ActiveDeck(&CDB[commanderId],CDB); // replace
 		STDB[QuestID].GetPools(CDB,D.Deck);
@@ -2039,10 +2038,10 @@ char *FormatCardName(char *Name)
 		MDECKS::iterator mi = DIndex.find(DeckIndex(DeckName,Tag));
 		if (mi == DIndex.end())	
 			printf("Can't find deck %s in database\n",DeckName);
-		_ASSERT(mi != DIndex.end());
+		assertX(mi != DIndex.end());
 		if (mi->second.empty())
 			printf("Deck %s has 0 cards\n",DeckName);
-		_ASSERT(!mi->second.empty());
+		assertX(!mi->second.empty());
 		VSTRINGS::iterator vi = mi->second.begin();
 		ActiveDeck r(GetCard(*vi), this->CDB);
 		for (vi++;vi != mi->second.end();vi++)
