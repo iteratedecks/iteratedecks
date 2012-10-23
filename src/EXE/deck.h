@@ -91,7 +91,7 @@ const bool PROC50
 
 const unsigned short ID2BASE64(const UINT Id)
 {
-	_ASSERT(Id < 0xFFF);
+	assertX(Id < 0xFFF);
 #define EncodeBase64(x) (x < 26) ? (x + 'A') : ((x < 52) ? (x + 'a' - 26) : ((x < 62) ? (x + '0' - 52) : ((x == 62) ? ('+') : ('/'))))	
 	// please keep in mind that any integer type has swapped hi and lo bytes
 	// i have swapped them here so we will have correct 2 byte string in const char* GetID64 function
@@ -278,7 +278,7 @@ const UINT BASE642ID(const unsigned short base64)
 	const UCHAR Card::GetAbilitiesCount() const { return (UCHAR)AbilitiesOrdered.size(); }
 	const UCHAR Card::GetAbilityInOrder(const UCHAR order) const
 	{
-		//_ASSERT(AbilitiesOrdered.size() > order); DISABLED FOR THE PURPOSE OF QUEST EFFECT TIME SURGE
+		//assertX(AbilitiesOrdered.size() > order); DISABLED FOR THE PURPOSE OF QUEST EFFECT TIME SURGE
 		if (AbilitiesOrdered.size() <= order)
 			return 0;
 		else
@@ -469,7 +469,7 @@ Valor: Removed after owner ends his turn.
 	}
     const UCHAR PlayedCard::SufferDmg(UINT QuestEffectId, const UCHAR Dmg, const UCHAR Pierce, UCHAR *actualdamagedealt, UCHAR *SkillProcBuffer, UCHAR *OverkillDamage, bool bCanRegenerate, VLOG *log, LOG_RECORD *lr)
 	{
-		_ASSERT(OriginalCard);
+		assertX(OriginalCard);
 // Regeneration happens before the additional strikes from Flurry.
 // Regenerating does not prevent Crush damage	
 		UCHAR dmg = Dmg;
@@ -547,7 +547,7 @@ Valor: Removed after owner ends his turn.
 	
 	UCHAR PlayedCard::StrikeDmg(const UINT QuestEffectId, const UCHAR Dmg, UCHAR *overkill) // returns dealt dmg
 	{
-		_ASSERT(Dmg); // 0 dmg is pointless and indicates an error
+		assertX(Dmg); // 0 dmg is pointless and indicates an error
 		//printf("%s %d <- %d\n",GetName(),GetHealth(),Dmg);
 		return SufferDmg(QuestEffectId,Dmg + Effects[ACTIVATION_ENFEEBLE],0,0,0,overkill);
 	}
@@ -632,7 +632,7 @@ Valor: Removed after owner ends his turn.
 	}
     PlayedCard& PlayedCard::operator=(const Card *card)
 	{
-		_ASSERT(card);
+		assertX(card);
 		OriginalCard = card;
 		Attack = card->GetAttack();
 		Health = card->GetHealth();
@@ -658,7 +658,7 @@ Valor: Removed after owner ends his turn.
 	PlayedCard::PlayedCard(const Card *card)
     : uniqueId(nextUniqueId++)
 	{
-		_ASSERT(card);
+		assertX(card);
 		OriginalCard = card;
 		Attack = card->GetAttack();
 		Health = card->GetHealth();
@@ -773,7 +773,7 @@ Valor: Removed after owner ends his turn.
      */
     UCHAR PlayedCard::Heal(EFFECT_ARGUMENT amount,UINT QuestEffectId)
 	{
-		_ASSERT(!IsDiseased()); // disallowed
+		assertX(!IsDiseased()); // disallowed
 		if (IsDiseased()) return 0;
 		if (Health + amount >  OriginalCard->GetHealth()) {
 			amount = (OriginalCard->GetHealth() - Health);
@@ -1062,7 +1062,7 @@ struct REQUIREMENT
         LOG(this->logger,attackTarget(SRC,target));
 
 		iSwiped++;
-		_ASSERT(target.IsAlive()); // must be alive here
+		assertX(target.IsAlive()); // must be alive here
 		// actual attack
 		// must check valor before every attack
 		UCHAR valor = (SRC.GetAbility(COMBAT_VALOR) && (GetAliveUnitsCount() < Def.GetAliveUnitsCount())) ? SRC.GetAbility(COMBAT_VALOR) : 0;
@@ -1335,7 +1335,7 @@ struct REQUIREMENT
                         targets[0] = NULL;
                     }
                     targets[1] = &Def.getUnitAt(index);
-                    _ASSERT(targets[1]); // this is aligned to SRC and must be present
+                    assertX(targets[1]); // this is aligned to SRC and must be present
                     if ((index+1 < (UCHAR)Def.Units.size()) && (Def.getUnitAt(index+1).IsAlive())) {
                         targets[2] = &Def.getUnitAt(index+1);
                     } else {
@@ -1463,8 +1463,8 @@ struct REQUIREMENT
 	: pCDB(pCDB)
     , logger(NULL)
 	{
-		_ASSERT(pCDB);
-		_ASSERT(HashBase64);
+		assertX(pCDB);
+		assertX(HashBase64);
 		QuestEffectId = 0;
 		Log = 0;
 		CSIndex = 0;
@@ -1483,7 +1483,7 @@ struct REQUIREMENT
         if(len % 2 != 0) {
             throw InvalidDeckHashError(InvalidDeckHashError::notEvenChars);
         }
-		_ASSERT(!(len & 1)); // bytes should go in pairs
+		assertX(!(len & 1)); // bytes should go in pairs
 		if (len & 1)
 			return;
 		len = len >> 1; // div 2
@@ -1496,15 +1496,15 @@ struct REQUIREMENT
 			if (i==0)
 			{
 			    // first card is commander
-				_ASSERT(tid < CARD_MAX_ID);
-				_ASSERT((tid >= 1000) && (tid < 2000)); // commander Id boundaries
+				assertX(tid < CARD_MAX_ID);
+				assertX((tid >= 1000) && (tid < 2000)); // commander Id boundaries
 				Commander = PlayedCard(&pCDB[tid]);
 				Commander.SetCardSkillProcBuffer(SkillProcs);
 			}
 			else
 			{
 			    // later cards are not commander
-				_ASSERT(i || (tid < CARD_MAX_ID)); // commander card can't be encoded with RLE
+				assertX(i || (tid < CARD_MAX_ID)); // commander card can't be encoded with RLE
 				if (tid < CARD_MAX_ID)
 				{
 				    // this is a card
@@ -3566,7 +3566,7 @@ struct REQUIREMENT
                                  )
 	{
         LCARDS & Structures(ownDeck.Structures);
-		_ASSERT(GetType() == TYPE_COMMANDER); // double check for debug
+		assertX(GetType() == TYPE_COMMANDER); // double check for debug
 
         // 0 dmg is pointless and indicates an error
         if(Dmg <= 0) {
