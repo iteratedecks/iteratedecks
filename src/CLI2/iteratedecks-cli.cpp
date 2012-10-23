@@ -21,7 +21,6 @@
 #elif defined(__linux__) || defined(__FreeBSD__)
     #include <string>
     #include <unistd.h>
-    #include <iostream>
 #else
     #error "Platform undefined."
 #endif
