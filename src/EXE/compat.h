@@ -27,7 +27,7 @@ int fopen_s(FILE** pFile, const char *filename, const char *mode) {
 
 #include <ctype.h>
 
-#if defined(__linux__)
+#if defined(__linux__) || defined(__MINGW32__)
 char* strlwr( char* s )
 {
     char* p = s;
