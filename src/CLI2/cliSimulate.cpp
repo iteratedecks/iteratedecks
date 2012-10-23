@@ -107,8 +107,13 @@ namespace EvaluateDecks {
                 //std::clog << binCo << " " << _bc << "  " << (binCo/_bc) << std::endl;
                 assert(binCo == bc);
             }
-            long double const pow1 (powl(p,k));
-            long double const pow2 (powl(q,n-k));
+            #if _BSD_SOURCE || _SVID_SOURCE || _XOPEN_SOURCE >= 600 || _ISOC99_SOURCE || _POSIX_C_SOURCE >= 200112L
+                long double const pow1 (powl(p,k));
+                long double const pow2 (powl(q,n-k));
+            #else
+                long double const pow1 (pow(p,k));
+                long double const pow2 (pow(q,n-k));
+            #endif
             assert(binCo >= 0);
             assert(!isinf(binCo));
             assert(pow1 >= 0);
