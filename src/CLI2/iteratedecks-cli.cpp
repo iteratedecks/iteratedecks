@@ -22,7 +22,7 @@
     #include <string>
     #include <unistd.h>
 #else
-    #error "Platform undefined."
+    //#error "Platform undefined."
 #endif
 
 
