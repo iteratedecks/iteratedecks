@@ -38,6 +38,9 @@
 #include "Logger.hpp"
 #include "cards.hpp"
 
+#include <cstdlib>
+#include <cstring>
+
 #define FANCY_STATS_COUNT		5
 
 #define FACTION_NONE			0
