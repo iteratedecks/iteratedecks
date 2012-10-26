@@ -639,7 +639,7 @@ char *FormatCardName(char *Name)
                         if (child.attribute("died").as_uint() > 0) {
                             skillevent += EVENT_DIED;
                         }
-                        if (child.attribute("played").as_uint() > 0) {
+                        if (child.attribute("played").as_uint() > 0 || Id == SPECIAL_BLITZ) {
                             skillevent += EVENT_PLAYED;
                         }
                         if (child.attribute("attacked").as_uint() > 0) {

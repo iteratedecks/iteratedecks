@@ -371,8 +371,14 @@ const UINT BASE642ID(const unsigned short base64)
 	}
 	const bool PlayedCard::BeginTurn()
 	{
-		const bool bDoBegin = (Health>0) && (!Effects[ACTIVATION_JAM]) && (!Effects[ACTIVATION_FREEZE]) && (!Wait);
-		if (bDoBegin && (!bActivated))
+		const bool bDoBegin = (Health>0)
+            && (!Effects[ACTIVATION_JAM])
+            && (!Effects[ACTIVATION_FREEZE])
+            && ((Wait <= 0) || (Effects[SPECIAL_BLITZ] > 0));
+        
+        // Assume all cards Blitzing are treated exactly as if they were active;
+        // we need to reset this to False after we remove Blitz
+        if (bDoBegin && (!bActivated))
 			bActivated = true;
 		return bDoBegin;
 	}
@@ -427,6 +433,11 @@ Valor: Removed after owner ends his turn.
 		// really?
 		Effects[ACTIVATION_RALLY] = 0;
 		Effects[ACTIVATION_WEAKEN] = 0;
+
+        if(Effects[SPECIAL_BLITZ]) {
+            Effects[SPECIAL_BLITZ] = 0;
+            bActivated = false;
+        }
 	}
 	void PlayedCard::Cleanse()
 	{
@@ -2496,6 +2507,7 @@ struct REQUIREMENT
                         Units.push_back(summonedCard);
                         LOG(this->logger,abilitySummon(EffectType,Src,Units.back()));
                         Units.back().SetCardSkillProcBuffer(SkillProcs);
+                        // TODO this is where the fix for Decay on Summoning needs to happen
                         ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
                     } else if (summonedCard->GetType() == TYPE_STRUCTURE) {
                         Structures.push_back(summonedCard);
@@ -2618,6 +2630,12 @@ struct REQUIREMENT
                         vi->first->Rush(effect);		
                         Src.fsSpecial += effect;
                     }
+                } break;
+            case SPECIAL_BLITZ:
+                {
+                    // TODO can Blitz be Jammed or Freezed?
+                    Src.SetEffect(aid,effect);
+                    LOG(this->logger,abilitySupport(EffectType,Src,aid,Src,effect));
                 } break;
             default:
                 // TODO "on attack" stuff needs to be done for damage dependent
