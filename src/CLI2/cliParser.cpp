@@ -107,12 +107,12 @@ namespace EvaluateDecks {
                     case 's': {
                             options.surge = true;
                         } break;
-                    case 'q': {
+                    case 'Q': {
                             std::stringstream ssQuestId(optarg);
                             int questId;
                             ssQuestId>> questId;
                             if(ssQuestId.fail()) {
-                                throw std::invalid_argument ("-q --quest-id requires an integer argument");
+                                throw std::invalid_argument ("-Q --quest-id requires an integer argument");
                             }
                             options.defenseDeck.setQuest(questId);
                         } break;

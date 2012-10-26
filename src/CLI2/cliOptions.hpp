@@ -40,7 +40,7 @@
                 , { { "help"                 , no_argument      , 0, 'h' }, "print help" }
                 , { { "surge"                , no_argument      , 0, 's' }, "first deck will surge" }
                 , { { "raid-id"              , required_argument, 0, 'r' }, "raid id" }
-                , { { "quest-id"             , required_argument, 0, 'q' }, "quest id" }
+                , { { "quest-id"             , required_argument, 0, 'Q' }, "quest id" }
                 };
 
 

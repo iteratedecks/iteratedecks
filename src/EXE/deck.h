@@ -703,7 +703,9 @@ Valor: Removed after owner ends his turn.
 			return TYPE_NONE;
 		return OriginalCard->GetType();	
 	}
-	const UCHAR PlayedCard::GetEffect(const UCHAR id) const { return Effects[id]; }
+	const UCHAR PlayedCard::GetEffect(const UCHAR id) const {
+        return Effects[id];
+    }
 	const EFFECT_ARGUMENT PlayedCard::GetAbility(const UCHAR id) const
 	{
 		// this is crap ! - must remove and check the code
@@ -1687,6 +1689,12 @@ struct REQUIREMENT
 				return true;
 		return false;
 	}
+
+    // Will target unit use Evade?
+    bool ActiveDeck::Evade(PlayedCard *defender, UINT QuestEffectId, bool chaos) {
+        return ((defender->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos));
+    }
+
 	UCHAR ActiveDeck::Intercept(PPCIV &targets, UCHAR destindex, ActiveDeck &Dest)
 	{
 		if (targets.size() < 2)
@@ -1711,6 +1719,48 @@ struct REQUIREMENT
 			}
 		return destindex;
 	}
+
+    // Will target unit use Payback?
+    bool ActiveDeck::Payback(PlayedCard *defender, PlayedCard &Src, ActiveDeck &Dest, EVENT_CONDITION EffectType, AbilityId effectId, EFFECT_ARGUMENT effect, bool chaos) {
+        if (Src.IsAlive()
+            && EffectType != EVENT_DIED
+            && defender->GetAbility(DEFENSIVE_PAYBACK)
+            && (Src.GetType() == TYPE_ASSAULT)
+            && (Src.GetAttack() > 0)
+            && (!chaos)
+            && PROC50)
+        {
+            // TODO there are some complications preventing us from currently performing
+            // the payback here; for now just send back whether we did.
+			//Src.SetEffect(effectId,effect);
+			//defender->fsSpecial += effect;
+			//Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+            return true;
+        }
+        return false;
+    }
+
+    // Will Tribute proc?
+    // TODO Does not allow for the Effect to be recalculated for things like Heal
+    bool ActiveDeck::Tribute(PlayedCard *tributeCard, PlayedCard *targetCard, ActiveDeck *procDeck, EVENT_CONDITION EffectType, AbilityId aid, EFFECT_ARGUMENT effect) {
+        if (tributeCard->GetAbility(DEFENSIVE_TRIBUTE)
+            && (targetCard->GetType() == TYPE_ASSAULT)
+            && (targetCard != tributeCard)
+            && PROC50)
+        {
+            //TODO need to figure out how to get the abstract form of Cleanse() into here
+            //procDeck->SkillProcs[DEFENSIVE_TRIBUTE]++;
+            //targetCard->Cleanse();
+            //LogAdd(lc,DEFENSIVE_TRIBUTE);
+            //LogAdd(lc,LOG_CARD(LogDeckID,targetCard->GetType(),SrcPos),aid);
+            //vi->first->fsSpecial += effect;
+            LOG(this->logger,abilityTribute(EffectType,*(tributeCard),*(targetCard),aid,effect));
+            procDeck->SkillProcs[DEFENSIVE_TRIBUTE]++;
+            return true;
+        }
+        return false;
+    }
+
 	void ActiveDeck::ApplyEffects(UINT QuestEffectId,EVENT_CONDITION EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced,bool IsFusioned,PlayedCard *Mimicer,UCHAR StructureIndex, PlayedCard * target)
 	{
 		UCHAR destindex,aid,faction,targetCount;
@@ -1737,26 +1787,29 @@ struct REQUIREMENT
 					break;
 				}
 		}
-		if ((QuestEffectId == QEFFECT_CLONE_PROJECT) && (!IsMimiced) && (Src.GetQuestSplit()) && (EffectType == EVENT_EMPTY))
-		{
-			Src.SetQuestSplit(false); // remove mark
-            Units.push_back(Src.GetOriginalCard());
-            Units.back().SetCardSkillProcBuffer(SkillProcs);
-            ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
-		}
-		// here is a good question - can paybacked skill be paybacked? - nope
+
+        ActiveDeck *procDeck = ((!IsMimiced) || bIsSelfMimic) ? this : &Dest;
+        PlayedCard *procCard = (IsMimiced) ? Mimicer : &Src;
+
+        // here is a good question - can paybacked skill be paybacked? - nope
 		// can paybacked skill be evaded? - doubt
 		// in current model, it can't be, payback applies effect right away, without simulationg it's cast
 		// another question is - can paybacked skill be evaded? it is possible, but in this simulator it can't be
 		// both here and in branches
+        // Mimicked abilities CAN trigger Payback; Confirmed in Tyrant 2.2.67
 		UCHAR ac = Src.GetAbilitiesCount();
-		if ((!ac) && (QuestEffectId == QEFFECT_TIME_SURGE) && (!IsMimiced) && (EffectType == EVENT_EMPTY))
-			ac = 1;
+		//if ((!ac) && (QuestEffectId == QEFFECT_TIME_SURGE) && (!IsMimiced) && (EffectType == EVENT_EMPTY))
+		//	ac = 1;
+
+        // TODO probably unnecessary to do all of this quest checking here;
+        // should roll it up a level at some point.
+        // Also, this could probably be another switch.
 
         UCHAR questAbilityCount = 0;
         UCHAR questAbilityId = SPECIAL_ATTACK; // TODO need better placeholder
         EFFECT_ARGUMENT questAbilityEffect = 0;
         UCHAR questAbilityTargets = 0;
+
         if(QuestEffectId == QEFFECT_FRIENDLY_FIRE && EffectType == EVENT_EMPTY) {
             switch(Src.GetType()) {
             case TYPE_COMMANDER: {
@@ -1791,7 +1844,25 @@ struct REQUIREMENT
             }
         }
 
-		for (UCHAR aindex=0;aindex<(ac+questAbilityCount);aindex++)
+        if(QuestEffectId == QEFFECT_TIME_SURGE && EffectType == EVENT_EMPTY) {
+            if(Src.GetType() == TYPE_COMMANDER) {
+                questAbilityId = ACTIVATION_RUSH;
+                questAbilityEffect = 1;
+                questAbilityTargets = TARGETSCOUNT_ONE;
+                questAbilityCount++;
+            }
+        }
+
+		if ((QuestEffectId == QEFFECT_CLONE_PROJECT) && (!IsMimiced) && (Src.GetQuestSplit()) && (EffectType == EVENT_EMPTY))
+		{
+			Src.SetQuestSplit(false); // remove mark
+            questAbilityId = ACTIVATION_SPLIT;
+            questAbilityEffect = 1;
+            questAbilityTargets = TARGETSCOUNT_ONE;
+            questAbilityCount++;
+		}
+
+        for (UCHAR aindex=0;aindex<(ac+questAbilityCount);aindex++)
 		{
 			if (!IsMimiced)
 			{
@@ -1800,17 +1871,19 @@ struct REQUIREMENT
 				if (Src.GetEffect(ACTIVATION_FREEZE) > 0)
 					break; // chaos-mimic-freeze makes this possible
 			}
-			UCHAR chaos = Src.GetEffect(ACTIVATION_CHAOS); // I need to check this every time card uses skill because it could be paybacked chaos - such as Pulsifier with payback, chaos and mimic
+
+            // Need to check this every time card uses skill because it could be paybacked chaos
+            bool chaos = Src.GetEffect(ACTIVATION_CHAOS) != 0;
 
             if(aindex < ac) {
                 aid = Src.GetAbilityInOrder(aindex);
 
                 // filter certain types of skills
-                /*EMPTY - EMPTY
-                DIED - DIED
-                DIED - BOTH
-                PLAY - PLAY
-                PLAY - BOTH*/
+                // EMPTY - EMPTY
+                // DIED  - DIED
+                // DIED  - BOTH
+                // PLAY  - PLAY
+                // PLAY  - BOTH
                 EVENT_CONDITION AbilityEventType(Src.GetAbilityEvent(aid));
                 // in general: we only continue if the event type for the skill is the same as the event we process
                 // EMPTY is a special case...
@@ -1827,7 +1900,7 @@ struct REQUIREMENT
                 }
 
                 effect = Src.GetAbility(aid); // fusion is applied in the SWTITCH below
-                faction = Src.GetTargetFaction(aid);
+                faction = IsMimiced ? FACTION_NONE : Src.GetTargetFaction(aid);
                 targetCount = Src.GetTargetCount(aid);
             } else {
                 aid = questAbilityId;
@@ -1837,1050 +1910,718 @@ struct REQUIREMENT
             }
 
             switch(aid) {
-			// cleanse
-			case ACTIVATION_CLEANSE: {
-                if (QuestEffectId != QEFFECT_DECAY) {
+            case ACTIVATION_CLEANSE:
+                {
+                    if (QuestEffectId == QEFFECT_DECAY) { // decay disables all cleansing
+                        break;
+                    }
+
                     effect *= FusionMultiplier;
-                    if (effect > 0)
+                    assert(effect > 0);
+                    GetTargets(Units,faction,targets);
+                    LOG_CARD lc(LogDeckID,TYPE_ASSAULT,100);
+
+                    PPCIV::iterator vi = targets.begin();
+                    while (vi != targets.end())
                     {
-                        if (IsMimiced)
-                            faction = FACTION_NONE;
-                        GetTargets(Units,faction,targets);
-                        LOG_CARD lc(LogDeckID,TYPE_ASSAULT,100);
-                        if (targets.size())
+                        if (!vi->first->IsCleanseTarget())
+                            vi = targets.erase(vi);
+                        else vi++;
+                    }
+
+                    bool bTributable = IsInTargets(procCard,&targets);
+
+                    RandomizeTarget(targets,targetCount,Dest,false);
+
+                    if (targets.size() <= 0) {
+                        LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                        break;
+                    }
+
+                    procDeck->SkillProcs[aid]++;
+
+                    for (vi = targets.begin();vi != targets.end();vi++)
+                    {
+                        LOG(this->logger,abilitySupport(EffectType,Src,aid,*(vi->first),effect));
+
+                        vi->first->Cleanse();
+                        procCard->fsSpecial += effect;
+
+                        lc.CardID = vi->second;
+                        //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
+
+                        if(bTributable && Tribute(vi->first, procCard, procDeck, EffectType, aid, effect))
                         {
-                            PPCIV::iterator vi = targets.begin();
-                            while (vi != targets.end())
+                            //LOG(this->logger,abilityTribute(EffectType,*(vi->first),Src,aid,effect));
+                            //procDeck->SkillProcs[DEFENSIVE_TRIBUTE]++;
+                            procCard->Cleanse();
+                            //LogAdd(lc,DEFENSIVE_TRIBUTE);
+                            //LogAdd(lc,LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),aid);
+                            vi->first->fsSpecial += effect;
+                        }
+                    }
+                } break;
+
+            case ACTIVATION_ENFEEBLE:
+                {
+                    effect *= FusionMultiplier;
+                    assert(effect > 0);
+
+                    LOG_CARD lc(LogDeckID,TYPE_ASSAULT,100);
+                    if (chaos)
+                    {
+                        GetTargets(Units,faction,targets);
+                        lc.DeckID = LogDeckID;
+                    }
+                    else
+                    {
+                        GetTargets(Dest.Units,faction,targets);
+                        lc.DeckID = Dest.LogDeckID;
+                    }
+
+                    RandomizeTarget(targets,targetCount,Dest,!chaos);
+
+                    if (targets.size() <= 0) {
+                        LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                        break;
+                    }
+
+                    procDeck->SkillProcs[aid]++;
+
+                    for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                        if (Evade(vi->first, QuestEffectId, chaos))
+                        {
+                            LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
+                            LogAdd(LOG_CARD(Dest.LogDeckID,vi->first->GetType(),vi->second),lc,aid);
+                            Dest.SkillProcs[DEFENSIVE_EVADE]++;
+                        }
+                        else
+                        {
+                            LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, false));
+                            lc.CardID = vi->second;
+                            vi->first->SetEffect(aid,vi->first->GetEffect(aid) + effect);
+                            
+                            procCard->fsSpecial += effect;
+                            LogAdd(LOG_CARD(procDeck->LogDeckID,procCard->GetType(),SrcPos),lc,aid,effect);
+
+                            if (Payback(vi->first, Src, Dest, EffectType, ACTIVATION_ENFEEBLE, effect, chaos))  // payback
                             {
-                                if (!vi->first->IsCleanseTarget())
+                                Src.SetEffect(aid,Src.GetEffect(aid) + effect);
+                                vi->first->fsSpecial += effect;
+                                Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+                            }
+                        }
+                } break;
+
+            case ACTIVATION_HEAL:
+                {
+                    effect *= FusionMultiplier;
+                    assert(effect > 0);
+                    GetTargets(Units,faction,targets);
+
+                    PPCIV::iterator vi = targets.begin();
+                    while (vi != targets.end())
+                    {
+                        if ((vi->first->GetHealth() == vi->first->GetMaxHealth()) || (vi->first->IsDiseased()))
+                            vi = targets.erase(vi);
+                        else vi++;
+                    }
+
+                    // if something tributes this, are we a valid target?
+                    bool bTributable = IsInTargets(procCard,&targets);
+
+                    RandomizeTarget(targets,targetCount,Dest,false);
+
+                    if (targets.size() <= 0) {
+                        LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                        break;
+                    }
+
+                    procDeck->SkillProcs[aid]++;
+
+                    for (vi = targets.begin();vi != targets.end();vi++)
+                    {
+                        LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect));
+
+                        procCard->fsHealed += vi->first->Heal(effect,QuestEffectId);
+                        //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
+
+                        if(bTributable && Tribute(vi->first, procCard, procDeck, EffectType, aid, effect))
+                        {
+                            //procDeck->SkillProcs[DEFENSIVE_TRIBUTE]++;
+                            vi->first->fsHealed += procCard->Heal(effect,QuestEffectId);
+                        }
+                    }
+                } break;
+
+            case ACTIVATION_SUPPLY:
+                {
+                    effect *= FusionMultiplier;
+                    assert(effect > 0);
+                    if (    (Position >= 0)
+                        &&  (    (!IsMimiced)
+                            ||   (Mimicer != NULL && (Mimicer->GetType() == TYPE_ASSAULT)) // can only be mimiced by assault cards
+                            )
+                        )
+                    {
+                        targets.clear();
+                        // If we are not left most, add unit left of us a target
+                        if (Position > 0) {
+                            targets.push_back(PPCARDINDEX(&(this->getUnitAt(Position-1)),Position-1));
+                        }
+                        // we are a target
+                        targets.push_back(PPCARDINDEX(&(this->getUnitAt(Position)),Position));
+                        // if there is a unit right of us, add it as a target
+                        if ((DWORD)Position+1 < Units.size()) {
+                            targets.push_back(PPCARDINDEX(&(this->getUnitAt(Position+1)),Position+1));
+                        }
+
+                        // there should always be a target for supply: self
+                        assertX(targets.size() > 0);
+
+                        PPCIV::iterator vi = targets.begin();
+                        if (targets.size() > 0)	{
+                            // check each target for disease or full health
+                            while (vi != targets.end())	{
+                                if ((vi->first->GetHealth() == vi->first->GetMaxHealth())) {
                                     vi = targets.erase(vi);
-                                else vi++;
-                            }
-                            bool bTributable = (IsMimiced && IsInTargets(Mimicer,&targets)) || ((!IsMimiced) && IsInTargets(&Src,&targets));
-                            if ((targetCount != TARGETSCOUNT_ALL) && (!targets.empty()))
-                            {
-                                destindex = UCHAR(rand() % targets.size());
-                                tmp = targets[destindex];
-                                targets.clear();
-                                targets.push_back(tmp);
-                            }
-                            if (!targets.empty())
-                            {
-                                if ((!IsMimiced) || bIsSelfMimic)
-                                    SkillProcs[aid]++;
-                                else
-                                    Dest.SkillProcs[aid]++;
-                            }
-                            for (vi = targets.begin();vi != targets.end();vi++)
-                            {
-                                if (bConsoleOutput)
-                                {
-                                    Src.PrintDesc();
-                                    printf(" cleanse ");
-                                    vi->first->PrintDesc();
-                                    printf("\n");
-                                }
-                                lc.CardID = vi->second;
-                                vi->first->Cleanse();
-                                if (!IsMimiced)
-                                {
-                                    Src.fsSpecial += effect;
-                                    LogAdd(LOG_CARD(LogDeckID,Src.GetType(),SrcPos),lc,aid);
-                                }
-                                else
-                                {
-                                    Mimicer->fsSpecial += effect;
-                                    LogAdd(LOG_CARD(LogDeckID,Mimicer->GetType(),SrcPos),lc,aid);
-                                }
-                                if (vi->first->GetAbility(DEFENSIVE_TRIBUTE) && bTributable)
-                                {
-                                    if (IsMimiced)
-                                    {
-                                        if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != vi->first) && PROC50)
-                                        {
-                                            Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
-                                            Mimicer->Cleanse();
-                                            LogAdd(lc,DEFENSIVE_TRIBUTE);
-                                            LogAdd(lc,LOG_CARD(LogDeckID,Mimicer->GetType(),SrcPos),aid);
-                                            vi->first->fsSpecial += effect;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if ((Src.GetType() == TYPE_ASSAULT) && (&Src != vi->first) && PROC50)
-                                        {
-                                            SkillProcs[DEFENSIVE_TRIBUTE]++;
-                                            Src.Cleanse();
-                                            LogAdd(lc,DEFENSIVE_TRIBUTE);
-                                            LogAdd(lc,LOG_CARD(LogDeckID,Src.GetType(),SrcPos),aid);
-                                            vi->first->fsSpecial += effect;
-                                        }
-                                    }
+                                } else if (vi->first->IsDiseased()) {
+                                    // remove diseased targets
+                                    LOG(this->logger,abilityFailDisease(EffectType,aid,Src,*(vi->first),IsMimiced,FACTION_NONE,effect));
+                                    vi = targets.erase(vi);
+                                } else {
+                                    vi++;
                                 }
                             }
                         }
-                        targets.clear();
-                    }
-                }
-            } break;
-            // enfeeble
-			case ACTIVATION_ENFEEBLE: {
-                effect *= FusionMultiplier;
-				if (effect > 0)
-				{
-					if (IsMimiced)
-						faction = FACTION_NONE;
-					LOG_CARD lc(LogDeckID,TYPE_ASSAULT,100);
-					if (chaos > 0)
-					{
-						GetTargets(Units,faction,targets);
-						lc.DeckID = LogDeckID;
-					}
-					else
-					{
-						GetTargets(Dest.Units,faction,targets);
-						lc.DeckID = Dest.LogDeckID;
-					}
-					if (targets.size())
-					{
-						if (targetCount != TARGETSCOUNT_ALL)
-						{
-							destindex = UCHAR(rand() % targets.size());
-							if (!chaos)
-								destindex = Intercept(targets, destindex, Dest);
-							tmp = targets[destindex];							
-							targets.clear();
-							targets.push_back(tmp);
-						}
-						if (!targets.empty())
-						{
-							if ((!IsMimiced) || bIsSelfMimic)
-								SkillProcs[aid]++;
-							else
-								Dest.SkillProcs[aid]++;
-						}
-						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-							if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (!chaos) && (PROC50))
-							{
-								// evaded
-								Dest.SkillProcs[DEFENSIVE_EVADE]++;
-								LogAdd(LOG_CARD(Dest.LogDeckID,vi->first->GetType(),vi->second),lc,aid);
-							}
-							else
-							{
-								lc.CardID = vi->second;
-								vi->first->SetEffect(aid,vi->first->GetEffect(aid) + effect);
-								if (!IsMimiced)
-								{
-									Src.fsSpecial += effect;
-									LogAdd(LOG_CARD(LogDeckID,Src.GetType(),SrcPos),lc,aid,effect);
-								}
-								else
-								{
-									Mimicer->fsSpecial += effect;
-									LogAdd(LOG_CARD(Dest.LogDeckID,Mimicer->GetType(),SrcPos),lc,aid,effect);
-								}
-								if (Src.IsAlive() && (EffectType != EVENT_DIED))
-									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback
-									{
-										Src.SetEffect(aid,Src.GetEffect(aid) + effect);
-										vi->first->fsSpecial += effect;
-										Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
-									}
-								if (bConsoleOutput)
-								{
-									Src.PrintDesc();
-									printf(" enfeeble ");
-									vi->first->PrintDesc();
-									printf(" for %d\n",effect);
-								}
-							}
-					}
-					targets.clear();
-				}
-			} break;
-			// heal
-			case ACTIVATION_HEAL: {
-                effect *= FusionMultiplier;
-				if (effect > 0)
-				{
-					if (IsMimiced)
-						faction = FACTION_NONE;
-					GetTargets(Units,faction,targets);
-					if (targets.size())
-					{
-						PPCIV::iterator vi = targets.begin();
-						while (vi != targets.end())
-						{
-							if ((vi->first->GetHealth() == vi->first->GetMaxHealth()) || (vi->first->IsDiseased()))
-								vi = targets.erase(vi);
-							else vi++;
-						}
-						bool bTributable = (IsMimiced && IsInTargets(Mimicer,&targets)) || ((!IsMimiced) && IsInTargets(&Src,&targets));
-						if ((targetCount != TARGETSCOUNT_ALL) && (!targets.empty()))
-						{
-							destindex = UCHAR(rand() % targets.size());
-							tmp = targets[destindex];
-							targets.clear();
-							targets.push_back(tmp);
-						}
-						if (!targets.empty())
-						{
-							if ((!IsMimiced) || bIsSelfMimic)
-								SkillProcs[aid]++;
-							else
-								Dest.SkillProcs[aid]++;
-						}
-						for (vi = targets.begin();vi != targets.end();vi++)
-						{
-							if (bConsoleOutput)
-							{
-								Src.PrintDesc();
-								printf(" heals ");
-								vi->first->PrintDesc();
-								printf(" for %d\n",effect);
-							}
-							if (!IsMimiced)
-								Src.fsHealed += vi->first->Heal(effect,QuestEffectId);
-							else
-								Mimicer->fsHealed += vi->first->Heal(effect,QuestEffectId);
-							if (vi->first->GetAbility(DEFENSIVE_TRIBUTE) && bTributable && PROC50)
-							{
-								if (IsMimiced)
-								{
-									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != vi->first))
-									{
-										Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
-										vi->first->fsHealed += Mimicer->Heal(effect,QuestEffectId);
-									}
-								}
-								else
-								{
-									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != vi->first))
-									{
-										SkillProcs[DEFENSIVE_TRIBUTE]++;
-										vi->first->fsHealed += Src.Heal(effect,QuestEffectId);
-									}
-								}
-							}
-						}
-					}
-					targets.clear();
-				}
-			} break;
-			// supply
-			case ACTIVATION_SUPPLY:	{
-                effect *= FusionMultiplier;
-				if (    (effect > 0)
-                     && (Position >= 0)
-                     && (    (!IsMimiced)
-                          || (Mimicer != NULL && (Mimicer->GetType() == TYPE_ASSAULT)) // can only be mimiced by assault cards
-                        )
-                   )
-				{
-					targets.clear();
-                    // If we are not left most, add unit left of us a target
-					if (Position > 0) {
-						targets.push_back(PPCARDINDEX(&(this->getUnitAt(Position-1)),Position-1));
-                    }
-                    // we are a target
-					targets.push_back(PPCARDINDEX(&(this->getUnitAt(Position)),Position));
-                    // if there is a unit right of us, add it as a target
-					if ((DWORD)Position+1 < Units.size()) {
-						targets.push_back(PPCARDINDEX(&(this->getUnitAt(Position+1)),Position+1));
-                    }
 
-                    // there should always be a target for supply: self
-                    assertX(targets.size() > 0);
-					if (targets.size() > 0)	{
-                        // check each target for disease or full health
-						PPCIV::iterator vi = targets.begin();
-						while (vi != targets.end())	{
-							if ((vi->first->GetHealth() == vi->first->GetMaxHealth())) {
-                                vi = targets.erase(vi);
-                            } else if (vi->first->IsDiseased()) {
-                                // remove diseased targets
-                                LOG(this->logger,abilityFailDisease(EffectType,aid,Src,*(vi->first),IsMimiced,FACTION_NONE,effect));
-								vi = targets.erase(vi);
-                            } else {
-                                vi++;
-                            }
-						}
                         // do we still have targets?
-						if (!targets.empty()) {
-                            // yes there are targets
-							if ((!IsMimiced) || bIsSelfMimic)
-								SkillProcs[aid]++;
-							else
-								Dest.SkillProcs[aid]++;
-						} else {
+                        if (!targets.empty()) {
+                            procDeck->SkillProcs[aid]++;
+                        } else {
                             // no targets
                             LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,false,FACTION_NONE,effect));
+                            break;
                         }
-						//FIXME: That variable is unused, yet is has a large right hand side...
-						bool bTributable =  (IsMimiced && IsInTargets(Mimicer,&targets))
-                                         || ((!IsMimiced) && IsInTargets(&Src,&targets));
+
+                        //FIXME: That variable is unused, yet has a large right hand side...
+                        bool bTributable = IsInTargets(procCard,&targets);
 
                         // now comes the actual healing
-						for (vi = targets.begin(); vi != targets.end(); vi++) {
+                        for (vi = targets.begin(); vi != targets.end(); vi++) {
                             PlayedCard & target = *(vi->first);
                             assertX(target.IsDefined());
                             LOG(this->logger,abilitySupport(EffectType,Src,aid,target,effect));
-							if (!IsMimiced) {
-								Src.fsHealed += vi->first->Heal(effect,QuestEffectId);
-							} else {
-								Mimicer->fsHealed += vi->first->Heal(effect,QuestEffectId);
-                            }
+
+                            procCard->fsHealed += vi->first->Heal(effect,QuestEffectId);
+                            //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
+
                             // tribute
-                            bool const srcIsNotDiseased(!Src.IsDiseased());
-                            bool const targetHasTribute(vi->first->GetAbility(DEFENSIVE_TRIBUTE));
+                            bool const targetHasTribute(vi->first->GetAbility(DEFENSIVE_TRIBUTE)>0);
                             if (targetHasTribute) {
                                 if (PROC50) {
                                     LOG(this->logger,abilityTribute(EffectType,*(vi->first),Src,aid,effect));
-                                    if (IsMimiced)
-                                    {
-                                        if (    (Mimicer->GetType() == TYPE_ASSAULT)
-                                             && (Mimicer != vi->first)
-                                             && (!Mimicer->IsDiseased())
-                                           ) {
-                                            Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
-                                            vi->first->fsHealed += Mimicer->Heal(effect,QuestEffectId);
-                                        }
-                                    } else {
-                                        if ((Src.GetType() == TYPE_ASSAULT) && (&Src != vi->first) && srcIsNotDiseased)
-                                        {
-                                            SkillProcs[DEFENSIVE_TRIBUTE]++;
-                                            vi->first->fsHealed += Src.Heal(effect,QuestEffectId);
-                                        }
+                                    if ((procCard->GetType() == TYPE_ASSAULT)
+                                        && (procCard != vi->first)
+                                        && (!procCard->IsDiseased())
+                                        ) {
+                                            procDeck->SkillProcs[DEFENSIVE_TRIBUTE]++;
+                                            vi->first->fsHealed += procCard->Heal(effect,QuestEffectId);
                                     }
                                 } else {
                                     LOG(this->logger,abilityFailNoProc(EffectType,*(vi->first),aid,Src));
                                 }// proc
                             } // tribute
-						}
-					}
-					targets.clear();
-				}
-			} break;
-			// protect
-			case ACTIVATION_PROTECT: {
-                effect *= FusionMultiplier;
-				if (effect > 0)
-				{
-					if (IsMimiced)
-						faction = FACTION_NONE;
-					GetTargets(Units,faction,targets);
-					if (targets.size())
-					{
-						PPCIV::iterator vi = targets.begin();
-						/*if (Src.GetTargetCount(aid) != TARGETSCOUNT_ALL) // if it is not PROTECT ALL then remove from targets already shielded cards
-							while (vi != targets.end())
-							{
-								if ((*vi)->GetShield() > 0) // already shielded
-									vi = targets.erase(vi);
-								else vi++;
-							}*/
-						if ((targetCount != TARGETSCOUNT_ALL) && (!targets.empty()))
-						{
-							destindex = UCHAR(rand() % targets.size());
-							tmp = targets[destindex];
-							targets.clear();
-							targets.push_back(tmp);
-						}
-						if (!targets.empty())
-						{
-							if ((!IsMimiced) || bIsSelfMimic)
-								SkillProcs[aid]++;
-							else
-								Dest.SkillProcs[aid]++;
-						}
-						for (vi = targets.begin();vi != targets.end();vi++)
-						{
-							if (bConsoleOutput)
-							{
-								Src.PrintDesc();
-								printf(" protects ");
-								vi->first->PrintDesc();
-								printf(" for %d\n",effect);
-							}
-							vi->first->Protect(effect);
-							if (!IsMimiced)
-								Src.fsSpecial += effect;
-							else
-								Mimicer->fsSpecial += effect;
-							if (vi->first->GetAbility(DEFENSIVE_TRIBUTE) && PROC50)
-							{
-								if (IsMimiced)
-								{
-									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != vi->first))
-									{
-										Mimicer->Protect(effect);
-										vi->first->fsSpecial += effect;
-										Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
-									}
-								}
-								else
-								{
-									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != vi->first))
-									{
-										Src.Protect(effect);
-										vi->first->fsSpecial += effect;
-										SkillProcs[DEFENSIVE_TRIBUTE]++;
-									}
-								}
-							}
-						}
-					}
-					targets.clear();
-				}
-			} break;
-			// infuse is processed on the upper level
-			// ******
-			// jam
-			case ACTIVATION_JAM: {
-				if (effect > 0)
-				{
-					if (IsMimiced)
-						faction = FACTION_NONE;
-					if (chaos > 0)
-						GetTargets(Units,faction,targets);
-					else
-						GetTargets(Dest.Units,faction,targets);
-					if (targets.size())
-					{
-						PPCIV::iterator vi = targets.begin();
-						while (vi != targets.end())
-						{
-							if ((vi->first->GetEffect(aid)) || (vi->first->GetWait()))
-								vi = targets.erase(vi);
-							else vi++;
-						}
-						if ((targetCount != TARGETSCOUNT_ALL) && (!targets.empty()))
-						{
-							destindex = UCHAR(rand() % targets.size());
-							if (!chaos)
-								destindex = Intercept(targets, destindex, Dest);
-							tmp = targets[destindex];
-							targets.clear();
-							targets.push_back(tmp);
-						}
-						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-						{
-							if (PROC50)
-							{
-								if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos))
-								{
-									// evaded
-									// no fancy stats here?!
-									Dest.SkillProcs[DEFENSIVE_EVADE]++;
-								}
-								else
-								{
-									vi->first->SetEffect(aid,effect);
-									if (!IsMimiced)
-										Src.fsSpecial += effect;
-									else
-										Mimicer->fsSpecial += effect;
-									if ((!IsMimiced) || bIsSelfMimic)
-										SkillProcs[aid]++;
-									else
-										Dest.SkillProcs[aid]++;
-									if (Src.IsAlive() && (EffectType != EVENT_DIED))
-			/*  ?  */					if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback is it 1/2 or 1/4 chance to return jam with payback????
-										{
-											Src.SetEffect(aid,effect);
-											vi->first->fsSpecial += effect;
-											Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
-										}
-									if (bConsoleOutput)
-									{
-										Src.PrintDesc();
-										printf(" jam ");
-										vi->first->PrintDesc();
-										printf("\n");
-									}
-								}
-							}
-						}
-					}
-					targets.clear();
-				}
-			} break;
-			// freeze
-			case ACTIVATION_FREEZE:	{
-				if (effect > 0)
-				{
-					if (IsMimiced)
-						faction = FACTION_NONE;
-					if (chaos > 0)
-						GetTargets(Units,faction,targets);
-					else
-						GetTargets(Dest.Units,faction,targets);
-					if (targets.size())
-					{
-						PPCIV::iterator vi = targets.begin();
-						while (vi != targets.end())
-						{
-							if ((vi->first->GetEffect(aid)))
-								vi = targets.erase(vi);
-							else vi++;
-						}
-						if ((targetCount != TARGETSCOUNT_ALL) && (!targets.empty()))
-						{
-							destindex = UCHAR(rand() % targets.size());
-							if (!chaos)
-								destindex = Intercept(targets, destindex, Dest);
-							tmp = targets[destindex];
-							targets.clear();
-							targets.push_back(tmp);
-						}
-						if (!targets.empty())
-						{
-							if ((!IsMimiced) || bIsSelfMimic)
-								SkillProcs[aid]++;
-							else
-								Dest.SkillProcs[aid]++;
-						}
-						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-							if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos))
-							{
-								// evaded
-								// no fancy stats here?!
-								Dest.SkillProcs[DEFENSIVE_EVADE]++;
-							}
-							else
-							{
-								vi->first->SetEffect(aid,effect);
-								if (!IsMimiced)
-									Src.fsSpecial += effect;
-								else
-									Mimicer->fsSpecial += effect;
-								if (Src.IsAlive() && (EffectType != EVENT_DIED))
-									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos)) 
-									{
-										Src.SetEffect(aid,effect);
-										vi->first->fsSpecial += effect;
-										Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
-									}
-								if (bConsoleOutput)
-								{
-									Src.PrintDesc();
-									printf(" freeze ");
-									vi->first->PrintDesc();
-									printf("\n");
-								}
-							}
-					}
-					targets.clear();
-				}
-			} break;
-			// mimic - could be tricky
-			case ACTIVATION_MIMIC: {
-				if ((effect > 0) && (!IsMimiced))
-				{
-					if (IsMimiced) // mimic can't be mimiced ;) it's just sad copypaste, previous line prevents this being mimiced
-						faction = FACTION_NONE;
-					if ((chaos > 0) || (QuestEffectId == QEFFECT_COPYCAT))
-						GetTargets(Units,faction,targets);
-					else
-						GetTargets(Dest.Units,faction,targets);
-					if (targets.size())
-					{
-						if ((targetCount != TARGETSCOUNT_ALL))
-						{
-							destindex = UCHAR(rand() % targets.size());
-							// can Mimic be intercepted?
-							if (!chaos)
-								destindex = Intercept(targets, destindex, Dest);
-							tmp = targets[destindex];
-							targets.clear();
-							targets.push_back(tmp);
-						}
-						if (!targets.empty())
-							SkillProcs[aid]++;
-						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-							if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos))
-							{
-								// evaded
-								Dest.SkillProcs[DEFENSIVE_EVADE]++;
-							}
-							else
-							{
-								if (bConsoleOutput)
-								{
-									Src.PrintDesc();
-									printf(" mimic ");
-									vi->first->PrintDesc();
-									printf("\n");
-								}
-								if (chaos > 0)
-									ApplyEffects(QuestEffectId,EVENT_EMPTY,*vi->first,Position,*this,true,false,&Src);
-								else
-									ApplyEffects(QuestEffectId,EVENT_EMPTY,*vi->first,Position,Dest,true,false,&Src);	
-							}
-					}
-					targets.clear();
-				}
-			} break;
-			// rally
-			case ACTIVATION_RALLY: {
-                effect *= FusionMultiplier;
-				if (effect > 0)
-				{
-					if (IsMimiced)
-						faction = FACTION_NONE;
-					GetTargets(Units,faction,targets);
-                    // If we have targets at all
-                    if (targets.size() > 0) {
-                        PPCIV::iterator vi(targets.begin());
-                        // look at each target, remove it if it can't attack
-                        while (vi != targets.end()) {
-                            if (    (vi->first->GetWait() > 0)  // only rally units that are ready
-                                 || (vi->first->GetPlayed())    // don't rally units that already did their action
-                                 || (vi->first->GetEffect(ACTIVATION_JAM)) // Jammed
-                                 || (vi->first->GetEffect(ACTIVATION_FREEZE)) // Frozen
-                                 || (vi->first->GetEffect(DMGDEPENDANT_IMMOBILIZE))   // Immobilized
-                               ) {
-                                vi = targets.erase(vi);
-                            } else {
-                                vi++;
-                            }
-                        } // while
-						bool bTributable = (IsMimiced && IsInTargets(Mimicer,&targets)) || ((!IsMimiced) && IsInTargets(&Src,&targets));
-						if ((targetCount != TARGETSCOUNT_ALL) && (!targets.empty()))
-						{
-							destindex = UCHAR(rand() % targets.size());
-							tmp = targets[destindex];
-							targets.clear();
-							targets.push_back(tmp);
-						}
-						if (!targets.empty())
-						{
-							if ((!IsMimiced) || bIsSelfMimic)
-								SkillProcs[aid]++;
-							else
-								Dest.SkillProcs[aid]++;
-						}
-						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-						{
-                            LOG(this->logger,abilitySupport(EffectType,Src,aid,*(vi->first),effect));
-							vi->first->Rally(effect);		
-							if (!IsMimiced)
-								Src.fsSpecial += effect;
-							else
-								Mimicer->fsSpecial += effect;
-							if (vi->first->GetAbility(DEFENSIVE_TRIBUTE) && bTributable && PROC50)
-							{
-								if (IsMimiced)
-								{
-									if ((Mimicer->GetType() == TYPE_ASSAULT) && (Mimicer != vi->first))
-									{
-										Mimicer->Rally(effect);
-										vi->first->fsSpecial += effect;
-										Dest.SkillProcs[DEFENSIVE_TRIBUTE]++;
-									}
-								}
-								else
-								{
-									if ((Src.GetType() == TYPE_ASSAULT) && (&Src != vi->first))
-									{
-										Src.Rally(effect);
-										vi->first->fsSpecial += effect;
-										SkillProcs[DEFENSIVE_TRIBUTE]++;										
-									}
-								}
-							}
-						}
-					} // if we have targets at all
-					targets.clear();
-				}
-			} break;
-			// recharge -  only action cards
-			case ACTIVATION_RECHARGE: {
-				if (Src.GetAbility(aid) > 0)
-					if (PROC50)
-						Deck.push_back(Src);
-			} break;
-			// repair
-			case ACTIVATION_REPAIR:	{
-                effect *= FusionMultiplier;
-				if (effect > 0)
-				{
-					if (IsMimiced)
-						faction = FACTION_NONE;
-					GetTargets(Structures,faction,targets);
-					if (targets.size())
-					{
-						PPCIV::iterator vi = targets.begin();
-						while (vi != targets.end())
-						{
-							if (vi->first->GetHealth() == vi->first->GetMaxHealth())
-								vi = targets.erase(vi);
-							else vi++;
-						}
-						if ((targetCount != TARGETSCOUNT_ALL) && (!targets.empty()))
-						{
-							destindex = UCHAR(rand() % targets.size());
-							tmp = targets[destindex];
-							targets.clear();
-							targets.push_back(tmp);
-						}
-						if (!targets.empty())
-						{
-							if ((!IsMimiced) || bIsSelfMimic)
-								SkillProcs[aid]++;
-							else
-								Dest.SkillProcs[aid]++;
-						}
-						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-						{
-							vi->first->Heal(effect,QuestEffectId);
-							if (!IsMimiced)
-								Src.fsHealed += effect;
-							else
-								Mimicer->fsHealed += effect;
-						}
-					}
-					targets.clear();
-				}
-			} break;
-			// shock
-			case ACTIVATION_SHOCK: {
-                effect *= FusionMultiplier;
-				if (effect > 0)
-				{
-					Src.fsDmgDealt += Dest.Commander.SufferDmg(QuestEffectId,effect);
-					DamageToCommander += effect;
-					FullDamageToCommander += effect;
-				}
-			} break;
-			// siege
-			case ACTIVATION_SIEGE: {
-                effect *= FusionMultiplier;
-				if (effect > 0)
-				{
-					if (IsMimiced)
-						faction = FACTION_NONE;
-					if (chaos > 0)
-						GetTargets(Structures,faction,targets);
-					else	
-						GetTargets(Dest.Structures,faction,targets);
-					if (targets.size())
-					{
-						if (targetCount != TARGETSCOUNT_ALL)
-						{
-							destindex = UCHAR(rand() % targets.size());
-							tmp = targets[destindex];
-							targets.clear();
-							targets.push_back(tmp);
-						}
-						if (!targets.empty())
-						{
-							if ((!IsMimiced) || bIsSelfMimic)
-								SkillProcs[aid]++;
-							else
-								Dest.SkillProcs[aid]++;
-						}
-						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-					
-							if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos))
-							{
-								// evaded
-								vi->first->fsAvoided += effect;
-								Dest.SkillProcs[DEFENSIVE_EVADE]++;
-							}
-							else
-							{
-								UCHAR overkill = 0;
-								UCHAR sdmg = vi->first->SufferDmg(QuestEffectId,effect,0,0,0,&overkill);
-								Dest.CheckDeathEvents(*vi->first,*this);
-								if (!IsMimiced)
-								{
-									Src.fsDmgDealt += sdmg;
-									Src.fsOverkill += overkill;
-								}
-								else
-								{
-									Mimicer->fsDmgDealt += sdmg;
-									Mimicer->fsOverkill += overkill;
-								}
-							}
-					}
-					targets.clear();
-				}
-			} break;
-			// split
-            case ACTIVATION_SPLIT: {
-                effect *= FusionMultiplier;
-				if ((effect > 0) && (!IsMimiced))
-				{
-                    // vectors can be reallocated, lists not, so do it right now
-                    // otherwise "on play" effects might happen to late
-					Units.push_back(Src.GetOriginalCard());
-                    Units.back().SetCardSkillProcBuffer(SkillProcs);
-                    ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
-				}
-			} break;
-			// strike
-			case ACTIVATION_STRIKE: {
-                effect *= FusionMultiplier;
-				if (effect > 0) {
-                    // mimiced strike?
-					if (IsMimiced) {
-						faction = FACTION_NONE;
-                    }
-                    // chaosed strike?
-					if (chaos > 0) {
-						GetTargets(Units,faction,targets);
-					} else {
-						GetTargets(Dest.Units,faction,targets);
-                    }
-                    // do we have a target at all
-					if (targets.size() > 0)	{
-                        // is it not strike all?
-						if (targetCount != TARGETSCOUNT_ALL) {
-                            // pick a random target
-							destindex = UCHAR(rand() % targets.size());
-							if (!chaos) {
-								destindex = Intercept(targets, destindex, Dest);
-                            }
-							tmp = targets[destindex];
-							targets.clear();
-							targets.push_back(tmp);
-						}
-                        // Targets should never be empty at this point
-                        assert(!targets.empty());
-						if (!targets.empty()) {
-							if ((!IsMimiced) || bIsSelfMimic) {
-								SkillProcs[aid]++;
-							} else {
-								Dest.SkillProcs[aid]++;
-                            }
-						}
-                        // do for all targets
-						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++) {
-							if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos))
-							{
-								// evaded
-                                LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
-								vi->first->fsAvoided += effect;
-								Dest.SkillProcs[DEFENSIVE_EVADE]++;
-							}
-							else
-							{
-								if (bConsoleOutput)
-								{
-									Src.PrintDesc();
-									printf(" strike ");
-									vi->first->PrintDesc();
-									printf(" for %d\n",effect);
-								}
-                                LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect));
-								UCHAR overkill = 0;
-								UCHAR sdmg = vi->first->StrikeDmg(QuestEffectId,effect,&overkill);
-								Dest.CheckDeathEvents(*vi->first,*this);
-								if (!IsMimiced)
-								{
-									Src.fsDmgDealt += sdmg;
-									Src.fsOverkill += overkill;
-								}
-								else
-								{
-									Mimicer->fsDmgDealt += sdmg;
-									Mimicer->fsOverkill += overkill;
-								}
-								if (Src.IsAlive() && (EffectType != EVENT_DIED))
-									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && PROC50 && (!chaos))  // payback
-									{
-										UCHAR overkill = 0;
-										vi->first->fsDmgDealt += Src.StrikeDmg(QuestEffectId,effect,&overkill);
-										CheckDeathEvents(Src,Dest);
-										vi->first->fsOverkill += overkill;
-										Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
-									}
-							}			
                         }
-                    } else {
-                        // no target to strike
-                        LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,(chaos>0),faction,effect));
                     }
-				}
-			} break;
-			// summon
-            case ACTIVATION_SUMMON: {
-                assert(effect > 0);
-                assert(effect < CARD_MAX_ID);
-                assert(pCDB != NULL);
-                Card const * const summonedCard = &pCDB[effect];
-                if(summonedCard->GetType() == TYPE_ASSAULT) {
-                    Units.push_back(summonedCard);
-                    LOG(this->logger,abilitySummon(EffectType,Src,Units.back()));
-                    Units.back().SetCardSkillProcBuffer(SkillProcs);
-                    ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
-                } else if (summonedCard->GetType() == TYPE_STRUCTURE) {
-                    Structures.push_back(summonedCard);
-                    LOG(this->logger,abilitySummon(EffectType,Src,Structures.back()));
-                    Structures.back().SetCardSkillProcBuffer(SkillProcs);
-                    ApplyEffects(QuestEffectId,EVENT_PLAYED,Structures.back(),-1,Dest);
-                } else {
-                    std::cerr << "EventCondition=" << (unsigned int)EffectType << " ";
-                    std::cerr << "mimic=" << IsMimiced << " mimicer=" << Mimicer << std::endl;
-                    std::cerr << "source: " << Src.toString() << " ";
-                    std::cerr << "effect argument=" << effect << " ";
-                    std::cerr << "card id=" << summonedCard->GetId() << " ";
-                    std::cerr << "card name=" << summonedCard->GetName();
-                    std::cerr << std::endl;
-                    throw logic_error("Summoned something that is neither assault unit nor structure");
-                }
-            } break;
-			// weaken
-			// i've played like 20 times mission 66 just farming and noticed that AI,
-			// when played beholder one of the first cards kept weakening my unit aligned
-			// to beholder every fucking turn, so I died of fear almost every time enemy
-			// played beholder 1-2nd card, I just couldn't kill it, Is he that smart?
-			// I played rush cards so he had plenty cards to pick from to weaken
-			// I fucking hate random ...
-			// no, that not true, AI is dumb
-			case ACTIVATION_WEAKEN:	{
-                effect *= FusionMultiplier;
-				if (effect > 0)
-				{
-					if (IsMimiced)
-						faction = FACTION_NONE;
-					if (chaos > 0)
-						GetTargets(Units,faction,targets);
-					else
-						GetTargets(Dest.Units,faction,targets);
-					if (targets.size())
-					{
-						PPCIV::iterator vi = targets.begin();
-						while (vi != targets.end())
-						{
-							if ((vi->first->GetWait() == 0) && 
-								(vi->first->GetAttack() >= 1) && // at least 1 Attack OR it is WEAKEN ALL, that can lower ur attack down to -100500
-								(!vi->first->GetEffect(ACTIVATION_JAM)) && // neither Jammed
-								(!vi->first->GetEffect(ACTIVATION_FREEZE)) && // neither Frozen
-								(!vi->first->GetEffect(DMGDEPENDANT_IMMOBILIZE)) &&   // nor Immobilized
-								((!vi->first->GetPlayed()) || (!chaos)) // if it is chaosed - only target cards that didn't play yet
-								)
-								vi++; // skip
-							else
-								vi = targets.erase(vi);
-						}
-						if ((targetCount != TARGETSCOUNT_ALL) && (!targets.empty()))
-						{
-							destindex = UCHAR(rand() % targets.size());
-							if (!chaos)
-								destindex = Intercept(targets, destindex, Dest);
-							tmp = targets[destindex];
-							targets.clear();
-							targets.push_back(tmp);
-						}
-						if (!targets.empty())
-						{
-							if ((!IsMimiced) || bIsSelfMimic)
-								SkillProcs[aid]++;
-							else
-								Dest.SkillProcs[aid]++;
-						}
-						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-							if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos))
-							{
-								// evaded
-                                LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
-								Dest.SkillProcs[DEFENSIVE_EVADE]++;
-							}
-							else
-							{
-                                LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect));
-								UCHAR we = vi->first->Weaken(effect);
-								if (!IsMimiced)
-									Src.fsSpecial += we;
-								else
-									Mimicer->fsSpecial += we;
-								if (Src.IsAlive() && (EffectType != EVENT_DIED))
-									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50 && (!chaos))  // payback
-									{
-										vi->first->fsSpecial += Src.Weaken(effect);
-										Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
-									}
-							}
-					}
-				}
-			} break;
-            // Chaos
-			case ACTIVATION_CHAOS: {
-				if (effect > 0)
-				{
-					if (IsMimiced)
-						faction = FACTION_NONE;
-					if (chaos > 0)
-						GetTargets(Units,faction,targets);
-					else
-						GetTargets(Dest.Units,faction,targets);
-					if (targets.size())
-					{
-						PPCIV::iterator vi = targets.begin();
-						while (vi != targets.end())
-						{
-							if ((vi->first->GetWait() == 0) && 
-								(!vi->first->GetEffect(ACTIVATION_JAM)) && // not Jammed
-								(!vi->first->GetEffect(ACTIVATION_FREEZE)) && // not Frozen
-								(!vi->first->GetEffect(ACTIVATION_CHAOS))   // not Chaosed
-								)
-								vi++; // skip
-							else
-								vi = targets.erase(vi);
-						}
-						if ((targetCount != TARGETSCOUNT_ALL) && (!targets.empty()))
-						{
-							destindex = UCHAR(rand() % targets.size());
-							if (!chaos)
-								destindex = Intercept(targets, destindex, Dest);
-							tmp = targets[destindex];
-							targets.clear();
-							targets.push_back(tmp);
-						}
-						if (!targets.empty())
-						{
-							if ((!IsMimiced) || bIsSelfMimic)
-								SkillProcs[aid]++;
-							else
-								Dest.SkillProcs[aid]++;
-						}
-						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-							if ((vi->first->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos))
-							{
-								// evaded
-								Dest.SkillProcs[DEFENSIVE_EVADE]++;
-							}
-							else
-							{
-								if (bConsoleOutput)
-								{
-									Src.PrintDesc();
-									printf(" chaos ");
-									vi->first->PrintDesc();
-									printf("\n");
-								}
-								vi->first->SetEffect(ACTIVATION_CHAOS,effect);
-								UCHAR we = effect;
-								if (!IsMimiced)
-									Src.fsSpecial += we;
-								else
-									Mimicer->fsSpecial += we;
-								if (Src.IsAlive() && (EffectType != EVENT_DIED))
-									if (vi->first->GetAbility(DEFENSIVE_PAYBACK) && (Src.GetType() == TYPE_ASSAULT) && (Src.GetAttack() > 0) && PROC50 && (!chaos))  // payback
-									{
-										Src.SetEffect(ACTIVATION_CHAOS,effect);
-										vi->first->fsSpecial += effect;
-										Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
-									}
-							}
-					}
-				}
-			} break;
+                } break;
 
+            case ACTIVATION_PROTECT:
+                {
+                    effect *= FusionMultiplier;
+                    assert(effect > 0);
+
+                    GetTargets(Units,faction,targets);
+
+                    RandomizeTarget(targets,targetCount,Dest,false);
+
+                    if (targets.size() <= 0) {
+                        LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                        break;
+                    }
+
+                    procDeck->SkillProcs[aid]++;
+
+                    PPCIV::iterator vi = targets.begin();
+                    for (vi = targets.begin();vi != targets.end();vi++)
+                    {
+                        LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect));
+                        vi->first->Protect(effect);
+                        procCard->fsSpecial += effect;
+
+                        //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
+
+                        if(Tribute(vi->first, procCard, procDeck, EffectType, aid, effect))
+                        {
+                            //LOG(this->logger,abilityTribute(EffectType,*(vi->first),Src,aid,effect));
+                            procCard->Protect(effect);
+                            vi->first->fsSpecial += effect;
+                            //procDeck->SkillProcs[DEFENSIVE_TRIBUTE]++;
+                        }
+                    }
+                } break;
+
+            case ACTIVATION_JAM:
+                {
+                    // infuse is processed on the upper level
+                    assert(effect > 0);
+
+                    if (chaos)
+                        GetTargets(Units,faction,targets);
+                    else
+                        GetTargets(Dest.Units,faction,targets);
+
+                    EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, 0};
+                    FilterTargets(targets,skipEffects,-1,0,-1,false);
+                    RandomizeTarget(targets,targetCount,Dest,!chaos);
+
+                    if (targets.size() <= 0) {
+                        LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,(chaos),faction,effect));
+                        break;
+                    }
+
+                    for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                    {
+                        if (PROC50)
+                        {
+                            if (Evade(vi->first, QuestEffectId, chaos))
+                            {
+                                LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
+                                Dest.SkillProcs[DEFENSIVE_EVADE]++;
+                            }
+                            else
+                            {
+                                LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect));
+                                vi->first->SetEffect(aid,effect);
+
+                                procCard->fsSpecial += effect;
+                                //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
+
+                                procDeck->SkillProcs[aid]++;
+
+                                if (Payback(vi->first, Src, Dest, EffectType, ACTIVATION_JAM, effect, chaos))  // payback is it 1/2 or 1/4 chance to return jam with payback????
+                                {
+                                    Src.SetEffect(aid,effect);
+                                    vi->first->fsSpecial += effect;
+                                    Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+                                }
+                            }
+                        }
+                    }
+                } break;
+
+            case ACTIVATION_FREEZE:
+                {
+                    assert(effect > 0);
+
+                    if (chaos)
+                        GetTargets(Units,faction,targets);
+                    else
+                        GetTargets(Dest.Units,faction,targets);
+
+                    EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_FREEZE, 0};
+                    FilterTargets(targets,skipEffects,-1,-1,-1,false);
+                    RandomizeTarget(targets,targetCount,Dest,!chaos);
+
+                    if (targets.size() <= 0) {
+                        LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                        break;
+                    }
+
+                    procDeck->SkillProcs[aid]++;
+
+                    for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                        if (Evade(vi->first, QuestEffectId, chaos))
+                        {
+                            LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
+                            Dest.SkillProcs[DEFENSIVE_EVADE]++;
+                        }
+                        else
+                        {
+                            LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect));
+                            vi->first->SetEffect(aid,effect);
+                            procCard->fsSpecial += effect;
+                            //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
+
+                            if (Payback(vi->first, Src, Dest, EffectType, ACTIVATION_FREEZE, effect, chaos))
+                            {
+                                Src.SetEffect(aid,effect);
+                                vi->first->fsSpecial += effect;
+                                Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+                            }
+                        }
+                } break;
+
+            case ACTIVATION_MIMIC:
+                {
+                    // TODO this should be an assert; the check against mimicing mimic should elsewhere
+                    if(IsMimiced) { // cannot mimic mimic
+                        break;
+                    }
+                    assert(effect > 0);
+
+                    if (chaos || (QuestEffectId == QEFFECT_COPYCAT))
+                        GetTargets(Units,faction,targets);
+                    else
+                        GetTargets(Dest.Units,faction,targets);
+
+                    RandomizeTarget(targets,targetCount,Dest,!chaos);
+
+                    if (targets.size() <= 0) {
+                        LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                        break;
+                    }
+
+                    SkillProcs[aid]++;
+
+                    for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                        if (Evade(vi->first, QuestEffectId, chaos))
+                        {
+                            LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
+                            Dest.SkillProcs[DEFENSIVE_EVADE]++;
+                        }
+                        else
+                        {
+                            LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect));
+                            if (chaos)
+                                ApplyEffects(QuestEffectId,EVENT_EMPTY,*vi->first,Position,*this,true,false,&Src);
+                            else
+                                ApplyEffects(QuestEffectId,EVENT_EMPTY,*vi->first,Position,Dest,true,false,&Src);	
+                        }
+                } break;
+
+            case ACTIVATION_RALLY:
+                {
+                    effect *= FusionMultiplier;
+                    assert(effect > 0);
+
+                    GetTargets(Units,faction,targets);
+
+                    EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, DMGDEPENDANT_IMMOBILIZE, 0};
+                    FilterTargets(targets,skipEffects,-1,0,-1,true);
+
+                    bool bTributable = IsInTargets(procCard,&targets);
+
+                    RandomizeTarget(targets,targetCount,Dest,false);
+
+                    if (targets.size() <= 0) {
+                        LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                        break;
+                    }
+
+                    procDeck->SkillProcs[aid]++;
+
+                    for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                    {
+                        LOG(this->logger,abilitySupport(EffectType,Src,aid,*(vi->first),effect));
+                        vi->first->Rally(effect);
+                        procCard->fsSpecial += effect;
+                        //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
+
+                        if(bTributable && Tribute(vi->first, procCard, procDeck, EffectType, aid, effect))
+                        {
+                            //LOG(this->logger,abilityTribute(EffectType,*(vi->first),Src,aid,effect));
+                            procCard->Rally(effect);
+                            vi->first->fsSpecial += effect;
+                            //procDeck->SkillProcs[DEFENSIVE_TRIBUTE]++;
+                        }
+                    }
+                } break;
+
+            case ACTIVATION_RECHARGE:
+                {
+                    if (Src.GetAbility(aid) > 0)
+                        if (PROC50)
+                            Deck.push_back(Src);
+                } break;
+
+            case ACTIVATION_REPAIR:
+                {
+                    effect *= FusionMultiplier;
+                    assert(effect > 0);
+
+                    GetTargets(Structures,faction,targets);
+
+                    PPCIV::iterator vi = targets.begin();
+                    while (vi != targets.end())
+                    {
+                        if (vi->first->GetHealth() == vi->first->GetMaxHealth())
+                            vi = targets.erase(vi);
+                        else vi++;
+                    }
+
+                    RandomizeTarget(targets,targetCount,Dest,false);
+
+                    if (targets.size() <= 0) {
+                        LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                        break;
+                    }
+
+                    procDeck->SkillProcs[aid]++;
+
+                    for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                    {
+                        vi->first->Heal(effect,QuestEffectId);
+                        procCard->fsHealed += effect;
+                        //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
+                    }
+                } break;
+
+            case ACTIVATION_SHOCK:
+                {
+                    effect *= FusionMultiplier;
+                    assert(effect > 0);
+                    Src.fsDmgDealt += Dest.Commander.SufferDmg(QuestEffectId,effect);
+                    DamageToCommander += effect;
+                    FullDamageToCommander += effect;
+                } break;
+
+            case ACTIVATION_SIEGE:
+                {
+                    effect *= FusionMultiplier;
+                    assert(effect > 0);
+                    if (chaos)
+                        GetTargets(Structures,faction,targets);
+                    else	
+                        GetTargets(Dest.Structures,faction,targets);
+
+                    RandomizeTarget(targets,targetCount,Dest,false);
+
+                    if (targets.size() <= 0) {
+                        LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                        break;
+                    }
+
+                    procDeck->SkillProcs[aid]++;
+
+                    for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+
+                        if (Evade(vi->first,QuestEffectId,chaos))
+                        {
+                            vi->first->fsAvoided += effect;
+                            Dest.SkillProcs[DEFENSIVE_EVADE]++;
+                        }
+                        else
+                        {
+                            UCHAR overkill = 0;
+                            UCHAR sdmg = vi->first->SufferDmg(QuestEffectId,effect,0,0,0,&overkill);
+                            Dest.CheckDeathEvents(*vi->first,*this);
+                            procCard->fsDmgDealt += sdmg;
+                            procCard->fsOverkill += overkill;
+                            //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
+                        }
+                } break;
+
+            case ACTIVATION_SPLIT:
+                {
+                    effect *= FusionMultiplier;
+                    assert(effect > 0);
+                    if (!IsMimiced)
+                    {
+                        // vectors can be reallocated, lists not, so do it right now
+                        // otherwise "on play" effects might happen too late
+                        Units.push_back(Src.GetOriginalCard());
+                        Units.back().SetCardSkillProcBuffer(SkillProcs);
+                        ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
+                        LOG(this->logger,abilitySupport(EffectType,Src,ACTIVATION_SPLIT,Src,effect));
+                    }
+                } break;
+
+            case ACTIVATION_STRIKE:
+                {
+                    effect *= FusionMultiplier;
+                    assert(effect > 0);
+
+                    if (chaos) {
+                        GetTargets(Units,faction,targets);
+                    } else {
+                        GetTargets(Dest.Units,faction,targets);
+                    }
+
+                    RandomizeTarget(targets,targetCount,Dest,!chaos);
+
+                    if (targets.size() <= 0) {
+                        LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                        break;
+                    }
+
+                    assert(!targets.empty()); // Targets should never be empty at this point
+
+                    procDeck->SkillProcs[aid]++;
+
+                    for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++) {
+                        if (Evade(vi->first, QuestEffectId, chaos))
+                        {
+                            // evaded
+                            LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
+                            vi->first->fsAvoided += effect;
+                            Dest.SkillProcs[DEFENSIVE_EVADE]++;
+                        }
+                        else
+                        {
+                            LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect));
+                            UCHAR overkill = 0;
+                            UCHAR sdmg = vi->first->StrikeDmg(QuestEffectId,effect,&overkill);
+                            Dest.CheckDeathEvents(*vi->first,*this);
+                            procCard->fsDmgDealt += sdmg;
+                            procCard->fsOverkill += overkill;
+                            //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
+
+                            if (Payback(vi->first, Src, Dest, EffectType, ACTIVATION_STRIKE, effect, chaos))  // payback
+                            {
+                                UCHAR overkill = 0;
+                                vi->first->fsDmgDealt += Src.StrikeDmg(QuestEffectId,effect,&overkill);
+                                CheckDeathEvents(Src,Dest);
+                                vi->first->fsOverkill += overkill;
+                                Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+                            }
+                        }
+                    }
+                } break;
+
+            case ACTIVATION_SUMMON:
+                {
+                    assert(effect > 0);
+                    assert(effect < CARD_MAX_ID);
+                    assert(pCDB != NULL);
+                    Card const * const summonedCard = &pCDB[effect];
+                    if(summonedCard->GetType() == TYPE_ASSAULT) {
+                        Units.push_back(summonedCard);
+                        LOG(this->logger,abilitySummon(EffectType,Src,Units.back()));
+                        Units.back().SetCardSkillProcBuffer(SkillProcs);
+                        ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
+                    } else if (summonedCard->GetType() == TYPE_STRUCTURE) {
+                        Structures.push_back(summonedCard);
+                        LOG(this->logger,abilitySummon(EffectType,Src,Structures.back()));
+                        Structures.back().SetCardSkillProcBuffer(SkillProcs);
+                        ApplyEffects(QuestEffectId,EVENT_PLAYED,Structures.back(),-1,Dest);
+                    } else {
+                        std::cerr << "EventCondition=" << (unsigned int)EffectType << " ";
+                        std::cerr << "mimic=" << IsMimiced << " mimicer=" << Mimicer << std::endl;
+                        std::cerr << "source: " << Src.toString() << " ";
+                        std::cerr << "effect argument=" << effect << " ";
+                        std::cerr << "card id=" << summonedCard->GetId() << " ";
+                        std::cerr << "card name=" << summonedCard->GetName();
+                        std::cerr << std::endl;
+                        throw logic_error("Summoned something that is neither assault unit nor structure");
+                    }
+                } break;
+
+            case ACTIVATION_WEAKEN:
+                {
+                    assert(effect > 0);
+                    effect *= FusionMultiplier;
+
+                    if (chaos)
+                        GetTargets(Units,faction,targets);
+                    else
+                        GetTargets(Dest.Units,faction,targets);
+
+                    EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, DMGDEPENDANT_IMMOBILIZE, 0};
+                    FilterTargets(targets,skipEffects,-1,0,1,chaos);
+                    RandomizeTarget(targets,targetCount,Dest,!chaos);
+
+                    if (targets.size() <= 0) {
+                        LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                        break;
+                    }
+
+                    procDeck->SkillProcs[aid]++;
+
+                    for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                        if (Evade(vi->first, QuestEffectId, chaos))
+                        {
+                            LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
+                            Dest.SkillProcs[DEFENSIVE_EVADE]++;
+                        }
+                        else
+                        {
+                            LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect));
+                            UCHAR we = vi->first->Weaken(effect);
+                            procCard->fsSpecial += we;
+                            //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
+
+                            if(Payback(vi->first, Src, Dest, EffectType, ACTIVATION_WEAKEN, effect, chaos))
+                            {
+                                vi->first->fsSpecial += Src.Weaken(effect);
+                                Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+                            }
+                        }
+                } break;
+
+            case ACTIVATION_CHAOS:
+                {
+                    assert(effect > 0);
+                    if (chaos)
+                        GetTargets(Units,faction,targets);
+                    else
+                        GetTargets(Dest.Units,faction,targets);
+
+                    EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, ACTIVATION_CHAOS, 0};
+                    FilterTargets(targets,skipEffects,-1,0,1,chaos);
+                    RandomizeTarget(targets,targetCount,Dest,!chaos);
+
+                    if (targets.size() <= 0) {
+                        LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                        break;
+                    }
+
+                    procDeck->SkillProcs[aid]++;
+
+                    for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                        if (Evade(vi->first, QuestEffectId, chaos))
+                        {
+                            LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
+                            Dest.SkillProcs[DEFENSIVE_EVADE]++;
+                        }
+                        else
+                        {
+                            LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect));
+                            vi->first->SetEffect(ACTIVATION_CHAOS,effect);
+                            procCard->fsSpecial += effect;
+                            //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
+
+                            if(Payback(vi->first, Src, Dest, EffectType, ACTIVATION_CHAOS, effect, chaos))
+                            {
+                                Src.SetEffect(ACTIVATION_CHAOS, effect);
+                                vi->first->fsSpecial += effect;
+                                Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+                            }
+                        }
+                } break;
+            case ACTIVATION_RUSH:
+                {
+                    assert(effect > 0);
+                    GetTargets(Units,faction,targets);
+
+                    FilterTargets(targets,NULL,1,-1,-1,false);
+
+                    RandomizeTarget(targets,targetCount,Dest,false);
+
+                    if (targets.size() <= 0) {
+                        LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                        break;
+                    }
+
+                    SkillProcs[aid]++;
+
+                    for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                    {
+                        LOG(this->logger,abilityOffensive(EffectType,Src,ACTIVATION_RUSH,*(vi->first),effect));
+                        vi->first->Rush(effect);		
+                        Src.fsSpecial += effect;
+                    }
+                } break;
             default:
                 // TODO "on attack" stuff needs to be done for damage dependent
                 if (EffectType == EVENT_ATTACKED) {
@@ -2892,56 +2633,10 @@ struct REQUIREMENT
                     EFFECT_ARGUMENT const & effectArgument = Src.GetAbility(aid);
                     applyDamageDependentEffectOnAttack(QuestEffectId, Src, aid, effectArgument, Dest, *target);
                 }
-            } // end with switch for now
+            } // end switch
 
+            targets.clear();
 
-			// rush - not sure yet whether this skill is activation or not
-			// can it be mimiced? it only presents on structures and commanders atm
-			// it shouldn't be tributable
-            // P: Now thats some really strange encoding for quest effect ....
-            // If the unit actually has Rush OR we are in a Time Surge quest AND this is its first activation AND it is the commander
-            if ((aid == ACTIVATION_RUSH) || ((QuestEffectId == QEFFECT_TIME_SURGE) && (!aindex) && (Src.GetType() == TYPE_COMMANDER)))
-			{
-				if (aid != ACTIVATION_RUSH)
-					effect = 1;
-				if (effect > 0)
-				{
-					GetTargets(Units,faction,targets);
-					if (targets.size())
-					{
-						PPCIV::iterator vi = targets.begin();
-						while (vi != targets.end())
-						{
-							if (!vi->first->GetWait()) // if wait is 0, remove it from targets
-								vi = targets.erase(vi);
-							else vi++;
-						}
-                        // we only care about Rush All; if we got here by Quest effect, ignore the All flag
-						if (((aid != ACTIVATION_RUSH) || (targetCount != TARGETSCOUNT_ALL)) && (!targets.empty()))
-						{
-							destindex = UCHAR(rand() % targets.size());
-							tmp = targets[destindex];
-							targets.clear();
-							targets.push_back(tmp);
-						}
-						if (!targets.empty())
-							SkillProcs[aid]++;
-						for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-						{
-							if (bConsoleOutput)
-							{
-								Src.PrintDesc();
-								printf(" rush ");
-								vi->first->PrintDesc();
-								printf(" for %d\n",effect);
-							}
-							vi->first->Rush(effect);		
-							Src.fsSpecial += effect;
-						}
-					}
-					targets.clear();
-				}
-			} // end RUSH
 		} // end for(aindex:ac)
 
 
@@ -3547,6 +3242,56 @@ struct REQUIREMENT
 			if ((vi->IsAlive()) && (((vi->GetFaction() == TargetFaction) && (!bForInfuse)) || (TargetFaction == FACTION_NONE) || ((vi->GetFaction() != TargetFaction) && (bForInfuse))))
 				GetTo.push_back(PPCARDINDEX(&(*vi),pos));
 			pos++;
+		}
+	}
+
+    // skip effects is an array with a solitary 0 as a terminal
+	void ActiveDeck::FilterTargets(PPCIV &targets, EFFECT_ARGUMENT skipEffects[], const int waitMin, const int waitMax, const int attackLimit, bool skipPlayed)
+	{
+        PPCIV::iterator vi = targets.begin();
+        EFFECT_ARGUMENT* skip;
+        bool erase;
+		while (vi != targets.end())
+		{
+            erase = false;
+            if(waitMax >= 0 && vi->first->GetWait() > waitMax) {
+                erase = true;
+            } else if(waitMin > 0 && vi->first->GetWait() < waitMin) {
+                // we can ignore a waitMin of 0 since that is the minimum anyway
+                erase = true;
+            } else if(attackLimit >= 0 && vi->first->GetAttack() < attackLimit) {
+                erase = true;
+            } else if(skipPlayed && vi->first->GetPlayed()) {
+                erase = true;
+            } else if(skipEffects != NULL) {
+                for (skip = skipEffects; *skip != 0; ++skip) {
+                    assert(*skip < CARD_ABILITIES_MAX); // make sure someone gave us our terminal
+                    if(vi->first->GetEffect(*skip)) {
+                        erase = true;
+                        break;
+                    }
+                }
+            }
+
+			if (erase)
+				vi = targets.erase(vi);
+			else
+				vi++; // skip
+		}
+    }
+
+    // Choose targets up to targetCount.
+	void ActiveDeck::RandomizeTarget(PPCIV &targets, UCHAR targetCount, ActiveDeck &Dest, bool canIntercept)
+    {
+		if ((targetCount != TARGETSCOUNT_ALL) && (!targets.empty()))
+		{
+    		UCHAR destindex = UCHAR(rand() % targets.size());
+			if (canIntercept) {
+				destindex = Intercept(targets, destindex, Dest);
+            }
+			PPCARDINDEX tmp = targets[destindex];
+			targets.clear();
+			targets.push_back(tmp);
 		}
 	}
 #endif
