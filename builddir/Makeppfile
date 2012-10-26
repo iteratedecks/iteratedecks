@@ -23,14 +23,21 @@ DIRTY_RELEASES:=$(foreach ext,${ARCHIVE_EXTENSIONS},$(foreach platform,${TARGET_
 $(phony DIRTY_RELEASES): $(DIRTY_RELEASES)
 
 #dirty head releases
-DIRTY_${foreach}.tar.gz: ${foreach}-on-${OS}/release.tar.gz : foreach ${TARGET_PLATFORMS}
+DIRTY_bin_${foreach}.tar.gz: ${foreach}-on-${OS}/release.tar.gz : foreach ${TARGET_PLATFORMS}
     cp -f $(input) $(output)
 
-DIRTY_${foreach}.zip: ${foreach}-on-${OS}/release.zip : foreach ${TARGET_PLATFORMS}
+DIRTY_bin_${foreach}.zip: ${foreach}-on-${OS}/release.zip : foreach ${TARGET_PLATFORMS}
     cp -f $(input) $(output)
 
 DIRTY_src.tar.gz:
     cd ..; git archive --format=tar.gz HEAD > builddir/$(output)
+
+DIRTY_%.tar.gz: DIRTY_bin_%.tar.gz DIRTY_src.tar.gz
+    tar --create --gzip --dereference --file=$(output) $(inputs)
+
+DIRTY_%.zip: DIRTY_bin_%.zip DIRTY_src.tar.gz
+    @if [ -e $(output) ]; then echo rm $(output); rm $(output); fi
+    zip -9 $(output) $(inputs)
 
 ########################################################################
 ########################################################################
@@ -57,14 +64,21 @@ SVN_ALPHA_RELEASES:=$(foreach ext,${ARCHIVE_EXTENSIONS},$(foreach platform,${TAR
 
 $(phony SVN_ALPHA_RELEASES): ${SVN_ALPHA_RELEASES}
 
-${SVN_REVISION}_${foreach}.tar.gz: ${foreach}-on-${OS}/release.tar.gz CAN_SVN_RELEASE : foreach ${TARGET_PLATFORMS}
+${SVN_REVISION}_bin_${foreach}.tar.gz: ${foreach}-on-${OS}/release.tar.gz CAN_SVN_RELEASE : foreach ${TARGET_PLATFORMS}
     cp -f $(input) $(output)
 
-${SVN_REVISION}_${foreach}.zip: ${foreach}-on-${OS}/release.zip CAN_SVN_RELEASE : foreach ${TARGET_PLATFORMS}
+${SVN_REVISION}_bin_${foreach}.zip: ${foreach}-on-${OS}/release.zip CAN_SVN_RELEASE : foreach ${TARGET_PLATFORMS}
     cp -f $(input) $(output)
 
 ${SVN_REVISION}_src.tar.gz: CAN_SVN_RELEASE
     cd ..; git archive --format=tar.gz `git rev-parse HEAD` > builddir/$(output)
+
+${SVN_REVISION}_%.tar.gz: ${SVN_REVISION}_bin_%.tar.gz ${SVN_REVISION}_src.tar.gz
+    tar --create --gzip --dereference --file=$(output) $(inputs)
+
+${SVN_REVISION}_%.zip: ${SVN_REVISION}_bin_%.zip ${SVN_REVISION}_src.tar.gz
+    @if [ -e $(output) ]; then echo rm $(output); rm $(output); fi
+    zip -9 $(output) $(inputs)
 
 ########################################################################
 

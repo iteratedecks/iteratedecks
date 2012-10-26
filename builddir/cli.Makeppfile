@@ -14,12 +14,15 @@ include bin.Makeppfile
 
 $(phony PACKAGE): release.tar.gz
 
-release.tar: ${RELEASE_BINARY_CLI}
-    tar --create --file=$(output) $(inputs)
+LICENSE_FILES:=LICENSE COPYING.GPL3
+SRC:=src.tar.gz
+
+release.tar: ${RELEASE_BINARY_CLI} ${LICENSE_FILES}
+    tar --create --dereference --file=$(output) $(inputs)
 
 release.tar.gz: release.tar
     gzip --best --no-name --to-stdout $(input) > $(output)
 
-release.zip: ${RELEASE_BINARY_CLI}
+release.zip: ${RELEASE_BINARY_CLI} ${LICENSE_FILES}
     @if [ -e $(output) ]; then echo rm $(output); rm $(output); fi
     zip -9 $(output) $(inputs)

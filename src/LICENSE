@@ -1,0 +1,32 @@
+This is EvaluateDecks.
+EvaluateDecks is copyrighted by at least the following persons 
+(chronological order)
+NETRAT
+Fabian "Praetorian" Kürten
+MrHen
+
+    EvaluateDecks is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, exactly version 3 of the License.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program (COPYING.GPL3). If not, see 
+    <http://www.gnu.org/licenses/>.
+
+In addition this uses different tools/libraries which come under their
+own licences:
+
+pugixml by Arseny Kapoulkine 2006-2010 under the MIT license.
+
+The boost libraries under the boost license.
+
+Some code for stacktraces for exceptions by Markus Mazurczak under
+GPL v3. See <http://markus-mazurczak.de/?p=17>.
+
+
+In addition the release system uses a google code uploader script.
