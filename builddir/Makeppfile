@@ -92,15 +92,21 @@ GIT_ALPHA_RELEASES:=$(foreach ext,${ARCHIVE_EXTENSIONS},$(foreach platform,${TAR
 
 $(phony GIT_ALPHA_RELEASES): ${GIT_ALPHA_RELEASES}
 
-${GIT_HASH}_${foreach}.tar.gz: ${foreach}-on-${OS}/release.tar.gz CAN_GIT_RELEASE : foreach ${TARGET_PLATFORMS}
+${GIT_HASH}_bin_${foreach}.tar.gz: ${foreach}-on-${OS}/release.tar.gz CAN_GIT_RELEASE : foreach ${TARGET_PLATFORMS}
     cp -f $(input) $(output)
 
-${GIT_HASH}_${foreach}.zip: ${foreach}-on-${OS}/release.zip CAN_GIT_RELEASE : foreach ${TARGET_PLATFORMS}
+${GIT_HASH}_bin_${foreach}.zip: ${foreach}-on-${OS}/release.zip CAN_GIT_RELEASE : foreach ${TARGET_PLATFORMS}
     cp -f $(input) $(output)
 
 ${GIT_HASH}_src.tar.gz: CAN_GIT_RELEASE
     cd ..; git archive --format=tar.gz ${GIT_HASH} > builddir/$(output)
 
+${GIT_HASH}_%.tar.gz: ${GIT_HASH}_bin_%.tar.gz ${GIT_HASH}_src.tar.gz
+    tar --create --gzip --dereference --file=$(output) $(inputs)
+
+${GIT_HASH}_%.zip: ${GIT_HASH}_bin_%.zip ${GIT_HASH}_src.tar.gz
+    @if [ -e $(output) ]; then echo rm $(output); rm $(output); fi
+    zip -9 $(output) $(inputs)
 
 ########################################################################
 ########################################################################
