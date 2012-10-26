@@ -108,7 +108,7 @@ ${GIT_HASH}_src.tar.gz: CAN_GIT_RELEASE
 
 #upload rules
 
-$(phony UPLOAD_ALPHA): UPLOAD_${SVN_ALPHA_RELEASES}
+$(phony UPLOAD_ALPHA): UPLOAD_${GIT_ALPHA_RELEASES}
 
 $(phony UPLOAD_${SVN_REVISION}_linux${foreach}): ${SVN_REVISION}_linux${foreach} : foreach ${ARCHIVE_EXTENSIONS}
     sleep 1s
@@ -123,5 +123,21 @@ $(phony UPLOAD_${SVN_REVISION}_mingw32${foreach}): ${SVN_REVISION}_mingw32${fore
     ./googlecode_upload.py \
     --project=evaluatedecks \
     --summary="windows(mingw32) alpha ${SVN_REVISION}" \
+    --labels="OpSys-Windows,Type-Package" \
+    $(input)
+
+$(phony UPLOAD_${GIT_HASH}_linux${foreach}): ${GIT_HASH}_linux${foreach} : foreach ${ARCHIVE_EXTENSIONS}
+    sleep 1s
+    ./googlecode_upload.py \
+    --project=evaluatedecks \
+    --summary="linux alpha ${GIT_HASH}" \
+    --labels="OpSys-Linux,Type-Package" \
+    $(input)
+
+$(phony UPLOAD_${GIT_HASH}_mingw32${foreach}): ${GIT_HASH}_mingw32${foreach} : foreach ${ARCHIVE_EXTENSIONS}
+    sleep 1s
+    ./googlecode_upload.py \
+    --project=evaluatedecks \
+    --summary="windows(mingw32) alpha ${GIT_HASH}" \
     --labels="OpSys-Windows,Type-Package" \
     $(input)
