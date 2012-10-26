@@ -393,7 +393,7 @@
         void DelayFirstCard();
         void Add(const Card *c);
         bool IsInTargets(PlayedCard *pc, PPCIV *targets);
-        bool ActiveDeck::Evade(PlayedCard *defender, UINT QuestEffectId, bool chaos);
+        bool Evade(PlayedCard *defender, UINT QuestEffectId, bool chaos);
         UCHAR Intercept(PPCIV &targets, UCHAR destindex, ActiveDeck &Dest);
         bool Payback(PlayedCard *defender, PlayedCard &Src, ActiveDeck &dest, EVENT_CONDITION EffectType, UCHAR effectId, EFFECT_ARGUMENT effect, bool chaos);
         bool Tribute(PlayedCard *tributeCard, PlayedCard *targetCard, ActiveDeck *procDeck, EVENT_CONDITION EffectType, AbilityId effectId, EFFECT_ARGUMENT effect);
