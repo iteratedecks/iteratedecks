@@ -105,20 +105,28 @@ int mainWithOptions(CliOptions const & options
     RESULTS r;
 
     switch(options.defenseDeck.getType()) {
-    case DeckArgument::HASH: {
-        // ... second deck
-        ActiveDeck deck2(options.defenseDeck.getHash().c_str(), DB.GetPointer());
-        deck2.SetOrderMatters(options.defenseDeck.isOrdered());
-        r = simulate(deck1,deck2,attackLogger,defenseLogger,simulationLogger,options.numberOfIterations,options.surge);
-                             } break;
+    case DeckArgument::HASH:
+        {
+            // ... second deck
+            ActiveDeck deck2(options.defenseDeck.getHash().c_str(), DB.GetPointer());
+            deck2.SetOrderMatters(options.defenseDeck.isOrdered());
+            r = simulate(deck1,deck2,attackLogger,defenseLogger,simulationLogger,options.numberOfIterations,options.surge);
+        } break;
 
-    case DeckArgument::RAID_ID: {
-        r = simulateRaid(deck1, options.defenseDeck.getRaidId(), attackLogger, simulationLogger, options.numberOfIterations);
-                                } break;
+    case DeckArgument::RAID_ID:
+        {
+            r = simulateRaid(deck1, options.defenseDeck.getRaidId(), attackLogger, simulationLogger, options.numberOfIterations);
+        } break;
 
-    case DeckArgument::QUEST_IDy: {
-        r = simulateQuest(deck1, options.defenseDeck.getQuestId(), attackLogger, simulationLogger, options.numberOfIterations);
-                                } break;
+    case DeckArgument::QUEST_IDy:
+        {
+            r = simulateQuest(deck1, options.defenseDeck.getQuestId(), attackLogger, simulationLogger, options.numberOfIterations);
+        } break;
+    case DeckArgument::MISSION_ID:
+        {
+            ActiveDeck deck2 = DB.GetMissionDeck(options.defenseDeck.getMissionId());
+            r = simulate(deck1,deck2,attackLogger,defenseLogger,simulationLogger,options.numberOfIterations,options.surge);
+        } break;
     }
 
     printResults(r);

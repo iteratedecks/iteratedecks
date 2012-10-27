@@ -1787,6 +1787,19 @@ char *FormatCardName(char *Name)
 		MDB[mi->second].GetDeck(buffer,size);
 		return buffer;
 	}
+	// named decks
+	ActiveDeck CardDB::GetMissionDeck(const UINT missionId)
+	{
+        assertGE(MISSION_MAX_ID, missionId);
+        assertX(MDB[missionId].GetCardCount() > 0);
+
+    	ActiveDeck r(&CDB[MDB[missionId].GetCommander()], this->CDB);
+		for (UINT k=0;k<MDB[missionId].GetCardCount();k++)
+		{
+            r.Add(&CDB[MDB[missionId].GetCardID(k)]);
+		}
+		return r;
+	}
 	const UINT CardDB::GetMissionDeckIndex(const char* DeckName)
 	{
 		MSUINT::iterator mi = MIIndex.find(DeckName);

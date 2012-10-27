@@ -41,6 +41,7 @@
                 , { { "surge"                , no_argument      , 0, 's' }, "first deck will surge" }
                 , { { "raid-id"              , required_argument, 0, 'r' }, "raid id" }
                 , { { "quest-id"             , required_argument, 0, 'Q' }, "quest id" }
+                , { { "mission-id"           , required_argument, 0, 'm' }, "mission id" }
                 };
 
 
@@ -79,11 +80,13 @@
 
                     DeckArgumentType getType() const;
                     std::string getHash() const throw (InvalidState);
+                    int getMissionId() const throw (InvalidState);
                     int getQuestId() const throw (InvalidState);
                     int getRaidId() const throw (InvalidState);
                     bool isOrdered() const throw (InvalidState);
 
                     void setHash(std::string const & hash);
+                    void setMission(int const & missionId);
                     void setQuest(int const & questId);
                     void setRaid(int const & raidId);
                     void setOrdered(bool const & ordered);

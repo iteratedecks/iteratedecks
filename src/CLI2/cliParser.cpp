@@ -125,6 +125,15 @@ namespace EvaluateDecks {
                             }
                             options.defenseDeck.setRaid(raidId);
                         } break;
+                    case 'm': {
+                            std::stringstream ssMissionId(optarg);
+                            int missionId;
+                            ssMissionId>> missionId;
+                            if(ssMissionId.fail()) {
+                                throw std::invalid_argument ("-m --mission-id requires an integer argument");
+                            }
+                            options.defenseDeck.setMission(missionId);
+                        } break;
                     case '?':
                         throw std::invalid_argument("no such option");
                     case 0:
@@ -164,7 +173,9 @@ namespace EvaluateDecks {
             if (options.printHelpAndExit) {
                 // no more arguments expected
             } else if((options.defenseDeck.getType() == DeckArgument::RAID_ID
-                        || options.defenseDeck.getType() == DeckArgument::QUEST_IDy)
+                        || options.defenseDeck.getType() == DeckArgument::QUEST_IDy
+                        || options.defenseDeck.getType() == DeckArgument::MISSION_ID
+                      )
                       && optind+1 == argc) {
                 // if we are raid deck, we only need the attack hash
                 options.attackDeck.setHash(argv[optind+0]);
