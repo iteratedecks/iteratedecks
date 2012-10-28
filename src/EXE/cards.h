@@ -1042,6 +1042,7 @@ char *FormatCardName(char *Name)
 		AddSkill(ACTIVATION_SUMMON,"Summon");
 		AddSkill(ACTIVATION_SUPPLY,"Supply");		
 		AddSkill(ACTIVATION_WEAKEN,"Weaken");
+		AddSkill(ACTIVATION_AUGMENT,"Augment");
 
 		AddSkill(DEFENSIVE_ARMORED,"Armored");
 		AddSkill(DEFENSIVE_COUNTER,"Counter");
@@ -1074,7 +1075,6 @@ char *FormatCardName(char *Name)
 		AddSkill(SPECIAL_BACKFIRE,"Backfire");
 
 		AddSkill(SPECIAL_FUSION,"Fusion");
-		AddSkill(SPECIAL_AUGMENT,"Augment");
 		AddSkill(SPECIAL_MIST,"Mist");
 		AddSkill(SPECIAL_BLIZZARD,"Blizzard");
 		AddSkill(SPECIAL_BLITZ,"Blitz");
