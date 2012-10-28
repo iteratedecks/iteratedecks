@@ -1,3 +1,14 @@
-The project (that is, this folder) is set up to compile with makepp[1]. The Makeppfile might be compatible to good old make, in any case it should contain some hints for compilation options.
+The project is set up to compile with makepp[1].
+The Makeppfile might be compatible to good old make, in any case it should contain some hints for compilation options.
+
+Quick build tutorial:
+1. Goto the correct subdirectory of bulddir.
+   In most cases you will want the form <platform>-on-<platform> where platform is your platform.
+   It is quite probable that your platform is not yet supported, please contact me[2] and we will find a way to add it(1).
+2. run `makepp CLI`
+
+
+(1) Unless you plan some crazy stuff like your microwave...
 
 [1] http://makepp.sourceforge.net/
+[2] praetorian@sitl.de
