@@ -221,7 +221,7 @@
             const char* GetMissionDecksList(char *buffer, size_t size, bool bSortById = false);
             const char* GetCustomDeck(const char* DeckName, const int Tag, char *buffer, size_t size);
             const char* GetMissionDeck(const char* DeckName, char *buffer, size_t size);
-            ActiveDeck CardDB::GetMissionDeck(const UINT missionId);
+            ActiveDeck GetMissionDeck(const UINT missionId);
             const UINT GetMissionDeckIndex(const char* DeckName);
             const char* GetRaidDecksList(char *buffer, size_t size);
             const char* GetQuestDecksList(char *buffer, size_t size);
