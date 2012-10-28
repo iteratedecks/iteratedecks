@@ -25,7 +25,9 @@
     #define isinf(x) (std::isinf(x))
 #endif
 
+#include "../EXE/cards.hpp"
 #include "../EXE/simulate.hpp"
+//#include "../EXE/simulate.h"
 #include "../EXE/assert.hpp"
 
 namespace EvaluateDecks {

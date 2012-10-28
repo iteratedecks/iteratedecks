@@ -54,6 +54,7 @@
     #define ACTIVATION_SUMMON       28 // i think 30 is still free... these numbers do not have any other meaning? why not use an enum?
     #define ACTIVATION_SUPPLY		29
     #define ACTIVATION_WEAKEN		30
+    #define ACTIVATION_AUGMENT		63
 
     #define DEFENSIVE_ARMORED		31
     #define DEFENSIVE_COUNTER		32
@@ -83,13 +84,12 @@
     #define DMGDEPENDANT_SIPHON		57 
 
     #define SPECIAL_BACKFIRE		61  // Destroyed - When this is destroyed, deal damage to own Commander.
+    #define SPECIAL_BLITZ			66 // showed up in cards.xml; not implemented
 
     // SKILLS THAT ARE NOT DEFINED AND NOT WORKING:
     #define SPECIAL_FUSION			62	// in this sim only works for ACTIVATION skills of STRUCTURES
-    #define SPECIAL_AUGMENT			63
     #define SPECIAL_MIST			64 // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
     #define SPECIAL_BLIZZARD		65 // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
-    #define SPECIAL_BLITZ			66 // showed up in cards.xml; not implemented
 
     #define TYPE_NONE				0
     #define TYPE_COMMANDER			1
@@ -270,6 +270,7 @@
             void SetAttack(const UCHAR attack);
             void SetEffect(const UCHAR id, const UCHAR value);
             void SetHealth(const UCHAR health);
+            void Augment(const EFFECT_ARGUMENT amount);
             void Rally(const EFFECT_ARGUMENT amount);
             EFFECT_ARGUMENT Weaken(const EFFECT_ARGUMENT amount);
             void Berserk(const EFFECT_ARGUMENT amount);
@@ -418,7 +419,7 @@
         std::string GetHash64(bool bCardPicks = false) const;
     protected:
         void GetTargets(LCARDS &From, UCHAR TargetFaction, PPCIV &GetTo, bool bForInfuse = false);
-    	void FilterTargets(PPCIV &targets, EFFECT_ARGUMENT skipEffects[], const int waitMin, const int waitMax, const int attackLimit, bool skipPlayed);
+        void FilterTargets(PPCIV &targets, const EFFECT_ARGUMENT skipEffects[], const EFFECT_ARGUMENT targetSkills[], const int waitMin, const int waitMax, const int attackLimit, bool skipPlayed);
     	void RandomizeTarget(PPCIV &targets, UCHAR targetCount, ActiveDeck &Dest, bool canIntercept);
     };
 #endif

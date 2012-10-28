@@ -374,8 +374,14 @@ const UINT BASE642ID(const unsigned short base64)
 	}
 	const bool PlayedCard::BeginTurn()
 	{
-		const bool bDoBegin = (Health>0) && (!Effects[ACTIVATION_JAM]) && (!Effects[ACTIVATION_FREEZE]) && (!Wait);
-		if (bDoBegin && (!bActivated))
+		const bool bDoBegin = (Health>0)
+            && (!Effects[ACTIVATION_JAM])
+            && (!Effects[ACTIVATION_FREEZE])
+            && ((Wait <= 0) || (Effects[SPECIAL_BLITZ] > 0));
+        
+        // Assume all cards Blitzing are treated exactly as if they were active;
+        // we need to reset this to False after we remove Blitz
+        if (bDoBegin && (!bActivated))
 			bActivated = true;
 		return bDoBegin;
 	}
@@ -430,6 +436,12 @@ Valor: Removed after owner ends his turn.
 		// really?
 		Effects[ACTIVATION_RALLY] = 0;
 		Effects[ACTIVATION_WEAKEN] = 0;
+		Effects[ACTIVATION_AUGMENT] = 0;
+
+        if(Effects[SPECIAL_BLITZ]) {
+            Effects[SPECIAL_BLITZ] = 0;
+            bActivated = false;
+        }
 	}
 	void PlayedCard::Cleanse()
 	{
@@ -732,6 +744,11 @@ Valor: Removed after owner ends his turn.
 	void PlayedCard::SetAttack(const UCHAR attack) { Attack = attack; }
 	void PlayedCard::SetEffect(const UCHAR id, const UCHAR value) { Effects[id] = value; }
 	void PlayedCard::SetHealth(const UCHAR health) { Health = health; }
+	void PlayedCard::Augment(const EFFECT_ARGUMENT amount)
+	{
+		Effects[ACTIVATION_AUGMENT] += amount;
+		//Attack += amount;
+	}
 	void PlayedCard::Rally(const EFFECT_ARGUMENT amount)
 	{
 		Effects[ACTIVATION_RALLY] += amount;
@@ -1965,6 +1982,7 @@ struct REQUIREMENT
             case ACTIVATION_ENFEEBLE:
                 {
                     effect *= FusionMultiplier;
+                    effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                     assert(effect > 0);
 
                     LOG_CARD lc(LogDeckID,TYPE_ASSAULT,100);
@@ -2016,6 +2034,7 @@ struct REQUIREMENT
             case ACTIVATION_HEAL:
                 {
                     effect *= FusionMultiplier;
+                    effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                     assert(effect > 0);
                     GetTargets(Units,faction,targets);
 
@@ -2057,6 +2076,7 @@ struct REQUIREMENT
             case ACTIVATION_SUPPLY:
                 {
                     effect *= FusionMultiplier;
+                    effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                     assert(effect > 0);
                     if (    (Position >= 0)
                         &&  (    (!IsMimiced)
@@ -2139,6 +2159,7 @@ struct REQUIREMENT
             case ACTIVATION_PROTECT:
                 {
                     effect *= FusionMultiplier;
+                    effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                     assert(effect > 0);
 
                     GetTargets(Units,faction,targets);
@@ -2182,7 +2203,7 @@ struct REQUIREMENT
                         GetTargets(Dest.Units,faction,targets);
 
                     EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, 0};
-                    FilterTargets(targets,skipEffects,-1,0,-1,false);
+                    FilterTargets(targets,skipEffects,NULL,-1,0,-1,false);
                     RandomizeTarget(targets,targetCount,Dest,!chaos);
 
                     if (targets.size() <= 0) {
@@ -2230,7 +2251,7 @@ struct REQUIREMENT
                         GetTargets(Dest.Units,faction,targets);
 
                     EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_FREEZE, 0};
-                    FilterTargets(targets,skipEffects,-1,-1,-1,false);
+                    FilterTargets(targets,skipEffects,NULL,-1,-1,-1,false);
                     RandomizeTarget(targets,targetCount,Dest,!chaos);
 
                     if (targets.size() <= 0) {
@@ -2303,12 +2324,13 @@ struct REQUIREMENT
             case ACTIVATION_RALLY:
                 {
                     effect *= FusionMultiplier;
+                    effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                     assert(effect > 0);
 
                     GetTargets(Units,faction,targets);
 
                     EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, DMGDEPENDANT_IMMOBILIZE, 0};
-                    FilterTargets(targets,skipEffects,-1,0,-1,true);
+                    FilterTargets(targets,skipEffects,NULL,-1,0,-1,true);
 
                     bool bTributable = IsInTargets(procCard,&targets);
 
@@ -2348,6 +2370,7 @@ struct REQUIREMENT
             case ACTIVATION_REPAIR:
                 {
                     effect *= FusionMultiplier;
+                    effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                     assert(effect > 0);
 
                     GetTargets(Structures,faction,targets);
@@ -2389,6 +2412,7 @@ struct REQUIREMENT
             case ACTIVATION_SIEGE:
                 {
                     effect *= FusionMultiplier;
+                    effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                     assert(effect > 0);
                     if (chaos)
                         GetTargets(Structures,faction,targets);
@@ -2440,6 +2464,7 @@ struct REQUIREMENT
             case ACTIVATION_STRIKE:
                 {
                     effect *= FusionMultiplier;
+                    effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                     assert(effect > 0);
 
                     if (chaos) {
@@ -2499,6 +2524,7 @@ struct REQUIREMENT
                         Units.push_back(summonedCard);
                         LOG(this->logger,abilitySummon(EffectType,Src,Units.back()));
                         Units.back().SetCardSkillProcBuffer(SkillProcs);
+                        // TODO this is where the fix for Decay on Summoning needs to happen
                         ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
                     } else if (summonedCard->GetType() == TYPE_STRUCTURE) {
                         Structures.push_back(summonedCard);
@@ -2521,6 +2547,7 @@ struct REQUIREMENT
                 {
                     assert(effect > 0);
                     effect *= FusionMultiplier;
+                    effect += procCard->GetEffect(ACTIVATION_AUGMENT);
 
                     if (chaos)
                         GetTargets(Units,faction,targets);
@@ -2528,7 +2555,7 @@ struct REQUIREMENT
                         GetTargets(Dest.Units,faction,targets);
 
                     EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, DMGDEPENDANT_IMMOBILIZE, 0};
-                    FilterTargets(targets,skipEffects,-1,0,1,chaos);
+                    FilterTargets(targets,skipEffects,NULL,-1,0,1,chaos);
                     RandomizeTarget(targets,targetCount,Dest,!chaos);
 
                     if (targets.size() <= 0) {
@@ -2568,7 +2595,7 @@ struct REQUIREMENT
                         GetTargets(Dest.Units,faction,targets);
 
                     EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, ACTIVATION_CHAOS, 0};
-                    FilterTargets(targets,skipEffects,-1,0,1,chaos);
+                    FilterTargets(targets,skipEffects,NULL,-1,0,1,chaos);
                     RandomizeTarget(targets,targetCount,Dest,!chaos);
 
                     if (targets.size() <= 0) {
@@ -2604,7 +2631,7 @@ struct REQUIREMENT
                     assert(effect > 0);
                     GetTargets(Units,faction,targets);
 
-                    FilterTargets(targets,NULL,1,-1,-1,false);
+                    FilterTargets(targets,NULL,NULL,1,-1,-1,false);
 
                     RandomizeTarget(targets,targetCount,Dest,false);
 
@@ -2620,6 +2647,50 @@ struct REQUIREMENT
                         LOG(this->logger,abilityOffensive(EffectType,Src,ACTIVATION_RUSH,*(vi->first),effect));
                         vi->first->Rush(effect);		
                         Src.fsSpecial += effect;
+                    }
+                } break;
+            case SPECIAL_BLITZ:
+                {
+                    // TODO can Blitz be Jammed or Freezed?
+                    Src.SetEffect(aid,effect);
+                    LOG(this->logger,abilitySupport(EffectType,Src,aid,Src,effect));
+                } break;
+            case ACTIVATION_AUGMENT:
+                {
+                    effect *= FusionMultiplier;
+                    assert(effect > 0);
+
+                    GetTargets(Units,faction,targets);
+
+                    EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, 0};
+                    EFFECT_ARGUMENT targetSkills[] = {ACTIVATION_ENFEEBLE, ACTIVATION_HEAL, ACTIVATION_PROTECT, ACTIVATION_RALLY, ACTIVATION_REPAIR, ACTIVATION_SIEGE, ACTIVATION_STRIKE, ACTIVATION_SUPPLY, ACTIVATION_WEAKEN, 0};
+                    FilterTargets(targets,skipEffects,targetSkills,-1,0,-1,true);
+
+                    bool bTributable = IsInTargets(procCard,&targets);
+
+                    RandomizeTarget(targets,targetCount,Dest,false);
+
+                    if (targets.size() <= 0) {
+                        LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                        break;
+                    }
+
+                    procDeck->SkillProcs[aid]++;
+
+                    for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                    {
+                        LOG(this->logger,abilitySupport(EffectType,Src,aid,*(vi->first),effect));
+                        vi->first->Augment(effect);
+                        procCard->fsSpecial += effect;
+                        //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
+
+                        if(bTributable && Tribute(vi->first, procCard, procDeck, EffectType, aid, effect))
+                        {
+                            //LOG(this->logger,abilityTribute(EffectType,*(vi->first),Src,aid,effect));
+                            procCard->Augment(effect);
+                            vi->first->fsSpecial += effect;
+                            //procDeck->SkillProcs[DEFENSIVE_TRIBUTE]++;
+                        }
                     }
                 } break;
             default:
@@ -3245,11 +3316,12 @@ struct REQUIREMENT
 		}
 	}
 
-    // skip effects is an array with a solitary 0 as a terminal
-	void ActiveDeck::FilterTargets(PPCIV &targets, EFFECT_ARGUMENT skipEffects[], const int waitMin, const int waitMax, const int attackLimit, bool skipPlayed)
+    // skipEffects is an array with a solitary 0 as a terminal
+    // targetSkills is an array with a solitary 0 as a terminal
+	void ActiveDeck::FilterTargets(PPCIV &targets, const EFFECT_ARGUMENT skipEffects[], const EFFECT_ARGUMENT targetSkills[], const int waitMin, const int waitMax, const int attackLimit, bool skipPlayed)
 	{
         PPCIV::iterator vi = targets.begin();
-        EFFECT_ARGUMENT* skip;
+        const EFFECT_ARGUMENT* effect;
         bool erase;
 		while (vi != targets.end())
 		{
@@ -3263,12 +3335,26 @@ struct REQUIREMENT
                 erase = true;
             } else if(skipPlayed && vi->first->GetPlayed()) {
                 erase = true;
-            } else if(skipEffects != NULL) {
-                for (skip = skipEffects; *skip != 0; ++skip) {
-                    assert(*skip < CARD_ABILITIES_MAX); // make sure someone gave us our terminal
-                    if(vi->first->GetEffect(*skip)) {
-                        erase = true;
-                        break;
+            } else {
+                if(skipEffects != NULL) {
+                    for (effect = skipEffects; *effect != 0; ++effect) {
+                        assert(*effect < CARD_ABILITIES_MAX); // make sure someone gave us our terminal
+                        if(vi->first->GetEffect(*effect)) {
+                            erase = true;
+                            break;
+                        }
+                    }
+                }
+
+                if(targetSkills != NULL) {
+                    erase = true;
+                    for (effect = targetSkills; *effect != 0; ++effect) {
+                        assert(*effect < CARD_ABILITIES_MAX); // make sure someone gave us our terminal
+                        if(vi->first->GetAbility(*effect)
+                            && vi->first->GetAbilityEvent(*effect) == EVENT_EMPTY) {
+                            erase = false;
+                            break;
+                        }
                     }
                 }
             }

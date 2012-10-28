@@ -65,6 +65,14 @@ namespace EvaluateDecks {
             return this->hashData.hash;
         }
 
+        int DeckArgument::getMissionId() const throw (InvalidState)
+        {
+            if(this->type != MISSION_ID) {
+                throw InvalidState("Only raid decks can have a raid id.");
+            }
+            return this->missionId;
+        }
+
         int DeckArgument::getQuestId() const throw (InvalidState)
         {
             if(this->type != QUEST_IDy) {
@@ -101,6 +109,12 @@ namespace EvaluateDecks {
         {
             this->type = HASH;
             this->hashData.hash = hash;
+        }
+
+        void DeckArgument::setMission(int const & missionId)
+        {
+            this->type = MISSION_ID;
+            this->missionId = missionId;
         }
 
         void DeckArgument::setQuest(int const & questId)

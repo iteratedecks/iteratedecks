@@ -10,5 +10,6 @@ bin/*.exp
 bin/*.ilk
 bin/*.tlb
 bin/*.cache
+bin/*.xml
 bin/debug.txt
 *.vcxproj.user

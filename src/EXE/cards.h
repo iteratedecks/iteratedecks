@@ -639,7 +639,7 @@ char *FormatCardName(char *Name)
                         if (child.attribute("died").as_uint() > 0) {
                             skillevent += EVENT_DIED;
                         }
-                        if (child.attribute("played").as_uint() > 0) {
+                        if (child.attribute("played").as_uint() > 0 || Id == SPECIAL_BLITZ) {
                             skillevent += EVENT_PLAYED;
                         }
                         if (child.attribute("attacked").as_uint() > 0) {
@@ -1041,6 +1041,7 @@ char *FormatCardName(char *Name)
 		AddSkill(ACTIVATION_SUMMON,"Summon");
 		AddSkill(ACTIVATION_SUPPLY,"Supply");		
 		AddSkill(ACTIVATION_WEAKEN,"Weaken");
+		AddSkill(ACTIVATION_AUGMENT,"Augment");
 
 		AddSkill(DEFENSIVE_ARMORED,"Armored");
 		AddSkill(DEFENSIVE_COUNTER,"Counter");
@@ -1073,7 +1074,6 @@ char *FormatCardName(char *Name)
 		AddSkill(SPECIAL_BACKFIRE,"Backfire");
 
 		AddSkill(SPECIAL_FUSION,"Fusion");
-		AddSkill(SPECIAL_AUGMENT,"Augment");
 		AddSkill(SPECIAL_MIST,"Mist");
 		AddSkill(SPECIAL_BLIZZARD,"Blizzard");
 		AddSkill(SPECIAL_BLITZ,"Blitz");
@@ -1785,6 +1785,19 @@ char *FormatCardName(char *Name)
 		_itoa_s(MDB[mi->second].GetCommander(),buffer,size);
 		MDB[mi->second].GetDeck(buffer,size);
 		return buffer;
+	}
+	// named decks
+	ActiveDeck CardDB::GetMissionDeck(const UINT missionId)
+	{
+        assertGE(MISSION_MAX_ID, missionId);
+        assertX(MDB[missionId].GetCardCount() > 0);
+
+    	ActiveDeck r(&CDB[MDB[missionId].GetCommander()], this->CDB);
+		for (UINT k=0;k<MDB[missionId].GetCardCount();k++)
+		{
+            r.Add(&CDB[MDB[missionId].GetCardID(k)]);
+		}
+		return r;
 	}
 	const UINT CardDB::GetMissionDeckIndex(const char* DeckName)
 	{
