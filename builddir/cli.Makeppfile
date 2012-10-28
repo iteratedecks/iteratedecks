@@ -10,9 +10,13 @@ makepp_percent_subdirs=1
 %.o: %.cpp
     $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(input) -o $(output)
 
-include bin.Makeppfile
-
 $(phony PACKAGE): release.tar.gz
+
+LICENSE: ../../LICENSE
+    cp $(input) $(output)
+
+COPYING.GPL3: ../../COPYING.GPL3
+    cp $(input) $(output)
 
 LICENSE_FILES:=LICENSE COPYING.GPL3
 SRC:=src.tar.gz
