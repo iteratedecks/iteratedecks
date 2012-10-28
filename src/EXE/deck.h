@@ -3343,7 +3343,7 @@ struct REQUIREMENT
                     }
                 }
 
-                if(targetSkills != NULL) {
+                if(!erase && targetSkills != NULL) {
                     erase = true;
                     for (effect = targetSkills; *effect != 0; ++effect) {
                         assert(*effect < CARD_ABILITIES_MAX); // make sure someone gave us our terminal
