@@ -14,6 +14,7 @@ $(phony PACKAGE): release.tar.gz
 
 LICENSE: ../../LICENSE
     cp $(input) $(output)
+include bin.Makeppfile
 
 COPYING.GPL3: ../../COPYING.GPL3
     cp $(input) $(output)
