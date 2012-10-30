@@ -4,6 +4,7 @@
     #include "../EXE/deck.hpp"
     #include "../EXE/Logger.hpp"
     #include "../EXE/results.hpp"
+    #include "cliOptions.hpp"
 
     namespace EvaluateDecks {
         namespace CLI {
@@ -39,26 +40,40 @@
                                      ,double const gamma    //< confidence level
                                      );
 
+            RESULTS simulate(DeckArgument const & deck1
+                            ,DeckArgument const & deck2
+                            ,DeckLogger * attackLogger
+                            ,DeckLogger * defenseLogger
+                            ,SimulationLogger * simulationLogger
+                            ,unsigned int const & numberOfIterations
+                            ,bool surge
+                            // future: battlefield id
+                            ,CardDB const & cardDB
+                            );
+                            
+
             RESULTS simulate(ActiveDeck const & deck1
-                             ,ActiveDeck const & deck2
-                             ,DeckLogger & attackLogger
-                             ,DeckLogger & defenseLogger
-                             ,SimulationLogger & simulationLogger
-                             ,unsigned int const & numberOfIterations
-                             ,bool surge = false
-                             );
+                            ,ActiveDeck const & deck2
+                            ,DeckLogger * attackLogger
+                            ,DeckLogger * defenseLogger
+                            ,SimulationLogger * simulationLogger
+                            ,unsigned int const & numberOfIterations
+                            ,bool surge = false
+                            );
 
             RESULTS simulateRaid(ActiveDeck const & deck1
                                 , unsigned int const & raidId
-                                , DeckLogger & attackLogger
-                                , SimulationLogger & simulationLogger
+                                , DeckLogger * attackLogger
+                                , DeckLogger * defenseLogger
+                                , SimulationLogger * simulationLogger
                                 , unsigned int const & numberOfIterations
                                 );
 
             RESULTS simulateQuest(ActiveDeck const & deck1
                                 , unsigned int const & questId
-                                , DeckLogger & attackLogger
-                                , SimulationLogger & simulationLogger
+                                , DeckLogger * attackLogger
+                                , DeckLogger * defenseLogger
+                                , SimulationLogger * simulationLogger
                                 , unsigned int const & numberOfIterations
                                 );
 

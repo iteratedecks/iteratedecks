@@ -407,11 +407,55 @@ namespace EvaluateDecks {
         }
 
 
+        RESULTS simulate(DeckArgument const & attackDeck
+                        ,DeckArgument const & defenseDeck
+                        ,DeckLogger * attackLogger
+                        ,DeckLogger * defenseLogger
+                        ,SimulationLogger * simulationLogger
+                        ,unsigned int const & numberOfIterations
+                        ,bool surge
+                        // future: battlefield id
+                        ,CardDB const & cardDB
+                        )
+        {
+            // construct the decks
+            // TODO own function for this.
+            // ... first deck
+            assert(attackDeck.getType() == DeckArgument::HASH);
+            // FIXME: should not pass c_str
+            ActiveDeck deck1(attackDeck.getHash().c_str(), cardDB.GetPointer());
+            deck1.SetOrderMatters(attackDeck.isOrdered());
+
+            RESULTS r;
+            switch(defenseDeck.getType()) {
+                case DeckArgument::HASH: {
+                    ActiveDeck deck2(defenseDeck.getHash().c_str(), cardDB.GetPointer());
+                    deck2.SetOrderMatters(defenseDeck.isOrdered());
+                    r = simulate(deck1,deck2,attackLogger,defenseLogger,simulationLogger, numberOfIterations, surge);
+                } break;
+                
+                case DeckArgument::RAID_ID: {
+                    r = simulateRaid(deck1, defenseDeck.getRaidId(), attackLogger, defenseLogger, simulationLogger, numberOfIterations);
+                } break;
+
+                case DeckArgument::QUEST_ID: {
+                    r = simulateQuest(deck1, defenseDeck.getQuestId(), attackLogger, defenseLogger, simulationLogger, numberOfIterations);
+                } break;
+                
+                case DeckArgument::MISSION_ID: {
+                    ActiveDeck deck2 = cardDB.GetMissionDeck(defenseDeck.getMissionId());
+                    r = simulate(deck1,deck2,attackLogger,defenseLogger,simulationLogger, numberOfIterations, surge);
+                } break;
+            }
+            return r;
+        }
+
+
         RESULTS simulate(ActiveDeck const & deck1
                         ,ActiveDeck const & deck2
-                        ,DeckLogger & attackLogger
-                        ,DeckLogger & defenseLogger
-                        ,SimulationLogger & simulationLogger
+                        ,DeckLogger * attackLogger
+                        ,DeckLogger * defenseLogger
+                        ,SimulationLogger * simulationLogger
                         ,unsigned int const & numberOfIterations
                         ,bool surge
                         )
@@ -420,21 +464,22 @@ namespace EvaluateDecks {
             RESULTS r;
             for (UINT k=0;k<numberOfIterations;k++)	{
                 ActiveDeck X(deck1);
-                X.logger = &attackLogger;
+                X.logger = attackLogger;
                 ActiveDeck Y(deck2);
-                Y.logger = &defenseLogger;
+                Y.logger = defenseLogger;
 
-                simulationLogger.simulationStart(k);
-                Simulate(X,Y,r,&simulationLogger, NULL, NULL, surge);
-                simulationLogger.simulationEnd(k);
+                LOG(simulationLogger,simulationStart(k));
+                Simulate(X,Y,r,simulationLogger, NULL, NULL, surge);
+                LOG(simulationLogger,simulationEnd(k));
             }
             return r;
         }
 
         RESULTS simulateRaid(ActiveDeck const & deck1
                             , unsigned int const & raidId
-                            , DeckLogger & attackLogger
-                            , SimulationLogger & simulationLogger
+                            , DeckLogger * attackLogger
+                            , DeckLogger * defenseLogger                            
+                            , SimulationLogger * simulationLogger
                             , unsigned int const & numberOfIterations
                             )
         {
@@ -442,19 +487,21 @@ namespace EvaluateDecks {
             RESULTS r;
             for (UINT k=0;k<numberOfIterations;k++)    {
                 ActiveDeck X(deck1);
-                X.logger = &attackLogger;
+                X.logger = attackLogger;
 
-                simulationLogger.simulationStart(k);
+                LOG(simulationLogger,simulationStart(k));
+                // TODO we should add support for a defense logger
                 EvaluateRaidQuestOnce(X,r,0,0,(DWORD)raidId,0);
-                simulationLogger.simulationEnd(k);
+                LOG(simulationLogger,simulationEnd(k));
             }
             return r;
         }
 
         RESULTS simulateQuest(ActiveDeck const & deck1
                             , unsigned int const & questId
-                            , DeckLogger & attackLogger
-                            , SimulationLogger & simulationLogger
+                            , DeckLogger * attackLogger
+                            , DeckLogger * defenseLogger
+                            , SimulationLogger * simulationLogger
                             , unsigned int const & numberOfIterations
                             )
         {
@@ -462,11 +509,12 @@ namespace EvaluateDecks {
             RESULTS r;
             for (UINT k=0;k<numberOfIterations;k++)    {
                 ActiveDeck X(deck1);
-                X.logger = &attackLogger;
+                X.logger = attackLogger;
 
-                simulationLogger.simulationStart(k);
+                LOG(simulationLogger,simulationStart(k));
+                // TODO we should add support for a defense logger
                 EvaluateRaidQuestOnce(X,r,0,0,0,(DWORD)questId);
-                simulationLogger.simulationEnd(k);
+                LOG(simulationLogger,simulationEnd(k));
             }
             return r;
         }
