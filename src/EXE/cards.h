@@ -1787,7 +1787,7 @@ char *FormatCardName(char *Name)
 		return buffer;
 	}
 	// named decks
-	ActiveDeck CardDB::GetMissionDeck(const UINT missionId)
+	ActiveDeck CardDB::GetMissionDeck(const UINT missionId) const
 	{
         assertGE(MISSION_MAX_ID, missionId);
         assertX(MDB[missionId].GetCardCount() > 0);
