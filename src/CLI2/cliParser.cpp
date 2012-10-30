@@ -173,7 +173,7 @@ namespace EvaluateDecks {
             if (options.printHelpAndExit) {
                 // no more arguments expected
             } else if((options.defenseDeck.getType() == DeckArgument::RAID_ID
-                        || options.defenseDeck.getType() == DeckArgument::QUEST_IDy
+                        || options.defenseDeck.getType() == DeckArgument::QUEST_ID
                         || options.defenseDeck.getType() == DeckArgument::MISSION_ID
                       )
                       && optind+1 == argc) {

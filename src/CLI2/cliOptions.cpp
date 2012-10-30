@@ -75,8 +75,8 @@ namespace EvaluateDecks {
 
         int DeckArgument::getQuestId() const throw (InvalidState)
         {
-            if(this->type != QUEST_IDy) {
                 throw InvalidState("Only raid decks can have a raid id.");
+            if(this->type != QUEST_ID) {
             }
             return this->questId;
         }
@@ -119,7 +119,7 @@ namespace EvaluateDecks {
 
         void DeckArgument::setQuest(int const & questId)
         {
-            this->type = QUEST_IDy;
+            this->type = QUEST_ID;
             this->questId = questId;
         }
 

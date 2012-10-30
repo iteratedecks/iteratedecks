@@ -117,7 +117,7 @@ int mainWithOptions(CliOptions const & options
             r = simulateRaid(deck1, options.defenseDeck.getRaidId(), attackLogger, simulationLogger, options.numberOfIterations);
         } break;
 
-    case DeckArgument::QUEST_IDy:
+    case DeckArgument::QUEST_ID:
         {
             r = simulateQuest(deck1, options.defenseDeck.getQuestId(), attackLogger, simulationLogger, options.numberOfIterations);
         } break;

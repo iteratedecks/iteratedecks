@@ -60,7 +60,7 @@
                             HASH,
                             MISSION_ID,
                             RAID_ID,
-                            QUEST_IDy
+                            QUEST_ID
                     };
                 private:
                     DeckArgumentType type;
