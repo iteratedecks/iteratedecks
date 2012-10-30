@@ -2522,12 +2522,12 @@ struct REQUIREMENT
                         LOG(this->logger,abilitySummon(EffectType,Src,Units.back()));
                         Units.back().SetCardSkillProcBuffer(SkillProcs);
                         // TODO this is where the fix for Decay on Summoning needs to happen
-                        ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
+                        //ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
                     } else if (summonedCard->GetType() == TYPE_STRUCTURE) {
                         Structures.push_back(summonedCard);
                         LOG(this->logger,abilitySummon(EffectType,Src,Structures.back()));
                         Structures.back().SetCardSkillProcBuffer(SkillProcs);
-                        ApplyEffects(QuestEffectId,EVENT_PLAYED,Structures.back(),-1,Dest);
+                        //ApplyEffects(QuestEffectId,EVENT_PLAYED,Structures.back(),-1,Dest);
                     } else {
                         std::cerr << "EventCondition=" << (unsigned int)EffectType << " ";
                         std::cerr << "mimic=" << IsMimiced << " mimicer=" << Mimicer << std::endl;
@@ -2538,6 +2538,7 @@ struct REQUIREMENT
                         std::cerr << std::endl;
                         throw logic_error("Summoned something that is neither assault unit nor structure");
                     }
+                    PlayCard(summonedCard, Dest);
                 } break;
 
             case ACTIVATION_WEAKEN:
@@ -2890,6 +2891,28 @@ struct REQUIREMENT
 		}
 		return 0; // no cards for u
 	}
+
+    // TODO eventually want to handle all of the logic of *playing* the card here. PickNextCard
+    // should only tell us which one is being played next
+    void ActiveDeck::PlayCard(const Card *c, ActiveDeck &Def) {
+		if (c->GetType() == TYPE_ACTION)
+			ApplyEffects(QuestEffectId,EVENT_PLAYED,Actions.front(),-1,Def);
+		else
+		if (c->GetType() == TYPE_STRUCTURE)
+			ApplyEffects(QuestEffectId,EVENT_PLAYED,Structures.back(),-1,Def);
+		else
+		if (c->GetType() == TYPE_ASSAULT)
+		{
+			ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Def);
+			// add quest statuses for decay
+			if (QuestEffectId == QEFFECT_DECAY)
+			{
+				Units.back().SetEffect(DMGDEPENDANT_POISON,1);
+				Units.back().SetEffect(DMGDEPENDANT_DISEASE,ABILITY_ENABLED);
+			}
+		}
+    }
+
 	void ActiveDeck::CheckDeathEvents(PlayedCard &src, ActiveDeck &Def)
 	{
 		if (src.OnDeathEvent())
@@ -2932,22 +2955,7 @@ struct REQUIREMENT
 			const Card *c = PickNextCard();
 			if (c)
 			{
-				if (c->GetType() == TYPE_ACTION)
-					ApplyEffects(QuestEffectId,EVENT_PLAYED,Actions.front(),-1,Def);
-				else
-				if (c->GetType() == TYPE_STRUCTURE)
-					ApplyEffects(QuestEffectId,EVENT_PLAYED,Structures.back(),-1,Def);
-				else
-				if (c->GetType() == TYPE_ASSAULT)
-				{
-					ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Def);
-					// add quest statuses for decay
-					if (QuestEffectId == QEFFECT_DECAY)
-					{
-						Units.back().SetEffect(DMGDEPENDANT_POISON,1);
-						Units.back().SetEffect(DMGDEPENDANT_DISEASE,ABILITY_ENABLED);
-					}
-				}
+                PlayCard(c, Def);
 			}
 		}
 
