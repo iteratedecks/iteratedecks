@@ -398,18 +398,22 @@ const UINT BASE642ID(const unsigned short base64)
 	{
 		Effects[ACTIVATION_PROTECT] = 0;
 	}
-	EFFECT_ARGUMENT PlayedCard::Refresh(UINT QuestEffectId)
-	{
-		UCHAR amount = OriginalCard->GetHealth() - Health;
-		if (QuestEffectId == QEFFECT_INVIGORATE)
-			Attack += amount;
-		fsHealed += amount;
-		if (SkillProcBuffer && (OriginalCard->GetHealth() != Health))
-			SkillProcBuffer[DEFENSIVE_REFRESH]++;
-		Health = OriginalCard->GetHealth();
+
+    EFFECT_ARGUMENT PlayedCard::Refresh(UINT QuestEffectId)
+    {
+        UCHAR amount = OriginalCard->GetHealth() - this->Health;
+        if (QuestEffectId == QEFFECT_INVIGORATE) {
+            this->Attack += amount;
+        }
+        fsHealed += amount;
+        if (SkillProcBuffer && (amount != 0)) {
+            SkillProcBuffer[DEFENSIVE_REFRESH]++;
+        }
+        this->Health = OriginalCard->GetHealth();
         return amount;
-	}
-	void PlayedCard::ClearEnfeeble()
+    }
+
+    void PlayedCard::ClearEnfeeble()
 	{
 		Effects[ACTIVATION_ENFEEBLE] = 0;
 	}

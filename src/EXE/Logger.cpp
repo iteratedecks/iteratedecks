@@ -484,6 +484,6 @@ void DeckLogger::defensiveRefresh(EVENT_CONDITION const & eventCondition, Played
         std::stringstream ssMessage;
         ssMessage << "refreshes ";
         ssMessage << (unsigned int)amount;
-        this->ability(eventCondition,unit,ssMessage.str());
+        this->ability(eventCondition, unit, ssMessage.str());
     }
 }
