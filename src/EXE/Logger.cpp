@@ -11,6 +11,7 @@ unsigned long const Logger::LOG_ABILITY_FAILED           (1<<logInit++);
 unsigned long const Logger::LOG_ABILITY_FAILED_NOTARGET  (1<<logInit++);
 unsigned long const Logger::LOG_ATTACK                   (1<<logInit++);
 unsigned long const Logger::LOG_ATTACK_BEGIN_END         (1<<logInit++);
+unsigned long const Logger::LOG_DEFENSIVE_REFRESH        (1<<logInit++);
 unsigned long const Logger::LOG_TURN                     (1<<logInit++);
 unsigned long const Logger::LOG_SIMULATION               (1<<logInit++);
 unsigned long const Logger::LOG_ALL                      ((1<<logInit)-1);
@@ -474,5 +475,15 @@ void DeckLogger::defensiveAbility(PlayedCard const & victim
         ssMessage << " against ";
         ssMessage << colorCard(attacker);
         this->attack(victim,ssMessage.str());
+    }
+}
+
+void DeckLogger::defensiveRefresh(EVENT_CONDITION const & eventCondition, PlayedCard const & unit, EFFECT_ARGUMENT amount) {
+    if(this->delegate.isEnabled(Logger::LOG_DEFENSIVE_REFRESH)) {
+        assertX(unit.IsDefined());
+        std::stringstream ssMessage;
+        ssMessage << "refreshes ";
+        ssMessage << (unsigned int)amount;
+        this->ability(eventCondition,unit,ssMessage.str());
     }
 }

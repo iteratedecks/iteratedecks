@@ -18,6 +18,7 @@
             static unsigned long const LOG_ABILITY_FAILED_NOTARGET;
             static unsigned long const LOG_ATTACK;
             static unsigned long const LOG_ATTACK_BEGIN_END;
+            static unsigned long const LOG_DEFENSIVE_REFRESH;
             static unsigned long const LOG_TURN;
             static unsigned long const LOG_SIMULATION;
             static unsigned long const LOG_ALL;
@@ -95,6 +96,7 @@
             void attackEnd(PlayedCard const & attacker);
 
             void defensiveAbility(PlayedCard const & victim, PlayedCard const & attacker, AbilityId abilityId, EFFECT_ARGUMENT amount);
+            void defensiveRefresh(EVENT_CONDITION const & eventCondition, PlayedCard const & unit, EFFECT_ARGUMENT amount);
     };
 
     #define LOG(logger,command) do { if((logger) != NULL) { (logger)->command; } } while(false)

@@ -230,7 +230,7 @@
             void ProcessPoison(UINT QuestEffectId);
             const UCHAR GetShield() const;
             void ResetShield();
-            void Refresh(UINT QuestEffectId);
+            EFFECT_ARGUMENT Refresh(UINT QuestEffectId);
             void ClearEnfeeble();
             void RemoveDebuffs();
             void Cleanse();

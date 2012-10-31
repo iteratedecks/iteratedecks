@@ -398,7 +398,7 @@ const UINT BASE642ID(const unsigned short base64)
 	{
 		Effects[ACTIVATION_PROTECT] = 0;
 	}
-	void PlayedCard::Refresh(UINT QuestEffectId)
+	EFFECT_ARGUMENT PlayedCard::Refresh(UINT QuestEffectId)
 	{
 		UCHAR amount = OriginalCard->GetHealth() - Health;
 		if (QuestEffectId == QEFFECT_INVIGORATE)
@@ -407,6 +407,7 @@ const UINT BASE642ID(const unsigned short base64)
 		if (SkillProcBuffer && (OriginalCard->GetHealth() != Health))
 			SkillProcBuffer[DEFENSIVE_REFRESH]++;
 		Health = OriginalCard->GetHealth();
+        return amount;
 	}
 	void PlayedCard::ClearEnfeeble()
 	{
@@ -3041,8 +3042,10 @@ struct REQUIREMENT
 			iter->EndTurn();
 		}}
 		// refresh commander
-		if (Commander.IsDefined() && Commander.GetAbility(DEFENSIVE_REFRESH)) // Bench told refresh procs at the end of player's turn
-			Commander.Refresh(QuestEffectId);
+        if (Commander.IsDefined() && Commander.GetAbility(DEFENSIVE_REFRESH)) { // Bench told refresh procs at the end of player's turn
+            EFFECT_ARGUMENT const amountRefreshed = Commander.Refresh(QuestEffectId);
+            LOG(this->logger,defensiveRefresh(EVENT_EMPTY,Commander,amountRefreshed));
+        }
 		// clear dead units here yours and enemy
 		if (!Units.empty())
 		{
@@ -3063,8 +3066,10 @@ struct REQUIREMENT
 				{
 					vi->ResetPlayedFlag();
 					vi->ClearEnfeeble(); // this is important for chaosed skills
-					if ((!vi->IsDiseased()) && (vi->GetAbility(DEFENSIVE_REFRESH))) // Bench told refresh procs at the end of player's turn
-						vi->Refresh(QuestEffectId);
+                    if ((!vi->IsDiseased()) && (vi->GetAbility(DEFENSIVE_REFRESH))) { // Bench told refresh procs at the end of player's turn
+                        EFFECT_ARGUMENT const amountRefreshed = vi->Refresh(QuestEffectId);
+                        LOG(this->logger,defensiveRefresh(EVENT_EMPTY,*vi,amountRefreshed));
+                    }
 					vi->RemoveDebuffs(); // post-turn
 					vi++;
 				}
@@ -3086,8 +3091,10 @@ struct REQUIREMENT
 				}
 				else
 				{
-					if ((!vi->IsDiseased()) && (vi->GetAbility(DEFENSIVE_REFRESH)) && (QuestEffectId != QEFFECT_IMPENETRABLE)) // Bench told refresh procs at the end of player's turn
-						vi->Refresh(QuestEffectId);
+                    if ((!vi->IsDiseased()) && (vi->GetAbility(DEFENSIVE_REFRESH)) && (QuestEffectId != QEFFECT_IMPENETRABLE)) {// Bench told refresh procs at the end of player's turn
+                        EFFECT_ARGUMENT const amountRefreshed = vi->Refresh(QuestEffectId);
+                        LOG(this->logger,defensiveRefresh(EVENT_EMPTY,*vi,amountRefreshed));
+                    }
 					vi++;
 				}
 		}
