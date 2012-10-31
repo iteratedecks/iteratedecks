@@ -484,52 +484,79 @@ Valor: Removed after owner ends his turn.
 		Faction = setfaction;
 		SkillProcBuffer[ACTIVATION_INFUSE]++;
 	}
-    const UCHAR PlayedCard::SufferDmg(UINT QuestEffectId, const UCHAR Dmg, const UCHAR Pierce, UCHAR *actualdamagedealt, UCHAR *SkillProcBuffer, UCHAR *OverkillDamage, bool bCanRegenerate, VLOG *log, LOG_RECORD *lr)
+    
+    const UCHAR PlayedCard::SufferDmg(UINT QuestEffectId
+                                     ,UCHAR const Dmg
+                                     ,UCHAR const Pierce
+                                     ,UCHAR * const actualdamagedealt
+                                     ,UCHAR * SkillProcBuffer
+                                     ,UCHAR * OverkillDamage
+                                     ,bool bCanRegenerate
+                                     ,VLOG *log
+                                     ,LOG_RECORD *lr
+                                     ,bool * const damageWasDeadly // needed for crush
+                                     )
 	{
 		assertX(OriginalCard);
 // Regeneration happens before the additional strikes from Flurry.
 // Regenerating does not prevent Crush damage	
 		UCHAR dmg = Dmg;
 		UCHAR shield = (UCHAR)GetEffect(ACTIVATION_PROTECT);
-		if (shield > 0)
-		{
-			if (Pierce >= shield)
-				dmg = Dmg;
-			else
-			{
-				if (Pierce+Dmg >= shield)
-					dmg = Pierce + Dmg - shield;
-				else
-					dmg = 0;
-			}
-		}
-		if (lr)
+        if (Pierce >= shield) {
+            dmg = Dmg;
+        } else if (Pierce+Dmg >= shield) {
+            dmg = Pierce + Dmg - shield;
+        } else {
+            dmg = 0;
+        }
+		if (lr) {
 			lr->Effect = dmg;
-		if (dmg >= Health)
-		{
-			if (OverkillDamage)
+        }
+		if (dmg >= Health) {
+            // This attack is deadly
+            if(damageWasDeadly != NULL) {
+                *damageWasDeadly = true;
+            }
+
+            // Store overkill damage
+			if (OverkillDamage != NULL) {
 				*OverkillDamage += (dmg - Health);
+            }
+
+            // We deal as much as the unit has
 			UCHAR dealt = Health;
-			if ((!IsDiseased()) && (bCanRegenerate) && (OriginalCard->GetAbility(DEFENSIVE_REGENERATE))&&(PROC50))
+
+            // regnerate?
+            bool const diseased = this->IsDiseased();
+            EFFECT_ARGUMENT const regenerateAmount = this->OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
+            bool const hasAbilityRegenerate = (regenerateAmount > 0);
+			if (    (!diseased)
+                 && (bCanRegenerate)
+                 && (hasAbilityRegenerate)
+                 && (PROC50)
+               )
 			{
-				Health = OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
-				fsHealed += OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
-				if (QuestEffectId == QEFFECT_INVIGORATE)
-					Attack += Health;
+                // This unit regenerates.
+				this->Health = regenerateAmount;
+				fsHealed += regenerateAmount;
+				if (QuestEffectId == QEFFECT_INVIGORATE) {
+					this->Attack += regenerateAmount;
+                }
 				CardSkillProc(DEFENSIVE_REGENERATE);
 				if (lr && log)
 					log->push_back(LOG_RECORD(lr->Target,DEFENSIVE_REGENERATE,Health));
-				if (bConsoleOutput)
+                // TODO Replace by new logging system, but right now PlayedCards do not know the logger
+                if (bConsoleOutput)
 				{
 					PrintDesc();
 					printf(" regenerated %d health\n",Health);
 				}
-			}
-			else
-			{
-				if (IsAlive()) // shouldn't die twice ;)
+			} else {
+                // This unit does not regenerate
+				if (IsAlive()) { // shouldn't die twice ;)
 					fsDeaths++;
-				Health = 0;
+                }
+				this->Health = 0;
 				if (lr && log)
 					log->push_back(LOG_RECORD(lr->Target,0,0)); // death
 				if (bConsoleOutput)
@@ -546,10 +573,13 @@ Valor: Removed after owner ends his turn.
 			}
 			// crush damage will be dealt even if the defending unit Regenerates
 			return dealt;// note that CRUSH & BACKFIRE are processed elsewhere
-		}
-		else
-		{
-			Health -= dmg;
+		} else {
+            // This attack is not deadly
+            if(damageWasDeadly != NULL) {
+                *damageWasDeadly = false;
+            }
+            
+			this->Health -= dmg;
 			if (actualdamagedealt)
 				*actualdamagedealt = dmg;
 			if (bConsoleOutput)
@@ -1151,25 +1181,30 @@ struct REQUIREMENT
 		}
 		// now we actually deal dmg
 		//printf("%s %d = %d => %s %d\n",SRC.GetName(),SRC.GetHealth(),dmg,targets[s]->GetName(),targets[s]->GetHealth());
-		if (dmg)
-		{
-			UCHAR actualdamagedealt = 0;
+
+        std::clog << "Mark: Before damage dealing" << std::endl;
+        bool damageWasDeadly;
+        if (dmg > 0) {
+			UCHAR actualDamageDealt = 0;
 			bPierce = bPierce || (target.GetShield() && pierce);
 			UCHAR overkill = 0;
-			if (bPierce)
+			if (bPierce) {
 				LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),COMBAT_PIERCE,pierce);
-			dmg = target.SufferDmg(QuestEffectId,dmg, pierce,&actualdamagedealt,0,&overkill,(!SRC.GetAbility(DMGDEPENDANT_DISEASE)),
-				Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),0,dmg));
-			SRC.fsDmgDealt += actualdamagedealt;
+            }
+			dmg = target.SufferDmg(QuestEffectId,dmg, pierce,&actualDamageDealt,0,&overkill,(!SRC.GetAbility(DMGDEPENDANT_DISEASE)),
+				Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),0,dmg),&damageWasDeadly);
+			SRC.fsDmgDealt += actualDamageDealt;
 			SRC.fsOverkill += overkill;
 		}
-		if (bPierce)
+		if (bPierce) {
 			SkillProcs[COMBAT_PIERCE]++;
+        }
 
+        std::clog << "Mark: Before crush check, after regenerate" << std::endl;
 		// and now dmg dependant effects
-		if (!target.IsAlive()) // target just died
+		if (damageWasDeadly) // target just died
 		{
-			// afaik it ignores walls
+			// afaik backfire ignores walls
 			if (target.GetAbility(SPECIAL_BACKFIRE))
 			{
 				Def.Commander.SufferDmg(QuestEffectId,target.GetAbility(SPECIAL_BACKFIRE));
@@ -1178,7 +1213,7 @@ struct REQUIREMENT
 				Def.SkillProcs[SPECIAL_BACKFIRE]++;
 				LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),SPECIAL_BACKFIRE,SRC.GetAbility(SPECIAL_BACKFIRE));
 			}
-			// crush
+			// crush            
 			if (SRC.GetAbility(DMGDEPENDANT_CRUSH))
 			{
 				UCHAR overkill = 0;
