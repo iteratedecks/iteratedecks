@@ -1182,7 +1182,7 @@ struct REQUIREMENT
 		// now we actually deal dmg
 		//printf("%s %d = %d => %s %d\n",SRC.GetName(),SRC.GetHealth(),dmg,targets[s]->GetName(),targets[s]->GetHealth());
 
-        std::clog << "Mark: Before damage dealing" << std::endl;
+        //std::clog << "Mark: Before damage dealing" << std::endl;
         bool damageWasDeadly;
         if (dmg > 0) {
 			UCHAR actualDamageDealt = 0;
@@ -1200,7 +1200,7 @@ struct REQUIREMENT
 			SkillProcs[COMBAT_PIERCE]++;
         }
 
-        std::clog << "Mark: Before crush check, after regenerate" << std::endl;
+        //std::clog << "Mark: Before crush check, after regenerate" << std::endl;
 		// and now dmg dependant effects
 		if (damageWasDeadly) // target just died
 		{
