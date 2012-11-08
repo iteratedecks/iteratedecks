@@ -2693,8 +2693,31 @@ struct REQUIREMENT
             case SPECIAL_BLITZ:
                 {
                     // TODO can Blitz be Jammed or Freezed?
-                    Src.SetEffect(aid,effect);
-                    LOG(this->logger,abilitySupport(EffectType,Src,aid,Src,effect));
+                    UCHAR targetPos = Position;
+
+                    // TODO move this to a "get opposing card" function
+                    UCHAR pos = 0;
+                    for (LCARDS::iterator vi = Dest.Units.begin();vi != Dest.Units.end();vi++)
+                    {
+                        if ((vi->IsAlive())
+                            && (pos == targetPos)
+                            && (vi->GetWait() == 0)
+                            && ((vi->GetFaction() == faction) || (faction == FACTION_NONE))
+                            )
+                        {
+                            Src.SetEffect(aid,effect);
+                            LOG(this->logger,abilitySupport(EffectType,Src,aid,Src,effect));
+                            targets.push_back(PPCARDINDEX(&(*vi),pos));
+                            break;
+                        }
+                        pos++;
+                    }
+
+                    // TODO probably want a more appropriate fail message
+                    if (targets.size() <= 0) {
+                        LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                        break;
+                    }
                 } break;
             case ACTIVATION_AUGMENT:
                 {
@@ -2946,7 +2969,7 @@ struct REQUIREMENT
 		else
 		if (c->GetType() == TYPE_ASSAULT)
 		{
-			ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Def);
+			ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),Units.size() - 1,Def);
 			// add quest statuses for decay
 			if (QuestEffectId == QEFFECT_DECAY)
 			{
