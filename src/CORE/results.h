@@ -10,7 +10,7 @@
 // http://www.kongregate.com/forums/65-tyrant/topics/195043-yet-another-battlesim-evaluate-decks
 // *****************************************
 //
-// this module contains interfaces used by API, DLL and CORE to exchange evaluation results 
+// this module contains interfaces used by CORE and probably others to exchange evaluation results 
 // this structure is used to store and return simulation result
 
 #if !defined(_MSC_VER)

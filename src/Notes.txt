@@ -1,3 +1,2 @@
-DLL is just a configuration of CORE with additional exported functions.
 Microsoft Visual Studio 2008 and 2010 are both supported.
 
