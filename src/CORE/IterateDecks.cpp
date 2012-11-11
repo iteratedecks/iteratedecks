@@ -11,7 +11,7 @@
 // http://www.kongregate.com/forums/65-tyrant/topics/195043-yet-another-battlesim-evaluate-decks
 // *****************************************
 //
-// main module for EXE part, contains a lot of commented snippets that can be used as samples of classes usage
+// old main module for EXE part, contains a lot of commented snippets that can be used as samples of classes usage
 
 #ifdef _WIN32
 #define __windows__

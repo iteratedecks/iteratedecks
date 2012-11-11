@@ -10,9 +10,9 @@
 
 #include "stdafx.h"
 
-#include "..\EXE\deck.h"
-#include "..\EXE\cards.h"
-#include "..\EXE\simulate.h"
+#include "..\CORE\deck.h"
+#include "..\CORE\cards.h"
+#include "..\CORE\simulate.h"
 
 // I am not a huge fan of these headers
 //#include <iostream>

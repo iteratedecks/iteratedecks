@@ -1,9 +1,9 @@
 #ifndef CLI_SIMULATE_HPP_
     #define CLI_SIMULATE_HPP_
 
-    #include "../EXE/deck.hpp"
-    #include "../EXE/Logger.hpp"
-    #include "../EXE/results.hpp"
+    #include "../CORE/deck.hpp"
+    #include "../CORE/Logger.hpp"
+    #include "../CORE/results.hpp"
     #include "cliOptions.hpp"
 
     namespace EvaluateDecks {

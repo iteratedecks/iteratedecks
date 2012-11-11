@@ -38,16 +38,16 @@
 #include <stdio.h>
 
 // here come NETRAT's evil hacks
-#include "../EXE/deck.h"
-#include "../EXE/cards.h"
-//#include "../EXE/branches.h"
-#include "../EXE/simulate.h"
+#include "../CORE/deck.h"
+#include "../CORE/cards.h"
+//#include "../CORE/branches.h"
+#include "../CORE/simulate.h"
 
 #include "verify.hpp"
 #include "cliOptions.hpp"
 #include "cliParser.hpp"
 #include "cliSimulate.hpp"
-#include "../EXE/assert.hpp"
+#include "../CORE/assert.hpp"
 #include <stdexcept>
 
 using namespace EvaluateDecks::CLI;

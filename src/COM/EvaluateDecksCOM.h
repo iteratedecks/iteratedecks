@@ -17,8 +17,8 @@ using namespace ATL;
 
 
 // CEvaluateDecksCOM
-#include "..\EXE\deck.h"
-#include "..\EXE\cards.h"
+#include "..\CORE\deck.h"
+#include "..\CORE\cards.h"
 
 
 class ATL_NO_VTABLE CEvaluateDecksCOM :

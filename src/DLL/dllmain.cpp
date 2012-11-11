@@ -1,6 +1,6 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
-#include "..\EXE\deck.h"
-#include "..\EXE\cards.h"
+#include "..\CORE\deck.h"
+#include "..\CORE\cards.h"
 
 #define IDAPI   __declspec(dllexport)
 

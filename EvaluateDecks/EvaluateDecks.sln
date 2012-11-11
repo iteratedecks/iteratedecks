@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IterateDecks", "..\src\EXE\IterateDecks.vcxproj", "{4E2E9E65-0FAF-49B6-AD81-738C48E96AD8}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IterateDecks", "..\src\CORE\IterateDecks.vcxproj", "{4E2E9E65-0FAF-49B6-AD81-738C48E96AD8}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IterateDecksCGI", "..\src\CGI\IterateDecksCGI.vcxproj", "{2F6FE2BA-DED9-4BEC-87DD-6C99A722C0F6}"
 	ProjectSection(ProjectDependencies) = postProject

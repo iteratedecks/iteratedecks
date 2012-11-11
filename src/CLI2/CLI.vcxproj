@@ -97,7 +97,7 @@
     <ProjectReference Include="..\..\EvaluateDecks\getopt_mb_uni_vc10\getopt_mb_uni_vc10_dll\getopt_mb_uni_vc10_dll.vcxproj">
       <Project>{4bbaeaa1-9ad1-42d2-b6dc-7f73c4b3d238}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\EXE\IterateDecks.vcxproj">
+    <ProjectReference Include="..\CORE\IterateDecks.vcxproj">
       <Project>{4e2e9e65-0faf-49b6-ad81-738c48e96ad8}</Project>
       <Private>false</Private>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>

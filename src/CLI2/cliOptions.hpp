@@ -2,8 +2,8 @@
     #define CLI_OPTIONS_H_
 
     #include "verify.hpp"
-    #include "../EXE/Logger.hpp"
-    #include "../EXE/exceptions.hpp"
+    #include "../CORE/Logger.hpp"
+    #include "../CORE/exceptions.hpp"
 
 #ifdef _WIN32
     #define __windows__

@@ -25,10 +25,10 @@
     #define isinf(x) (std::isinf(x))
 #endif
 
-#include "../EXE/cards.hpp"
-#include "../EXE/simulate.hpp"
-//#include "../EXE/simulate.h"
-#include "../EXE/assert.hpp"
+#include "../CORE/cards.hpp"
+#include "../CORE/simulate.hpp"
+//#include "../CORE/simulate.h"
+#include "../CORE/assert.hpp"
 
 namespace EvaluateDecks {
     namespace CLI {

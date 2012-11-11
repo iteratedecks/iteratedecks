@@ -21,7 +21,7 @@
  */
 
 #include "cliParser.hpp"
-#include "../EXE/exceptions.hpp"
+#include "../CORE/exceptions.hpp"
 
 #ifdef _WIN32
     #define __windows__
