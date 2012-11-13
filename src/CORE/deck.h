@@ -1183,7 +1183,7 @@ struct REQUIREMENT
 		//printf("%s %d = %d => %s %d\n",SRC.GetName(),SRC.GetHealth(),dmg,targets[s]->GetName(),targets[s]->GetHealth());
 
         //std::clog << "Mark: Before damage dealing" << std::endl;
-        bool damageWasDeadly;
+        bool damageWasDeadly = false;
         if (dmg > 0) {
 			UCHAR actualDamageDealt = 0;
 			bPierce = bPierce || (target.GetShield() && pierce);
