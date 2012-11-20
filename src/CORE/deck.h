@@ -41,6 +41,8 @@
 #include <cstdlib>
 #include <cstring>
 
+#include "achievementInfo.hpp"
+
 #define FANCY_STATS_COUNT		5
 
 #define FACTION_NONE			0
