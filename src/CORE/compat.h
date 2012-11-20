@@ -21,7 +21,10 @@
 #define _itoa_s(i,d,l) snprintf(d,l,"%d",i)
 #define itoa(value, buf, base) sprintf(buf, "%d", value)
 
-int fopen_s(FILE** pFile, const char *filename, const char *mode) {
+#include <cstdio>
+#include <cstring>
+
+inline int fopen_s(FILE** pFile, const char *filename, const char *mode) {
     FILE* file = fopen(filename, mode);
     *pFile = file;
     return errno;
@@ -30,7 +33,7 @@ int fopen_s(FILE** pFile, const char *filename, const char *mode) {
 #include <ctype.h>
 
 #if defined(__linux__) || defined(__MINGW32__)
-char* strlwr( char* s )
+inline char* strlwr( char* s )
 {
     char* p = s;
     while ((*p = tolower( *p ))) p++;
