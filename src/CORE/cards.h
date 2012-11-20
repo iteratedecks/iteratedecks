@@ -94,47 +94,7 @@ AchievementRequirementCompare DetectCompare(char const * const compare)
 	return EQUAL;
 };
 
-#if 1
-	MissionInfo::MissionInfo()
-	{
-		Commander = 0;
-	}
-	MissionInfo::MissionInfo(const UINT commander, const char *name)
-	{
-		Commander = commander;
-		if (name)
-			Name = string(name);
-		Deck.reserve(DEFAULT_DECK_RESERVE_SIZE);
-	}
-	void MissionInfo::Add(const UINT cardID)
-	{
-		Deck.push_back(cardID);
-	}
-	bool MissionInfo::GetDeck(char *buffer, size_t buffersize)
-	{
-		char lbuff[10];
-		for (UCHAR i=0;i<Deck.size();i++)
-		{
-			if (_itoa_s(Deck[i],lbuff,10))
-			{
-				if (buffer[0] != 0)
-					strcat_s(buffer,buffersize,",");
-				strcat_s(buffer,buffersize,lbuff);
-			}
-		}
-		return (buffer[0] != 0);
-	}
-	const UINT MissionInfo::GetCommander() const { return Commander; }
-	const char *MissionInfo::GetName() const { return Name.c_str(); }
-	const UINT MissionInfo::GetCardCount() const { return (UINT)Deck.size(); }
-	const UINT MissionInfo::GetCardID(UINT Index) const { return Deck[Index]; }
-	MissionInfo::~MissionInfo()
-	{
-		Commander = 0;
-		Deck.clear();
-	}
-	const bool MissionInfo::IsValid() const { return (Commander != 0); }
-#endif
+
 // helpers
 bool IsCardInDeck(const UINT Id, LCARDS &deck)
 {
@@ -1093,7 +1053,7 @@ char *FormatCardName(char *Name)
 			for (UINT i=0;i<MISSION_MAX_ID;i++)
 				if (MDB[i].GetCardCount())
 				{				
-					fprintf_s(f,"%s:",MDB[i].GetName());
+					fprintf_s(f,"%s:",MDB[i].GetName().c_str());
 					fprintf_s(f,"%s",CDB[MDB[i].GetCommander()].GetName());
 					for (UINT k=0;k<MDB[i].GetCardCount();k++)
 					{
@@ -1505,7 +1465,9 @@ char *FormatCardName(char *Name)
 		buffer[0] = 0;
 		for (MSUINT::iterator it=MIIndex.begin();it!=MIIndex.end();it++)
 		{
-			MDB[it->second].GetDeck(buffer,MAX_ID_LEN * DEFAULT_DECK_RESERVE_SIZE);
+            std::string str;
+			str = MDB[it->second].GetDeck();
+            strncat(buffer, str.c_str(), MAX_ID_LEN * DEFAULT_DECK_RESERVE_SIZE);
 			printf("%s:%s\n",it->first.c_str(),buffer);
 		}
 		for (MDECKS::iterator it=DIndex.begin();it!=DIndex.end();it++)
@@ -1627,7 +1589,7 @@ char *FormatCardName(char *Name)
 					if (buffer[0] != 0)
 						strcat_s(buffer,size,","); // commatext :)
 					strcat_s(buffer,size,"\"");
-					strcat_s(buffer,size,MDB[id].GetName());
+					strcat_s(buffer,size,MDB[id].GetName().c_str());
 					strcat_s(buffer,size,"\""); // yep, it's bad, but i dont care since it's called from delphi
 				}
 			}
@@ -1666,10 +1628,13 @@ char *FormatCardName(char *Name)
 	{
 		buffer[0] = 0;
 		MSUINT::iterator mi = MIIndex.find(DeckName);
-		if (mi == MIIndex.end())	
+		if (mi == MIIndex.end()) {
 			return buffer; // not found
+        }
 		_itoa_s(MDB[mi->second].GetCommander(),buffer,size);
-		MDB[mi->second].GetDeck(buffer,size);
+        std::string str;
+		str = MDB[mi->second].GetDeck();
+        strncat(buffer, str.c_str(), size);
 		return buffer;
 	}
 	// named decks

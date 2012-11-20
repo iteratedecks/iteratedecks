@@ -13,13 +13,6 @@
     #define TAG_SOMERAID	-1000
     #define TAG_SOMEMISSION	1000
 
-    #define CARD_MAX_ID				4000 // sizes of storage arrays
-    #define MISSION_MAX_ID			(UINT)400
-    #define ACHIEVEMENT_MAX_COUNT	300
-    #define RAID_MAX_ID				30
-    #define BATTLEGROUND_MAX_ID		20
-    #define STEP_MAX_ID				40
-
     typedef std::map<std::string, UINT> MSUINT;
     typedef std::pair<std::string, UINT> PAIRMSUINT;
     typedef std::vector<std::string> VSTRINGS;
@@ -36,25 +29,6 @@
     struct CardSet;
     typedef std::map<UINT, CardSet> MSETS;
     typedef std::pair<UINT, CardSet> PAIRMSETS;
-    typedef std::vector<UINT> VID;
-
-    class MissionInfo {
-        private:
-            std::string Name;
-            UINT Commander;
-            VID Deck;
-        public:
-            MissionInfo();
-            MissionInfo(const UINT commander, const char *name = 0);
-            void Add(const UINT cardID);
-            bool GetDeck(char *buffer, size_t buffersize);
-            const UINT GetCommander() const;
-            const char *GetName() const;
-            const UINT GetCardCount() const;
-            const UINT GetCardID(UINT Index) const;
-            ~MissionInfo();
-            const bool IsValid() const;
-    };
 
     class CardPool;
     typedef std::vector<CardPool> VCARDPOOL;
@@ -120,6 +94,10 @@
 
     #include "achievementInfo.hpp"
     using namespace IterateDecks::Core;
+
+    #include "constants.hpp"
+
+    #include "missionInfo.hpp"
 
     class CardDB {
         private:

@@ -288,9 +288,9 @@
 
     #include "Logger.hpp"
     class DeckLogger; // TODO remove this
-    #define DEFAULT_DECK_SIZE		10
-    #define DEFAULT_DECK_RESERVE_SIZE	15 // up to 20? kinda deck max size for structures
-    #define DEFAULT_HAND_SIZE		3
+
+    #include "constants.hpp"
+
     class ActiveDeck
     {
     public:
