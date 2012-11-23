@@ -51,6 +51,7 @@
 #include <stdexcept>
 
 using namespace EvaluateDecks::CLI;
+using namespace IterateDecks::Core;
 
 /**
  * The main function, little bit higher interface

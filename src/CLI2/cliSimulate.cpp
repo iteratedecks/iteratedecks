@@ -469,7 +469,7 @@ namespace EvaluateDecks {
                 Y.logger = defenseLogger;
 
                 LOG(simulationLogger,simulationStart(k));
-                Simulate(X,Y,r,simulationLogger, NULL, NULL, surge);
+                IterateDecks::Core::Simulate(X,Y,r,simulationLogger, NULL, NULL, surge);
                 LOG(simulationLogger,simulationEnd(k));
             }
             return r;

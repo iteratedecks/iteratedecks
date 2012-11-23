@@ -1,11 +1,20 @@
-#ifndef CARDS_HPP_
-    #define CARDS_HPP_
+#ifndef ITERATEDECKS_CORE_CARDS_HPP
+    #define ITERATEDECKS_CORE_CARDS_HPP
 
     #include <set>
     #include <map>
     #include <vector>
     #include <utility>
     #include "deck.hpp"
+
+    #include "achievementInfo.hpp"
+    #include "constants.hpp"
+    #include "missionInfo.hpp"
+    #include "raidInfo.hpp"
+
+    #include "card.hpp"
+
+    namespace IterateDecks { namespace Core {
 
     #define TAG_ANY			-100500
     #define TAG_BATCHEVAL	100500
@@ -30,28 +39,6 @@
     typedef std::map<UINT, CardSet> MSETS;
     typedef std::pair<UINT, CardSet> PAIRMSETS;
 
-    class CardPool;
-    typedef std::vector<CardPool> VCARDPOOL;
-
-    class RaidInfo {
-        private:
-            std::string Name;
-            UINT Commander;
-            VID AlwaysInclude;
-            VCARDPOOL Pools;
-        public:
-            RaidInfo();
-            RaidInfo(UINT commander, const char *name);
-            RaidInfo(RaidInfo const &RI);
-            void GetAlways(Card *pCDB, LCARDS &Deck) const;
-            void GetPools(Card *pCDB, LCARDS &Deck) const;
-            const UINT GetCommander();
-            const char *GetName() const;
-            void AddAlways(const UINT cardID);
-            void AddPool(const CardPool &p);
-            bool IsValid();
-            ~RaidInfo();
-    };
 
     class BgInfo {
         private:
@@ -91,13 +78,6 @@
         float CardValue;
         SKILL();
     };
-
-    #include "achievementInfo.hpp"
-    using namespace IterateDecks::Core;
-
-    #include "constants.hpp"
-
-    #include "missionInfo.hpp"
 
     class CardDB {
         private:
@@ -183,5 +163,7 @@
             // named decks
             ActiveDeck GetNamedDeck(const char* DeckName, const int Tag);
     };
+
+    }}
 
 #endif

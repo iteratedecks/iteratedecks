@@ -32,6 +32,10 @@
 
 #include "achievementInfo.hpp"
 
+#include "cardPool.hpp"
+
+namespace IterateDecks { namespace Core {
+
 struct DeckIndex
 {
 	string Name;
@@ -94,131 +98,6 @@ AchievementRequirementCompare DetectCompare(char const * const compare)
 	return EQUAL;
 };
 
-
-// helpers
-bool IsCardInDeck(const UINT Id, LCARDS &deck)
-{
-	if ((Id) && (!deck.empty()))
-		for (LCARDS::const_iterator iter = deck.begin(); iter != deck.end(); iter++) {
-			if (iter->GetId() == Id) {
-				return true;
-            }
-		}
-	return false;
-}
-void PickACard(Card *pCDB, VID &fromIDpool, LCARDS &topool, bool checkLegendaries = true)
-{
-	bool bLegendary = false;
-	if (!fromIDpool.empty())
-	{
-		UCHAR indx = 0;
-		if(checkLegendaries) {
-			for (LCARDS::iterator vi = topool.begin();vi != topool.end();vi++)
-				if (vi->GetRarity() == RARITY_LEGENDARY)
-					bLegendary = true;
-		}
-		UINT iPreventLoop = 0;
-		do
-		{
-			indx = UCHAR(rand() % fromIDpool.size());
-			iPreventLoop++;
-			if (iPreventLoop > 1000)
-			{
-                printf("Looping has been prevented when choosing %s...\n", pCDB[fromIDpool[indx]].GetName());
-				break;
-			}
-		}
-		while (((pCDB[fromIDpool[indx]].GetRarity() == RARITY_UNIQUE) && IsCardInDeck(fromIDpool[indx],topool))
-			|| (bLegendary && (pCDB[fromIDpool[indx]].GetRarity() == RARITY_LEGENDARY)));   // unique check    
-
-		topool.push_back(&pCDB[fromIDpool[indx]]);
-		fromIDpool.erase(fromIDpool.begin()+indx);
-	}
-};
-struct CardPool
-{
-#define DEFAULT_POOL_COUNT	5
-#define DEFAULT_POOL_SIZE	10
-	UCHAR Amount;
-	VID Pool;
-public:
-	CardPool() {};
-	CardPool(UCHAR amount)
-	{
-		Amount = amount;
-		Pool.reserve(DEFAULT_POOL_SIZE);
-	}
-	CardPool(const CardPool &C) // copy constructor
-	{
-		Amount = C.Amount;
-		Pool.clear();
-		for (UCHAR i=0;i<C.Pool.size();i++)
-			Pool.push_back(C.Pool[i]);
-	}
-	~CardPool() { Pool.clear(); };
-	void GetPool(Card *pCDB, LCARDS &Deck, bool checkLegendaries = true) const
-	{
-		assertX(Amount); // invalid pool
-		assertX(!Pool.empty()); // invalid pool
-		// we must copy a pool into temporary
-		VID tmpPool;
-		tmpPool.reserve(Pool.size());
-		for (UCHAR i=0;i<Pool.size();i++)
-			tmpPool.push_back(Pool[i]);
-		for (UCHAR i=0;i<Amount;i++)
-			PickACard(pCDB,tmpPool,Deck,checkLegendaries);
-		tmpPool.clear();
-	}
-};
-
-#if 1
-	RaidInfo::RaidInfo() {}
-	RaidInfo::RaidInfo(UINT commander, const char *name)
-	{
-		Commander = commander;
-		if (name)
-			Name = string(name);
-		AlwaysInclude.reserve(DEFAULT_DECK_RESERVE_SIZE);
-		Pools.reserve(DEFAULT_POOL_COUNT);
-	}
-	RaidInfo::RaidInfo(RaidInfo const &RI)
-	{
-		Name = RI.Name;
-		Commander = RI.Commander;
-		AlwaysInclude.clear();
-		for (UCHAR i=0;i<RI.AlwaysInclude.size();i++)
-			AlwaysInclude.push_back(RI.AlwaysInclude[i]);
-		for (UCHAR i=0;i<RI.Pools.size();i++)
-			Pools.push_back(RI.Pools[i]);
-	}
-	void RaidInfo::GetAlways(Card *pCDB, LCARDS &Deck) const
-	{
-		for (UCHAR i=0;i<AlwaysInclude.size();i++)
-			if (pCDB[AlwaysInclude[i]].IsCard())
-				Deck.push_back(&pCDB[AlwaysInclude[i]]);
-	}
-	void RaidInfo::GetPools(Card *pCDB, LCARDS &Deck) const
-	{
-		for (UCHAR i=0;i<Pools.size();i++)
-			Pools[i].GetPool(pCDB,Deck);
-	}
-	const UINT RaidInfo::GetCommander() { return Commander; };
-	const char *RaidInfo::GetName() const { return Name.c_str(); }
-	void RaidInfo::AddAlways(const UINT cardID)
-	{
-		AlwaysInclude.push_back(cardID);
-	}
-	void RaidInfo::AddPool(const CardPool &p)
-	{
-		Pools.push_back(p);
-	}
-	bool RaidInfo::IsValid() { return (Commander != 0); }
-	RaidInfo::~RaidInfo()
-	{ 
-		AlwaysInclude.clear();
-		Pools.clear();
-	}
-#endif
 
 #if 1
 	BgInfo::BgInfo() {};
@@ -1921,3 +1800,5 @@ std::string Logger::abilityIdToString(AbilityId const & abilityId) const
     char const * cStrName = cDB->GetSkill(abilityId);
     return std::string(cStrName);
 }
+
+}}

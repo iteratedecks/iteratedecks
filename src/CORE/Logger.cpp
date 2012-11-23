@@ -4,6 +4,8 @@
 #include <sstream>
 #include "assert.hpp"
 
+namespace IterateDecks { namespace Core {
+
 static int logInit=0;
 unsigned long const Logger::LOG_NONE                     (0);
 unsigned long const Logger::LOG_ABILITY                  (1<<logInit++);
@@ -487,3 +489,5 @@ void DeckLogger::defensiveRefresh(EVENT_CONDITION const & eventCondition, Played
         this->ability(eventCondition, unit, ssMessage.str());
     }
 }
+
+}}

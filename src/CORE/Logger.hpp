@@ -5,6 +5,8 @@
     #include "deck.hpp"
     #include "playedCard.hpp"
 
+    namespace IterateDecks { namespace Core {
+
     class Logger {
         public:
             enum ColorMode {
@@ -100,5 +102,7 @@
     };
 
     #define LOG(logger,command) do { if((logger) != NULL) { (logger)->command; } } while(false)
+
+    }}
 
 #endif

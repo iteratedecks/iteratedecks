@@ -21,6 +21,8 @@
 #include "deck.hpp"
 #include "results.hpp"
 
+namespace IterateDecks { namespace Core {
+
 // struct RESULTS
 	RESULTS::RESULTS()
 	{
@@ -151,3 +153,4 @@ struct RESULT_BY_CARD
 	}
 };
 
+}}

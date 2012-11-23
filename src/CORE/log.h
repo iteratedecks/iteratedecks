@@ -1,4 +1,7 @@
 #define INVALID_ROWID	100
+
+namespace IterateDecks { namespace Core {
+
 struct LOG_CARD
 {
 	UCHAR DeckID;
@@ -44,3 +47,4 @@ struct LOG_RECORD
 	{};
 };
 
+}}

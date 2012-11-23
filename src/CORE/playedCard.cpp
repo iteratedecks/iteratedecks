@@ -2,6 +2,8 @@
 #include <sstream>
 #include <iomanip>
 
+namespace IterateDecks { namespace Core {
+
 bool PlayedCard::canAttack() const {
     if(this->GetEffect(DMGDEPENDANT_IMMOBILIZE) > 0) {
         return false;
@@ -79,3 +81,5 @@ std::string PlayedCard::toRectString(unsigned int const w, unsigned int const i)
     }
     return ssLine.str();
 }
+
+}}

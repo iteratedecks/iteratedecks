@@ -18,6 +18,8 @@
     #include <getopt.h>
 #endif
 
+using namespace IterateDecks::Core;
+
     namespace EvaluateDecks {
         namespace CLI {
 

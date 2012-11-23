@@ -1,3 +1,5 @@
+namespace IterateDecks { namespace Core {
+
 void Simulate(ActiveDeck &tAtk
              ,ActiveDeck &tDef
              ,RESULTS &r
@@ -21,3 +23,5 @@ void EvaluateRaidQuestOnce(const ActiveDeck gAtk
                            , UINT *SkillProcs = 0
                            , bool bAnnihilator = false
                            , bool bSurrenderAtLoss = false);
+
+}}

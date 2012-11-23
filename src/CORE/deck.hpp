@@ -1,20 +1,5 @@
 #ifndef DECK_HPP_2
     #define DECK_HPP_2
-    /**
-     * Conditions for an event, pseudo bit feld, value 0 is special.
-     */
-    typedef unsigned char EVENT_CONDITION;
-    /**
-     * Event conditions.
-     * This is a bit field, new elements should be powers of two.
-     * Zero is a special case. Would be easer if it were not.
-     */
-    #define EVENT_EMPTY				0
-    #define EVENT_DIED				1
-    #define EVENT_PLAYED			2
-    //#define EVENT_BOTH				3 // bad name, but means: on play on death. no longer used.
-    #define EVENT_ATTACKED          4 // on attacked
-    // next EVENT_SOMETHING         8
 
 #endif
 
@@ -26,9 +11,16 @@
     #include <set>
     #include <string>
 
-    #define CARD_NAME_MAX_LENGTH	50 // must sync it with CARD_NAME_MAX_LENGTH in interface
-    #define FILENAME_MAX_LENGTH		50 //
-    #define CARD_ABILITIES_MAX		70 // must sync it with CARD_ABILITIES_MAX in interface
+    #include "simpleTypes.hpp"
+
+    #include "logger.forward.hpp"
+
+    #include "constants.hpp"
+
+    #include "playedCard.forward.hpp"
+
+    namespace IterateDecks { namespace Core {
+
 
     #define ABILITY_ENABLED			1  // just a helper, no use
 
@@ -104,7 +96,6 @@
     #define RARITY_LEGENDARY		4
     #define RARITY_STORYCOMMANDER	10
 
-    #include "simpleTypes.hpp"
     char const * const FACTIONS[6] = {0,"Imperial","Raider","Bloodthirsty","Xeno","Righteous"};
 
     class Card;
@@ -123,63 +114,6 @@
     typedef std::pair<PlayedCard*,UCHAR> PPCARDINDEX;
     typedef std::vector<PPCARDINDEX> PPCIV;
     typedef std::multiset<UINT> MSID;
-    typedef std::list<PlayedCard> LCARDS;
-
-    class Card
-    {
-    private:
-        UINT Id;
-        char Name[CARD_NAME_MAX_LENGTH];
-        char Picture[FILENAME_MAX_LENGTH];
-        UCHAR Type;
-        UCHAR Wait;
-        UINT Set;
-        UCHAR Faction;
-        UCHAR Attack;
-        UCHAR Health;
-        UCHAR Rarity;
-        EFFECT_ARGUMENT Effects[CARD_ABILITIES_MAX];
-        UCHAR TargetCounts[CARD_ABILITIES_MAX];
-        UCHAR TargetFactions[CARD_ABILITIES_MAX]; // reserved negative values for faction
-        UCHAR AbilityEvent[CARD_ABILITIES_MAX];
-    #define RESERVE_ABILITIES_COUNT	3
-        std::vector<UCHAR> AbilitiesOrdered;
-    protected:
-        void CopyName(const char *name);
-        void CopyPic(const char *pic);
-    public:
-        Card();
-        Card(const UINT id, const char* name, const char* pic, const UCHAR rarity, const UCHAR type, const UCHAR faction, const UCHAR attack, const UCHAR health, const UCHAR wait, const UINT set);
-        Card(const Card &card);
-        Card& operator=(const Card &card);
-        void AddAbility(const UCHAR id, const EFFECT_ARGUMENT effect, const UCHAR targetcount, const UCHAR targetfaction, const UCHAR skillevent = EVENT_EMPTY);
-        void AddAbility(const UCHAR id, const UCHAR targetcount, const UCHAR targetfaction);
-        void AddAbility(const UCHAR id, const EFFECT_ARGUMENT effect);
-        void AddAbility(const UCHAR id);
-        void PrintAbilities();
-        void Destroy();
-        ~Card();
-        const bool IsCard() const;
-        const UINT GetId() const;
-        const char* GetID16(UINT &ID16Storage, bool bLowerCase = false) const;
-        const unsigned short GetID64() const;
-        const char* GetID64(UINT &ID64Storage) const;
-        const UCHAR GetAttack() const;
-        const UCHAR GetHealth() const;
-        const UCHAR GetWait() const;
-        const UCHAR GetType() const;
-        const UCHAR GetSet() const;
-        const UCHAR GetRarity() const;
-        const UCHAR GetFaction() const;
-        const EFFECT_ARGUMENT GetAbility(const UCHAR id) const;
-        const UCHAR GetAbilitiesCount() const;
-        const UCHAR GetAbilityInOrder(const UCHAR order) const;
-        const UCHAR GetTargetCount(const UCHAR id) const;
-        const UCHAR GetTargetFaction(const UCHAR id) const;
-        const UCHAR GetAbilityEvent(const UCHAR id) const;
-        const char *GetName() const;
-        const char *GetPicture() const;
-    };
 
     #include "playedCard.hpp"
     class PlayedCard {
@@ -286,10 +220,7 @@
             unsigned int getUniqueId() const;
     };
 
-    #include "Logger.hpp"
-    class DeckLogger; // TODO remove this
 
-    #include "constants.hpp"
 
     class ActiveDeck
     {
@@ -419,5 +350,7 @@
         void FilterTargets(PPCIV &targets, const EFFECT_ARGUMENT skipEffects[], const EFFECT_ARGUMENT targetSkills[], const int waitMin, const int waitMax, const int attackLimit, bool skipPlayed);
     	void RandomizeTarget(PPCIV &targets, UCHAR targetCount, ActiveDeck &Dest, bool canIntercept);
     };
+
+    }}
 #endif
 

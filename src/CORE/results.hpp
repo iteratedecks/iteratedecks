@@ -3,6 +3,8 @@
 
     #include "deck.hpp"
 
+    namespace IterateDecks { namespace Core {
+
     typedef unsigned long       DWORD;
 
     struct RESULTS
@@ -17,4 +19,6 @@
         RESULTS();
         void Add(const RESULTS rAdd);
     };
+
+}}
 #endif

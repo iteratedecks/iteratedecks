@@ -85,6 +85,8 @@ int AchievementIndex = -1; // index, not id
 
 #include "deck.hpp"
 
+namespace IterateDecks { namespace Core {
+
 #define PROC50	Proc()
 const bool PROC50
 {
@@ -948,13 +950,15 @@ struct REQUIREMENT
         }
         return *iter;
     }
-	void ActiveDeck::Reserve()
+
+    void ActiveDeck::Reserve()
 	{
 		//Deck.reserve(DEFAULT_DECK_RESERVE_SIZE);
 		//Units.reserve(DEFAULT_DECK_RESERVE_SIZE);
 		//Structures.reserve(DEFAULT_DECK_RESERVE_SIZE);
 		//Actions.reserve(DEFAULT_DECK_RESERVE_SIZE);
 	}
+
 	LOG_RECORD* ActiveDeck::LogAdd(LOG_CARD src, UCHAR AbilityID, UCHAR Effect)
 	{
 		if (!Log) return 0;
@@ -3542,3 +3546,5 @@ struct REQUIREMENT
 		}
 		return (SufferDmg(QuestEffectId,Dmg,0,0,0,overkill) > 0);
 	}
+
+}}

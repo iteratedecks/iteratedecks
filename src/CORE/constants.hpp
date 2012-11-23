@@ -16,6 +16,10 @@
             #define DEFAULT_DECK_RESERVE_SIZE	15 // up to 20? kinda deck max size for structures
             #define DEFAULT_HAND_SIZE		3
 
+            #define CARD_NAME_MAX_LENGTH	50 // must sync it with CARD_NAME_MAX_LENGTH in interface
+            #define FILENAME_MAX_LENGTH		50 //
+            #define CARD_ABILITIES_MAX		70 // must sync it with CARD_ABILITIES_MAX in interface
+
         }
     }
 

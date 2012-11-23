@@ -12,6 +12,7 @@
 //
 // contains some threading evaluation routines
 
+namespace IterateDecks { namespace Core {
 CardDB DB; // just to make all easier ...
 #define MAX_TURN				50
 UINT MaxTurn = MAX_TURN;
@@ -20,6 +21,7 @@ UINT MaxTurn = MAX_TURN;
 typedef map<string, PICK_STATS> MSPS;
 typedef pair<string, PICK_STATS> PAIRSPS;
 MSPS StatsByOrder;
+}}
 #if defined(__windows__)
 #include <windows.h>
 #include <process.h>
@@ -40,6 +42,8 @@ static CRITICAL_SECTION cs;
 //#define LeaveCriticalSection pthread_mutex_unlock
 //#define DeleteCriticalSection pthread_mutex_destroy
 #endif
+
+namespace IterateDecks { namespace Core {
 
 int OrderLength = 0;// 0 to disable //DEFAULT_DECK_SIZE;
 UINT MaxOrderHeapSize = 700;
@@ -844,3 +848,5 @@ struct EVAL_PARAMS
 	int AchievementIndex;
 	DWORD SecondPassMultiplier;
 };
+
+}}
