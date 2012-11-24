@@ -104,7 +104,7 @@
             bool SaveIndex(const char *FileName, MDECKS &index);
             UCHAR DetectTypeByID(UINT ID);
             UCHAR RemapFaction(UCHAR XmlID);
-            UCHAR RemapRarity(UCHAR XmlID, UCHAR UniqueFlag = 0);
+            Rarity RemapRarity(UCHAR XmlID, UCHAR UniqueFlag = 0);
         public:
             const Card *GetPointer() const;
             bool LoadCardXML(const char *FileName, char *returnnewcards = 0, size_t MaxBufferSize = 0);

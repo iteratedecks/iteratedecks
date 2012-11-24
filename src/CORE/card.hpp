@@ -7,8 +7,7 @@
     namespace IterateDecks {
         namespace Core {
 
-            class Card
-            {
+            class Card {
                 private:
                     UINT Id;
                     char Name[CARD_NAME_MAX_LENGTH];
@@ -19,7 +18,7 @@
                     UCHAR Faction;
                     UCHAR Attack;
                     UCHAR Health;
-                    UCHAR Rarity;
+                    Rarity rarity;
                     EFFECT_ARGUMENT Effects[CARD_ABILITIES_MAX];
                     UCHAR TargetCounts[CARD_ABILITIES_MAX];
                     UCHAR TargetFactions[CARD_ABILITIES_MAX]; // reserved negative values for faction
@@ -31,7 +30,7 @@
                     void CopyPic(const char *pic);
                 public:
                     Card();
-                    Card(const UINT id, const char* name, const char* pic, const UCHAR rarity, const UCHAR type, const UCHAR faction, const UCHAR attack, const UCHAR health, const UCHAR wait, const UINT set);
+                    Card(const UINT id, const char* name, const char* pic, Rarity const rarity, const UCHAR type, const UCHAR faction, const UCHAR attack, const UCHAR health, const UCHAR wait, const UINT set);
                     Card(const Card &card);
                     Card& operator=(const Card &card);
                     void AddAbility(const UCHAR id, const EFFECT_ARGUMENT effect, const UCHAR targetcount, const UCHAR targetfaction, const UCHAR skillevent = EVENT_EMPTY);

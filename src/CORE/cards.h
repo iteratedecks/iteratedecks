@@ -241,7 +241,7 @@ char *FormatCardName(char *Name)
 			return FACTION_RAIDER;
 		return FACTION_NONE;
 	}
-	UCHAR CardDB::RemapRarity(UCHAR XmlID, UCHAR UniqueFlag)
+	Rarity CardDB::RemapRarity(UCHAR XmlID, UCHAR UniqueFlag)
 	{
 		if (XmlID == 1)
 			return RARITY_COMMON;
@@ -589,7 +589,7 @@ char *FormatCardName(char *Name)
 							//assertX(!_strcmpi(ti->name(),"card")); // all siblings must be "card", but, i'd better check
 							// ok here can be mistakes, gotta seed them out
 							if (!_strcmpi(ti->name(),"card"))
-								p.Pool.push_back(atoi(ti->child_value()));
+								p.pool.push_back(atoi(ti->child_value()));
 						}
 						RDB[Id].AddPool(p);	
 					}							
@@ -652,7 +652,7 @@ char *FormatCardName(char *Name)
 								//assertX(!_strcmpi(ti->name(),"card")); // all siblings must be "card", but, i'd better check
 								// ok here can be mistakes, gotta seed them out
 								if (!_strcmpi(ti->name(),"card"))
-									p.Pool.push_back(atoi(ti->child_value()));
+									p.pool.push_back(atoi(ti->child_value()));
 							}
 							STDB[Id].AddPool(p);	
 						}							

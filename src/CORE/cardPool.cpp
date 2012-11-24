@@ -9,64 +9,89 @@ namespace IterateDecks {
     namespace Core {
 
         // helpers
-        bool IsCardInDeck(const UINT Id, LCARDS &deck)
+        /**
+         * @brief Checks whether a card is inside a deck.
+         * @param id the card's id
+         * @param deck a list of cards
+         * @return whether a card with the given id is insede the deck
+         */
+        bool isCardInDeck(UINT const id
+                         ,LCARDS const & deck
+                         )
         {
-            if ((Id) && (!deck.empty()))
+            // I don't see any reason why we would call this with an id of 0
+            assertX(id);
+            if(!id) {
+                return false;
+            }
+            // TODO does this check improve speed or not?
+            if (!deck.empty()) {
                 for (LCARDS::const_iterator iter = deck.begin(); iter != deck.end(); iter++) {
-                    if (iter->GetId() == Id) {
+                    if (iter->GetId() == id) {
                         return true;
                     }
                 }
+            }
             return false;
         }
 
-        void PickACard(Card *pCDB, VID &fromIDpool, LCARDS &topool, bool checkLegendaries = true)
+        void PickACard(Card const * pCDB
+                      ,VID & fromIdPool
+                      ,LCARDS & toPool
+                      ,bool const checkLegendaries
+                      )
         {
-            bool bLegendary = false;
-            if (!fromIDpool.empty())
-            {
-                UCHAR indx = 0;
+            if (!fromIdPool.empty()) {
+                bool bLegendary = false;    //< stores whether we already have a legendary
+
                 if(checkLegendaries) {
-                    for (LCARDS::iterator vi = topool.begin();vi != topool.end();vi++)
-                        if (vi->GetRarity() == RARITY_LEGENDARY)
+                    // Check if we already have a legendary.
+                    for (LCARDS::iterator vi = toPool.begin(); vi != toPool.end(); vi++) {
+                        if (vi->GetRarity() == RARITY_LEGENDARY) {
                             bLegendary = true;
+                        }
+                    }
                 }
-                UINT iPreventLoop = 0;
-                do
-                {
-                    indx = UCHAR(rand() % fromIDpool.size());
-                    iPreventLoop++;
-                    if (iPreventLoop > 1000)
-                    {
-                        std::cout << "Looping has been prevented when choosing " <<  pCDB[fromIDpool[indx]].GetName() << "..." << std::endl;
+
+                int maxTries = 1000; //< abort after too many tries
+                UCHAR id = 0;     //< id of found card
+                UINT index = 0xdeadbeef;
+                Card card;
+                do {
+                    // Note that this is not a uniform distribution unless
+                    // fromIdPool.size() is much smaller than RAND_MAX
+                    // (which we can assume) or fromIdPool.size() divides RAND_MAX
+                    index = (rand() % fromIdPool.size());
+                    id = fromIdPool[index];
+                    card = pCDB[id];
+
+                    maxTries--;
+                    if (maxTries <= 0) {
+                        std::cout << "Looping has been aborted when choosing " <<  card.GetName() << "..." << std::endl;
                         break;
                     }
                 }
-                while (((pCDB[fromIDpool[indx]].GetRarity() == RARITY_UNIQUE) && IsCardInDeck(fromIDpool[indx],topool))
-                    || (bLegendary && (pCDB[fromIDpool[indx]].GetRarity() == RARITY_LEGENDARY)));   // unique check
+                while (((card.GetRarity() == RARITY_UNIQUE) && isCardInDeck(id,toPool))
+                    || (bLegendary && (card.GetRarity() == RARITY_LEGENDARY)));   // unique check
 
-                topool.push_back(&pCDB[fromIDpool[indx]]);
-                fromIDpool.erase(fromIDpool.begin()+indx);
+                toPool.push_back(&card);
+                fromIdPool.erase(fromIdPool.begin()+index);
             }
         };
 
-        void CardPool::GetPool(Card * pCDB
-                              ,LCARDS &Deck
-                              ,bool checkLegendaries
+        void CardPool::GetPool(Card const * pCDB
+                              ,LCARDS & Deck
+                              ,bool const checkLegendaries
                               ) const
         {
-            assertX(Amount); // invalid pool
-            assertX(!Pool.empty()); // invalid pool
+            assertX(this->amount); // invalid pool
+            assertX(!this->pool.empty()); // invalid pool
             // we must copy a pool into temporary
-            VID tmpPool;
-            tmpPool.reserve(Pool.size());
-            for (UCHAR i=0;i<Pool.size();i++) {
-                tmpPool.push_back(Pool[i]);
+            VID tmpPool(this->pool);
+
+            for (UCHAR i=0; i<this->amount; i++) {
+                PickACard(pCDB, tmpPool, Deck, checkLegendaries);
             }
-            for (UCHAR i=0;i<Amount;i++) {
-                PickACard(pCDB,tmpPool,Deck,checkLegendaries);
-            }
-            tmpPool.clear();
         }
 
     }

@@ -89,13 +89,6 @@
     #define TYPE_STRUCTURE			3
     #define TYPE_ACTION				4
 
-    #define RARITY_COMMON			0
-    #define RARITY_UNCOMMON			1
-    #define RARITY_RARE				2
-    #define RARITY_UNIQUE			3
-    #define RARITY_LEGENDARY		4
-    #define RARITY_STORYCOMMANDER	10
-
     char const * const FACTIONS[6] = {0,"Imperial","Raider","Bloodthirsty","Xeno","Righteous"};
 
     class Card;

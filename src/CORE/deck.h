@@ -142,7 +142,8 @@ const UINT BASE642ID(const unsigned short base64)
 		memset(AbilityEvent,0,CARD_ABILITIES_MAX);		
 		//AbilitiesOrdered.reserve(RESERVE_ABILITIES_COUNT);
 	}
-	Card::Card(const UINT id, const char* name, const char* pic, const UCHAR rarity, const UCHAR type, const UCHAR faction, const UCHAR attack, const UCHAR health, const UCHAR wait, const UINT set)
+	Card::Card(const UINT id, const char* name, const char* pic, Rarity const rarity, const UCHAR type, const UCHAR faction, const UCHAR attack, const UCHAR health, const UCHAR wait, const UINT set)
+    : rarity(rarity)
 	{
 		Id = id;
 		//UINT temp = ID2BASE64(4000);
@@ -155,7 +156,6 @@ const UINT BASE642ID(const unsigned short base64)
 		Attack = attack;
 		Health = health;
 		Wait = wait;
-		Rarity = rarity;
 		Set = set;
 		memset(Effects,0,CARD_ABILITIES_MAX*sizeof(EFFECT_ARGUMENT));
 		memset(TargetCounts,0,CARD_ABILITIES_MAX);
@@ -163,7 +163,8 @@ const UINT BASE642ID(const unsigned short base64)
 		memset(AbilityEvent,0,CARD_ABILITIES_MAX);	
 		AbilitiesOrdered.reserve(RESERVE_ABILITIES_COUNT);
 	}
-	Card::Card(const Card &card)
+	Card::Card(Card const & card)
+    : rarity(card.rarity)
 	{
 		Id = card.Id;
 		memcpy(Name,card.Name,CARD_NAME_MAX_LENGTH);
@@ -173,7 +174,6 @@ const UINT BASE642ID(const unsigned short base64)
 		Attack = card.Attack;
 		Health = card.Health;
 		Wait = card.Wait;
-		Rarity = card.Rarity;
 		Set = card.Set;
 		memcpy(Effects,card.Effects,CARD_ABILITIES_MAX*sizeof(EFFECT_ARGUMENT));
 		memcpy(TargetCounts,card.TargetCounts,CARD_ABILITIES_MAX);
@@ -184,7 +184,7 @@ const UINT BASE642ID(const unsigned short base64)
 			for (UCHAR i=0;i<card.AbilitiesOrdered.size();i++)
 				AbilitiesOrdered.push_back(card.AbilitiesOrdered[i]);
 	}
-	Card& Card::operator=(const Card &card)
+	Card& Card::operator=(Card const &card)
 	{
 		Id = card.Id;
 		memcpy(Name,card.Name,CARD_NAME_MAX_LENGTH);
@@ -194,7 +194,7 @@ const UINT BASE642ID(const unsigned short base64)
 		Attack = card.Attack;
 		Health = card.Health;
 		Wait = card.Wait;
-		Rarity = card.Rarity;
+		this->rarity = card.rarity;
 		Set = card.Set;
 		memcpy(Effects,card.Effects,CARD_ABILITIES_MAX*sizeof(EFFECT_ARGUMENT));
 		memcpy(TargetCounts,card.TargetCounts,CARD_ABILITIES_MAX);
@@ -276,7 +276,7 @@ const UINT BASE642ID(const unsigned short base64)
 	const UCHAR Card::GetWait() const		{	return Wait;	}
 	const UCHAR Card::GetType() const		{	return Type;	}
 	const UCHAR Card::GetSet() const		{	return Set;		}
-	const UCHAR Card::GetRarity() const { return Rarity; }
+	const UCHAR Card::GetRarity() const { return this->rarity; }
 	const UCHAR Card::GetFaction() const { return Faction; }
 	const EFFECT_ARGUMENT Card::GetAbility(const UCHAR id) const { return Effects[id]; }
 	const UCHAR Card::GetAbilitiesCount() const { return (UCHAR)AbilitiesOrdered.size(); }
