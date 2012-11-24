@@ -28,6 +28,7 @@ namespace IterateDecks {
         {
             return this->name;
         }
+
         UINT BgInfo::GetEffectId()
         {
             return this->effectId;
