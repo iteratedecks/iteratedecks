@@ -1532,7 +1532,7 @@ char *FormatCardName(char *Name)
 				if (buffer[0] != 0)	
 					strcat_s(buffer,size,","); // commatext :)
 				strcat_s(buffer,size,"\"");
-				strcat_s(buffer,size,BGDB[STDB[i].GetBGId()].GetName());
+				strcat_s(buffer,size,BGDB[STDB[i].GetBGId()].GetName().c_str());
 				char bu[5];
 				strcat_s(buffer,size,"(");	
 				itoa(i,bu,10);

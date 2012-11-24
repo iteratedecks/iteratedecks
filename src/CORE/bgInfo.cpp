@@ -24,9 +24,9 @@ namespace IterateDecks {
         {
         }
 
-        const char * BgInfo::GetName()
+        std::string BgInfo::GetName()
         {
-            return this->name.c_str();
+            return this->name;
         }
         UINT BgInfo::GetEffectId()
         {

@@ -17,7 +17,7 @@
                     BgInfo();
                     BgInfo(UINT const id,char const * const name, char const * const desc, UINT const effectid);
                     BgInfo(BgInfo const & BI);
-                    const char * GetName();
+                    std::string GetName();
                     UINT GetEffectId();
             };
 
