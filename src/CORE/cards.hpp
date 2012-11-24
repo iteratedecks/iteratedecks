@@ -12,6 +12,7 @@
     #include "missionInfo.hpp"
     #include "raidInfo.hpp"
     #include "bgInfo.hpp"
+    #include "stepInfo.hpp"
 
     #include "card.hpp"
 
@@ -39,24 +40,6 @@
     struct CardSet;
     typedef std::map<UINT, CardSet> MSETS;
     typedef std::pair<UINT, CardSet> PAIRMSETS;
-
-    class StepInfo {
-        private:
-            UINT Id;
-            UINT BgId;
-            UINT Commander;
-            VCARDPOOL Pools;
-        public:
-            StepInfo();
-            StepInfo(UINT id, UINT bgid, UINT commander);
-            StepInfo(StepInfo const &SI);
-            void GetPools(Card *pCDB, LCARDS &Deck) const;
-            const UINT GetCommander();
-            const UINT GetBGId();
-            void AddPool(const CardPool &p);
-            bool IsValid();
-            ~StepInfo();
-    };
 
     struct SKILL {
         char SkillName[CARD_NAME_MAX_LENGTH];

@@ -99,43 +99,6 @@ AchievementRequirementCompare DetectCompare(char const * const compare)
 };
 
 #if 1
-	StepInfo::StepInfo() {}
-	StepInfo::StepInfo(UINT id, UINT bgid, UINT commander)
-	{
-		Id = id;
-		BgId = bgid;
-		Commander = commander;
-		Pools.reserve(DEFAULT_POOL_COUNT);
-	}
-	StepInfo::StepInfo(StepInfo const &SI)
-	{
-		Id = SI.Id;
-		BgId = SI.BgId;
-		Commander = SI.Commander;
-		for (UCHAR i=0;i<SI.Pools.size();i++)
-			Pools.push_back(SI.Pools[i]);
-	}
-	void StepInfo::GetPools(Card *pCDB, LCARDS &Deck) const
-	{
-		for (UCHAR i=0;i<Pools.size();i++)
-		{
-			Pools[i].GetPool(pCDB,Deck, false);
-		}
-	}
-	const UINT StepInfo::GetCommander() { return Commander; };
-	const UINT StepInfo::GetBGId() { return BgId; };
-	void StepInfo::AddPool(const CardPool &p)
-	{
-		Pools.push_back(p);
-	}
-	bool StepInfo::IsValid() { return (Commander && Id && BgId); }
-	StepInfo::~StepInfo()
-	{ 
-		Pools.clear();
-	}
-#endif
-
-#if 1
 	SKILL::SKILL()
 	{
 		SkillName[0] = 0;
