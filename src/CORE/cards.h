@@ -98,33 +98,6 @@ AchievementRequirementCompare DetectCompare(char const * const compare)
 	return EQUAL;
 };
 
-
-#if 1
-	BgInfo::BgInfo() {};
-	BgInfo::BgInfo(const UINT id,const char *name,const char *desc,const UINT effectid)
-	{
-		Id = id;
-		Name = string(name);
-		Desc = string(desc);
-		EffectId = effectid;
-	}
-	BgInfo::BgInfo(const BgInfo &BI) // copy constructor
-	{
-		Id = BI.Id;
-		Name = BI.Name;
-		Desc = BI.Desc;
-		EffectId = BI.EffectId;
-	}
-	const char *BgInfo::GetName()
-	{
-		return Name.c_str();
-	}
-	const UINT BgInfo::GetEffectId()
-	{
-		return EffectId;
-	}
-#endif
-
 #if 1
 	StepInfo::StepInfo() {}
 	StepInfo::StepInfo(UINT id, UINT bgid, UINT commander)

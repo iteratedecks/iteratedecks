@@ -11,6 +11,7 @@
     #include "constants.hpp"
     #include "missionInfo.hpp"
     #include "raidInfo.hpp"
+    #include "bgInfo.hpp"
 
     #include "card.hpp"
 
@@ -38,21 +39,6 @@
     struct CardSet;
     typedef std::map<UINT, CardSet> MSETS;
     typedef std::pair<UINT, CardSet> PAIRMSETS;
-
-
-    class BgInfo {
-        private:
-            UINT Id;
-            std::string Name;
-            std::string Desc;
-            UINT EffectId;
-        public:
-            BgInfo();
-            BgInfo(const UINT id,const char *name,const char *desc,const UINT effectid);
-            BgInfo(const BgInfo &BI);
-            const char *GetName();
-            const UINT GetEffectId();
-    };
 
     class StepInfo {
         private:
