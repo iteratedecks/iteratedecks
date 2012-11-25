@@ -3,8 +3,10 @@
 #include <iostream>
 #include <sstream>
 #include "assert.hpp"
+#include "cardDB.hpp"
 
-namespace IterateDecks { namespace Core {
+namespace IterateDecks {
+    namespace Core {
 
 static int logInit=0;
 unsigned long const Logger::LOG_NONE                     (0);
@@ -489,5 +491,12 @@ void DeckLogger::defensiveRefresh(EVENT_CONDITION const & eventCondition, Played
         this->ability(eventCondition, unit, ssMessage.str());
     }
 }
+
+        // FIXME: After fixing class CardDB, move this to Logger.cpp
+        std::string Logger::abilityIdToString(AbilityId const & abilityId) const
+        {
+            char const * cStrName = cDB->GetSkill(abilityId);
+            return std::string(cStrName);
+        }
 
 }}

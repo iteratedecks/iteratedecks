@@ -27,11 +27,4 @@
 
 namespace IterateDecks { namespace Core {
 
-// FIXME: After fixing class CardDB, move this to Logger.cpp
-std::string Logger::abilityIdToString(AbilityId const & abilityId) const
-{
-    char const * cStrName = cDB->GetSkill(abilityId);
-    return std::string(cStrName);
-}
-
 }}
