@@ -2,6 +2,7 @@
     #define ITERATEDECKS_CORE_ACTIVEDECK__HPP
 
     #include "playedCard.hpp"
+    #include "results.hpp"
 
     namespace IterateDecks {
         namespace Core {

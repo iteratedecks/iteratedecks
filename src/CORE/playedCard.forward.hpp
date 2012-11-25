@@ -3,6 +3,7 @@
 
     #include <list>
     #include <vector>
+    #include "simpleTypes.hpp"
 
     namespace IterateDecks {
         namespace Core {
@@ -12,8 +13,11 @@
             // TODO the name seems misleading
             typedef std::list<PlayedCard> LCARDS;
             typedef std::vector<PlayedCard> VCARDS;
+            typedef std::vector<PlayedCard*> PVCARDS;
+            typedef std::pair<PlayedCard*,UCHAR> PPCARDINDEX;
+            typedef std::vector<PPCARDINDEX> PPCIV;
         }
     }
-    
+
 #endif
 

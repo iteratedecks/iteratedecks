@@ -1,3 +1,6 @@
+#ifndef OLD_LOG_H_NEEDS_TO_BE_REMOVED
+#define OLD_LOG_H_NEEDS_TO_BE_REMOVED
+
 #define INVALID_ROWID	100
 
 namespace IterateDecks { namespace Core {
@@ -47,4 +50,8 @@ struct LOG_RECORD
 	{};
 };
 
+    typedef std::vector<LOG_RECORD> VLOG;
+
 }}
+
+#endif

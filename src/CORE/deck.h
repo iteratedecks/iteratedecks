@@ -53,6 +53,7 @@ bool bConsoleOutput = false; // this is global just for convinience, should be D
 int AchievementIndex = -1; // index, not id
 
 #include "deck.hpp"
+#include "card.hpp"
 
 namespace IterateDecks { namespace Core {
 

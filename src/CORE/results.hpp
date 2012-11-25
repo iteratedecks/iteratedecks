@@ -5,6 +5,8 @@
 
     namespace IterateDecks { namespace Core {
 
+    struct RESULT_BY_CARD;
+
     struct RESULTS
     {
         DWORD Win;

@@ -30,6 +30,7 @@
             typedef std::pair<std::string, UINT> PAIRMSUINT;
             typedef std::pair<std::string, UCHAR> PAIRMSKILLS;
             typedef std::pair<UINT, UINT> PAIRMUUINT;
+            typedef std::multiset<UINT> MSID;
 
 
             /**
