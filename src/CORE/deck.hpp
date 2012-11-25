@@ -143,6 +143,9 @@
             bool canAttack() const;
             unsigned int getUniqueId() const;
     };
+
+        short ID2BASE64(UINT const id);
+
     }}
 #endif
 
