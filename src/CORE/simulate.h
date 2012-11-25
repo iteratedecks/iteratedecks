@@ -12,6 +12,8 @@
 //
 // contains some threading evaluation routines
 
+#include "cardDB.hpp"
+
 namespace IterateDecks { namespace Core {
 CardDB DB; // just to make all easier ...
 #define MAX_TURN				50

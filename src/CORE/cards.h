@@ -12,19 +12,3 @@
 // *****************************************
 //
 // this module contains card database related classes - info, xml loader, card storage
-
-#include <map>
-#include <vector>
-#include <string>
-
-#include "compat.h"
-
-#include "cards.hpp"
-
-#include "achievementInfo.hpp"
-
-#include "cardPool.hpp"
-
-namespace IterateDecks { namespace Core {
-
-}}

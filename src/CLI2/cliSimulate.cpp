@@ -32,6 +32,8 @@
 
 #include "../CORE/activeDeck.hpp"
 
+#include "../CORE/cardDB.hpp"
+
 namespace EvaluateDecks {
     namespace CLI {
 
