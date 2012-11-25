@@ -5,8 +5,6 @@
 
     namespace IterateDecks { namespace Core {
 
-    typedef unsigned long       DWORD;
-
     struct RESULTS
     {
         DWORD Win;

@@ -5,7 +5,7 @@
 //
 // My kongregate account:
 // http://www.kongregate.com/accounts/NETRAT
-// 
+//
 // Project pages:
 // http://code.google.com/p/evaluatedecks
 // http://www.kongregate.com/forums/65-tyrant/topics/195043-yet-another-battlesim-evaluate-decks
@@ -43,38 +43,9 @@
 
 #include "achievementInfo.hpp"
 
+#include "activeDeck.hpp"
+
 #define FANCY_STATS_COUNT		5
-
-#define FACTION_NONE			0
-#define FACTION_IMPERIAL		1
-#define FACTION_RAIDER			2
-#define FACTION_BLOODTHIRSTY	3
-#define FACTION_XENO			4
-#define FACTION_RIGHTEOUS		5
-
-
-//#define TARGETSCOUNT_NONE		0				
-#define TARGETSCOUNT_ONE		0				
-#define TARGETSCOUNT_ALL		10	
-
-#define QEFFECT_TIME_SURGE		1
-#define QEFFECT_COPYCAT			2
-#define QEFFECT_QUICKSILVER		3
-#define QEFFECT_DECAY			4
-#define QEFFECT_HIGH_SKIES		5
-#define QEFFECT_IMPENETRABLE	6
-#define QEFFECT_INVIGORATE		7
-#define QEFFECT_CLONE_PROJECT	8
-#define QEFFECT_FRIENDLY_FIRE   9
-#define QEFFECT_GENESIS         10
-#define QEFFECT_ARTILLERY_STRIKE    11
-#define QEFFECT_PHOTON_SHIELD   12
-#define QEFFECT_ENFEEBLE_ALL    13
-#define QEFFECT_PROTECT_ALL     14
-#define QEFFECT_COMMANDER_FREEZE    15
-#define QEFFECT_SPLIT_FIVE      16
-#define QEFFECT_POISON_ALL      17
-
 
 #define UNDEFINED_NAME			"UNDEFINED"
 
@@ -96,7 +67,7 @@ const bool PROC50
 const unsigned short ID2BASE64(const UINT Id)
 {
 	assertX(Id < 0xFFF);
-#define EncodeBase64(x) (x < 26) ? (x + 'A') : ((x < 52) ? (x + 'a' - 26) : ((x < 62) ? (x + '0' - 52) : ((x == 62) ? ('+') : ('/'))))	
+#define EncodeBase64(x) (x < 26) ? (x + 'A') : ((x < 52) ? (x + 'a' - 26) : ((x < 62) ? (x + '0' - 52) : ((x == 62) ? ('+') : ('/'))))
 	// please keep in mind that any integer type has swapped hi and lo bytes
 	// i have swapped them here so we will have correct 2 byte string in const char* GetID64 function
 	return ((EncodeBase64(((Id >> 6) & 63)))/* << 8*/) + ((EncodeBase64((Id & 63))) << 8); // so many baneli... parenthesis!
@@ -139,11 +110,14 @@ const UINT BASE642ID(const unsigned short base64)
 		memset(Effects,0,CARD_ABILITIES_MAX * sizeof(EFFECT_ARGUMENT));
 		memset(TargetCounts,0,CARD_ABILITIES_MAX);
 		memset(TargetFactions,0,CARD_ABILITIES_MAX);
-		memset(AbilityEvent,0,CARD_ABILITIES_MAX);		
+		memset(AbilityEvent,0,CARD_ABILITIES_MAX);
 		//AbilitiesOrdered.reserve(RESERVE_ABILITIES_COUNT);
 	}
-	Card::Card(const UINT id, const char* name, const char* pic, Rarity const rarity, const UCHAR type, const UCHAR faction, const UCHAR attack, const UCHAR health, const UCHAR wait, const UINT set)
-    : rarity(rarity)
+	Card::Card(UINT const id
+              ,char const * name, const char* pic, Rarity const rarity, CardType const type, Faction const faction, const UCHAR attack, const UCHAR health, const UCHAR wait, const UINT set)
+    : type(type)
+    , faction(faction)
+    , rarity(rarity)
 	{
 		Id = id;
 		//UINT temp = ID2BASE64(4000);
@@ -151,8 +125,6 @@ const UINT BASE642ID(const unsigned short base64)
 		//BASE642ID(temp);
 		CopyName(name);
 		CopyPic(pic);
-		Type = type;
-		Faction = faction;
 		Attack = attack;
 		Health = health;
 		Wait = wait;
@@ -160,17 +132,17 @@ const UINT BASE642ID(const unsigned short base64)
 		memset(Effects,0,CARD_ABILITIES_MAX*sizeof(EFFECT_ARGUMENT));
 		memset(TargetCounts,0,CARD_ABILITIES_MAX);
 		memset(TargetFactions,0,CARD_ABILITIES_MAX);
-		memset(AbilityEvent,0,CARD_ABILITIES_MAX);	
+		memset(AbilityEvent,0,CARD_ABILITIES_MAX);
 		AbilitiesOrdered.reserve(RESERVE_ABILITIES_COUNT);
 	}
 	Card::Card(Card const & card)
-    : rarity(card.rarity)
+    : type(card.type)
+    , faction(card.faction)
+    , rarity(card.rarity)
 	{
 		Id = card.Id;
 		memcpy(Name,card.Name,CARD_NAME_MAX_LENGTH);
 		memcpy(Picture,card.Picture,FILENAME_MAX_LENGTH);
-		Type = card.Type;
-		Faction = card.Faction;
 		Attack = card.Attack;
 		Health = card.Health;
 		Wait = card.Wait;
@@ -178,7 +150,7 @@ const UINT BASE642ID(const unsigned short base64)
 		memcpy(Effects,card.Effects,CARD_ABILITIES_MAX*sizeof(EFFECT_ARGUMENT));
 		memcpy(TargetCounts,card.TargetCounts,CARD_ABILITIES_MAX);
 		memcpy(TargetFactions,card.TargetFactions,CARD_ABILITIES_MAX);
-		memcpy(AbilityEvent,card.AbilityEvent,CARD_ABILITIES_MAX);	
+		memcpy(AbilityEvent,card.AbilityEvent,CARD_ABILITIES_MAX);
 		AbilitiesOrdered.reserve(RESERVE_ABILITIES_COUNT);
 		if (!card.AbilitiesOrdered.empty())
 			for (UCHAR i=0;i<card.AbilitiesOrdered.size();i++)
@@ -189,8 +161,8 @@ const UINT BASE642ID(const unsigned short base64)
 		Id = card.Id;
 		memcpy(Name,card.Name,CARD_NAME_MAX_LENGTH);
 		memcpy(Picture,card.Picture,FILENAME_MAX_LENGTH);
-		Type = card.Type;
-		Faction = card.Faction;
+		this->type = card.type;
+		this->faction = card.faction;
 		Attack = card.Attack;
 		Health = card.Health;
 		Wait = card.Wait;
@@ -250,7 +222,7 @@ const UINT BASE642ID(const unsigned short base64)
 		UCHAR c = Id & 0xF;
 		UCHAR baseA = (bLowerCase) ? ('a' - 10) : ('A' - 10); // I thought I told I don't like this style ;)
 		char *ptr = (char *)&ID16Storage;
-		c = (c < 10) ? (c + '0') : (c + baseA); 
+		c = (c < 10) ? (c + '0') : (c + baseA);
 		ptr[2] = c;
 		c = (Id >> 4) & 0xF;
 		c = (c < 10) ? (c + '0') : (c + baseA);
@@ -274,10 +246,10 @@ const UINT BASE642ID(const unsigned short base64)
 	const UCHAR Card::GetAttack() const	{	return Attack;	}
 	const UCHAR Card::GetHealth() const	{	return Health;	}
 	const UCHAR Card::GetWait() const		{	return Wait;	}
-	const UCHAR Card::GetType() const		{	return Type;	}
+	CardType Card::GetType() const		{	return this->type;	}
 	const UCHAR Card::GetSet() const		{	return Set;		}
-	const UCHAR Card::GetRarity() const { return this->rarity; }
-	const UCHAR Card::GetFaction() const { return Faction; }
+	Rarity Card::GetRarity() const { return this->rarity; }
+	Faction Card::GetFaction() const { return this->faction; }
 	const EFFECT_ARGUMENT Card::GetAbility(const UCHAR id) const { return Effects[id]; }
 	const UCHAR Card::GetAbilitiesCount() const { return (UCHAR)AbilitiesOrdered.size(); }
 	const UCHAR Card::GetAbilityInOrder(const UCHAR order) const
@@ -382,7 +354,7 @@ const UINT BASE642ID(const unsigned short base64)
             && (!Effects[ACTIVATION_JAM])
             && (!Effects[ACTIVATION_FREEZE])
             && ((Wait <= 0) || (Effects[SPECIAL_BLITZ] > 0));
-        
+
         // Assume all cards Blitzing are treated exactly as if they were active;
         // we need to reset this to False after we remove Blitz
         if (bDoBegin && (!bActivated))
@@ -456,7 +428,7 @@ Valor: Removed after owner ends his turn.
 	{
 		Effects[DMGDEPENDANT_POISON] = 0;
 		Effects[DMGDEPENDANT_DISEASE] = 0;
-		Effects[ACTIVATION_JAM] = 0;		
+		Effects[ACTIVATION_JAM] = 0;
 		if (bActivated)  // this is bullshit!
 			Effects[ACTIVATION_FREEZE] = 0;
 		Effects[DMGDEPENDANT_IMMOBILIZE] = 0;
@@ -466,11 +438,11 @@ Valor: Removed after owner ends his turn.
 	bool PlayedCard::IsCleanseTarget()
 	{
 		// Poison, Disease, Jam, Immobilize, Enfeeble, Chaos. (Does not remove Weaken.)
-		return (Effects[DMGDEPENDANT_POISON] || 
-				Effects[DMGDEPENDANT_DISEASE] || 
+		return (Effects[DMGDEPENDANT_POISON] ||
+				Effects[DMGDEPENDANT_DISEASE] ||
 				Effects[ACTIVATION_JAM] ||
 				(Effects[ACTIVATION_FREEZE] && bActivated) ||
-				Effects[DMGDEPENDANT_IMMOBILIZE] || 
+				Effects[DMGDEPENDANT_IMMOBILIZE] ||
 				Effects[ACTIVATION_ENFEEBLE] ||
 				Effects[ACTIVATION_CHAOS]);
 	}
@@ -488,7 +460,7 @@ Valor: Removed after owner ends his turn.
 		Faction = setfaction;
 		SkillProcBuffer[ACTIVATION_INFUSE]++;
 	}
-    
+
     const UCHAR PlayedCard::SufferDmg(UINT QuestEffectId
                                      ,UCHAR const Dmg
                                      ,UCHAR const Pierce
@@ -503,7 +475,7 @@ Valor: Removed after owner ends his turn.
 	{
 		assertX(OriginalCard);
 // Regeneration happens before the additional strikes from Flurry.
-// Regenerating does not prevent Crush damage	
+// Regenerating does not prevent Crush damage
 		UCHAR dmg = Dmg;
 		UCHAR shield = (UCHAR)GetEffect(ACTIVATION_PROTECT);
         if (Pierce >= shield) {
@@ -582,7 +554,7 @@ Valor: Removed after owner ends his turn.
             if(damageWasDeadly != NULL) {
                 *damageWasDeadly = false;
             }
-            
+
 			this->Health -= dmg;
 			if (actualdamagedealt)
 				*actualdamagedealt = dmg;
@@ -595,7 +567,7 @@ Valor: Removed after owner ends his turn.
 		fsDmgMitigated += dmg;
 		return dmg;
 	}
-	
+
 	UCHAR PlayedCard::StrikeDmg(const UINT QuestEffectId, const UCHAR Dmg, UCHAR *overkill) // returns dealt dmg
 	{
 		assertX(Dmg); // 0 dmg is pointless and indicates an error
@@ -639,7 +611,7 @@ Valor: Removed after owner ends his turn.
 		if (bPlayed != C.bPlayed)
 			return false;
 		if (bActivated != C.bActivated)
-			return false;		
+			return false;
 		if (Faction != C.Faction)
 			return false;
 		return (!memcmp(Effects,C.Effects,CARD_ABILITIES_MAX * sizeof(UCHAR)));
@@ -675,7 +647,7 @@ Valor: Removed after owner ends his turn.
 		if (bPlayed != C.bPlayed)
 			return (bPlayed < C.bPlayed);
 		if (bActivated != C.bActivated)
-			return (bActivated < C.bActivated);		
+			return (bActivated < C.bActivated);
 		if (Faction != C.Faction)
 			return (Faction < C.Faction);
 		int mr = memcmp(Effects,C.Effects,CARD_ABILITIES_MAX * sizeof(UCHAR)) < 0;
@@ -752,7 +724,7 @@ Valor: Removed after owner ends his turn.
 		// this is crap ! - must remove and check the code
 		if (!OriginalCard)
 			return TYPE_NONE;
-		return OriginalCard->GetType();	
+		return OriginalCard->GetType();
 	}
 	const UCHAR PlayedCard::GetEffect(const UCHAR id) const {
         return Effects[id];
@@ -1182,7 +1154,7 @@ struct REQUIREMENT
 			else
 			{
 				target.fsAvoided += armor;
-				dmg -= armor; 
+				dmg -= armor;
 			}
 		}
 		// now we actually deal dmg
@@ -1219,7 +1191,7 @@ struct REQUIREMENT
 				Def.SkillProcs[SPECIAL_BACKFIRE]++;
 				LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),SPECIAL_BACKFIRE,SRC.GetAbility(SPECIAL_BACKFIRE));
 			}
-			// crush            
+			// crush
 			if (SRC.GetAbility(DMGDEPENDANT_CRUSH))
 			{
 				UCHAR overkill = 0;
@@ -1284,7 +1256,7 @@ struct REQUIREMENT
 				if (target.GetEffect(DMGDEPENDANT_POISON) < SRC.GetAbility(DMGDEPENDANT_POISON)) // overflow
 				{
 					target.SetEffect(DMGDEPENDANT_POISON,SRC.GetAbility(DMGDEPENDANT_POISON));
-					SRC.fsSpecial += SRC.GetAbility(DMGDEPENDANT_POISON); 
+					SRC.fsSpecial += SRC.GetAbility(DMGDEPENDANT_POISON);
 					SkillProcs[DMGDEPENDANT_POISON]++;
 					LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DMGDEPENDANT_POISON,SRC.GetAbility(DMGDEPENDANT_POISON));
 				}
@@ -1471,11 +1443,11 @@ struct REQUIREMENT
 	{
 		QuestEffectId = 0;
 		Log = 0;
-		bOrderMatters = false; 
-		bDelayFirstCard = false; 
-		CSIndex = 0; 
-		CSResult = 0; 
-		DamageToCommander = 0; 
+		bOrderMatters = false;
+		bDelayFirstCard = false;
+		CSIndex = 0;
+		CSResult = 0;
+		DamageToCommander = 0;
 		FullDamageToCommander = 0;
 		StrongestAttack = 0;
 		memset(SkillProcs,0,sizeof(SkillProcs));
@@ -1537,7 +1509,7 @@ struct REQUIREMENT
 		DamageToCommander = 0;
 		FullDamageToCommander = 0;
 		StrongestAttack = 0;
-		bOrderMatters = false; 
+		bOrderMatters = false;
 		bDelayFirstCard = false;
 		unsigned short tid = 0, lastid = 0;
 		memset(SkillProcs,0,sizeof(SkillProcs));
@@ -1588,19 +1560,19 @@ struct REQUIREMENT
 	ActiveDeck::ActiveDeck(const Card *Cmd, Card const * const pCDB)
     : pCDB(pCDB)
     , logger(NULL)
-	{ 
+	{
 		QuestEffectId = 0;
 		Log = 0;
-		bOrderMatters = false; 
-		bDelayFirstCard = false; 
-		CSIndex = 0; 
+		bOrderMatters = false;
+		bDelayFirstCard = false;
+		CSIndex = 0;
 		CSResult = 0;
-		DamageToCommander = 0; 
+		DamageToCommander = 0;
 		FullDamageToCommander = 0;
 		StrongestAttack = 0;
-		Commander = PlayedCard(Cmd); 
-		Commander.SetCardSkillProcBuffer(SkillProcs); 
-		//Deck.reserve(DEFAULT_DECK_RESERVE_SIZE); 
+		Commander = PlayedCard(Cmd);
+		Commander.SetCardSkillProcBuffer(SkillProcs);
+		//Deck.reserve(DEFAULT_DECK_RESERVE_SIZE);
 		memset(SkillProcs,0,sizeof(SkillProcs));
 		memset(CardPicks,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
 		memset(CardDeaths,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
@@ -1764,7 +1736,7 @@ struct REQUIREMENT
 			return destindex;
 		// modify a target by intercept here
 		if ((destindex > 0) &&
-			(targets[destindex-1].second == targets[destindex].second - 1) && 
+			(targets[destindex-1].second == targets[destindex].second - 1) &&
 			(targets[destindex-1].first->GetAbility(DEFENSIVE_INTERCEPT) > 0))
 		{
 			destindex = destindex-1;
@@ -1773,7 +1745,7 @@ struct REQUIREMENT
 		}
 		else
 			if ((destindex < targets.size() - 1) &&
-				(targets[destindex+1].second == targets[destindex].second + 1) && 
+				(targets[destindex+1].second == targets[destindex].second + 1) &&
 				(targets[destindex+1].first->GetAbility(DEFENSIVE_INTERCEPT) > 0))
 			{
 				destindex = destindex+1;
@@ -2064,7 +2036,7 @@ struct REQUIREMENT
                             LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, false));
                             lc.CardID = vi->second;
                             vi->first->SetEffect(aid,vi->first->GetEffect(aid) + effect);
-                            
+
                             procCard->fsSpecial += effect;
                             LogAdd(LOG_CARD(procDeck->LogDeckID,procCard->GetType(),SrcPos),lc,aid,effect);
 
@@ -2363,7 +2335,7 @@ struct REQUIREMENT
                             if (chaos)
                                 ApplyEffects(QuestEffectId,EVENT_EMPTY,*vi->first,Position,*this,true,false,&Src);
                             else
-                                ApplyEffects(QuestEffectId,EVENT_EMPTY,*vi->first,Position,Dest,true,false,&Src);	
+                                ApplyEffects(QuestEffectId,EVENT_EMPTY,*vi->first,Position,Dest,true,false,&Src);
                         }
                 } break;
 
@@ -2462,7 +2434,7 @@ struct REQUIREMENT
                     assert(effect > 0);
                     if (chaos)
                         GetTargets(Structures,faction,targets);
-                    else	
+                    else
                         GetTargets(Dest.Structures,faction,targets);
 
                     RandomizeTarget(targets,targetCount,Dest,false);
@@ -2692,7 +2664,7 @@ struct REQUIREMENT
                     for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
                     {
                         LOG(this->logger,abilityOffensive(EffectType,Src,ACTIVATION_RUSH,*(vi->first),effect));
-                        vi->first->Rush(effect);		
+                        vi->first->Rush(effect);
                         Src.fsSpecial += effect;
                     }
                 } break;
@@ -3008,8 +2980,8 @@ struct REQUIREMENT
 			PPCIV GetTo;
 			for (LCARDS::iterator vi = Units.begin();vi != Units.end();vi++)
 			{
-				if ((vi->IsAlive()) && 
-					(vi->GetWait() == 0) && 
+				if ((vi->IsAlive()) &&
+					(vi->GetWait() == 0) &&
 					(!vi->GetEffect(ACTIVATION_JAM)) && // Jammed
 					(!vi->GetEffect(ACTIVATION_FREEZE)) && // Frozen
 					(!vi->GetEffect(DMGDEPENDANT_IMMOBILIZE)))
@@ -3052,7 +3024,7 @@ struct REQUIREMENT
 		// infuse - dont know how this works :(
 		// ok so afaik it changes one random card from either of your or enemy deck into bloodthirsty
 		// faction plus it changes heal and rally skills faction, if there were any, into bloodthirsty
-		// i believe it can't be mimiced and paybacked(can assume since it's commander skill) and 
+		// i believe it can't be mimiced and paybacked(can assume since it's commander skill) and
 		// it can be evaded, according to forums
 		// "his own units that have evade wont ever seem to evade.
 		// (every time ive seen the collossus infuse and as far as i can see� he has no other non bt with evade.)"
@@ -3082,7 +3054,7 @@ struct REQUIREMENT
 					t->Infuse(FACTION_BLOODTHIRSTY);
 			}
 		}
-		// apply actions same way 
+		// apply actions same way
 		if (Commander.IsDefined()) {
 			ApplyEffects(QuestEffectId,EVENT_EMPTY,Commander,-1,Def);
         }
@@ -3311,7 +3283,7 @@ struct REQUIREMENT
 		if (Deck.empty() && ((!bCardPicks) || (!CardPicks[0])))
 			return string();
 #if HASH_SAVES_ORDER
-		typedef vector<UINT> MSID; 
+		typedef vector<UINT> MSID;
 #else
 		typedef multiset<UINT> MSID; // I <3 sets, they keep stuff sorted ;)
 #endif
@@ -3355,7 +3327,7 @@ struct REQUIREMENT
 						s.append((char*)&t);
 						//printf("4: %s -dupe\n",(char*)&t);
 						//printf("4: %s -dupe\n",(char*)&t);
-						
+
 					}
 					else
 						if (cnt > 2)
@@ -3363,7 +3335,7 @@ struct REQUIREMENT
 							s.append((char*)&t);
 							//printf("3: %s -value\n",(char*)&t);
 							t = ID2BASE64(CARD_MAX_ID + cnt); // special code, RLE count
-							s.append((char*)&t); 
+							s.append((char*)&t);
 							//printf("3: %s -rle\n",(char*)&t);
 						}
 						else

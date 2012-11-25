@@ -1,9 +1,9 @@
 #ifndef __COMPAT_H_
 #define __COMPAT_H_
 
-#warning "Compability mode!"
-
 #if !defined(_MSC_VER)
+
+#warning "Compability mode!"
 
 #include <errno.h>
 

@@ -30,6 +30,8 @@
 //#include "../CORE/simulate.h"
 #include "../CORE/assert.hpp"
 
+#include "../CORE/activeDeck.hpp"
+
 namespace EvaluateDecks {
     namespace CLI {
 

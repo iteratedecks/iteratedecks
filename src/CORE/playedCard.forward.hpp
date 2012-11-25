@@ -2,6 +2,7 @@
     #define ITERATEDECKS_CORE_PLAYEDCARD_FORWARD_HPP
 
     #include <list>
+    #include <vector>
 
     namespace IterateDecks {
         namespace Core {
@@ -10,7 +11,7 @@
 
             // TODO the name seems misleading
             typedef std::list<PlayedCard> LCARDS;
-
+            typedef std::vector<PlayedCard> VCARDS;
         }
     }
     
