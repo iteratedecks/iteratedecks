@@ -18,11 +18,11 @@
 #include "pugixml/src/pugixml.hpp"
 #include "pugixml/src/pugixml.cpp"
 
-// FIXME: Remove global variable
-extern bool bConsoleOutput;
-
 namespace IterateDecks {
     namespace Core {
+
+        // FIXME: Remove global variable
+        extern bool bConsoleOutput;
 
         #define CARD_NAME_SYNTAX_EXCLUSION	"Kapak, the Deceiver"
 

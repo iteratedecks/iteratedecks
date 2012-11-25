@@ -33,7 +33,11 @@
 
         short ID2BASE64(UINT const id);
 
+        #define PROC50	Proc()
+        bool PROC50;
+
     }}
+
 
     #include "playedCard.hpp"
 
