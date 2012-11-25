@@ -12,6 +12,9 @@
     namespace IterateDecks {
         namespace Core {
 
+            #define PROC50	Proc()
+            bool PROC50;
+
             class PlayedCard {
                 private:
                     // constant

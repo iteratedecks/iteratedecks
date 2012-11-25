@@ -4,13 +4,13 @@
 //
 // My kongregate account:
 // http://www.kongregate.com/accounts/NETRAT
-// 
+//
 // Project pages:
 // http://code.google.com/p/evaluatedecks
 // http://www.kongregate.com/forums/65-tyrant/topics/195043-yet-another-battlesim-evaluate-decks
 // *****************************************
 //
-// this module contains interfaces used by CORE and probably others to exchange evaluation results 
+// this module contains interfaces used by CORE and probably others to exchange evaluation results
 // this structure is used to store and return simulation result
 
 #if !defined(_MSC_VER)
@@ -44,23 +44,19 @@ namespace IterateDecks { namespace Core {
 		LPoints += rAdd.LPoints;
 		LAutoPoints += rAdd.LAutoPoints;
 	}
-//
-struct PICK_STATS
-{
-	DWORD Win;
-	DWORD Stall;
-	DWORD Loss;
-	void Add(const PICK_STATS &a)
+
+#if 1
+	void PICK_STATS::Add(const PICK_STATS &a)
 	{
 		Win += a.Win;
 		Stall += a.Stall;
 		Loss += a.Loss;
 	}
-	const float Ratio() const
+	const float PICK_STATS::Ratio() const
 	{
 		return (float)Win / (Win + Stall + Loss);
 	}
-	bool operator<(const PICK_STATS &ps) const
+	bool PICK_STATS::operator<(const PICK_STATS &ps) const
 	{
 		if (Ratio() < ps.Ratio())
 			return true;
@@ -76,29 +72,17 @@ struct PICK_STATS
 					else
 						return (Stall < ps.Stall);
 	}
-};
+#endif
+
 struct RESULT_BY_ORDER
 {
 	char CardOrder[DEFAULT_DECK_RESERVE_SIZE * 2];
 	UINT CardIDs[DEFAULT_DECK_RESERVE_SIZE];
 	PICK_STATS result;
 };
-struct RESULT_BY_CARD
-{
-	DWORD Id;
-	DWORD WLGames;
-	DWORD WLWin;
-	DWORD WLLoss;
-	DWORD FSRecordCount;
-	DWORD FSMitigated;
-	DWORD FSAvoided;
-	DWORD FSDamage;
-	DWORD FSHealing;
-	DWORD FSSpecial;
-	DWORD FSOverkill;
-	DWORD FSDeaths;
-	PICK_STATS PickStats[DEFAULT_DECK_RESERVE_SIZE];
-	RESULT_BY_CARD()
+
+#if 1
+	RESULT_BY_CARD::RESULT_BY_CARD()
 	{
 		Id = 0;
 		WLGames = 0;
@@ -113,12 +97,12 @@ struct RESULT_BY_CARD
 		FSOverkill = 0;
 		FSDeaths = 0;
 		memset(PickStats,0,sizeof(PICK_STATS)*DEFAULT_DECK_RESERVE_SIZE);
-	};
-	bool IsValid()
+	}
+	bool RESULT_BY_CARD::IsValid()
 	{
 		return Id != 0;
-	};
-	void Print()
+	}
+	void RESULT_BY_CARD::Print()
 	{
 		if (!IsValid())
 			return;
@@ -134,7 +118,7 @@ struct RESULT_BY_CARD
 		printf("	Healed:		%5ld	| %5.2f per card per game\n",FSHealing,(float)FSHealing / FSRecordCount);
 		printf("	Special:	%5ld	| %5.2f per card per game\n",FSSpecial,(float)FSSpecial / FSRecordCount);
 	}
-	void Add(const RESULT_BY_CARD &rAdd)
+	void RESULT_BY_CARD::Add(const RESULT_BY_CARD &rAdd)
 	{
 		assertX(Id == rAdd.Id);
 		WLGames += rAdd.WLGames;
@@ -151,6 +135,6 @@ struct RESULT_BY_CARD
 		for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
 			PickStats[i].Add(rAdd.PickStats[i]);
 	}
-};
+#endif
 
 }}

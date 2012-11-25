@@ -6,6 +6,8 @@
 
             class Card;
 
+            unsigned short ID2BASE64(UINT const id);
+
         }
     }
 
