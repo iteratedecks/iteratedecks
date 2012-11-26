@@ -86,6 +86,8 @@
             #define TARGETSCOUNT_ONE		0
             #define TARGETSCOUNT_ALL		10
 
+            char const * const FACTIONS[6] = {0,"Imperial","Raider","Bloodthirsty","Xeno","Righteous"};
+
         }
     }
 

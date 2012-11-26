@@ -1,13 +1,9 @@
 #ifndef DECK_HPP_1
     #define DECK_HPP_1
 
-    #include "constants.hpp"
-
-    #include "playedCard.forward.hpp"
+    #include "simpleTypes.hpp"
 
     namespace IterateDecks { namespace Core {
-
-    char const * const FACTIONS[6] = {0,"Imperial","Raider","Bloodthirsty","Xeno","Righteous"};
 
     class LOG_RECORD;
     class LOG_CARD;
@@ -19,9 +15,6 @@
     };
 
     }}
-
-
-    #include "playedCard.hpp"
 
 #endif
 

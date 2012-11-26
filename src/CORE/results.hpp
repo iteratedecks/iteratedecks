@@ -3,6 +3,8 @@
 
     #include "deck.hpp"
 
+    #include "constants.hpp"
+
     namespace IterateDecks { namespace Core {
 
         struct PICK_STATS
