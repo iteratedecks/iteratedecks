@@ -3,6 +3,7 @@
 
     #include "playedCard.hpp"
     #include "results.hpp"
+    #include "logger.forward.hpp"
 
     namespace IterateDecks {
         namespace Core {
