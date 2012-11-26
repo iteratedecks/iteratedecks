@@ -4,6 +4,7 @@
     #include <string>
     #include "deck.hpp"
     #include "playedCard.hpp"
+    #include "cardDB.forward.hpp"
 
     namespace IterateDecks { namespace Core {
 

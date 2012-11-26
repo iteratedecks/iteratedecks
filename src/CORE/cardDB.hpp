@@ -106,6 +106,6 @@
                     // named decks
                     ActiveDeck GetNamedDeck(const char* DeckName, Tag tag);
             };
-    }
+        }
     }
 #endif

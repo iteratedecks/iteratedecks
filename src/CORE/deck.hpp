@@ -23,11 +23,8 @@
 
     char const * const FACTIONS[6] = {0,"Imperial","Raider","Bloodthirsty","Xeno","Righteous"};
 
-    class ActiveDeck;
-    class PlayedCard;
     class LOG_RECORD;
     class LOG_CARD;
-    class CardDB;
 
     struct REQUIREMENT {
         UCHAR SkillID;

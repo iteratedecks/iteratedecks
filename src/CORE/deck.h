@@ -56,10 +56,3 @@ int AchievementIndex = -1; // index, not id
 
 #include "deck.hpp"
 #include "card.hpp"
-
-namespace IterateDecks { namespace Core {
-
-
-
-
-}}
