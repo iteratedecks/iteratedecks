@@ -637,7 +637,6 @@ namespace IterateDecks {
             pCDB = NULL;
         }
         ActiveDeck::~ActiveDeck() { Deck.clear(); Units.clear(); Structures.clear(); Actions.clear(); }
-    #define REQ_MAX_SIZE			5
         bool ActiveDeck::CheckRequirements(const REQUIREMENT *Reqs)
         {
             if (!Reqs) return true;

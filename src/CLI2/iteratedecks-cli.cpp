@@ -25,6 +25,8 @@
     //#error "Platform undefined."
 #endif
 
+#include <cstdlib>
+
 
 /*
  * Common includes

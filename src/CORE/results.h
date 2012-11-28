@@ -20,6 +20,7 @@
 
 #include "deck.hpp"
 #include "results.hpp"
+#include "assert.hpp"
 
 namespace IterateDecks { namespace Core {
 

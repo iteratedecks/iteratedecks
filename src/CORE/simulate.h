@@ -13,6 +13,9 @@
 // contains some threading evaluation routines
 
 #include "cardDB.hpp"
+#include "activeDeck.hpp"
+#include "Logger.hpp"
+#include "assert.hpp"
 
 namespace IterateDecks { namespace Core {
 CardDB DB; // just to make all easier ...
