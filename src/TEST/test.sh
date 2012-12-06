@@ -6,6 +6,9 @@ SUCCESS=0
 
 while read line
 do
+    if [ "${#line}" -eq 0 ]; then continue; fi
+    if [ "${line:0:1}" == "#" ]; then continue; fi
+
     echo -n ${ITERATEDECKS} ${line}
     echo -ne "\t"
     ${ITERATEDECKS} ${line} > /dev/null 2>/dev/null

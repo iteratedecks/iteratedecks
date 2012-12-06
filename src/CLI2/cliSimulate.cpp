@@ -358,9 +358,9 @@ namespace EvaluateDecks {
             } else {
                 wilson(k,n,gamma,true,lower,upper);
             }
-            assertLE(0.0,lower);
-            assertLE(lower,upper);
-            assertLE(upper,1.0);
+            assertLE(0 -.00001,lower);
+            assertLE(lower -.00001,upper);
+            assertLE(upper -.00001,1.0);
         }
 
 
@@ -536,10 +536,10 @@ namespace EvaluateDecks {
             double lBound, uBound;
             twoSidedBounds(r.Win, r.Games, gamma, lBound, uBound);
             std::cout << "confidence [" << lBound << ";" << uBound << "]";
-            assertLE(0.0,lBound);
-            assertLE(lBound,winRate);
+            assertLE(0 -.00001,lBound);
+            assertLE(lBound -.00001,winRate);
             assertLE(winRate -.00001, uBound);
-            assertLE(uBound,1.0);
+            assertLE(uBound -.00001,1.0);
             std::cout << "; ";
             double const averageNetPoints ((double)r.Points / (double)r.Games);
             std::cout << "ANP=" << averageNetPoints;
