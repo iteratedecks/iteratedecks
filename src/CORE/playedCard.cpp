@@ -191,7 +191,7 @@ namespace IterateDecks {
                 bActivated = true;
             return bDoBegin;
         }
-        void PlayedCard::ProcessPoison(UINT QuestEffectId)
+        void PlayedCard::ProcessPoison(BattleGroundEffect QuestEffectId)
         {
             if (IsAlive() && (Effects[DMGDEPENDANT_POISON]))
                 SufferDmg(QuestEffectId,Effects[DMGDEPENDANT_POISON]);
@@ -205,10 +205,10 @@ namespace IterateDecks {
             Effects[ACTIVATION_PROTECT] = 0;
         }
 
-        EFFECT_ARGUMENT PlayedCard::Refresh(UINT QuestEffectId)
+        EFFECT_ARGUMENT PlayedCard::Refresh(BattleGroundEffect QuestEffectId)
         {
             UCHAR amount = OriginalCard->GetHealth() - this->Health;
-            if (QuestEffectId == QEFFECT_INVIGORATE) {
+            if (QuestEffectId == BattleGroundEffect::invigorate) {
                 this->Attack += amount;
             }
             fsHealed += amount;
@@ -291,7 +291,7 @@ namespace IterateDecks {
             SkillProcBuffer[ACTIVATION_INFUSE]++;
         }
 
-        const UCHAR PlayedCard::SufferDmg(UINT QuestEffectId
+        const UCHAR PlayedCard::SufferDmg(BattleGroundEffect QuestEffectId
                                          ,UCHAR const Dmg
                                          ,UCHAR const Pierce
                                          ,UCHAR * const actualdamagedealt
@@ -345,7 +345,7 @@ namespace IterateDecks {
                     // This unit regenerates.
                     this->Health = regenerateAmount;
                     fsHealed += regenerateAmount;
-                    if (QuestEffectId == QEFFECT_INVIGORATE) {
+                    if (QuestEffectId == BattleGroundEffect::invigorate) {
                         this->Attack += regenerateAmount;
                     }
                     CardSkillProc(DEFENSIVE_REGENERATE);
@@ -398,7 +398,7 @@ namespace IterateDecks {
             return dmg;
         }
 
-        UCHAR PlayedCard::StrikeDmg(const UINT QuestEffectId, const UCHAR Dmg, UCHAR *overkill) // returns dealt dmg
+        UCHAR PlayedCard::StrikeDmg(BattleGroundEffect const QuestEffectId, const UCHAR Dmg, UCHAR *overkill) // returns dealt dmg
         {
             assertX(Dmg); // 0 dmg is pointless and indicates an error
             //printf("%s %d <- %d\n",GetName(),GetHealth(),Dmg);
@@ -631,7 +631,7 @@ namespace IterateDecks {
          * @param QuestEffectId the quest effect we have, only relevant is "Invigorate"
          * @return the actual amount healed
          */
-        UCHAR PlayedCard::Heal(EFFECT_ARGUMENT amount,UINT QuestEffectId)
+        UCHAR PlayedCard::Heal(EFFECT_ARGUMENT amount,BattleGroundEffect QuestEffectId)
         {
             assertX(!IsDiseased()); // disallowed
             if (IsDiseased()) return 0;
@@ -642,7 +642,7 @@ namespace IterateDecks {
                 Health += amount;
             }
             // If we healed something and we have invigorate, increase attack
-            if (amount && (QuestEffectId == QEFFECT_INVIGORATE)) {
+            if (amount && (QuestEffectId == BattleGroundEffect::invigorate)) {
                 Attack += amount;
             }
             return amount;

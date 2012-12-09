@@ -288,7 +288,7 @@ namespace IterateDecks {
             UCHAR antiair = SRC.GetAbility(COMBAT_ANTIAIR);
             if (target.GetAbility(DEFENSIVE_FLYING))
             {
-                if ((!antiair) && (!SRC.GetAbility(DEFENSIVE_FLYING)) && (PROC50 || (QuestEffectId == QEFFECT_HIGH_SKIES))) // missed
+                if ((!antiair) && (!SRC.GetAbility(DEFENSIVE_FLYING)) && (PROC50 || (QuestEffectId == BattleGroundEffect::highSkies))) // missed
                 {
                     target.fsAvoided += SRC.GetAttack() + valor + burst + target.GetEffect(ACTIVATION_ENFEEBLE); // note that this IGNORES armor and protect
                     Def.SkillProcs[DEFENSIVE_FLYING]++;
@@ -622,7 +622,7 @@ namespace IterateDecks {
         ActiveDeck::ActiveDeck()
         : logger(NULL)
         {
-            QuestEffectId = 0;
+            QuestEffectId = BattleGroundEffect::normal;
             Log = 0;
             bOrderMatters = false;
             bDelayFirstCard = false;
@@ -671,7 +671,7 @@ namespace IterateDecks {
                     c++;
             return c;
         }
-        void ActiveDeck::SetQuestEffect(UINT EffectId)
+        void ActiveDeck::SetQuestEffect(BattleGroundEffect EffectId)
         {
             QuestEffectId = EffectId;
         }
@@ -682,7 +682,7 @@ namespace IterateDecks {
         {
             assertX(pCDB);
             assertX(HashBase64);
-            QuestEffectId = 0;
+            QuestEffectId = BattleGroundEffect::normal;
             Log = 0;
             CSIndex = 0;
             CSResult = 0;
@@ -741,7 +741,7 @@ namespace IterateDecks {
         : pCDB(pCDB)
         , logger(NULL)
         {
-            QuestEffectId = 0;
+            QuestEffectId = BattleGroundEffect::normal;
             Log = 0;
             bOrderMatters = false;
             bDelayFirstCard = false;
@@ -906,8 +906,8 @@ namespace IterateDecks {
         }
 
         // Will target unit use Evade?
-        bool ActiveDeck::Evade(PlayedCard *defender, UINT QuestEffectId, bool chaos) {
-            return ((defender->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && (PROC50) && (!chaos));
+        bool ActiveDeck::Evade(PlayedCard *defender, BattleGroundEffect QuestEffectId, bool chaos) {
+            return ((defender->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == BattleGroundEffect::quicksilver)) && (PROC50) && (!chaos));
         }
 
         UCHAR ActiveDeck::Intercept(PPCIV &targets, UCHAR destindex, ActiveDeck &Dest)
@@ -976,7 +976,7 @@ namespace IterateDecks {
             return false;
         }
 
-        void ActiveDeck::ApplyEffects(UINT QuestEffectId,EVENT_CONDITION EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced,bool IsFusioned,PlayedCard *Mimicer,UCHAR StructureIndex, PlayedCard * target)
+        void ActiveDeck::ApplyEffects(BattleGroundEffect QuestEffectId,EVENT_CONDITION EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced,bool IsFusioned,PlayedCard *Mimicer,UCHAR StructureIndex, PlayedCard * target)
         {
             UCHAR destindex,aid,faction,targetCount;
             PPCIV targets;
@@ -1025,7 +1025,7 @@ namespace IterateDecks {
             EFFECT_ARGUMENT questAbilityEffect = 0;
             UCHAR questAbilityTargets = 0;
 
-            if(QuestEffectId == QEFFECT_FRIENDLY_FIRE && EffectType == EVENT_EMPTY) {
+            if(QuestEffectId == BattleGroundEffect::friendlyFire && EffectType == EVENT_EMPTY) {
                 switch(Src.GetType()) {
                 case TYPE_COMMANDER: {
                     questAbilityId = ACTIVATION_CHAOS;
@@ -1045,7 +1045,7 @@ namespace IterateDecks {
                 }
             }
 
-            if(QuestEffectId == QEFFECT_GENESIS && EffectType == EVENT_EMPTY) {
+            if(QuestEffectId == BattleGroundEffect::genesis && EffectType == EVENT_EMPTY) {
                 if(Src.GetType() == TYPE_COMMANDER) {
                     questAbilityId = ACTIVATION_SUMMON;
                     // get random assault card; make sure they are not special dev only cards
@@ -1059,7 +1059,7 @@ namespace IterateDecks {
                 }
             }
 
-            if(QuestEffectId == QEFFECT_TIME_SURGE && EffectType == EVENT_EMPTY) {
+            if(QuestEffectId == BattleGroundEffect::timeSurge && EffectType == EVENT_EMPTY) {
                 if(Src.GetType() == TYPE_COMMANDER) {
                     questAbilityId = ACTIVATION_RUSH;
                     questAbilityEffect = 1;
@@ -1068,7 +1068,7 @@ namespace IterateDecks {
                 }
             }
 
-            if ((QuestEffectId == QEFFECT_CLONE_PROJECT) && (!IsMimiced) && (Src.GetQuestSplit()) && (EffectType == EVENT_EMPTY))
+            if ((QuestEffectId == BattleGroundEffect::cloneProject) && (!IsMimiced) && (Src.GetQuestSplit()) && (EffectType == EVENT_EMPTY))
             {
                 Src.SetQuestSplit(false); // remove mark
                 questAbilityId = ACTIVATION_SPLIT;
@@ -1127,7 +1127,7 @@ namespace IterateDecks {
                 switch(aid) {
                 case ACTIVATION_CLEANSE:
                     {
-                        if (QuestEffectId == QEFFECT_DECAY) { // decay disables all cleansing
+                        if (QuestEffectId == BattleGroundEffect::decay) { // decay disables all cleansing
                             break;
                         }
 
@@ -1489,7 +1489,7 @@ namespace IterateDecks {
                         }
                         assertGT(effect,0u);
 
-                        if (chaos || (QuestEffectId == QEFFECT_COPYCAT))
+                        if (chaos || (QuestEffectId == BattleGroundEffect::copyCat))
                             GetTargets(Units,faction,targets);
                         else
                             GetTargets(Dest.Units,faction,targets);
@@ -1936,7 +1936,7 @@ namespace IterateDecks {
 
         }
 
-        void ActiveDeck::applyDamageDependentEffectOnAttack(UINT questEffectId, PlayedCard & src, AbilityId const & abilityId, EFFECT_ARGUMENT const & effectArgument, ActiveDeck & otherDeck, PlayedCard & target) {
+        void ActiveDeck::applyDamageDependentEffectOnAttack(BattleGroundEffect questEffectId, PlayedCard & src, AbilityId const & abilityId, EFFECT_ARGUMENT const & effectArgument, ActiveDeck & otherDeck, PlayedCard & target) {
             assertX(src.IsDefined());
             assertX(target.IsDefined());
             LOG(this->logger,abilityOffensive(EVENT_ATTACKED, src, abilityId, target, effectArgument));
@@ -2130,7 +2130,7 @@ namespace IterateDecks {
             {
                 ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),Units.size() - 1,Def);
                 // add quest statuses for decay
-                if (QuestEffectId == QEFFECT_DECAY)
+                if (QuestEffectId == BattleGroundEffect::decay)
                 {
                     Units.back().SetEffect(DMGDEPENDANT_POISON,1);
                     Units.back().SetEffect(DMGDEPENDANT_DISEASE,ABILITY_ENABLED);
@@ -2156,7 +2156,7 @@ namespace IterateDecks {
                     ApplyEffects(QuestEffectId,EVENT_DIED,*iter,-1,Def);
             }
             // Quest split mark
-            if (QuestEffectId == QEFFECT_CLONE_PROJECT)
+            if (QuestEffectId == BattleGroundEffect::cloneProject)
             {
                 PPCIV GetTo;
                 for (LCARDS::iterator vi = Units.begin();vi != Units.end();vi++)
@@ -2226,7 +2226,7 @@ namespace IterateDecks {
                     UCHAR i = UCHAR(rand() % targets.size());
                     i = Intercept(targets, i, Def); // we don't know anything about Infuse being interceptable :( I assume, it is
                     PlayedCard *t = targets[i].first;
-                    if ((i < defcount) && (t->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == QEFFECT_QUICKSILVER)) && PROC50) // we check evade only on our cards, enemy cards don't seem to actually evade infuse since it's rather helpful to them then harmful
+                    if ((i < defcount) && (t->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == BattleGroundEffect::quicksilver)) && PROC50) // we check evade only on our cards, enemy cards don't seem to actually evade infuse since it's rather helpful to them then harmful
                     {
                         // evaded infuse
                         //printf("Evaded\n");
@@ -2312,7 +2312,7 @@ namespace IterateDecks {
                     }
                     else
                     {
-                        if ((!vi->IsDiseased()) && (vi->GetAbility(DEFENSIVE_REFRESH)) && (QuestEffectId != QEFFECT_IMPENETRABLE)) {// Bench told refresh procs at the end of player's turn
+                        if ((!vi->IsDiseased()) && (vi->GetAbility(DEFENSIVE_REFRESH)) && (QuestEffectId != BattleGroundEffect::impenetrable)) {// Bench told refresh procs at the end of player's turn
                             EFFECT_ARGUMENT const amountRefreshed = vi->Refresh(QuestEffectId);
                             LOG(this->logger,defensiveRefresh(EVENT_EMPTY,*vi,amountRefreshed));
                         }
@@ -2584,7 +2584,7 @@ namespace IterateDecks {
         /**
          * Hit the commander.
          */
-        bool PlayedCard::HitCommander(UINT QuestEffectId
+        bool PlayedCard::HitCommander(BattleGroundEffect QuestEffectId
                                      , const UCHAR Dmg
                                      , PlayedCard &Src
                                      , ActiveDeck & ownDeck
@@ -2609,7 +2609,7 @@ namespace IterateDecks {
             {
                 if (vi->GetAbility(DEFENSIVE_WALL) && vi->IsAlive())
                 {
-                    if (QuestEffectId != QEFFECT_IMPENETRABLE)
+                    if (QuestEffectId != BattleGroundEffect::impenetrable)
                     {
                         vi->CardSkillProc(DEFENSIVE_WALL);
                         if (lr)

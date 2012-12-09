@@ -489,10 +489,10 @@ namespace IterateDecks {
                     const char *Name = it->child("name").child_value();
                     const char *Desc = it->child("desc").child_value();
                     UINT Id = atoi(it->child("id").child_value());
-                    UINT effect = 0;
+                    BattleGroundEffect effect = BattleGroundEffect::normal;
                     if (!it->child("effect").empty())
                     {
-                        MSKILLS::iterator si = QuestEffectIndex.find(it->child("effect").child_value());
+                        MapBattleGroundEffects::iterator si = QuestEffectIndex.find(it->child("effect").child_value());
                         if (si == QuestEffectIndex.end())
                         {
                             if (bConsoleOutput)
@@ -535,7 +535,7 @@ namespace IterateDecks {
             }
             return (loaded > 0);
         }
-        const UINT CardDB::GetQuestEffectId(UINT QuestId)
+        const BattleGroundEffect CardDB::GetQuestEffectId(UINT QuestId)
         {
             assertX(QuestId < STEP_MAX_ID);
             UINT bg = STDB[QuestId].GetBGId();
@@ -679,23 +679,23 @@ namespace IterateDecks {
 
             AddSkill(SPECIAL_ATTACK,"Attack");
 
-            AddQuestEffect(QEFFECT_TIME_SURGE,"time_surge");
-            AddQuestEffect(QEFFECT_COPYCAT,"copycat");
-            AddQuestEffect(QEFFECT_QUICKSILVER,"quicksilver");
-            AddQuestEffect(QEFFECT_DECAY,"decay");
-            AddQuestEffect(QEFFECT_HIGH_SKIES,"high_skies");
-            AddQuestEffect(QEFFECT_IMPENETRABLE,"impenetrable");
-            AddQuestEffect(QEFFECT_INVIGORATE,"invigorate");
-            AddQuestEffect(QEFFECT_CLONE_PROJECT,"clone_project");
-            AddQuestEffect(QEFFECT_FRIENDLY_FIRE,"friendly_fire");
-            AddQuestEffect(QEFFECT_GENESIS,"genesis");
-            AddQuestEffect(QEFFECT_ARTILLERY_STRIKE,"artillery_strike");
-            AddQuestEffect(QEFFECT_PHOTON_SHIELD,"photon_shield");
-            AddQuestEffect(QEFFECT_ENFEEBLE_ALL,"enfeeble_all");
-            AddQuestEffect(QEFFECT_PROTECT_ALL,"protect_all");
-            AddQuestEffect(QEFFECT_COMMANDER_FREEZE,"commander_freeze");
-            AddQuestEffect(QEFFECT_SPLIT_FIVE,"split_five");
-            AddQuestEffect(QEFFECT_POISON_ALL,"poison_all");
+            AddQuestEffect(BattleGroundEffect::timeSurge,"time_surge");
+            AddQuestEffect(BattleGroundEffect::copyCat,"copycat");
+            AddQuestEffect(BattleGroundEffect::quicksilver,"quicksilver");
+            AddQuestEffect(BattleGroundEffect::decay,"decay");
+            AddQuestEffect(BattleGroundEffect::highSkies,"high_skies");
+            AddQuestEffect(BattleGroundEffect::impenetrable,"impenetrable");
+            AddQuestEffect(BattleGroundEffect::invigorate,"invigorate");
+            AddQuestEffect(BattleGroundEffect::cloneProject,"clone_project");
+            AddQuestEffect(BattleGroundEffect::friendlyFire,"friendly_fire");
+            AddQuestEffect(BattleGroundEffect::genesis,"genesis");
+            AddQuestEffect(BattleGroundEffect::artilleryStrike,"artillery_strike");
+            AddQuestEffect(BattleGroundEffect::photonShield,"photon_shield");
+            AddQuestEffect(BattleGroundEffect::enfeebleAll,"enfeeble_all");
+            AddQuestEffect(BattleGroundEffect::protectAll,"protect_all");
+            AddQuestEffect(BattleGroundEffect::commanderFreeze,"commander_freeze");
+            AddQuestEffect(BattleGroundEffect::splitFive,"split_five");
+            AddQuestEffect(BattleGroundEffect::poisonAll,"poison_all");
         }
         void CardDB::AddSkill(UCHAR Id, const char *Name)
         {
@@ -705,12 +705,12 @@ namespace IterateDecks {
             strcpy_s(Skills[Id].SkillName,CARD_NAME_MAX_LENGTH,Name);
             SIndex.insert(PAIRMSKILLS(buffer,Id));
         }
-        void CardDB::AddQuestEffect(UCHAR Id, const char *Name)
+        void CardDB::AddQuestEffect(BattleGroundEffect effect, const char *Name)
         {
             char buffer[CARD_NAME_MAX_LENGTH];
             strcpy_s(buffer,CARD_NAME_MAX_LENGTH,Name);
             strlwr(buffer);
-            QuestEffectIndex.insert(PAIRMSKILLS(buffer,Id));
+            QuestEffectIndex.insert(PairBattleGroundEffects(buffer,effect));
         }
         const char *CardDB::GetSkill(UCHAR Indx) const
         {

@@ -457,8 +457,9 @@ void EvaluateRaidQuestOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSInd
 	else
 	{
 		DB.GenQuestDeck(tDef,QuestID);
-		tAtk.SetQuestEffect(DB.GetQuestEffectId(QuestID));
-		tDef.SetQuestEffect(DB.GetQuestEffectId(QuestID));
+        BattleGroundEffect questEffect = DB.GetQuestEffectId(QuestID);
+		tAtk.SetQuestEffect(questEffect);
+		tDef.SetQuestEffect(questEffect);
 	}
     tDef.logger = tAtk.logger;
 

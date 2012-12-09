@@ -56,10 +56,10 @@
                     void SetQuestSplit(bool bSplit);
                     void CardSkillProc(UCHAR aid);
                     const bool BeginTurn();
-                    void ProcessPoison(UINT QuestEffectId);
+                    void ProcessPoison(BattleGroundEffect QuestEffectId);
                     const UCHAR GetShield() const;
                     void ResetShield();
-                    EFFECT_ARGUMENT Refresh(UINT QuestEffectId);
+                    EFFECT_ARGUMENT Refresh(BattleGroundEffect QuestEffectId);
                     void ClearEnfeeble();
                     void RemoveDebuffs();
                     void Cleanse();
@@ -68,9 +68,9 @@
                     const UCHAR GetAbilitiesCount() const;
                     const UCHAR GetAbilityInOrder(const UCHAR order) const;
                     void Infuse(const UCHAR setfaction);
-                    const UCHAR SufferDmg(UINT QuestEffectId, const UCHAR Dmg, const UCHAR Pierce = 0, UCHAR * const actualdamagedealt = 0, UCHAR *SkillProcBuffer = 0, UCHAR *OverkillDamage = 0, bool bCanRegenerate = true, VLOG *log = 0, LOG_RECORD *lr=0, bool * const damageWasDeadly = NULL);
-                    bool HitCommander(UINT QuestEffectId,const UCHAR Dmg,PlayedCard &Src,ActiveDeck & ownDeck, ActiveDeck & otherDeck, bool bCanBeCountered = true,UCHAR *overkill = NULL,VLOG *log = NULL,LOG_RECORD *lr = NULL);
-                    UCHAR StrikeDmg(const UINT QuestEffectId, const UCHAR Dmg, UCHAR *overkill = 0); // returns dealt dmg
+                    const UCHAR SufferDmg(BattleGroundEffect QuestEffectId, const UCHAR Dmg, const UCHAR Pierce = 0, UCHAR * const actualdamagedealt = 0, UCHAR *SkillProcBuffer = 0, UCHAR *OverkillDamage = 0, bool bCanRegenerate = true, VLOG *log = 0, LOG_RECORD *lr=0, bool * const damageWasDeadly = NULL);
+                    bool HitCommander(BattleGroundEffect QuestEffectId,const UCHAR Dmg,PlayedCard &Src,ActiveDeck & ownDeck, ActiveDeck & otherDeck, bool bCanBeCountered = true,UCHAR *overkill = NULL,VLOG *log = NULL,LOG_RECORD *lr = NULL);
+                    UCHAR StrikeDmg(BattleGroundEffect const QuestEffectId, const UCHAR Dmg, UCHAR *overkill = 0); // returns dealt dmg
                     const bool IsAlive() const;
                     const bool IsDefined() const;
                     bool OnDeathEvent();
@@ -106,7 +106,7 @@
                     void Protect(const EFFECT_ARGUMENT amount);
                     bool Rush(const EFFECT_ARGUMENT amount);
                     bool IsDiseased() const;
-                    UCHAR Heal(EFFECT_ARGUMENT amount,UINT QuestEffectId = 0);
+                    UCHAR Heal(EFFECT_ARGUMENT amount, BattleGroundEffect QuestEffectId = BattleGroundEffect::normal);
                     const Card *GetOriginalCard() const;
                     PlayedCard();
 

@@ -37,7 +37,7 @@
                     MDECKS DIndex;
                     //char SKILLS[CARD_ABILITIES_MAX][CARD_NAME_MAX_LENGTH];
                     MSKILLS SIndex;
-                    MSKILLS QuestEffectIndex;
+                    MapBattleGroundEffects QuestEffectIndex;
                 public://protected:
                     Skill Skills[CARD_ABILITIES_MAX];
                     MSETS SetIndex;
@@ -56,14 +56,14 @@
                     bool LoadMissionXML(const char *FileName);
                     bool LoadRaidXML(const char *FileName);
                     bool LoadQuestXML(const char *FileName);
-                    const UINT GetQuestEffectId(UINT QuestId);
+                    const BattleGroundEffect GetQuestEffectId(UINT QuestId);
                     bool RateCard(const UINT Id, double &OffenceValue, double &DefenceValue, const UCHAR iFormulaVersion = 0);
                     void GenRaidDeck(ActiveDeck &D, UINT RaidID);
                     void GenQuestDeck(ActiveDeck &D, UINT QuestID);
                     DWORD LoadPointers(Card **Ptr, DWORD MaxCount);
                     void Initialize();
                     void AddSkill(UCHAR Id, const char *Name);
-                    void AddQuestEffect(UCHAR Id, const char *Name);
+                    void AddQuestEffect(BattleGroundEffect effect, const char *Name);
                     const char *GetSkill(UCHAR Indx) const;
                     UCHAR GetSkillID(const char *Name);
                     UCHAR GetSkillIDSlow(const char *Name);

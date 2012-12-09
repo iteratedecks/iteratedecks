@@ -94,25 +94,28 @@
                 FACTION_RIGHTEOUS = 5,
             };
 
-            enum QuestEffects {
-                QEFFECT_TIME_SURGE = 1,
-                QEFFECT_COPYCAT = 2,
-                QEFFECT_QUICKSILVER = 3,
-                QEFFECT_DECAY = 4,
-                QEFFECT_HIGH_SKIES = 5,
-                QEFFECT_IMPENETRABLE = 6,
-                QEFFECT_INVIGORATE = 7,
-                QEFFECT_CLONE_PROJECT = 8,
-                QEFFECT_FRIENDLY_FIRE = 9,
-                QEFFECT_GENESIS = 10,
-                QEFFECT_ARTILLERY_STRIKE = 11,
-                QEFFECT_PHOTON_SHIELD = 12,
-                QEFFECT_ENFEEBLE_ALL = 13,
-                QEFFECT_PROTECT_ALL = 14,
-                QEFFECT_COMMANDER_FREEZE = 15,
-                QEFFECT_SPLIT_FIVE = 16,
-                QEFFECT_POISON_ALL = 17,
+            enum class BattleGroundEffect {
+                normal = 0,
+                timeSurge = 1,
+                copyCat = 2,
+                quicksilver = 3,
+                decay = 4,
+                highSkies = 5,
+                impenetrable = 6,
+                invigorate = 7,
+                cloneProject = 8,
+                friendlyFire = 9,
+                genesis = 10,
+                artilleryStrike = 11,
+                photonShield = 12,
+                enfeebleAll = 13,
+                protectAll = 14,
+                commanderFreeze = 15,
+                splitFive = 16,
+                poisonAll = 17,
             };
+            typedef std::map<std::string, BattleGroundEffect> MapBattleGroundEffects;
+            typedef std::pair<std::string, BattleGroundEffect> PairBattleGroundEffects;
 
         }
     }

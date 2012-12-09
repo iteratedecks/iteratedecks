@@ -7,7 +7,7 @@ namespace IterateDecks {
         BgInfo::BgInfo(UINT const id
                       ,char const * const name
                       ,char const * const desc
-                      ,UINT const effectid
+                      ,BattleGroundEffect const effectid
                       )
         : id(id)
         , name(name)
@@ -29,7 +29,7 @@ namespace IterateDecks {
             return this->name;
         }
 
-        UINT BgInfo::GetEffectId()
+        BattleGroundEffect BgInfo::GetEffectId()
         {
             return this->effectId;
         }

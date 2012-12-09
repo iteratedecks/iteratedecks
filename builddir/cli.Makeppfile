@@ -1,6 +1,8 @@
 # Where our sources are
 repository ../../src
 
+CXXFLAGS+= --std=c++11
+
 $(phony CLI): ${RELEASE_BINARY_CLI} XML PACKAGE
 
 ${RELEASE_BINARY_CLI}: $(infer_objects CLI2/iteratedecks-cli.o, CLI2/*.o CORE/*.o)
