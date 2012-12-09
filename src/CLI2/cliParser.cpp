@@ -1,23 +1,23 @@
 /**
  * Copyright 2012 Fabian "Praetorian" Kürten.
  *
- * This file is part of EvaluateDecks.
+ * This file is part of IterateDecks.
  *
- *  EvaluateDecks is free software: you can redistribute it and/or modify
+ *  IterateDecks is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation, only version 3 of the License.
  *
- *  EvaluateDecks is distributed in the hope that it will be useful,
+ *  IterateDecks is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
- *  along with EvaluateDecks.  If not, see <http://www.gnu.org/licenses/>.
+ *  along with IterateDecks.  If not, see <http://www.gnu.org/licenses/>.
  *
  *  In addition this file can be redistributed and/or modified under
  *  version 3 of the GNU General Public License or any later version
- *  of the License.
+ *  of the License. (This does not extend to other files unless noted.)
  */
 
 #include "cliParser.hpp"
