@@ -165,6 +165,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 			tDef.AttackDeck(tAtk);
 			if (!tAtk.Commander.IsAlive())
 			{
+                // defender attacked (surge). attacker is dead
 				if (CSIndex && rbc)
 					for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
 						if (tAtk.CardPicks[i])
@@ -173,34 +174,38 @@ In other words, it is the same as on auto, only the counters reset every time yo
 
 				r.LPoints+=10; // for winning 
 				r.LAutoPoints+=10;
-				if (tAtk.DamageToCommander >= 10)   // + points for dealing damage to enemy commander
+				if (tAtk.DamageToCommander >= 10) {  // + points for dealing damage to enemy commander
 					r.Points+=10;
-				else
+				} else {
 					r.Points+=tAtk.DamageToCommander;
-				if (!bSurrenderAtLoss)
-				{
-					if (tDef.DamageToCommander >= 10)  // dying
+                }
+				if (!bSurrenderAtLoss) {
+					if (tDef.DamageToCommander >= 10) { // dying
 						r.LPoints+=10;
-					else
+					} else {
 						r.LPoints+=tDef.DamageToCommander;
+                    }
 				}
 				iAutoAtkDmg += tAtk.DamageToCommander;
 				iAutoDefDmg += tDef.DamageToCommander;
-				if (iAutoAtkDmg > 10)
+				if (iAutoAtkDmg > 10) {
 					r.AutoPoints += 10;
-				else
+				} else {
 					r.AutoPoints += iAutoAtkDmg;
-				if (iAutoDefDmg > 10)
+                }
+				if (iAutoDefDmg > 10) {
 					r.LAutoPoints += 10;
-				else
+				} else {
 					r.LAutoPoints += iAutoDefDmg;
-				r.Loss++;
-				if (i < 10)
+				}
+                r.Loss++;
+				if (i < 10) {
 					r.LAutoPoints+=5; // +5 points for losing by turn 10 on auto
-				if (!bSurrenderAtLoss)
-				{
-					if (i < iLastManualTurn + 10)
-						r.LPoints+=5; // +5 points for losing by turn T+10 
+				}
+                if (!bSurrenderAtLoss) {
+					if (i < iLastManualTurn + 10) {
+						r.LPoints+=5; // +5 points for losing by turn T+10
+                    }
 				}
 				break;
 			}
@@ -452,10 +457,9 @@ void EvaluateRaidQuestOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSInd
 {
 	ActiveDeck tAtk(gAtk);
 	ActiveDeck tDef;
-	if (RaidID)
+	if (RaidID) {
 		DB.GenRaidDeck(tDef,RaidID);
-	else
-	{
+	} else {
 		DB.GenQuestDeck(tDef,QuestID);
         BattleGroundEffect questEffect = DB.GetQuestEffectId(QuestID);
 		tAtk.SetQuestEffect(questEffect);

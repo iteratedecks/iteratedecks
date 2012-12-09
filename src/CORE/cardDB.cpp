@@ -493,13 +493,13 @@ namespace IterateDecks {
                     if (!it->child("effect").empty())
                     {
                         MapBattleGroundEffects::iterator si = QuestEffectIndex.find(it->child("effect").child_value());
-                        if (si == QuestEffectIndex.end())
-                        {
-                            if (bConsoleOutput)
+                        if (si == QuestEffectIndex.end()) {
+                            if (bConsoleOutput) {
                                 printf("Quest effect \"%s\" not found in index!\n",it->child("effect").child_value());
-                        }
-                        else
+                            }
+                        } else {
                             effect = si->second;
+                        }
                     }
                     assertX(Id < BATTLEGROUND_MAX_ID);
                     BGDB[Id] = BgInfo(Id,Name,Desc,effect);
