@@ -8,7 +8,7 @@ namespace IterateDecks {
 
         StepInfo::StepInfo(UINT id, UINT bgid, UINT commander)
         : id(id)
-        , bgId(bgId)
+        , bgId(bgid)
         , commander(commander)
         {
             this->pools.reserve(DEFAULT_POOL_COUNT);
