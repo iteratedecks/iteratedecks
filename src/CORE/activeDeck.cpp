@@ -2663,5 +2663,10 @@ namespace IterateDecks {
             return (SufferDmg(QuestEffectId,Dmg,0,0,0,overkill) > 0);
         }
 
+        bool ActiveDeck::isAlive() const
+        {
+            return this->Commander.IsAlive();
+        }
+
     }
 }

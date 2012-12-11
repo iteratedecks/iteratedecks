@@ -34,6 +34,8 @@
 
 #include "../CORE/cardDB.hpp"
 
+#include "../CORE/iterateDecksCore.hpp"
+
 namespace IterateDecks {
     namespace CLI {
 
@@ -410,6 +412,20 @@ namespace IterateDecks {
             }
         }
 
+        void checkIntervals(unsigned int const k1
+                           ,unsigned int const n1
+                           ,unsigned int const k2
+                           ,unsigned int const n2
+                           ,double confidence
+                           )
+        {
+            double l1, u1, l2, u2;
+            twoSidedBounds(k1, n1, confidence, l1, u1);
+            twoSidedBounds(k2, n2, confidence, l2, u2);
+            assertLE(l1, u2);
+            assertGE(u1, l2);
+        }
+
 
         RESULTS simulate(DeckArgument const & attackDeck
                         ,DeckArgument const & defenseDeck
@@ -438,7 +454,7 @@ namespace IterateDecks {
                     deck2.SetOrderMatters(defenseDeck.isOrdered());
                     r = simulateSimple(deck1,deck2,attackLogger,defenseLogger,simulationLogger, numberOfIterations, surge);
                 } break;
-                
+
                 case DeckArgument::RAID_ID: {
                     r = simulateRaid(deck1, defenseDeck.getRaidId(), attackLogger, defenseLogger, simulationLogger, numberOfIterations);
                 } break;
@@ -446,12 +462,32 @@ namespace IterateDecks {
                 case DeckArgument::QUEST_ID: {
                     r = simulateQuest(deck1, defenseDeck.getQuestId(), attackLogger, defenseLogger, simulationLogger, numberOfIterations);
                 } break;
-                
+
                 case DeckArgument::MISSION_ID: {
                     ActiveDeck deck2 = cardDB.GetMissionDeck(defenseDeck.getMissionId());
                     r = simulateSimple(deck1,deck2,attackLogger,defenseLogger,simulationLogger, numberOfIterations, surge);
                 } break;
             }
+
+            // Refactoring: Also use new simulator to check for same results.
+            IterateDecksCore simulator;
+            SimulationTaskStruct task;
+            task.minimalNumberOfGames = numberOfIterations;
+            task.surge = surge;
+            task.delayFirstAttacker = false;
+            task.battleGround = BattleGroundEffect::normal;
+            task.achievementOptions = AchievementOptions();
+            task.randomSeed = seed;
+            task.attacker = attackDeck;
+            task.defender = defenseDeck;
+
+            Result r2 = simulator.simulate(task);
+            // Compare
+            assertEQ(r.Games, r2.numberOfGames);
+            assertEQ(r2.numberOfGames, r2.gamesWon + r2.gamesLost + r2.gamesStalled);
+            checkIntervals(r.Win               , r.Games, r2.gamesWon    , r2.numberOfGames, 0.9);
+            checkIntervals(r.Loss              , r.Games, r2.gamesLost   , r2.numberOfGames, 0.9);
+            checkIntervals(r.Games-r.Win-r.Loss, r.Games, r2.gamesStalled, r2.numberOfGames, 0.9);
             return r;
         }
 

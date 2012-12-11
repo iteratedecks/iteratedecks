@@ -131,6 +131,8 @@
                     std::string toString(bool const & reversed = false, unsigned int const w = 20);
                     std::string GetDeck() const;
                     std::string GetHash64(bool bCardPicks = false) const;
+
+                    bool isAlive() const;
                 protected:
                     void GetTargets(LCARDS &From, UCHAR TargetFaction, PPCIV &GetTo, bool bForInfuse = false);
                     void FilterTargets(PPCIV &targets, const EFFECT_ARGUMENT skipEffects[], const EFFECT_ARGUMENT targetSkills[], const int waitMin, const int waitMax, const int attackLimit, bool skipPlayed);
