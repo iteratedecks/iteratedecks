@@ -99,7 +99,8 @@ int mainWithOptions(CliOptions const & options
     DeckArgument attackDeck = options.attackDeck;
     DeckArgument const & defenseDeck = options.defenseDeck;
 
-    RESULTS r = simulate(attackDeck, defenseDeck, &attackLogger, &defenseLogger, &simulationLogger, options.numberOfIterations, options.surge, DB, options.seed);
+    BattleGroundEffect battleGroundEffect = options.battleGroundEffect;
+    RESULTS r = simulate(attackDeck, defenseDeck, &attackLogger, &defenseLogger, &simulationLogger, options.numberOfIterations, options.surge, battleGroundEffect, DB, options.seed);
 
     printResults(r);
 

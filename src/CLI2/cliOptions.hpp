@@ -44,6 +44,7 @@ using namespace IterateDecks::Core;
                 , { { "raid-id"              , required_argument, 0, 'r' }, "raid id" }
                 , { { "quest-id"             , required_argument, 0, 'Q' }, "quest id" }
                 , { { "mission-id"           , required_argument, 0, 'm' }, "mission id" }
+                , { { "battleground-id"      , required_argument, 0, 'b' }, "battleground effect. overrides quest effect." }
                 };
 
 
@@ -118,6 +119,7 @@ using namespace IterateDecks::Core;
                 Logger::ColorMode colorMode;
                 bool printHelpAndExit;
                 bool surge;
+                BattleGroundEffect battleGroundEffect;
 
                 CliOptions();
             };

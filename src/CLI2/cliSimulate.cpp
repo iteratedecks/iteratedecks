@@ -418,7 +418,7 @@ namespace IterateDecks {
                         ,SimulationLogger * simulationLogger
                         ,unsigned int const & numberOfIterations
                         ,bool surge
-                        // future: battlefield id
+                        ,BattleGroundEffect battleGroundEffect
                         ,CardDB const & cardDB
                         ,unsigned int seed
                         )
@@ -430,12 +430,18 @@ namespace IterateDecks {
             // FIXME: should not pass c_str
             ActiveDeck deck1(attackDeck.getHash().c_str(), cardDB.GetPointer());
             deck1.SetOrderMatters(attackDeck.isOrdered());
+            if(battleGroundEffect != BattleGroundEffect::normal) {
+                deck1.SetQuestEffect(battleGroundEffect);
+            }
 
             RESULTS r;
             switch(defenseDeck.getType()) {
                 case DeckArgument::HASH: {
                     ActiveDeck deck2(defenseDeck.getHash().c_str(), cardDB.GetPointer());
                     deck2.SetOrderMatters(defenseDeck.isOrdered());
+                    if(battleGroundEffect != BattleGroundEffect::normal) {
+                        deck2.SetQuestEffect(battleGroundEffect);
+                    }
                     r = simulateSimple(deck1,deck2,attackLogger,defenseLogger,simulationLogger, numberOfIterations, surge);
                 } break;
                 
@@ -449,6 +455,9 @@ namespace IterateDecks {
                 
                 case DeckArgument::MISSION_ID: {
                     ActiveDeck deck2 = cardDB.GetMissionDeck(defenseDeck.getMissionId());
+                    if(battleGroundEffect != BattleGroundEffect::normal) {
+                        deck2.SetQuestEffect(battleGroundEffect);
+                    }
                     r = simulateSimple(deck1,deck2,attackLogger,defenseLogger,simulationLogger, numberOfIterations, surge);
                 } break;
             }
