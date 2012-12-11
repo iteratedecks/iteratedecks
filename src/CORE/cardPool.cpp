@@ -56,25 +56,26 @@ namespace IterateDecks {
                 int maxTries = 1000; //< abort after too many tries
                 UCHAR id = 0;     //< id of found card
                 UINT index = 0xdeadbeef;
-                Card card;
+                Card const * card;
                 do {
                     // Note that this is not a uniform distribution unless
                     // fromIdPool.size() is much smaller than RAND_MAX
                     // (which we can assume) or fromIdPool.size() divides RAND_MAX
                     index = (rand() % fromIdPool.size());
                     id = fromIdPool[index];
-                    card = pCDB[id];
+                    card = &pCDB[id];
 
                     maxTries--;
                     if (maxTries <= 0) {
-                        std::cout << "Looping has been aborted when choosing " <<  card.GetName() << "..." << std::endl;
+                        std::cout << "Looping has been aborted when choosing "
+                                  <<  card->GetName() << "..." << std::endl;
                         break;
                     }
                 }
-                while (((card.GetRarity() == RARITY_UNIQUE) && isCardInDeck(id,toPool))
-                    || (bLegendary && (card.GetRarity() == RARITY_LEGENDARY)));   // unique check
+                while (((card->GetRarity() == RARITY_UNIQUE) && isCardInDeck(id,toPool))
+                    || (bLegendary && (card->GetRarity() == RARITY_LEGENDARY)));   // unique check
 
-                toPool.push_back(&card);
+                toPool.push_back(card);
                 fromIdPool.erase(fromIdPool.begin()+index);
             }
         };
