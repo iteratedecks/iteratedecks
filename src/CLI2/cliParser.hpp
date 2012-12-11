@@ -28,7 +28,7 @@
     /**
      * Namespace for the application.
      */
-    namespace EvaluateDecks {
+    namespace IterateDecks {
 
         /**
          * Namespace for stuff related to the CLI.

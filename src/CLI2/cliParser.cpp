@@ -39,7 +39,7 @@
 #include <sstream>
 #include <ctime>
 
-namespace EvaluateDecks {
+namespace IterateDecks {
     namespace CLI {
 
         CliOptions parseCliOptions(int const & argc, char * const argv[]) throw (std::invalid_argument, std::logic_error)

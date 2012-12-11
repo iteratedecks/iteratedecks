@@ -1,5 +1,5 @@
 #ifndef ITERATEDECKS_CORE_ACTIVEDECK_HPP
-    #define ITERATEDECKS_CORE_ACTIVEDECK__HPP
+    #define ITERATEDECKS_CORE_ACTIVEDECK_HPP
 
     #include "playedCard.hpp"
     #include "results.hpp"

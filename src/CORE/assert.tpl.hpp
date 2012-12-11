@@ -80,4 +80,17 @@ namespace Assert {
         return AssertionError(sa + " == " + xtos(a) + " <= " + xtos(b) + " == " + sb,file,line,function);
     }
 
+    template<typename T> inline
+    AssertionError assertEQ_(T const & a
+                            ,T const & b
+                            ,std::string const & sa
+                            ,std::string const & sb
+                            ,std::string const & file
+                            ,unsigned int const line
+                            ,std::string const & function
+                            )
+    {
+        return AssertionError(sa + " == " + xtos(a) + " == " + xtos(b) + " == " + sb,file,line,function);
+    }
+
 }

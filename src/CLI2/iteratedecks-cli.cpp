@@ -52,7 +52,7 @@
 #include "../CORE/assert.hpp"
 #include <stdexcept>
 
-using namespace EvaluateDecks::CLI;
+using namespace IterateDecks::CLI;
 using namespace IterateDecks::Core;
 
 /**
@@ -99,7 +99,7 @@ int mainWithOptions(CliOptions const & options
     DeckArgument attackDeck = options.attackDeck;
     DeckArgument const & defenseDeck = options.defenseDeck;
 
-    RESULTS r = simulate(attackDeck, defenseDeck, &attackLogger, &defenseLogger, &simulationLogger, options.numberOfIterations, options.surge, DB);
+    RESULTS r = simulate(attackDeck, defenseDeck, &attackLogger, &defenseLogger, &simulationLogger, options.numberOfIterations, options.surge, DB, options.seed);
 
     printResults(r);
 
@@ -124,7 +124,7 @@ int mainWithOptions(CliOptions const & options
 #define E_RUNTIME_ERROR -1;
 #define E_LOGIC_ERROR -2;
 
-using namespace EvaluateDecks::CLI;
+using namespace IterateDecks::CLI;
 
 /**
  * Reads cli arguments, parses them with parseCliOptions, then calls mainWithOptions().

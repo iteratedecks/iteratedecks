@@ -6,6 +6,9 @@
 
             class ActiveDeck;
 
+            unsigned int base64ToId(unsigned short const base64);
+
+
         }
     }
 #endif

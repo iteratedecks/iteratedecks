@@ -549,7 +549,7 @@ namespace IterateDecks {
         const UCHAR PlayedCard::GetMaxHealth() const { return OriginalCard->GetHealth(); }
         const UCHAR PlayedCard::GetFaction() const { return Faction; }
         const UCHAR PlayedCard::GetWait() const { return Wait; }
-        const UCHAR PlayedCard::GetType() const
+        const CardType PlayedCard::GetType() const
         {
             // this is crap ! - must remove and check the code
             if (!OriginalCard)

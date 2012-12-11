@@ -87,7 +87,7 @@
                     const UCHAR GetMaxHealth() const;
                     const UCHAR GetFaction() const;
                     const UCHAR GetWait() const;
-                    const UCHAR GetType() const;
+                    const CardType GetType() const;
                     const UCHAR GetEffect(const UCHAR id) const;
                     const EFFECT_ARGUMENT GetAbility(const UCHAR id) const;
                     const UCHAR GetTargetCount(const UCHAR id) const;

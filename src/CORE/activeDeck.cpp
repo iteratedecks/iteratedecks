@@ -17,8 +17,8 @@ namespace IterateDecks {
         // FIXME remove ancient first generation logging code
         extern bool bConsoleOutput;
 
-        #define BASE64ID	BASE642ID // alias
-        UINT BASE642ID(const unsigned short base64)
+        #define BASE64ID	base64ToId // alias
+        UINT base64ToId(const unsigned short base64)
         {
         #define DecodeBase64(x) (((x >= 'A') && (x <= 'Z')) ? (x - 'A') : (((x >= 'a') && (x <= 'z')) ? (x - 'a' + 26) : (((x >= '0') && (x <= '9')) ? (x - '0' + 52) : ((x == '+') ? (62) : (63)))))
         // same stuff as with ID2BASE64, hi and lo swapped

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <iomanip>
 
-namespace EvaluateDecks {
+namespace IterateDecks {
     namespace CLI {
 
         //CommentedOption const options[] =
@@ -49,6 +49,10 @@ namespace EvaluateDecks {
 
         DeckArgument::DeckArgument()
         : type(HASH)
+        , hashData()
+        , missionId(0)
+        , raidId(0)
+        , questId(0)
         {
         }
 

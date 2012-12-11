@@ -20,7 +20,7 @@
 
 using namespace IterateDecks::Core;
 
-    namespace EvaluateDecks {
+    namespace IterateDecks {
         namespace CLI {
 
             struct CommentedOption {
