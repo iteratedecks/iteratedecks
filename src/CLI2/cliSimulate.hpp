@@ -6,7 +6,7 @@
     #include "../CORE/results.hpp"
     #include "cliOptions.hpp"
 
-    namespace EvaluateDecks {
+    namespace IterateDecks {
         namespace CLI {
 
 
@@ -49,10 +49,11 @@
                             ,bool surge
                             // future: battlefield id
                             ,CardDB const & cardDB
+                            ,unsigned int seed
                             );
                             
 
-            RESULTS simulate(ActiveDeck const & deck1
+            RESULTS simulateSimple(ActiveDeck const & deck1
                             ,ActiveDeck const & deck2
                             ,DeckLogger * attackLogger
                             ,DeckLogger * defenseLogger

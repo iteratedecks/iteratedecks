@@ -12,13 +12,13 @@
                     UINT id;
                     std::string name;
                     std::string desc;
-                    UINT effectId;
+                    BattleGroundEffect effectId;
                 public:
                     BgInfo();
-                    BgInfo(UINT const id,char const * const name, char const * const desc, UINT const effectid);
+                    BgInfo(UINT const id,char const * const name, char const * const desc, BattleGroundEffect const effectid);
                     BgInfo(BgInfo const & BI);
                     std::string GetName();
-                    UINT GetEffectId();
+                    BattleGroundEffect GetEffectId();
             };
 
         }

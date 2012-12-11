@@ -34,7 +34,7 @@
 
 #include "../CORE/cardDB.hpp"
 
-namespace EvaluateDecks {
+namespace IterateDecks {
     namespace CLI {
 
         #define assertDE(a,b) assert(a-DBL_EPSILON < b && b < a+DBL_EPSILON)
@@ -420,12 +420,13 @@ namespace EvaluateDecks {
                         ,bool surge
                         // future: battlefield id
                         ,CardDB const & cardDB
+                        ,unsigned int seed
                         )
         {
             // construct the decks
             // TODO own function for this.
             // ... first deck
-            assert(attackDeck.getType() == DeckArgument::HASH);
+            assertEQ(attackDeck.getType(), DeckArgument::HASH);
             // FIXME: should not pass c_str
             ActiveDeck deck1(attackDeck.getHash().c_str(), cardDB.GetPointer());
             deck1.SetOrderMatters(attackDeck.isOrdered());
@@ -435,7 +436,7 @@ namespace EvaluateDecks {
                 case DeckArgument::HASH: {
                     ActiveDeck deck2(defenseDeck.getHash().c_str(), cardDB.GetPointer());
                     deck2.SetOrderMatters(defenseDeck.isOrdered());
-                    r = simulate(deck1,deck2,attackLogger,defenseLogger,simulationLogger, numberOfIterations, surge);
+                    r = simulateSimple(deck1,deck2,attackLogger,defenseLogger,simulationLogger, numberOfIterations, surge);
                 } break;
                 
                 case DeckArgument::RAID_ID: {
@@ -448,14 +449,14 @@ namespace EvaluateDecks {
                 
                 case DeckArgument::MISSION_ID: {
                     ActiveDeck deck2 = cardDB.GetMissionDeck(defenseDeck.getMissionId());
-                    r = simulate(deck1,deck2,attackLogger,defenseLogger,simulationLogger, numberOfIterations, surge);
+                    r = simulateSimple(deck1,deck2,attackLogger,defenseLogger,simulationLogger, numberOfIterations, surge);
                 } break;
             }
             return r;
         }
 
 
-        RESULTS simulate(ActiveDeck const & deck1
+        RESULTS simulateSimple(ActiveDeck const & deck1
                         ,ActiveDeck const & deck2
                         ,DeckLogger * attackLogger
                         ,DeckLogger * defenseLogger
@@ -482,7 +483,7 @@ namespace EvaluateDecks {
         RESULTS simulateRaid(ActiveDeck const & deck1
                             , unsigned int const & raidId
                             , DeckLogger * attackLogger
-                            , DeckLogger * defenseLogger                            
+                            , DeckLogger * defenseLogger
                             , SimulationLogger * simulationLogger
                             , unsigned int const & numberOfIterations
                             )

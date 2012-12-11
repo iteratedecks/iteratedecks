@@ -53,12 +53,18 @@ namespace IterateDecks {
             //AbilitiesOrdered.reserve(RESERVE_ABILITIES_COUNT);
         }
         Card::Card(UINT const id
-                  ,char const * name, const char* pic, Rarity const rarity, CardType const type, Faction const faction, const UCHAR attack, const UCHAR health, const UCHAR wait, const UINT set)
-        : type(type)
+                  ,char const * name
+                  ,const char* pic
+                  ,Rarity const rarity
+                  ,CardType const type
+                  ,Faction const faction, const UCHAR attack, const UCHAR health, const UCHAR wait, const UINT set)
+        : Id(id)
+        , type(type)
         , faction(faction)
         , rarity(rarity)
         {
-            Id = id;
+            assertX(id != 0);
+            assertX(type != TYPE_NONE);
             //UINT temp = ID2BASE64(4000);
             //printf("%s -> %d\n",(char*)&temp,BASE64ID(temp));
             //BASE642ID(temp);

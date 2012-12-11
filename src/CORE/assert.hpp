@@ -46,6 +46,7 @@
         #define assertGE(a,b) do { if(!(a>=b)) { throw Assert::assertGE_(a,b,#a,#b,__FILE__,__LINE__,FUNCTION_NAME); } } while(false)
         #define assertLT(a,b) do { if(!(a< b)) { throw Assert::assertLT_(a,b,#a,#b,__FILE__,__LINE__,FUNCTION_NAME); } } while(false)
         #define assertLE(a,b) do { if(!(a<=b)) { throw Assert::assertLE_(a,b,#a,#b,__FILE__,__LINE__,FUNCTION_NAME); } } while(false)
+        #define assertEQ(a,b) do { if(!(a==b)) { throw Assert::assertEQ_(a,b,#a,#b,__FILE__,__LINE__,FUNCTION_NAME); } } while(false)
 
         /**
          * A namespace for the functions so they don't clutter global
@@ -99,6 +100,15 @@
                                     );
             template<typename T>
             AssertionError assertLE_(T const & a
+                                    ,T const & b
+                                    ,std::string const & sa
+                                    ,std::string const & sb
+                                    ,std::string const & file
+                                    ,unsigned int const line
+                                    ,std::string const & function
+                                    );
+            template<typename T>
+            AssertionError assertEQ_(T const & a
                                     ,T const & b
                                     ,std::string const & sa
                                     ,std::string const & sb

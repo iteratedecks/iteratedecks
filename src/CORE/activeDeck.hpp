@@ -1,5 +1,5 @@
 #ifndef ITERATEDECKS_CORE_ACTIVEDECK_HPP
-    #define ITERATEDECKS_CORE_ACTIVEDECK__HPP
+    #define ITERATEDECKS_CORE_ACTIVEDECK_HPP
 
     #include "playedCard.hpp"
     #include "results.hpp"
@@ -37,7 +37,7 @@
                     UCHAR LogDeckID;
                     VLOG *Log;
                     // Quest effects
-                    UINT QuestEffectId;
+                    BattleGroundEffect QuestEffectId;
                     // used to get the actual card for summon
                     Card const * pCDB;
                     // logging
@@ -94,7 +94,7 @@
                     bool IsAnnihilated();
                     void SetFancyStatsBuffer(const UCHAR *resindex, RESULT_BY_CARD *res);
                     UCHAR GetCountInDeck(UINT Id);
-                    void SetQuestEffect(UINT EffectId);
+                    void SetQuestEffect(BattleGroundEffect EffectId);
                     // NR: please note, contructors don't clean up storages, must do it manually and beforehand, even copy constructor
                     // P: I have no idea what he means by that
                     ActiveDeck(const char *HashBase64, const Card *pCDB);
@@ -107,13 +107,13 @@
                     void DelayFirstCard();
                     void Add(const Card *c);
                     bool IsInTargets(PlayedCard *pc, PPCIV *targets);
-                    bool Evade(PlayedCard *defender, UINT QuestEffectId, bool chaos);
+                    bool Evade(PlayedCard *defender, BattleGroundEffect QuestEffectId, bool chaos);
                     UCHAR Intercept(PPCIV &targets, UCHAR destindex, ActiveDeck &Dest);
                     bool Payback(PlayedCard *defender, PlayedCard &Src, ActiveDeck &dest, EVENT_CONDITION EffectType, UCHAR effectId, EFFECT_ARGUMENT effect, bool chaos);
                     bool Tribute(PlayedCard *tributeCard, PlayedCard *targetCard, ActiveDeck *procDeck, EVENT_CONDITION EffectType, AbilityId effectId, EFFECT_ARGUMENT effect);
                     void PlayCard(const Card *c, ActiveDeck &Def);
-                    void ApplyEffects(UINT QuestEffectId,EVENT_CONDITION EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false,PlayedCard *Mimicer=0,UCHAR StructureIndex = 0, PlayedCard * target=NULL);
-                    void applyDamageDependentEffectOnAttack(UINT questEffectId, PlayedCard & src, AbilityId const & abilityId, EFFECT_ARGUMENT const & effectArgument, ActiveDeck & otherDeck, PlayedCard & target);
+                    void ApplyEffects(BattleGroundEffect QuestEffectId,EVENT_CONDITION EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false,PlayedCard *Mimicer=0,UCHAR StructureIndex = 0, PlayedCard * target=NULL);
+                    void applyDamageDependentEffectOnAttack(BattleGroundEffect questEffectId, PlayedCard & src, AbilityId const & abilityId, EFFECT_ARGUMENT const & effectArgument, ActiveDeck & otherDeck, PlayedCard & target);
                     void SweepFancyStats(PlayedCard &pc);
                     void SweepFancyStatsRemaining();
                     const Card *PickNextCard(bool bNormalPick = true);
