@@ -23,6 +23,7 @@
 
                 protected:
                     DeckTemplate(CardDB const & cardDB);
+                    DeckTemplate(Card const * commander, CardDB const & cardDB);
 
                 public:
                     virtual ~DeckTemplate();

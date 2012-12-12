@@ -10,7 +10,7 @@
         namespace Core {
 
             class StepInfo {
-                private:
+                public:
                     UINT id;
                     UINT bgId;
                     UINT commander;
@@ -20,10 +20,10 @@
                     StepInfo(UINT id, UINT bgid, UINT commander);
                     StepInfo(StepInfo const &SI);
                     void GetPools(Card const * const pCDB, LCARDS &Deck) const;
-                    UINT GetCommander();
-                    UINT GetBGId();
+                    UINT GetCommander() const;
+                    UINT GetBGId() const;
                     void AddPool(CardPool const & p);
-                    bool IsValid();
+                    bool IsValid() const;
                     ~StepInfo();
             };
 

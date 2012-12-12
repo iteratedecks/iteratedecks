@@ -1667,5 +1667,17 @@ namespace IterateDecks {
             return r;
         }
 
+        RaidInfo const & CardDB::getRaidInfo(unsigned int const raidId) const
+        {
+            assertLT(raidId, RAID_MAX_ID);
+            return this->RDB[raidId];
+        }
+        
+        StepInfo const & CardDB::getQuestInfo(unsigned int const questId) const
+        {
+            assertLT(questId, STEP_MAX_ID);
+            return this->STDB[questId];
+        }
+
     }
 }

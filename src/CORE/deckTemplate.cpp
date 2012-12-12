@@ -2,6 +2,7 @@
 #include "activeDeck.hpp"
 #include "cardDB.hpp"
 #include "assert.hpp"
+#include "cardPool.hpp"
 
 #include <iostream>
 
@@ -64,6 +65,21 @@ namespace IterateDecks {
                 virtual ActiveDeck instantiate() const;
         };
 
+        class PooledTemplate : public DeckTemplate {
+            private:
+                std::multiset<Card const *> alwaysInclude;
+                std::multiset<CardPool const *> pools;
+
+            public:
+                PooledTemplate(Card const * commander, VCARDPOOL const & pools, CardDB const & cardDB);
+                PooledTemplate(Card const * commander, VID const & alwaysInclude, VCARDPOOL const & pools, CardDB const & cardDB);
+                static PooledTemplate::Ptr createFromRaidId(unsigned int const raidId, CardDB const & cardDB);
+                static PooledTemplate::Ptr createFromQuestId(unsigned int const questId, CardDB const & cardDB);
+
+                virtual ActiveDeck instantiate() const;
+                
+        };
+
         OrderedDeckTemplate::OrderedDeckTemplate(DeckArgument const & argument, CardDB const & cardDB)
         : DeckTemplate(cardDB)
         {
@@ -122,8 +138,104 @@ namespace IterateDecks {
             return activeDeck;            
         }
 
+        //##############################################################
+
+        PooledTemplate::PooledTemplate(Card const * commander
+                                      ,VCARDPOOL const & pools
+                                      ,CardDB const & cardDB
+                                      )
+        : DeckTemplate(commander, cardDB)
+        {
+            for(VCARDPOOL::const_iterator iter = pools.begin()
+               ;iter != pools.end()
+               ;iter++)
+            {
+                this->pools.insert(&(*iter));
+            }
+        }
+
+        PooledTemplate::PooledTemplate(Card const * commander
+                                      ,VID const & alwaysInclude
+                                      ,VCARDPOOL const & pools
+                                      ,CardDB const & cardDB
+                                      )
+        : DeckTemplate(commander, cardDB)
+        {
+            for(VID::const_iterator iter = alwaysInclude.begin()
+               ;iter != alwaysInclude.end()
+               ;iter++)
+            {
+                unsigned int const cardId = *iter;
+                Card const * cardPtr = &cardDB.GetCard(cardId);
+                this->alwaysInclude.insert(cardPtr);
+            }
+
+            for(VCARDPOOL::const_iterator iter = pools.begin()
+               ;iter != pools.end()
+               ;iter++)
+            {
+                this->pools.insert(&(*iter));
+            }
+        }
+                                      
+        PooledTemplate::Ptr PooledTemplate::createFromRaidId(unsigned int const raidId, CardDB const & cardDB)
+        {
+            assertLT(raidId,RAID_MAX_ID);
+            RaidInfo const & raidInfo = cardDB.getRaidInfo(raidId);
+            assertX(raidInfo.IsValid());
+            unsigned int const & commanderId(raidInfo.GetCommander());
+            Card const * commander = &cardDB.GetCard(commanderId);
+
+            return PooledTemplate::Ptr(new PooledTemplate(commander, raidInfo.AlwaysInclude, raidInfo.Pools, cardDB));
+        }
+
+        PooledTemplate::Ptr PooledTemplate::createFromQuestId(unsigned int const questId, CardDB const & cardDB)
+        {
+            assertLT(questId,STEP_MAX_ID);
+            StepInfo const & stepInfo = cardDB.getQuestInfo(questId);
+            assertX(stepInfo.IsValid());
+            unsigned int const & commanderId(stepInfo.GetCommander());
+            Card const * commander = &cardDB.GetCard(commanderId);
+
+            return PooledTemplate::Ptr(new PooledTemplate(commander, stepInfo.pools, cardDB));
+        }
+
+        ActiveDeck PooledTemplate::instantiate() const
+        {
+            ActiveDeck activeDeck(this->commander, this->cardDB.GetPointer());
+            activeDeck.SetOrderMatters(false);
+            //add alwaysinclude
+            for(std::multiset<Card const *>::const_iterator iter = alwaysInclude.begin()
+               ;iter != alwaysInclude.end()
+               ; iter++)
+            {
+                activeDeck.Add(*iter);
+            }
+            // pools
+            for(std::multiset<CardPool const *>::const_iterator iter = pools.begin()
+               ;iter != pools.end()
+               ;iter++)
+            {
+                CardPool const * pool = *iter;
+                pool->GetPool(this->cardDB.GetPointer(), activeDeck.Deck);
+            }
+            
+            assertX(activeDeck.IsValid());
+            //std::clog << activeDeck.GetDeck() << std::endl;
+            activeDeck.PrintShort();
+            return activeDeck;
+        }
+
+
+        //##############################################################
+
         DeckTemplate::DeckTemplate(CardDB const & cardDB)
         : cardDB(cardDB)
+        {}
+
+        DeckTemplate::DeckTemplate(Card const * commander, CardDB const & cardDB)
+        : commander(commander)
+        , cardDB(cardDB)
         {}
 
         DeckTemplate::~DeckTemplate() {}
@@ -143,12 +255,11 @@ namespace IterateDecks {
                         return Ptr(new UnorderedDeckTemplate(argument, cardDB));
                     }
                 case DeckArgument::MISSION_ID:
-
+                    throw LogicError("Not implemented");
                 case DeckArgument::RAID_ID:
-
+                    return PooledTemplate::createFromRaidId(argument.getRaidId(), cardDB);
                 case DeckArgument::QUEST_ID:
-
-
+                    return PooledTemplate::createFromQuestId(argument.getQuestId(), cardDB);
                 default:
                     throw LogicError("Switch Case fall through");
             }

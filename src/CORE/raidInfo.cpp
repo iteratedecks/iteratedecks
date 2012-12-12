@@ -35,22 +35,29 @@ namespace IterateDecks {
                 if (pCDB[AlwaysInclude[i]].IsCard())
                     Deck.push_back(&pCDB[AlwaysInclude[i]]);
         }
+
         void RaidInfo::GetPools(Card *pCDB, LCARDS &Deck) const
         {
             for (UCHAR i=0;i<Pools.size();i++)
                 Pools[i].GetPool(pCDB,Deck);
         }
-        const UINT RaidInfo::GetCommander() { return Commander; };
+
+        const UINT RaidInfo::GetCommander() const { return Commander; };
+
         const char *RaidInfo::GetName() const { return Name.c_str(); }
+
         void RaidInfo::AddAlways(const UINT cardID)
         {
             AlwaysInclude.push_back(cardID);
         }
+
         void RaidInfo::AddPool(const CardPool &p)
         {
             Pools.push_back(p);
         }
-        bool RaidInfo::IsValid() { return (Commander != 0); }
+
+        bool RaidInfo::IsValid() const { return (Commander != 0); }
+        
         RaidInfo::~RaidInfo()
         {
             AlwaysInclude.clear();

@@ -105,6 +105,9 @@
                     bool CheckAchievement(int achievementIndex, const UINT iTurn, ActiveDeck &Atk, ActiveDeck &Def);
                     // named decks
                     ActiveDeck GetNamedDeck(const char* DeckName, Tag tag);
+
+                    RaidInfo const & getRaidInfo(unsigned int const raidId) const;
+                    StepInfo const & getQuestInfo(unsigned int const questId) const;
             };
         }
     }

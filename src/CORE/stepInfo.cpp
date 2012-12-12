@@ -28,11 +28,11 @@ namespace IterateDecks {
                 this->pools[i].GetPool(pCDB, Deck, false);
             }
         }
-        UINT StepInfo::GetCommander() {
+        UINT StepInfo::GetCommander() const {
             return this->commander;
         }
 
-        UINT StepInfo::GetBGId() {
+        UINT StepInfo::GetBGId() const {
             return this->bgId;
         }
 
@@ -41,7 +41,7 @@ namespace IterateDecks {
             this->pools.push_back(p);
         }
 
-        bool StepInfo::IsValid()
+        bool StepInfo::IsValid() const
         {
              return (this->commander != 0) && (this->id != 0) && (this->bgId != 0);
         }

@@ -11,7 +11,7 @@
         namespace Core {
 
             class RaidInfo {
-                private:
+                public:
                     std::string Name;
                     UINT Commander;
                     VID AlwaysInclude;
@@ -22,12 +22,12 @@
                     RaidInfo(RaidInfo const &RI);
                     void GetAlways(Card *pCDB, LCARDS &Deck) const;
                     void GetPools(Card *pCDB, LCARDS &Deck) const;
-                    const UINT GetCommander();
+                    const UINT GetCommander() const;
                     const char *GetName() const;
                     void AddAlways(const UINT cardID);
                     void AddPool(const CardPool &p);
-                    bool IsValid();
-                    ~RaidInfo();
+                    bool IsValid() const;
+                    ~RaidInfo();                    
             };
 
         }
