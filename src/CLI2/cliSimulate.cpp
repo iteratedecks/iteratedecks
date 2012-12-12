@@ -488,6 +488,14 @@ namespace IterateDecks {
             checkIntervals(r.Win               , r.Games, r2.gamesWon    , r2.numberOfGames, 0.9);
             checkIntervals(r.Loss              , r.Games, r2.gamesLost   , r2.numberOfGames, 0.9);
             checkIntervals(r.Games-r.Win-r.Loss, r.Games, r2.gamesStalled, r2.numberOfGames, 0.9);
+            //std::clog << "P" << r.Points << ", "
+            //          << "AP" << r.AutoPoints << ", "
+            //          << "LP" << r.LPoints << ", "
+            //          << "LAP" << r.LAutoPoints << std::endl;
+            //std::clog << "AM" << r2.pointsAttacker << ", "
+            //          << "AA" << r2.pointsAttackerAuto << ", "
+            //          << "DM" << r2.pointsDefender << ", "
+            //          << "DA" << r2.pointsDefenderAuto << std::endl;
             assertDEE(static_cast<double>(r.Points)      / static_cast<double>(r.Games), static_cast<double>(r2.pointsAttacker    ) / static_cast<double>(r2.numberOfGames), 2);
             assertDEE(static_cast<double>(r.AutoPoints)  / static_cast<double>(r.Games), static_cast<double>(r2.pointsAttackerAuto) / static_cast<double>(r2.numberOfGames), 2);
             assertDEE(static_cast<double>(r.LPoints)     / static_cast<double>(r.Games), static_cast<double>(r2.pointsDefender    ) / static_cast<double>(r2.numberOfGames), 2);

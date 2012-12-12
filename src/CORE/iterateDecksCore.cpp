@@ -112,12 +112,6 @@ namespace IterateDecks {
                 }
                 LOG(logger,turnEnd(i));
 
-                // Update damage done to commander
-                unsigned int const attManualDamageToCommander = attacker.DamageToCommander;
-                unsigned int const defManualDamageToCommander = defender.DamageToCommander;
-                attAutoDamageToCommander += attManualDamageToCommander;
-                defAutoDamageToCommander += defManualDamageToCommander;
-
                 // One might be dead
                 bool const attackerAlive = attacker.isAlive();
                 bool const defenderAlive = defender.isAlive();
@@ -138,6 +132,8 @@ namespace IterateDecks {
 
             unsigned int const attManualDamageToCommander = attacker.DamageToCommander;
             unsigned int const defManualDamageToCommander = defender.DamageToCommander;
+            attAutoDamageToCommander += attManualDamageToCommander;
+            defAutoDamageToCommander += defManualDamageToCommander;
             bool const attackerAlive = attacker.isAlive();
             bool const defenderAlive = defender.isAlive();
             assertX(attackerAlive || defenderAlive);
@@ -156,14 +152,17 @@ namespace IterateDecks {
                 }
             } else if(!defenderAlive) {
                 // attacker won
+                //std::clog << "awarding points to attacker for winning" << std::endl;
                 result.gamesWon++;
                 result.pointsAttacker     += surge ? 30u : 10u;
                 result.pointsAttackerAuto += surge ? 30u : 10u;
                 // time bonus?                
                 if(i < lastManualTurn + 10) {
+                    //std::clog << "awarding points to attacker for time bonus in manual" << std::endl;
                     result.pointsAttacker     += 5u;
                 }
-                if(i <= 10) {                    
+                if(i <= 10) {
+                    //std::clog << "awarding points to attacker for time bonus in auto" << std::endl;
                     result.pointsAttackerAuto += 5u;
                 }                
             } else {
@@ -175,6 +174,9 @@ namespace IterateDecks {
             }
 
             // damage
+            //std::clog << "damage for attacker. "
+            //          << "manual=" << attManualDamageToCommander << " "
+            //          << "auto=" << attAutoDamageToCommander << std::endl;
             result.pointsAttacker     += std::min(attManualDamageToCommander, 10u);
             result.pointsAttackerAuto += std::min(attAutoDamageToCommander  , 10u);
             result.pointsDefender     += std::min(defManualDamageToCommander, 10u);
