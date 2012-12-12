@@ -31,9 +31,11 @@ namespace IterateDecks {
         }
         void RaidInfo::GetAlways(Card *pCDB, LCARDS &Deck) const
         {
-            for (UCHAR i=0;i<AlwaysInclude.size();i++)
-                if (pCDB[AlwaysInclude[i]].IsCard())
+            for (UCHAR i=0;i<AlwaysInclude.size();i++) {
+                if (pCDB[AlwaysInclude[i]].IsCard()) {
                     Deck.push_back(&pCDB[AlwaysInclude[i]]);
+                }
+            }
         }
 
         void RaidInfo::GetPools(Card *pCDB, LCARDS &Deck) const
