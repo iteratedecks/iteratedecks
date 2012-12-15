@@ -2,6 +2,7 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+EXITONFAILURE=0
 
 if [ $# -ge 1 ]
 then
@@ -33,7 +34,7 @@ do
     else
         echo -e "\033[1;31mbad\033[0m"
         SUCCESS=1
-        exit
+        if [ $EXITONFAILURE -eq 1 ]; then exit; fi
     fi
 done
 

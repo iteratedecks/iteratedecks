@@ -1,0 +1,69 @@
+# run using the following command
+# cat THIS_FILE | ./test.sh
+
+# tests courtesy of leftylink
+# http://www.kongregate.com/forums/65/topics/257807?page=13#posts-6618675
+
+# emulate + heal
+#--verify 1:1 P9NG P7AG
+
+# Repair tests:
+# Hubard repairs all damage to Zarak
+--verify 0:0 P5Au QUhF
+
+# Backfire tests:
+# Siege from commander
+--verify 1:1 P5 P0gA
+
+# Siege from assaults
+--verify 1:1 PoI9 PoL3gA
+
+# Siege from structures
+--verify 1:1 Pog0 PogA
+
+# Siege from action
+--verify 1:1 Pou7+j P0gA
+
+# Chaosed siege
+--verify 1:1 RiL3 P0gAJj
+
+# Siege on attacked)
+--verify 1:1 P+K8+m RgAr+mgA
+
+# Siege on death
+--verify 1:1 PoKh+i RggA
+
+# Siege on play
+--verify 1:1 PoKF+j RggA
+
+
+# Fusion tests:
+# Fusioned weaken
+--verify 0:0 PoHV QAgYgZga
+
+# Fusioned repair
+--verify 0:0 PoKC+i QVgYgZga
+
+# Unfusioned siege
+--verify 0:0 PoEFgYgZ Pqgk
+
+# Unfusioned strike
+--verify 0:0 PoDWgYgZ PoF5
+
+# Unfusioned heal
+--verify 0:0 PoEagZga RC
+
+# Unfusioned weaken
+--verify 1:1 PoHV QAgYgZ
+
+# Unfusioned repair
+--verify 1:1 PoKC+i QVgZga
+
+# Fusioned siege
+--verify 1:1 PoEFgYgZga Pqgk
+
+# Fusioned strike
+--verify 1:1 PoDWgYgZga PoF5
+
+# Fusioned heal
+--verify 1:1 PoEagYgZga RC
