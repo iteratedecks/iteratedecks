@@ -1,18 +1,24 @@
-#summon
---verify 0.9:1 S0hF PoHN
-#summoned units receive decay
---verify 0:0,.9:1 -Q 9 QAhG+q
+# run using the following command
+# cat THIS_FILE | ./test.sh
 
 --verify 1:1 P3AD+q Pr
---verify 1:1 Prvr Pr
+
+# strike on attacked
 --verify 0:0 PuBz PuK/
+
+# disease on attacked
+--verify 0:0 P7Kp RJffg/
+
+# TODO not sure what these are testing...
 --verify 0:0 QVAV+q ShAV+q
 --verify 0:0 QVAV+q SoAV+q
 --verify 0:0 P7DugJ SnLf
---verify 1:1 QVLh QVEi
---verify 0:0 P7Kp RJffg/
 --verify 0:1 -o QVLwgjhG QVKBDh
---verify 0:1 -o P2AVGn QVLKF5
---verify 0:0 Si SiI4
 --verify 0:1 -v QVIWL2 RLIG
 --verify 1:1 PrH0 P8Jy
+
+# jam on death does not assert
+--verify 0:1 -o P2AVGn QVLKF5
+
+# flurry + weaken on attack does not assert
+--verify 0:0 Si SiI4
