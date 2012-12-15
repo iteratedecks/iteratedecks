@@ -1,7 +1,16 @@
 # run using the following command
 # cat THIS_FILE | ./test.sh
 
+# simple tripwire
 --verify 1:1 P3AD+q Pr
+
+# 1 wait showdown (and surge flips win rate)
+--verify 1:1 PoAQ PoAQ
+--verify 0:0 -s PoAQ PoAQ
+
+# 0 wait attacks on its played turn (and surge flips win rate)
+--verify 0:0 PoIa PoIa
+--verify 1:1 -s PoIa PoIa
 
 # strike on attacked
 --verify 0:0 PuBz PuK/

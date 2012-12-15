@@ -296,8 +296,6 @@ namespace IterateDecks {
         void PlayedCard::EndTurn()
         {
             Played(); // for rally
-            if ((Wait > 0) && (!Effects[ACTIVATION_FREEZE]))
-                DecWait();
         }
         const UCHAR PlayedCard::GetAbilitiesCount() const { return OriginalCard->GetAbilitiesCount(); }
         const UCHAR PlayedCard::GetAbilityInOrder(const UCHAR order) const { return OriginalCard->GetAbilityInOrder(order); }

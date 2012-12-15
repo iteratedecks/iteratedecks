@@ -1844,7 +1844,7 @@ namespace IterateDecks {
                         }
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, ACTIVATION_CHAOS, 0};
-                        FilterTargets(targets,skipEffects,NULL,-1,0,1,chaos);
+                        FilterTargets(targets,skipEffects,NULL,-1,1,1,chaos);
                         RandomizeTarget(targets,targetCount,Dest,!chaos);
 
                         if (targets.size() <= 0) {
@@ -2219,16 +2219,32 @@ namespace IterateDecks {
         }
         void ActiveDeck::AttackDeck(ActiveDeck &Def, bool bSkipCardPicks)
         {
-            // process poison
+            // turn begin
             for (LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
                 iter->ResetShield(); // according to wiki, shield doesn't affect poison, it wears off before poison procs I believe
                 iter->ProcessPoison(QuestEffectId);
+
+                if ((iter->GetWait() > 0) && !(iter->GetEffect(ACTIVATION_FREEZE)))
+                {
+                    iter->DecWait();
+                }
             }
-            //  Moraku: If �Heal on Death� triggers from poison damage, it will NOT be able to heal another unit dying from poison damage on the same turn. (All poison damage takes place before �On Death� skills trigger)
+
+            for (LCARDS::iterator iter=Structures.begin(); iter != Structures.end(); iter++) {
+                if ((iter->GetWait() > 0) && !(iter->GetEffect(ACTIVATION_FREEZE)))
+                {
+                    iter->DecWait();
+                }
+            }
+
+            //  Moraku: If Heal on Death triggers from poison damage, it will NOT be able to heal another unit
+            // dying from poison damage on the same turn. (All poison damage takes place before On Death skills
+            // trigger)
             for (LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
                 if (iter->OnDeathEvent())
                     ApplyEffects(QuestEffectId,EVENT_DIED,*iter,-1,Def);
             }
+
             // Quest split mark
             if (QuestEffectId == BattleGroundEffect::cloneProject)
             {
@@ -2275,18 +2291,12 @@ namespace IterateDecks {
             }
             Actions.clear();
             // commander card
-            // ok lets work out Infuse:
-            // infuse - dont know how this works :(
-            // ok so afaik it changes one random card from either of your or enemy deck into bloodthirsty
-            // faction plus it changes heal and rally skills faction, if there were any, into bloodthirsty
-            // i believe it can't be mimiced and paybacked(can assume since it's commander skill) and
-            // it can be evaded, according to forums
-            // "his own units that have evade wont ever seem to evade.
-            // (every time ive seen the collossus infuse and as far as i can see� he has no other non bt with evade.)"
-            // so, I assume, evade works for us, but doesn't work for his cards
+            // lets work out Infuse:
+            // afaik it changes one random card from either of your or enemy deck into bloodthirsty
+            // faction plus it changes heal and rally skills' faction, if there were any, into bloodthirsty
+            // i believe it can't be mimiced and paybacked (can assume since it's commander skill) and
             // the bad thing about infuse is that we need faction as an attribute of card, we can't pull it out of
             // library, I need to add PlayedCard.Faction, instead of using Card.Faction
-            // added
             if (Commander.IsDefined() && Commander.GetAbility(ACTIVATION_INFUSE) > 0)
             {
                 // pick a card
@@ -2300,7 +2310,12 @@ namespace IterateDecks {
                     UCHAR i = UCHAR(rand() % targets.size());
                     i = Intercept(targets, i, Def); // we don't know anything about Infuse being interceptable :( I assume, it is
                     PlayedCard *t = targets[i].first;
-                    if ((i < defcount) && (t->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == BattleGroundEffect::quicksilver)) && PROC50) // we check evade only on our cards, enemy cards don't seem to actually evade infuse since it's rather helpful to them then harmful
+
+                    // it can be evaded, according to forums
+                    // "his own units that have evade wont ever seem to evade.
+                    // (every time ive seen the collossus infuse and as far as i can see, he has no other non bt with evade.)"
+                    // so, I assume, evade works for us, but doesn't work for his cards
+                    if ((i < defcount) && (t->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == BattleGroundEffect::quicksilver)) && PROC50)
                     {
                         // evaded infuse
                         //printf("Evaded\n");

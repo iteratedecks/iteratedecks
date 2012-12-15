@@ -8,5 +8,8 @@
 # summon from action card
 --verify 1:1 Prvr Pr
 
+# summon on attack downticks on its next turn
+--verify 1:1 QMMB QVAr
+
 # summoned units receive decay
 --verify 0:0,.9:1 -Q 9 QAhG+q
