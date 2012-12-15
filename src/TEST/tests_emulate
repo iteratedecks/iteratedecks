@@ -1,0 +1,19 @@
+# run using the following command
+# cat THIS_FILE | ./test.sh
+
+# tests verified on version 2.5.8
+
+# TODO emulate + augment
+# TODO emulate + cleanse
+# emulate + heal
+--verify 1:1 P9NG P7AG
+# emulate + protect
+--verify 1:1 PoNG SdBn
+# emulate + rally
+--verify 1:1 RhNG QVHe
+# TODO emulate + rush
+# emulate + supply
+--verify 0:0 -o PoG0u8 P9NG
+
+# emulate + on play
+--verify 0:0 -o PoNifTMI QHNG

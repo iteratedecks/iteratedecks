@@ -57,6 +57,7 @@
             #define DEFENSIVE_REGENERATE	38
             #define DEFENSIVE_TRIBUTE		39
             #define DEFENSIVE_WALL			40
+            #define DEFENSIVE_EMULATE       67
 
             #define COMBAT_ANTIAIR			41
             #define COMBAT_BURST			42
