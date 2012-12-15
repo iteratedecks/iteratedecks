@@ -1,13 +1,8 @@
---verify 1:1 PoKKKK PrNr
---verify 1:1 PofW+iNr PrEt
---verify 0:0 PoKK PrNr
---verify 0:0 PofT+iNr RjNx
---verify 0:0 PoNr P8fWKK
---verify 1:1 SvD3 PoHh
---verify 1:1 SvCa P7AF
---verify 1:1 PoCa PoNs
---verify 0.4:0.6 SvAs PoEd
+#summon
 --verify 0.9:1 S0hF PoHN
+#summoned units receive decay
+--verify 0:0,.9:1 -Q 9 QAhG+q
+
 --verify 1:1 P3AD+q Pr
 --verify 1:1 Prvr Pr
 --verify 0:0 PuBz PuK/

@@ -1,0 +1,8 @@
+# run using the following command
+# cat THIS_FILE | ./test.sh
+
+--verify 1:1 PoKKKK PrNr
+--verify 1:1 PofW+iNr PrEt
+--verify 0:0 PoKK PrNr
+--verify 0:0 PofT+iNr RjNx
+--verify 0:0 PoNr P8fWKK
