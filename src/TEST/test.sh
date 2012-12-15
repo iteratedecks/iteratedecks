@@ -1,7 +1,20 @@
 #!/bin/bash
 
-cd ../../builddir/linux-on-linux
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+if [ $# > 1 ]
+then
+    cd $1
+else
+    cd ../../builddir/linux-on-linux
+fi
+
 ITERATEDECKS="./iteratedecks-cli"
+if [ $# > 2 ]
+then
+    ITERATEDECKS=$2
+fi
+
 SUCCESS=0
 
 while read line
@@ -35,4 +48,4 @@ done
     fi
 
 
-cd ../../src/TEST
+cd ${DIR}
