@@ -140,12 +140,8 @@ namespace IterateDecks {
         }
 
     // #############################################################################
-    // #############################################################################
-    // #############################################################################
-    // #############################################################################
-    // #############################################################################
     // does anyone know if VALOR procs on commander? imagine combo of valor+flurry or valor+fear
-    // ok let's assume it does
+    // Balefire shows that it does.
     #define VALOR_HITS_COMMANDER	true
 
         void ActiveDeck::AttackCommanderOnce(UCHAR const & index
@@ -391,6 +387,8 @@ namespace IterateDecks {
                     SRC.fsOverkill += overkill;
                     SkillProcs[DMGDEPENDANT_CRUSH]++;
                 }
+
+                ApplyEffects(QuestEffectId,EVENT_KILL,SRC,index,Def,false,false,NULL,0,NULL);
             }
 
             // Moraku suggests that "on attack" triggers after crush
@@ -493,7 +491,7 @@ namespace IterateDecks {
         {
             PlayedCard & attacker = this->getUnitAt(index);
 
-            // Make sure the attacking unit lives. That should be the case here, thus assertion.
+            // Make sure the attacking unit lives.
             if(!attacker.IsDefined() || !attacker.IsAlive()) {
                 throw std::logic_error("attacking unit is not defined or not alive");
             } else if(!attacker.canAttack()) {
