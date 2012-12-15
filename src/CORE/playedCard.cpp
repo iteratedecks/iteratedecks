@@ -178,7 +178,7 @@ namespace IterateDecks {
                 SkillProcBuffer[aid]++;
             }
         }
-        const bool PlayedCard::BeginTurn()
+        bool PlayedCard::BeginTurn()
         {
             const bool bDoBegin = (Health>0)
                 && (!Effects[ACTIVATION_JAM])
