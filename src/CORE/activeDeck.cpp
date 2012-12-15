@@ -363,15 +363,6 @@ namespace IterateDecks {
             // and now dmg dependant effects
             if (damageWasDeadly) // target just died
             {
-                // afaik backfire ignores walls
-                if (target.GetAbility(SPECIAL_BACKFIRE))
-                {
-                    Def.Commander.SufferDmg(QuestEffectId,target.GetAbility(SPECIAL_BACKFIRE));
-                    DamageToCommander += SRC.GetAbility(SPECIAL_BACKFIRE);
-                    FullDamageToCommander += SRC.GetAbility(SPECIAL_BACKFIRE);
-                    Def.SkillProcs[SPECIAL_BACKFIRE]++;
-                    LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),SPECIAL_BACKFIRE,SRC.GetAbility(SPECIAL_BACKFIRE));
-                }
                 // crush
                 if (SRC.GetAbility(DMGDEPENDANT_CRUSH))
                 {
@@ -1683,17 +1674,22 @@ namespace IterateDecks {
 
                             if (Evade(vi->first,QuestEffectId,chaos))
                             {
+                                LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect,true));
                                 vi->first->fsAvoided += effect;
                                 Dest.SkillProcs[DEFENSIVE_EVADE]++;
                             }
                             else
                             {
+                                LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect));
                                 UCHAR overkill = 0;
                                 UCHAR sdmg = vi->first->SufferDmg(QuestEffectId,effect,0,0,0,&overkill);
-                                Dest.CheckDeathEvents(*vi->first,*this);
+                                if(chaos) {
+                                    procDeck->CheckDeathEvents(*vi->first,*this);
+                                } else {
+                                    Dest.CheckDeathEvents(*vi->first,*this);
+                                }
                                 procCard->fsDmgDealt += sdmg;
                                 procCard->fsOverkill += overkill;
-                                //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
                             }
                     } break;
 
@@ -1912,6 +1908,14 @@ namespace IterateDecks {
                                 Dest.SkillProcs[DEFENSIVE_EMULATE]++;
                             }
                         }
+                    } break;
+                case SPECIAL_BACKFIRE:
+                    {
+                        procDeck->Commander.SufferDmg(QuestEffectId,procCard->GetAbility(SPECIAL_BACKFIRE));
+                        Dest.DamageToCommander += procCard->GetAbility(SPECIAL_BACKFIRE);
+                        Dest.FullDamageToCommander += procCard->GetAbility(SPECIAL_BACKFIRE);
+                        procDeck->SkillProcs[SPECIAL_BACKFIRE]++;
+                        LogAdd(LOG_CARD(procDeck->LogDeckID,TYPE_ASSAULT,Position),LOG_CARD(procDeck->LogDeckID,TYPE_COMMANDER,0),SPECIAL_BACKFIRE,procCard->GetAbility(SPECIAL_BACKFIRE));
                     } break;
                 case SPECIAL_BLITZ:
                     {
@@ -2333,7 +2337,7 @@ namespace IterateDecks {
                 iter->EndTurn();
             }}
             // refresh commander
-            if (Commander.IsDefined() && Commander.GetAbility(DEFENSIVE_REFRESH)) { // Bench told refresh procs at the end of player's turn
+            if (Commander.IsDefined() && Commander.IsAlive() && Commander.GetAbility(DEFENSIVE_REFRESH)) { // Bench told refresh procs at the end of player's turn
                 EFFECT_ARGUMENT const amountRefreshed = Commander.Refresh(QuestEffectId);
                 LOG(this->logger,defensiveRefresh(EVENT_EMPTY,Commander,amountRefreshed));
             }

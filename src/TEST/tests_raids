@@ -27,14 +27,14 @@
 # Chaosed siege
 --verify 1:1 RiL3 P0gAJj
 
-# Siege on attacked)
+# Siege on attacked
 --verify 1:1 P+K8+m RgAr+mgA
 
 # Siege on death
 --verify 1:1 PoKh+i RggA
 
 # Siege on play
---verify 1:1 PoKF+j RggA
+--verify 0:0 RggA PoKF+j
 
 
 # Fusion tests:
