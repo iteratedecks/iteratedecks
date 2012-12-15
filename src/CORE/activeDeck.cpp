@@ -2219,22 +2219,18 @@ namespace IterateDecks {
         }
         void ActiveDeck::AttackDeck(ActiveDeck &Def, bool bSkipCardPicks)
         {
-            // turn begin
+            // assume for now that timer is decreased first
+            for(LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
+                iter->DecWait();
+            }
+            for(LCARDS::iterator iter=Structures.begin(); iter != Structures.end(); iter++) {
+                iter->DecWait();
+            }
+
+            // process poison
             for (LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
                 iter->ResetShield(); // according to wiki, shield doesn't affect poison, it wears off before poison procs I believe
                 iter->ProcessPoison(QuestEffectId);
-
-                if ((iter->GetWait() > 0) && !(iter->GetEffect(ACTIVATION_FREEZE)))
-                {
-                    iter->DecWait();
-                }
-            }
-
-            for (LCARDS::iterator iter=Structures.begin(); iter != Structures.end(); iter++) {
-                if ((iter->GetWait() > 0) && !(iter->GetEffect(ACTIVATION_FREEZE)))
-                {
-                    iter->DecWait();
-                }
             }
 
             //  Moraku: If Heal on Death triggers from poison damage, it will NOT be able to heal another unit
