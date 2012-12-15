@@ -12,7 +12,6 @@
 // TODO should be replaced by a cheaper implementation
 #include "activeDeck.hpp"
 
-
 // For XML stuff.
 // I am fairly certain MSVC can understand forward slashes aswell
 #include "pugixml/src/pugixml.hpp"
@@ -652,6 +651,7 @@ namespace IterateDecks {
             AddSkill(DEFENSIVE_REGENERATE,"Regenerate");
             AddSkill(DEFENSIVE_TRIBUTE,"Tribute");
             AddSkill(DEFENSIVE_WALL,"Wall");
+            AddSkill(DEFENSIVE_EMULATE,"Emulate");
 
             AddSkill(COMBAT_ANTIAIR,"AntiAir");
             AddSkill(COMBAT_BURST,"Burst");
@@ -1382,7 +1382,12 @@ namespace IterateDecks {
             if (mi == MIIndex.end()) {
                 return buffer; // not found
             }
-            _itoa_s(MDB[mi->second].GetCommander(),buffer,size);
+
+            // TODO untested since I don't think we use this version of GetMissionDeck anymore
+            std::stringstream ss;
+            ss << MDB[mi->second].GetCommander();
+            ss >> buffer;
+
             std::string str;
             str = MDB[mi->second].GetDeck();
             strncat(buffer, str.c_str(), size);
