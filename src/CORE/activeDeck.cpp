@@ -2215,6 +2215,14 @@ namespace IterateDecks {
         }
         void ActiveDeck::AttackDeck(ActiveDeck &Def, bool bSkipCardPicks)
         {
+            // assume for now that timer is decreased first
+            for(LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
+                iter->DecWait();
+            }
+            for(LCARDS::iterator iter=Structures.begin(); iter != Structures.end(); iter++) {
+                iter->DecWait();
+            }
+
             // process poison
             for (LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
                 iter->ResetShield(); // according to wiki, shield doesn't affect poison, it wears off before poison procs I believe
