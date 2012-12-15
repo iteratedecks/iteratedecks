@@ -99,7 +99,12 @@ namespace IterateDecks {
             return ssLine.str();
         }
 
-        void PlayedCard::DecWait() { if (Wait) Wait--; }
+        void PlayedCard::DecWait()
+        {
+            if ((Wait > 0) && (Effects[ACTIVATION_FREEZE] == 0)) {
+                Wait--;
+            }
+        }
 
         void PlayedCard::IncWait() { if (Wait) Wait++; }  // this is only for tournaments
 
@@ -279,8 +284,6 @@ namespace IterateDecks {
         void PlayedCard::EndTurn()
         {
             Played(); // for rally
-            if ((Wait > 0) && (!Effects[ACTIVATION_FREEZE]))
-                DecWait();
         }
         const UCHAR PlayedCard::GetAbilitiesCount() const { return OriginalCard->GetAbilitiesCount(); }
         const UCHAR PlayedCard::GetAbilityInOrder(const UCHAR order) const { return OriginalCard->GetAbilityInOrder(order); }
