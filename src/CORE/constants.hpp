@@ -82,9 +82,10 @@
                 SPECIAL_BLIZZARD, // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
             };
 
-            // TODO: Make this an enum
-            #define TARGETSCOUNT_ONE		0
-            #define TARGETSCOUNT_ALL		10
+            enum TargetsCount {
+                TARGETSCOUNT_ONE = 0,
+                TARGETSCOUNT_ALL = 10,
+            };
 
             char const * const FACTIONS[6] = {0,"Imperial","Raider","Bloodthirsty","Xeno","Righteous"};
 
