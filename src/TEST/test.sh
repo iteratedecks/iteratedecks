@@ -2,7 +2,8 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-if [ $# > 1 ]
+
+if [ $# -ge 1 ]
 then
     cd $1
 else
@@ -10,7 +11,7 @@ else
 fi
 
 ITERATEDECKS="./iteratedecks-cli"
-if [ $# > 2 ]
+if [ $# -ge 2 ]
 then
     ITERATEDECKS=$2
 fi
@@ -48,4 +49,4 @@ done
     fi
 
 
-cd ${DIR}
+#cd ${DIR}
