@@ -1,11 +1,8 @@
 # run using the following command
 # cat THIS_FILE | ./test.sh
 
-# tests courtesy of leftylink
+# Most of these tests are courtesy of leftylink
 # http://www.kongregate.com/forums/65/topics/257807?page=13#posts-6618675
-
-# emulate + heal
-#--verify 1:1 P9NG P7AG
 
 # Repair tests:
 # Hubard repairs all damage to Zarak

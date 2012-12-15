@@ -1,0 +1,5 @@
+# run using the following command
+# cat THIS_FILE | ./test.sh
+
+# augment + strike
+--verify 1:1 SvD3 PoHh
