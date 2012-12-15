@@ -20,68 +20,67 @@
             #define FILENAME_MAX_LENGTH		50 //
             #define CARD_ABILITIES_MAX		70u // must sync it with CARD_ABILITIES_MAX in interface
 
-            // TODO: Make this an enum
-            #define ABILITY_ENABLED			1  // just a helper, no use
+            enum Abilities {
+                SPECIAL_ATTACK = 0,
+                ABILITY_ENABLED = 1,
+                ACTIVATION_CHAOS = 10,
+                ACTIVATION_CLEANSE,
+                ACTIVATION_ENFEEBLE,
+                ACTIVATION_FREEZE,
+                ACTIVATION_HEAL,
+                ACTIVATION_INFUSE, // this currently works only for Commander
+                ACTIVATION_JAM,
+                ACTIVATION_MIMIC,
+                ACTIVATION_PROTECT,
+                ACTIVATION_RALLY,
+                ACTIVATION_RECHARGE,
+                ACTIVATION_REPAIR,
+                ACTIVATION_RUSH,
+                ACTIVATION_SHOCK,
+                ACTIVATION_SIEGE,
+                ACTIVATION_SPLIT,
+                ACTIVATION_STRIKE,
+                ACTIVATION_SUMMON,
+                ACTIVATION_SUPPLY,
+                ACTIVATION_WEAKEN,
+                ACTIVATION_AUGMENT,
 
-            #define SPECIAL_ATTACK			0
+                DEFENSIVE_ARMORED,
+                DEFENSIVE_COUNTER,
+                DEFENSIVE_EVADE,
+                DEFENSIVE_FLYING,
+                DEFENSIVE_INTERCEPT,
+                DEFENSIVE_PAYBACK,
+                DEFENSIVE_REFRESH,
+                DEFENSIVE_REGENERATE,
+                DEFENSIVE_TRIBUTE,
+                DEFENSIVE_WALL,
+                DEFENSIVE_EMULATE,
 
-            #define ACTIVATION_CHAOS		11
-            #define ACTIVATION_CLEANSE		12
-            #define ACTIVATION_ENFEEBLE		13
-            #define ACTIVATION_FREEZE		14
-            #define ACTIVATION_HEAL			15
-            #define ACTIVATION_INFUSE		16	// this currently works only for Commander
-            #define ACTIVATION_JAM			17
-            #define ACTIVATION_MIMIC		18
-            #define ACTIVATION_PROTECT		19
-            #define ACTIVATION_RALLY		20
-            #define ACTIVATION_RECHARGE		21
-            #define ACTIVATION_REPAIR		22
-            #define ACTIVATION_RUSH			23
-            #define ACTIVATION_SHOCK		24
-            #define ACTIVATION_SIEGE		25
-            #define ACTIVATION_SPLIT		26
-            #define ACTIVATION_STRIKE		27
-            #define ACTIVATION_SUMMON       28 // i think 30 is still free... these numbers do not have any other meaning? why not use an enum?
-            #define ACTIVATION_SUPPLY		29
-            #define ACTIVATION_WEAKEN		30
-            #define ACTIVATION_AUGMENT		63
+                COMBAT_ANTIAIR,
+                COMBAT_BURST,
+                COMBAT_FEAR,
+                COMBAT_FLURRY,
+                COMBAT_PIERCE,
+                COMBAT_SWIPE,
+                COMBAT_VALOR,
 
-            #define DEFENSIVE_ARMORED		31
-            #define DEFENSIVE_COUNTER		32
-            #define DEFENSIVE_EVADE			33
-            #define DEFENSIVE_FLYING		34
-            #define DEFENSIVE_INTERCEPT		35
-            #define DEFENSIVE_PAYBACK		36
-            #define DEFENSIVE_REFRESH		37
-            #define DEFENSIVE_REGENERATE	38
-            #define DEFENSIVE_TRIBUTE		39
-            #define DEFENSIVE_WALL			40
-            #define DEFENSIVE_EMULATE       67
+                DMGDEPENDANT_BERSERK,
+                DMGDEPENDANT_CRUSH,
+                DMGDEPENDANT_DISEASE,
+                DMGDEPENDANT_IMMOBILIZE,
+                DMGDEPENDANT_LEECH,
+                DMGDEPENDANT_POISON,
+                DMGDEPENDANT_SIPHON,
 
-            #define COMBAT_ANTIAIR			41
-            #define COMBAT_BURST			42
-            #define COMBAT_FEAR				43
-            #define COMBAT_FLURRY			44
-            #define COMBAT_PIERCE			45
-            #define COMBAT_SWIPE			46
-            #define COMBAT_VALOR			47
+                SPECIAL_BACKFIRE,  // Destroyed - When this is destroyed, deal damage to own Commander.
+                SPECIAL_BLITZ, // showed up in cards.xml; not implemented
 
-            #define DMGDEPENDANT_BERSERK	51
-            #define DMGDEPENDANT_CRUSH		52
-            #define DMGDEPENDANT_DISEASE	53
-            #define DMGDEPENDANT_IMMOBILIZE	54
-            #define DMGDEPENDANT_LEECH		55
-            #define DMGDEPENDANT_POISON		56
-            #define DMGDEPENDANT_SIPHON		57
-
-            #define SPECIAL_BACKFIRE		61  // Destroyed - When this is destroyed, deal damage to own Commander.
-            #define SPECIAL_BLITZ			66 // showed up in cards.xml; not implemented
-
-            // SKILLS THAT ARE NOT DEFINED AND NOT WORKING:
-            #define SPECIAL_FUSION			62	// in this sim only works for ACTIVATION skills of STRUCTURES
-            #define SPECIAL_MIST			64 // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
-            #define SPECIAL_BLIZZARD		65 // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
+                // SKILLS THAT ARE NOT DEFINED AND NOT WORKING:
+                SPECIAL_FUSION, // in this sim only works for ACTIVATION skills of STRUCTURES
+                SPECIAL_MIST, // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
+                SPECIAL_BLIZZARD, // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
+            };
 
             // TODO: Make this an enum
             #define TARGETSCOUNT_ONE		0
