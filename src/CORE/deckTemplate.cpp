@@ -222,7 +222,7 @@ namespace IterateDecks {
             
             assertX(activeDeck.IsValid());
             //std::clog << activeDeck.GetDeck() << std::endl;
-            activeDeck.PrintShort();
+            //activeDeck.PrintShort();
             return activeDeck;
         }
 
