@@ -37,7 +37,7 @@
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -88,8 +88,6 @@
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectName)_x64</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
-    <IntDir>..\..\bin\</IntDir>
     <ExtensionsToDeleteOnClean>*.cdf;*.cache;*.obj;*.ilk;*.resources;*.tlb;*.tli;*.tlh;*.tmp;*.rsp;*.pgc;*.pgd;*.meta;*.tlog;*.manifest;*.res;*.pch;*.exp;*.idb;*.rep;*.xdc;*.pdb;*_manifest.rc;*.bsc;*.sbr;*.metagen;*.bi</ExtensionsToDeleteOnClean>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -182,29 +180,62 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="achievementInfo.cpp" />
+    <ClCompile Include="activeDeck.cpp" />
     <ClCompile Include="assert.cpp" />
+    <ClCompile Include="bgInfo.cpp" />
+    <ClCompile Include="card.cpp" />
+    <ClCompile Include="cardDB.cpp" />
+    <ClCompile Include="cardPool.cpp" />
     <ClCompile Include="exceptions.cpp" />
-    <ClCompile Include="IterateDecks.cpp" />
     <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="missionInfo.cpp" />
     <ClCompile Include="playedCard.cpp" />
+    <ClCompile Include="raidInfo.cpp" />
+    <ClCompile Include="skill.cpp" />
+    <ClCompile Include="stepInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="achievementInfo.hpp" />
+    <ClInclude Include="activeDeck.forward.hpp" />
+    <ClInclude Include="activeDeck.hpp" />
     <ClInclude Include="assert.hpp" />
+    <ClInclude Include="assert.inline.hpp" />
+    <ClInclude Include="assert.tpl.hpp" />
+    <ClInclude Include="bgInfo.hpp" />
     <ClInclude Include="branches.h" />
     <ClInclude Include="BranchParams.h" />
+    <ClInclude Include="card.forward.hpp" />
+    <ClInclude Include="card.hpp" />
+    <ClInclude Include="cardDB.forward.hpp" />
+    <ClInclude Include="cardDB.hpp" />
+    <ClInclude Include="cardPool.forward.hpp" />
+    <ClInclude Include="cardPool.hpp" />
     <ClInclude Include="cards.h" />
     <ClInclude Include="cards.hpp" />
+    <ClInclude Include="cardSet.forward.hpp" />
+    <ClInclude Include="cardSet.hpp" />
     <ClInclude Include="compat.h" />
+    <ClInclude Include="constants.hpp" />
     <ClInclude Include="deck.h" />
     <ClInclude Include="deck.hpp" />
+    <ClInclude Include="deckIndex.forward.hpp" />
+    <ClInclude Include="deckIndex.hpp" />
     <ClInclude Include="exceptions.hpp" />
     <ClInclude Include="log.h" />
+    <ClInclude Include="logger.forward.hpp" />
     <ClInclude Include="Logger.hpp" />
+    <ClInclude Include="missionInfo.hpp" />
+    <ClInclude Include="playedCard.forward.hpp" />
     <ClInclude Include="playedCard.hpp" />
+    <ClInclude Include="raidInfo.hpp" />
     <ClInclude Include="results.h" />
     <ClInclude Include="results.hpp" />
+    <ClInclude Include="simpleTypes.hpp" />
     <ClInclude Include="simulate.h" />
     <ClInclude Include="simulate.hpp" />
+    <ClInclude Include="skill.hpp" />
+    <ClInclude Include="stepInfo.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
