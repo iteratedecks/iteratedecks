@@ -1174,6 +1174,17 @@ namespace IterateDecks {
                                 //LogAdd(lc,LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),aid);
                                 vi->first->fsSpecial += effect;
                             }
+
+                            UCHAR pos = vi->second;
+                            PlayedCard *oppositeCard = NULL;
+                            if(pos < Dest.Units.size()) {
+                                oppositeCard = &Dest.getUnitAt(pos);
+                            }
+                            if(oppositeCard != NULL && oppositeCard->CanEmulate(aid)) {
+                                oppositeCard->Cleanse();
+                                oppositeCard->fsSpecial += effect;
+                                Dest.SkillProcs[DEFENSIVE_EMULATE]++;
+                            }
                         }
                     } break;
 
@@ -1268,6 +1279,16 @@ namespace IterateDecks {
                                 //procDeck->SkillProcs[DEFENSIVE_TRIBUTE]++;
                                 vi->first->fsHealed += procCard->Heal(effect,QuestEffectId);
                             }
+
+                            UCHAR pos = vi->second;
+                            PlayedCard *oppositeCard = NULL;
+                            if(pos < Dest.Units.size()) {
+                                oppositeCard = &Dest.getUnitAt(pos);
+                            }
+                            if(oppositeCard != NULL && oppositeCard->CanEmulate(aid)) {
+                                oppositeCard->fsHealed += oppositeCard->Heal(effect,QuestEffectId);
+                                Dest.SkillProcs[DEFENSIVE_EMULATE]++;
+                            }
                         }
                     } break;
 
@@ -1350,6 +1371,16 @@ namespace IterateDecks {
                                         LOG(this->logger,abilityFailNoProc(EffectType,*(vi->first),aid,Src));
                                     }// proc
                                 } // tribute
+
+                                UCHAR pos = vi->second;
+                                PlayedCard *oppositeCard = NULL;
+                                if(pos < Dest.Units.size()) {
+                                    oppositeCard = &Dest.getUnitAt(pos);
+                                }
+                                if(oppositeCard != NULL && oppositeCard->CanEmulate(aid)) {
+                                    oppositeCard->fsHealed += oppositeCard->Heal(effect, QuestEffectId);
+                                    Dest.SkillProcs[DEFENSIVE_EMULATE]++;
+                                }
                             }
                         }
                     } break;
@@ -1386,6 +1417,17 @@ namespace IterateDecks {
                                 procCard->Protect(effect);
                                 vi->first->fsSpecial += effect;
                                 //procDeck->SkillProcs[DEFENSIVE_TRIBUTE]++;
+                            }
+
+                            UCHAR pos = vi->second;
+                            PlayedCard *oppositeCard = NULL;
+                            if(pos < Dest.Units.size()) {
+                                oppositeCard = &Dest.getUnitAt(pos);
+                            }
+                            if(oppositeCard != NULL && oppositeCard->CanEmulate(aid)) {
+                                oppositeCard->Protect(effect);
+                                oppositeCard->fsSpecial += effect;
+                                Dest.SkillProcs[DEFENSIVE_EMULATE]++;
                             }
                         }
                     } break;
@@ -1554,6 +1596,17 @@ namespace IterateDecks {
                                 procCard->Rally(effect);
                                 vi->first->fsSpecial += effect;
                                 //procDeck->SkillProcs[DEFENSIVE_TRIBUTE]++;
+                            }
+
+                            UCHAR pos = vi->second;
+                            PlayedCard *oppositeCard = NULL;
+                            if(pos < Dest.Units.size()) {
+                                oppositeCard = &Dest.getUnitAt(pos);
+                            }
+                            if(oppositeCard != NULL && oppositeCard->CanEmulate(aid)) {
+                                oppositeCard->Rally(effect);
+                                oppositeCard->fsSpecial++;
+                                Dest.SkillProcs[DEFENSIVE_EMULATE]++;
                             }
                         }
                     } break;
@@ -1847,6 +1900,17 @@ namespace IterateDecks {
                             LOG(this->logger,abilityOffensive(EffectType,Src,ACTIVATION_RUSH,*(vi->first),effect));
                             vi->first->Rush(effect);
                             Src.fsSpecial += effect;
+
+                            UCHAR pos = vi->second;
+                            PlayedCard *oppositeCard = NULL;
+                            if(pos < Dest.Units.size()) {
+                                oppositeCard = &Dest.getUnitAt(pos);
+                            }
+                            if(oppositeCard != NULL && oppositeCard->CanEmulate(aid)) {
+                                oppositeCard->Rush(effect);
+                                oppositeCard->fsSpecial += effect;
+                                Dest.SkillProcs[DEFENSIVE_EMULATE]++;
+                            }
                         }
                     } break;
                 case SPECIAL_BLITZ:
@@ -1854,29 +1918,24 @@ namespace IterateDecks {
                         // TODO can Blitz be Jammed or Freezed?
                         UCHAR targetPos = Position;
 
-                        // TODO move this to a "get opposing card" function
-                        UCHAR pos = 0;
-                        for (LCARDS::iterator vi = Dest.Units.begin();vi != Dest.Units.end();vi++)
-                        {
-                            if ((vi->IsAlive())
-                                && (pos == targetPos)
-                                && (vi->GetWait() == 0)
-                                && ((vi->GetFaction() == faction) || (faction == FACTION_NONE))
+                        if(targetPos < Dest.Units.size()) {
+                            PlayedCard oppositeCard = Dest.getUnitAt(targetPos);
+                            if ((oppositeCard.IsAlive())
+                                && (oppositeCard.GetWait() == 0)
+                                && ((oppositeCard.GetFaction() == faction) || (faction == FACTION_NONE))
                                 )
                             {
                                 Src.SetEffect(aid,effect);
                                 LOG(this->logger,abilitySupport(EffectType,Src,aid,Src,effect));
-                                targets.push_back(PPCARDINDEX(&(*vi),pos));
-                                break;
+                            } else {
+                                // TODO probably want a more appropriate fail message
+                                LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
                             }
-                            pos++;
+                        } else {
+                            // TODO probably want a more appropriate fail message
+                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
                         }
 
-                        // TODO probably want a more appropriate fail message
-                        if (targets.size() <= 0) {
-                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
-                            break;
-                        }
                     } break;
                 case ACTIVATION_AUGMENT:
                     {
@@ -1913,6 +1972,17 @@ namespace IterateDecks {
                                 procCard->Augment(effect);
                                 vi->first->fsSpecial += effect;
                                 //procDeck->SkillProcs[DEFENSIVE_TRIBUTE]++;
+
+                                UCHAR pos = vi->second;
+                                PlayedCard *oppositeCard = NULL;
+                                if(pos < Dest.Units.size()) {
+                                    oppositeCard = &Dest.getUnitAt(pos);
+                                }
+                                if(oppositeCard != NULL && oppositeCard->CanEmulate(aid)) {
+                                    oppositeCard->Augment(effect);
+                                    oppositeCard->fsSpecial += effect;
+                                    Dest.SkillProcs[DEFENSIVE_EMULATE]++;
+                                }
                             }
                         }
                     } break;
@@ -2146,6 +2216,14 @@ namespace IterateDecks {
         
         void ActiveDeck::AttackDeck(ActiveDeck &Def, bool bSkipCardPicks, unsigned int turn)
         {
+            // assume for now that timer is decreased first
+            for(LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
+                iter->DecWait();
+            }
+            for(LCARDS::iterator iter=Structures.begin(); iter != Structures.end(); iter++) {
+                iter->DecWait();
+            }
+
             // process poison
             for (LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
                 iter->ResetShield(); // according to wiki, shield doesn't affect poison, it wears off before poison procs I believe

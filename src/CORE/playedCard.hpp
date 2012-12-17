@@ -55,7 +55,7 @@
                     const bool GetQuestSplit() const;
                     void SetQuestSplit(bool bSplit);
                     void CardSkillProc(UCHAR aid);
-                    const bool BeginTurn();
+                    bool BeginTurn();
                     void ProcessPoison(BattleGroundEffect QuestEffectId);
                     const UCHAR GetShield() const;
                     void ResetShield();
@@ -64,6 +64,7 @@
                     void RemoveDebuffs();
                     void Cleanse();
                     bool IsCleanseTarget();
+                    bool CanEmulate(const UCHAR effect);
                     void EndTurn();
                     const UCHAR GetAbilitiesCount() const;
                     const UCHAR GetAbilityInOrder(const UCHAR order) const;
