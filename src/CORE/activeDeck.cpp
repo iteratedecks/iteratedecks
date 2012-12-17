@@ -1068,7 +1068,13 @@ namespace IterateDecks {
                 }
             }
 
-            if ((QuestEffectId == BattleGroundEffect::cloneProject) && (!IsMimiced) && (Src.GetQuestSplit()) && (EffectType == EVENT_EMPTY))
+            if (    (    QuestEffectId == BattleGroundEffect::cloneProject
+                      || QuestEffectId == BattleGroundEffect::splitFive
+                    )
+                 && (!IsMimiced)
+                 && (Src.GetQuestSplit())
+                 && (EffectType == EVENT_EMPTY)
+               )
             {
                 Src.SetQuestSplit(false); // remove mark
                 questAbilityId = ACTIVATION_SPLIT;
@@ -2237,7 +2243,7 @@ namespace IterateDecks {
             // Quest split mark
             if (    (QuestEffectId == BattleGroundEffect::cloneProject)
                  || (    (QuestEffectId == BattleGroundEffect::splitFive)
-                      && (turn % 10 == 5 ||turn % 10 == 6)
+                      && (turn % 10 == 9 || turn % 10 == 0)
                     )
                )
             {
