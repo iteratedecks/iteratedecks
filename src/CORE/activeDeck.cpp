@@ -2143,7 +2143,8 @@ namespace IterateDecks {
             if (src.OnDeathEvent())
                 ApplyEffects(QuestEffectId,EVENT_DIED,src,-1,Def);
         }
-        void ActiveDeck::AttackDeck(ActiveDeck &Def, bool bSkipCardPicks)
+        
+        void ActiveDeck::AttackDeck(ActiveDeck &Def, bool bSkipCardPicks, unsigned int turn)
         {
             // process poison
             for (LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
@@ -2156,7 +2157,11 @@ namespace IterateDecks {
                     ApplyEffects(QuestEffectId,EVENT_DIED,*iter,-1,Def);
             }
             // Quest split mark
-            if (QuestEffectId == BattleGroundEffect::cloneProject)
+            if (    (QuestEffectId == BattleGroundEffect::cloneProject)
+                 || (    (QuestEffectId == BattleGroundEffect::splitFive)
+                      && (turn % 10 == 5 ||turn % 10 == 6)
+                    )
+               )
             {
                 PPCIV GetTo;
                 for (LCARDS::iterator vi = Units.begin();vi != Units.end();vi++)
