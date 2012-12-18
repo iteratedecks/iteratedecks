@@ -1,7 +1,6 @@
-TESTS_FEATURE:=tests tests_rally tests_augment tests_blitz tests_chaos tests_emulate tests_summon
-TESTS_REGRESSION:=$(wildcard regression-issue-*)
-TESTS:=${TESTS_FEATURE} ${TESTS_REGRESSION}
+TEST_CASES:=tests $(wildcard tests_*)
+TEST_DEPENDENCIES:= test.sh ../../builddir/linux-on-linux/iteratedecks-cli ../../builddir/linux-on-linux/XML
 
 
-$(phony test TEST): ${TESTS} test.sh ../../builddir/linux-on-linux/iteratedecks-cli
-    cat ${TESTS} tests_rally | ./test.sh
+$(phony test TEST): ${TEST_CASES} ${TEST_DEPENDENCIES}
+    cat ${TEST_CASES} | ./test.sh

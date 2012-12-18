@@ -21,8 +21,13 @@ SUCCESS=0
 
 while read line
 do
-    if [ "${#line}" -eq 0 ]; then continue; fi
-    if [ "${line:0:1}" == "#" ]; then continue; fi
+    if [ "${#line}" -eq 0 ]; then
+        continue
+    elif [ "${line:0:1}" == "#" ]; then
+        # I think the comments may actually be useful for understanding the tests
+        echo ${line}
+        continue
+    fi
 
     echo -n ${ITERATEDECKS} ${line}
     echo -ne "\t"
