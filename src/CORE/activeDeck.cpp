@@ -2330,13 +2330,14 @@ namespace IterateDecks {
                 if (iter->BeginTurn()) {
                     ApplyEffects(QuestEffectId,EVENT_EMPTY,*iter,-1,Def,false,(iFusionCount >= 3),0,i);
                 }
-                iter->EndTurn();
+                iter->Played();
             }}
             // assault cards
             { UCHAR i = 0;
             for (LCARDS::iterator iter = Units.begin(); iter != Units.end(); iter++,i++) {
                 if (iter->BeginTurn()) {
                     ApplyEffects(QuestEffectId,EVENT_EMPTY,*iter,i,Def);
+                    iter->Played();
                     if ((!iter->GetEffect(DMGDEPENDANT_IMMOBILIZE)) && (!iter->GetEffect(ACTIVATION_JAM)) && (!iter->GetEffect(ACTIVATION_FREEZE))) // tis funny but I need to check Jam for second time in case it was just paybacked
                     {
                         if (iter->IsAlive() && iter->GetAttack() > 0 && Def.Commander.IsAlive()) { // can't attack with dead unit ;) also if attack = 0 then dont attack at all
@@ -2344,7 +2345,6 @@ namespace IterateDecks {
                         }
                     }
                 }
-                iter->EndTurn();
             }}
             // refresh commander
             if (Commander.IsDefined() && Commander.IsAlive() && Commander.GetAbility(DEFENSIVE_REFRESH)) { // Bench told refresh procs at the end of player's turn

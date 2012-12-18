@@ -10,3 +10,5 @@
 --verify .4:.6 -o PqALAB PoBf
 # rally on play
 --verify 1:1 -o PoIWMI PqJt
+# rally on kill
+--verify 1:1 -o PoORAO PoBz+i
