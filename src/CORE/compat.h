@@ -11,13 +11,6 @@
 
 #define strcpy_s(d,n,s) strncpy(d,s,n)
 
-// There is a ridiculous amount of names for this function.
-#define _strcmpi(a,b) strcasecmp(a,b)
-#define stricmp(a,b) strcasecmp(a,b)
-#define strcmpi(a,b) strcasecmp(a,b)
-
-#define strnicmp(a,b,n) strncasecmp(a,b,n)
-
 #define _itoa_s(i,d,l) snprintf(d,l,"%d",i)
 #define itoa(value, buf, base) sprintf(buf, "%d", value)
 

@@ -39,6 +39,8 @@ namespace IterateDecks {
 
         #define assertDE(a,b) assert(a-DBL_EPSILON < b && b < a+DBL_EPSILON)
 
+        #define M_PI 3.14159265358979323846
+
         /**
          * @see http://en.wikipedia.org/wiki/Binomial_coefficient
          */
