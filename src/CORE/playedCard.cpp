@@ -99,7 +99,12 @@ namespace IterateDecks {
             return ssLine.str();
         }
 
-        void PlayedCard::DecWait() { if (Wait) Wait--; }
+        void PlayedCard::DecWait()
+        {
+            if ((Wait > 0) && (Effects[ACTIVATION_FREEZE] == 0)) {
+                Wait--;
+            }
+        }
 
         void PlayedCard::IncWait() { if (Wait) Wait++; }  // this is only for tournaments
 
@@ -178,7 +183,7 @@ namespace IterateDecks {
                 SkillProcBuffer[aid]++;
             }
         }
-        const bool PlayedCard::BeginTurn()
+        bool PlayedCard::BeginTurn()
         {
             const bool bDoBegin = (Health>0)
                 && (!Effects[ACTIVATION_JAM])
@@ -280,16 +285,15 @@ namespace IterateDecks {
         {
             if(!(this->GetAbility(DEFENSIVE_EMULATE))) return false;
 
-            switch(effect) {
-            case ACTIVATION_AUGMENT:
-            case ACTIVATION_CLEANSE:
-            case ACTIVATION_HEAL:
-            case ACTIVATION_PROTECT:
-            case ACTIVATION_RALLY:
-            case ACTIVATION_REPAIR:
-            case ACTIVATION_RUSH:
-            case ACTIVATION_SUPPLY:
-                return true;
+            if(effect == ACTIVATION_AUGMENT
+                || effect == ACTIVATION_CLEANSE
+                || (effect == ACTIVATION_HEAL && !IsDiseased())
+                || effect == ACTIVATION_PROTECT
+                || effect == ACTIVATION_RALLY
+                || effect == ACTIVATION_REPAIR
+                || effect == ACTIVATION_RUSH
+                || (effect == ACTIVATION_SUPPLY && !IsDiseased())) {
+                    return true;
             }
 
             return false;
@@ -297,8 +301,6 @@ namespace IterateDecks {
         void PlayedCard::EndTurn()
         {
             Played(); // for rally
-            if ((Wait > 0) && (!Effects[ACTIVATION_FREEZE]))
-                DecWait();
         }
         const UCHAR PlayedCard::GetAbilitiesCount() const { return OriginalCard->GetAbilitiesCount(); }
         const UCHAR PlayedCard::GetAbilityInOrder(const UCHAR order) const { return OriginalCard->GetAbilityInOrder(order); }
