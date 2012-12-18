@@ -359,15 +359,6 @@ namespace IterateDecks {
             // and now dmg dependant effects
             if (damageWasDeadly) // target just died
             {
-                // afaik backfire ignores walls
-                if (target.GetAbility(SPECIAL_BACKFIRE))
-                {
-                    Def.Commander.SufferDmg(QuestEffectId,target.GetAbility(SPECIAL_BACKFIRE));
-                    DamageToCommander += SRC.GetAbility(SPECIAL_BACKFIRE);
-                    FullDamageToCommander += SRC.GetAbility(SPECIAL_BACKFIRE);
-                    Def.SkillProcs[SPECIAL_BACKFIRE]++;
-                    LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),SPECIAL_BACKFIRE,SRC.GetAbility(SPECIAL_BACKFIRE));
-                }
                 // crush
                 if (SRC.GetAbility(DMGDEPENDANT_CRUSH))
                 {
@@ -1681,17 +1672,22 @@ namespace IterateDecks {
 
                             if (Evade(vi->first,QuestEffectId,chaos))
                             {
+                                LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect,true));
                                 vi->first->fsAvoided += effect;
                                 Dest.SkillProcs[DEFENSIVE_EVADE]++;
                             }
                             else
                             {
+                                LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect));
                                 UCHAR overkill = 0;
                                 UCHAR sdmg = vi->first->SufferDmg(QuestEffectId,effect,0,0,0,&overkill);
-                                Dest.CheckDeathEvents(*vi->first,*this);
+                                if(chaos) {
+                                    procDeck->CheckDeathEvents(*vi->first,*this);
+                                } else {
+                                    Dest.CheckDeathEvents(*vi->first,*this);
+                                }
                                 procCard->fsDmgDealt += sdmg;
                                 procCard->fsOverkill += overkill;
-                                //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
                             }
                     } break;
 
@@ -1911,6 +1907,14 @@ namespace IterateDecks {
                                 Dest.SkillProcs[DEFENSIVE_EMULATE]++;
                             }
                         }
+                    } break;
+                case SPECIAL_BACKFIRE:
+                    {
+                        procDeck->Commander.SufferDmg(QuestEffectId,procCard->GetAbility(SPECIAL_BACKFIRE));
+                        Dest.DamageToCommander += procCard->GetAbility(SPECIAL_BACKFIRE);
+                        Dest.FullDamageToCommander += procCard->GetAbility(SPECIAL_BACKFIRE);
+                        procDeck->SkillProcs[SPECIAL_BACKFIRE]++;
+                        LogAdd(LOG_CARD(procDeck->LogDeckID,TYPE_ASSAULT,Position),LOG_CARD(procDeck->LogDeckID,TYPE_COMMANDER,0),SPECIAL_BACKFIRE,procCard->GetAbility(SPECIAL_BACKFIRE));
                     } break;
                 case SPECIAL_BLITZ:
                     {
@@ -2227,11 +2231,15 @@ namespace IterateDecks {
                 iter->ResetShield(); // according to wiki, shield doesn't affect poison, it wears off before poison procs I believe
                 iter->ProcessPoison(QuestEffectId);
             }
-            //  Moraku: If �Heal on Death� triggers from poison damage, it will NOT be able to heal another unit dying from poison damage on the same turn. (All poison damage takes place before �On Death� skills trigger)
+
+            //  Moraku: If Heal on Death triggers from poison damage, it will NOT be able to heal another unit
+            // dying from poison damage on the same turn. (All poison damage takes place before On Death skills
+            // trigger)
             for (LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
                 if (iter->OnDeathEvent())
                     ApplyEffects(QuestEffectId,EVENT_DIED,*iter,-1,Def);
             }
+
             // Quest split mark
             if (QuestEffectId == BattleGroundEffect::cloneProject)
             {
@@ -2278,18 +2286,12 @@ namespace IterateDecks {
             }
             Actions.clear();
             // commander card
-            // ok lets work out Infuse:
-            // infuse - dont know how this works :(
-            // ok so afaik it changes one random card from either of your or enemy deck into bloodthirsty
-            // faction plus it changes heal and rally skills faction, if there were any, into bloodthirsty
-            // i believe it can't be mimiced and paybacked(can assume since it's commander skill) and
-            // it can be evaded, according to forums
-            // "his own units that have evade wont ever seem to evade.
-            // (every time ive seen the collossus infuse and as far as i can see� he has no other non bt with evade.)"
-            // so, I assume, evade works for us, but doesn't work for his cards
+            // lets work out Infuse:
+            // afaik it changes one random card from either of your or enemy deck into bloodthirsty
+            // faction plus it changes heal and rally skills' faction, if there were any, into bloodthirsty
+            // i believe it can't be mimiced and paybacked (can assume since it's commander skill) and
             // the bad thing about infuse is that we need faction as an attribute of card, we can't pull it out of
             // library, I need to add PlayedCard.Faction, instead of using Card.Faction
-            // added
             if (Commander.IsDefined() && Commander.GetAbility(ACTIVATION_INFUSE) > 0)
             {
                 // pick a card
@@ -2303,7 +2305,12 @@ namespace IterateDecks {
                     UCHAR i = UCHAR(rand() % targets.size());
                     i = Intercept(targets, i, Def); // we don't know anything about Infuse being interceptable :( I assume, it is
                     PlayedCard *t = targets[i].first;
-                    if ((i < defcount) && (t->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == BattleGroundEffect::quicksilver)) && PROC50) // we check evade only on our cards, enemy cards don't seem to actually evade infuse since it's rather helpful to them then harmful
+
+                    // it can be evaded, according to forums
+                    // "his own units that have evade wont ever seem to evade.
+                    // (every time ive seen the collossus infuse and as far as i can see, he has no other non bt with evade.)"
+                    // so, I assume, evade works for us, but doesn't work for his cards
+                    if ((i < defcount) && (t->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == BattleGroundEffect::quicksilver)) && PROC50)
                     {
                         // evaded infuse
                         //printf("Evaded\n");
@@ -2340,7 +2347,7 @@ namespace IterateDecks {
                 iter->EndTurn();
             }}
             // refresh commander
-            if (Commander.IsDefined() && Commander.GetAbility(DEFENSIVE_REFRESH)) { // Bench told refresh procs at the end of player's turn
+            if (Commander.IsDefined() && Commander.IsAlive() && Commander.GetAbility(DEFENSIVE_REFRESH)) { // Bench told refresh procs at the end of player's turn
                 EFFECT_ARGUMENT const amountRefreshed = Commander.Refresh(QuestEffectId);
                 LOG(this->logger,defensiveRefresh(EVENT_EMPTY,Commander,amountRefreshed));
             }
