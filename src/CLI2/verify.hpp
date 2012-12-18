@@ -5,8 +5,12 @@
 struct VerifyOptions {
     public:
         bool doVerify;
-        double min;
-        double max;
+        double winMin;
+        double winMax;
+        double drawMin;
+        double drawMax;
+        double lossMin;
+        double lossMax;
     
     public:    
         VerifyOptions();    

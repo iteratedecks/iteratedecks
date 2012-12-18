@@ -1,0 +1,15 @@
+# run using the following command
+# cat THIS_FILE | ./test.sh
+
+# summon
+--verify 1:1 QVLh QVEi
+# summon + mimic
+--verify 0.9:1 S0hF PoHN
+# summon from action card
+--verify 1:1 Prvr Pr
+
+# summon on attack downticks on its next turn
+--verify 1:1 QMMB QVAr
+
+# summoned units receive decay
+--verify 0:0,.9:1 -Q 9 QAhG+q
