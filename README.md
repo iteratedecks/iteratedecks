@@ -3,13 +3,13 @@ iteratedecks
 
 Simulator used for War Metal Tyrant decks, missions, quests and more
 
-# Installation
+## Installation
 
-## The Simulator
+### The Simulator
 
 We do not currently have binaries available for download. You can download the source and build your own version here on GitHub.
 
-## Tyrant files
+### Tyrant files
 
 You will need a copy of the following data files used by Tyrant.
 
@@ -20,7 +20,7 @@ You will need a copy of the following data files used by Tyrant.
 
 These can be downloaded directly from the Tyrant servers at http://kg.tyrantonline.com/assets/[file] where [file] is from the list above. These need to be in the same directory as the simulator.
 
-# Usage
+## Usage
 
 All usage is through the command line. You will need to convert your deck into an appropriate deck hash. We recommend the Fansite's [deck builder](http://tyrant.40in.net/kg/deck.php) for this.
 
@@ -47,7 +47,7 @@ There are various flags available to alter how the simulation works. Here are th
     -Q --quest-id              quest id
     -m --mission-id            mission id
 
-# Acknowledgements
+## Acknowledgements
 
 Our codebase is a direct descendant of NETRAT's EvaluateDecks simulator which is still being hosted:
 
