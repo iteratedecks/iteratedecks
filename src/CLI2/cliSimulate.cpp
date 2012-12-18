@@ -417,6 +417,7 @@ namespace IterateDecks {
                            ,unsigned int const k2
                            ,unsigned int const n2
                            ,double confidence
+                           ,std::string msg = std::string()
                            )
         {
             double l1, u1, l2, u2;
@@ -485,9 +486,9 @@ namespace IterateDecks {
             // Compare
             assertEQ(r.Games, r2.numberOfGames);
             assertEQ(r2.numberOfGames, r2.gamesWon + r2.gamesLost + r2.gamesStalled);
-            checkIntervals(r.Win               , r.Games, r2.gamesWon    , r2.numberOfGames, 0.9);
-            checkIntervals(r.Loss              , r.Games, r2.gamesLost   , r2.numberOfGames, 0.9);
-            checkIntervals(r.Games-r.Win-r.Loss, r.Games, r2.gamesStalled, r2.numberOfGames, 0.9);
+            checkIntervals(r.Win               , r.Games, r2.gamesWon    , r2.numberOfGames, 0.9, "win");
+            checkIntervals(r.Loss              , r.Games, r2.gamesLost   , r2.numberOfGames, 0.9, "loss");
+            checkIntervals(r.Games-r.Win-r.Loss, r.Games, r2.gamesStalled, r2.numberOfGames, 0.9, "draw");
             //std::clog << "P" << r.Points << ", "
             //          << "AP" << r.AutoPoints << ", "
             //          << "LP" << r.LPoints << ", "
