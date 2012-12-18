@@ -1,4 +1,7 @@
-TESTS:=tests tests_rally timer-egginfector.test
+TESTS_FEATURE:=tests tests_rally timer-egginfector.test
+TESTS_REGRESSION:=$(wildcard regression-issue-*)
+TESTS:=${TESTS_FEATURE} ${TESTS_REGRESSION}
+
 
 $(phony test TEST): ${TESTS} test.sh ../../builddir/linux-on-linux/iteratedecks-cli
     cat ${TESTS} tests_rally | ./test.sh
