@@ -2243,7 +2243,7 @@ namespace IterateDecks {
             // Quest split mark
             if (    (QuestEffectId == BattleGroundEffect::cloneProject)
                  || (    (QuestEffectId == BattleGroundEffect::splitFive)
-                      && (turn % 10 == 9 || turn % 10 == 0)
+                      && (turn == 9 || turn == 10)
                     )
                )
             {
