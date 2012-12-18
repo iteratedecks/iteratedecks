@@ -1443,7 +1443,7 @@ namespace IterateDecks {
                             GetTargets(Dest.Units,faction,targets);
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, 0};
-                        FilterTargets(targets,skipEffects,NULL,-1,0,-1,false);
+                        FilterTargets(targets,skipEffects,NULL,-1,1,-1,false);
                         RandomizeTarget(targets,targetCount,Dest,!chaos);
 
                         if (targets.size() <= 0) {
@@ -1808,7 +1808,7 @@ namespace IterateDecks {
                         }
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, DMGDEPENDANT_IMMOBILIZE, 0};
-                        FilterTargets(targets,skipEffects,NULL,-1,0,1,chaos);
+                        FilterTargets(targets,skipEffects,NULL,-1,1,1,chaos);
                         RandomizeTarget(targets,targetCount,Dest,!chaos);
 
                         if (targets.size() <= 0) {
@@ -1849,7 +1849,7 @@ namespace IterateDecks {
                         }
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, ACTIVATION_CHAOS, 0};
-                        FilterTargets(targets,skipEffects,NULL,-1,0,1,chaos);
+                        FilterTargets(targets,skipEffects,NULL,-1,1,1,chaos);
                         RandomizeTarget(targets,targetCount,Dest,!chaos);
 
                         if (targets.size() <= 0) {
