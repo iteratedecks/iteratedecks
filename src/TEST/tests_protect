@@ -1,0 +1,8 @@
+# run using the following command
+# cat THIS_FILE | ./test.sh
+
+# protect + on kill
+--verify 1:1 -so PoAJOB PoAB+k
+
+# protect + on kill should only happen on kill
+--verify 1:1 PoOB QHgW

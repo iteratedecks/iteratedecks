@@ -243,6 +243,9 @@ namespace IterateDecks {
                             if (child.attribute("attacked").as_uint() > 0) {
                                 skillevent += EVENT_ATTACKED;
                             }
+                            if (child.attribute("kill").as_uint() > 0) {
+                                skillevent += EVENT_KILL;
+                            }
                             c.AddAbility(Id,Effect,TC,TF,skillevent);
                             //for (pugi::xml_attribute attr = child.first_attribute(); attr; attr = attr.next_attribute())
                                 //printf("    %s = %s\n",attr.name(),attr.value());
