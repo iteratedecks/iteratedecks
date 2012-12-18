@@ -55,7 +55,7 @@
                     const bool GetQuestSplit() const;
                     void SetQuestSplit(bool bSplit);
                     void CardSkillProc(UCHAR aid);
-                    const bool BeginTurn();
+                    bool BeginTurn();
                     void ProcessPoison(BattleGroundEffect QuestEffectId);
                     const UCHAR GetShield() const;
                     void ResetShield();

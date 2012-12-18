@@ -54,7 +54,7 @@ namespace IterateDecks {
                 }
 
                 int maxTries = 1000; //< abort after too many tries
-                UCHAR id = 0;     //< id of found card
+                UINT id = 0;     //< id of found card
                 UINT index = 0xdeadbeef;
                 Card const * card;
                 do {
@@ -67,7 +67,7 @@ namespace IterateDecks {
 
                     maxTries--;
                     if (maxTries <= 0) {
-                        std::cout << "Looping has been aborted when choosing "
+                        std::cerr << "Looping has been aborted when choosing "
                                   <<  card->GetName() << "..." << std::endl;
                         break;
                     }
@@ -85,7 +85,7 @@ namespace IterateDecks {
                               ,bool const checkLegendaries
                               ) const
         {
-            assertX(this->amount); // invalid pool
+            assertX(this->amount > 0); // invalid pool
             assertX(!this->pool.empty()); // invalid pool
             // we must copy a pool into temporary
             VID tmpPool(this->pool);
