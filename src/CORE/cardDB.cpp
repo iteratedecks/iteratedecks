@@ -9,6 +9,10 @@
 #include "cardSet.hpp"
 #include "cardPool.hpp"
 
+#include <string>
+#include <algorithm>
+#include <cctype>
+
 // TODO should be replaced by a cheaper implementation
 #include "activeDeck.hpp"
 
@@ -45,13 +49,26 @@ namespace IterateDecks {
 
         AchievementRequirementCompare DetectCompare(char const * const compare)
         {
-            if (!compare) return UNDEFINED;
-            if (!compare[0]) return UNDEFINED;
-            if (!stricmp(compare,"less")) return LESS;
-            if (!stricmp(compare,"less_equal")) return LESSEQUAL;
-            if (!stricmp(compare,"great")) return GREATER;
-            if (!stricmp(compare,"great_equal")) return GREATEREQUAL;
-            return EQUAL;
+            // Lets use c++ strings
+            std::string sCompare(compare);
+            // make it lower case
+            std::transform(sCompare.begin(), sCompare.end(), sCompare.begin(), ::tolower);
+
+            if (!compare) {
+                return UNDEFINED;
+            } else if (!compare[0]) {
+                return UNDEFINED;
+            } else if (sCompare.compare("less") == 0) {
+                return LESS;
+            } else if (sCompare.compare("less_equal") == 0) {
+                return LESSEQUAL;
+            } else if (sCompare.compare("great") == 0) {
+                return GREATER;
+            } else if (sCompare.compare("great_equal") == 0) {
+                return GREATEREQUAL;
+            } else {
+                return EQUAL;
+            }
         }
 
         CardDB::CardDB()
