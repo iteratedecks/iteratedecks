@@ -1,7 +1,4 @@
-# run using the following command
-# cat THIS_FILE | ./test.sh
-
-# tests verified on version 2.4.10
+# RALLY - tests verified on version 2.4.10
 
 # basic rally
 --verify 1:1 PqGm PoAD
