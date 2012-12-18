@@ -1434,7 +1434,7 @@ namespace IterateDecks {
                             GetTargets(Dest.Units,faction,targets);
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, 0};
-                        FilterTargets(targets,skipEffects,NULL,-1,0,-1,false);
+                        FilterTargets(targets,skipEffects,NULL,-1,1,-1,false);
                         RandomizeTarget(targets,targetCount,Dest,!chaos);
 
                         if (targets.size() <= 0) {
@@ -1797,13 +1797,14 @@ namespace IterateDecks {
                         effect *= FusionMultiplier;
                         effect += procCard->GetEffect(ACTIVATION_AUGMENT);
 
-                        if (chaos)
+                        if (chaos) {
                             GetTargets(Units,faction,targets);
-                        else
+                        } else {
                             GetTargets(Dest.Units,faction,targets);
+                        }
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, DMGDEPENDANT_IMMOBILIZE, 0};
-                        FilterTargets(targets,skipEffects,NULL,-1,0,1,chaos);
+                        FilterTargets(targets,skipEffects,NULL,-1,1,1,chaos);
                         RandomizeTarget(targets,targetCount,Dest,!chaos);
 
                         if (targets.size() <= 0) {
@@ -2590,20 +2591,33 @@ namespace IterateDecks {
         }
         void ActiveDeck::GetTargets(LCARDS &From, UCHAR TargetFaction, PPCIV &GetTo, bool bForInfuse)
         {
-            if (!bForInfuse)
+            if (!bForInfuse) {
                 GetTo.clear();
+            }
             UCHAR pos = 0;
-            for (LCARDS::iterator vi = From.begin();vi != From.end();vi++)
-            {
-                if ((vi->IsAlive()) && (((vi->GetFaction() == TargetFaction) && (!bForInfuse)) || (TargetFaction == FACTION_NONE) || ((vi->GetFaction() != TargetFaction) && (bForInfuse))))
+            for (LCARDS::iterator vi = From.begin(); vi != From.end(); vi++) {
+                if (    (vi->IsAlive())
+                     && (    ((vi->GetFaction() == TargetFaction) && (!bForInfuse))
+                          || (TargetFaction == FACTION_NONE)
+                          || ((vi->GetFaction() != TargetFaction) && (bForInfuse))
+                        )
+                   ) {
                     GetTo.push_back(PPCARDINDEX(&(*vi),pos));
+                }
                 pos++;
             }
         }
 
         // skipEffects is an array with a solitary 0 as a terminal
         // targetSkills is an array with a solitary 0 as a terminal
-        void ActiveDeck::FilterTargets(PPCIV &targets, const EFFECT_ARGUMENT skipEffects[], const EFFECT_ARGUMENT targetSkills[], const int waitMin, const int waitMax, const int attackLimit, bool skipPlayed)
+        void ActiveDeck::FilterTargets(PPCIV &targets
+                                      ,EFFECT_ARGUMENT const skipEffects[]
+                                      ,EFFECT_ARGUMENT const targetSkills[]
+                                      ,int const waitMin
+                                      ,int const waitMax
+                                      ,int const attackLimit
+                                      ,bool skipPlayed
+                                      )
         {
             PPCIV::iterator vi = targets.begin();
             const EFFECT_ARGUMENT* effect;

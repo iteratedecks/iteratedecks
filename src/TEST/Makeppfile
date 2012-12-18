@@ -1,2 +1,7 @@
-$(phony test TEST): tests test.sh ../../builddir/linux-on-linux/iteratedecks-cli
-    cat tests tests* | ./test.sh
+TESTS_FEATURE:=tests tests_rally tests_augment tests_blitz tests_chaos tests_emulate tests_summon
+TESTS_REGRESSION:=$(wildcard regression-issue-*)
+TESTS:=${TESTS_FEATURE} ${TESTS_REGRESSION}
+
+
+$(phony test TEST): ${TESTS} test.sh ../../builddir/linux-on-linux/iteratedecks-cli
+    cat ${TESTS} tests_rally | ./test.sh
