@@ -21,8 +21,14 @@
 #include "pugixml/src/pugixml.hpp"
 #include "pugixml/src/pugixml.cpp"
 
+#include <boost/algorithm/string/predicate.hpp>
+
 namespace IterateDecks {
     namespace Core {
+
+        inline bool strEqualIgnoreCase(char const * const a, char const * const b) {
+            return boost::iequals(a,b);
+        }
 
         // FIXME: Remove global variable
         extern bool bConsoleOutput;
@@ -171,14 +177,14 @@ namespace IterateDecks {
             pugi::xml_node root = doc.child("root");
             for (pugi::xml_node_iterator it = root.begin(); it != root.end(); ++it)
             {
-                if (!_strcmpi(it->name(),"skillType"))
+                if (strEqualIgnoreCase(it->name(),"skillType"))
                 {
                     const char *id = it->child("id").child_value();
                     //const char *name = it->child("name").child_value();
                     //<cardValue passive='1' cost='2.5' />
                     for (pugi::xml_node child = it->first_child(); child; child = child.next_sibling())
                     {
-                        if (!_strcmpi(child.name(),"cardValue"))
+                        if (strEqualIgnoreCase(child.name(),"cardValue"))
                         {
                             MSKILLS::iterator si = SIndex.find(id);
                             if (si == SIndex.end())
@@ -196,7 +202,7 @@ namespace IterateDecks {
                         }
                     }
                 }
-                if (!_strcmpi(it->name(),"unit"))
+                if (strEqualIgnoreCase(it->name(),"unit"))
                 {
                     char Name[250];
                     strcpy(Name,it->child("name").child_value());
@@ -234,7 +240,7 @@ namespace IterateDecks {
                     {
                         //printf("%s\n",child.name());
                         //printf("  %s = %s\n",child.name(),child.child_value());
-                        if (!_strcmpi(child.name(),"skill"))
+                        if (strEqualIgnoreCase(child.name(),"skill"))
                         {
                             UCHAR Id = GetSkillID(child.attribute("id").value());
                             assertX(Id); // unknown skill
@@ -269,7 +275,7 @@ namespace IterateDecks {
                     //if (mi != Index.end())
                     //	printf("Conflicted: %s : %d and %d\n",c.GetName(),mi->second,c.GetId());
                     // so card should be treated as new if it's picture changed, so API would know it should download new pic
-                    bool isnew = ((!CDB[Id].IsCard()) || (stricmp(CDB[Id].GetPicture(),c.GetPicture())));
+                    bool isnew = ((!CDB[Id].IsCard()) || (strEqualIgnoreCase(CDB[Id].GetPicture(),c.GetPicture())));
                     bool ins = Insert(c);
                     if (ins && returnnewcards && isnew)
                     {
@@ -280,7 +286,7 @@ namespace IterateDecks {
                     loaded++;
                 }
                 else
-                    if (!_strcmpi(it->name(),"cardSet"))
+                    if (strEqualIgnoreCase(it->name(),"cardSet"))
                     {
                         UINT Id = atoi(it->child("id").child_value());
                         const char *Name = it->child("name").child_value();
@@ -315,7 +321,7 @@ namespace IterateDecks {
             pugi::xml_node root = doc.child("root");
             for (pugi::xml_node_iterator it = root.begin(); it != root.end(); ++it)
             {
-                if (!_strcmpi(it->name(),"achievement"))
+                if (strEqualIgnoreCase(it->name(),"achievement"))
                 {
                     const char *Name = it->child("name").child_value();
                     UINT Id = atoi(it->child("id").child_value());
@@ -341,7 +347,7 @@ namespace IterateDecks {
                             it->child("type").attribute("winner").as_bool(),
                             DetectCompare(it->child("type").attribute("compare").value()));
                     for (pugi::xml_node_iterator di = it->begin(); di != it->end(); ++di)
-                        if (!_strcmpi(di->name(),"req"))
+                        if (strEqualIgnoreCase(di->name(),"req"))
                         {
                             AchievementRequirement r;
                             if (!di->attribute("skill_id").empty())
@@ -415,7 +421,7 @@ namespace IterateDecks {
             pugi::xml_node root = doc.child("root");
             for (pugi::xml_node_iterator it = root.begin(); it != root.end(); ++it)
             {
-                if (!_strcmpi(it->name(),"mission"))
+                if (strEqualIgnoreCase(it->name(),"mission"))
                 {
                     const char *Name = it->child("name").child_value();
                     UINT Id = atoi(it->child("id").child_value());
@@ -430,7 +436,7 @@ namespace IterateDecks {
                     pugi::xml_node deck = it->child("deck");
                     for (pugi::xml_node_iterator di = deck.begin(); di != deck.end(); ++di)
                     {
-                        assertX(!_strcmpi(di->name(),"card")); // all siblings must be "card", but, i'd better check
+                        assertX(strEqualIgnoreCase(di->name(),"card")); // all siblings must be "card", but, i'd better check
                         MDB[Id].Add(atoi(di->child_value()));
                         //printf("%d : %s\n",Id,di->child_value());
                     }
@@ -452,7 +458,7 @@ namespace IterateDecks {
             pugi::xml_node root = doc.child("root");
             for (pugi::xml_node_iterator it = root.begin(); it != root.end(); ++it)
             {
-                if (!_strcmpi(it->name(),"raid"))
+                if (strEqualIgnoreCase(it->name(),"raid"))
                 {
                     const char *Name = it->child("name").child_value();
                     UINT Id = atoi(it->child("id").child_value());
@@ -467,18 +473,18 @@ namespace IterateDecks {
                     pugi::xml_node alwaysinclude = deck.child("always_include");
                     for (pugi::xml_node_iterator di = alwaysinclude.begin(); di != alwaysinclude.end(); ++di)
                     {
-                        assertX(!_strcmpi(di->name(),"card")); // all siblings must be "card", but, i'd better check
+                        assertX(strEqualIgnoreCase(di->name(),"card")); // all siblings must be "card", but, i'd better check
                         RDB[Id].AddAlways(atoi(di->child_value()));
                     }
                     for (pugi::xml_node_iterator di = deck.begin(); di != deck.end(); ++di)
-                        if (!_strcmpi(di->name(),"card_pool"))
+                        if (strEqualIgnoreCase(di->name(),"card_pool"))
                         {
                             CardPool p(di->attribute("amount").as_int());
                             for (pugi::xml_node_iterator ti = di->begin(); ti != di->end(); ++ti)
                             {
-                                //assertX(!_strcmpi(ti->name(),"card")); // all siblings must be "card", but, i'd better check
+                                //assertX(strEqualIgnoreCase(ti->name(),"card")); // all siblings must be "card", but, i'd better check
                                 // ok here can be mistakes, gotta seed them out
-                                if (!_strcmpi(ti->name(),"card"))
+                                if (strEqualIgnoreCase(ti->name(),"card"))
                                     p.pool.push_back(atoi(ti->child_value()));
                             }
                             RDB[Id].AddPool(p);
@@ -500,7 +506,7 @@ namespace IterateDecks {
             pugi::xml_node root = doc.child("root");
             for (pugi::xml_node_iterator it = root.begin(); it != root.end(); ++it)
             {
-                if (!_strcmpi(it->name(),"battleground"))
+                if (strEqualIgnoreCase(it->name(),"battleground"))
                 {
                     const char *Name = it->child("name").child_value();
                     const char *Desc = it->child("desc").child_value();
@@ -522,7 +528,7 @@ namespace IterateDecks {
                     loaded++;
                 }
                 else
-                    if (!_strcmpi(it->name(),"step"))
+                    if (strEqualIgnoreCase(it->name(),"step"))
                     {
                         UINT Id = atoi(it->child("id").child_value());
                         UINT BgId = atoi(it->child("battleground_id").child_value());
@@ -534,14 +540,14 @@ namespace IterateDecks {
 
                         pugi::xml_node deck = it->child("deck");
                         for (pugi::xml_node_iterator di = deck.begin(); di != deck.end(); ++di)
-                            if (!strcmpi(di->name(),"card_pool"))
+                            if (strEqualIgnoreCase(di->name(),"card_pool"))
                             {
                                 CardPool p(di->attribute("amount").as_int());
                                 for (pugi::xml_node_iterator ti = di->begin(); ti != di->end(); ++ti)
                                 {
-                                    //assertX(!_strcmpi(ti->name(),"card")); // all siblings must be "card", but, i'd better check
+                                    //assertX(strEqualIgnoreCase(ti->name(),"card")); // all siblings must be "card", but, i'd better check
                                     // ok here can be mistakes, gotta seed them out
-                                    if (!_strcmpi(ti->name(),"card"))
+                                    if (strEqualIgnoreCase(ti->name(),"card"))
                                         p.pool.push_back(atoi(ti->child_value()));
                                 }
                                 STDB[Id].AddPool(p);
@@ -747,7 +753,7 @@ namespace IterateDecks {
         UCHAR CardDB::GetSkillIDSlow(const char *Name)
         {
             for (UCHAR i=0;i<CARD_ABILITIES_MAX;i++)
-                if (!_strcmpi(Name,Skills[i].SkillName))
+                if (strEqualIgnoreCase(Name,Skills[i].SkillName))
                     return i;
             return 0; // not found
         }
@@ -782,8 +788,11 @@ namespace IterateDecks {
             {
                 if ((buffer[i] == '"') || (buffer[i] == ',') || (!buffer[i]))
                 {
-                    if ((buffer[i] == ',') && (!strnicmp(&buffer[st],CARD_NAME_SYNTAX_EXCLUSION,sizeof(CARD_NAME_SYNTAX_EXCLUSION))))
+                    if (    (buffer[i] == ',')
+                         && (strEqualIgnoreCase(&buffer[st],CARD_NAME_SYNTAX_EXCLUSION))
+                       ) {
                         continue;
+                    }
                     // tokenize
                     buffer[i] = 0;
                     if (st != i)
@@ -862,16 +871,16 @@ namespace IterateDecks {
                     memcpy(buffer,FileName+x+1,z-x-1);
                     buffer[z-x-1] = 0;
 
-                    if (!stricmp(buffer,"CUSTOM"))
+                    if (strEqualIgnoreCase(buffer,"CUSTOM"))
                         tag = TAG_CUSTOM;
                     else
-                        if (!stricmp(buffer,"MISSION"))
+                        if (strEqualIgnoreCase(buffer,"MISSION"))
                             tag = TAG_SOMEMISSION;
                         else
-                            if (!stricmp(buffer,"RAID"))
+                            if (strEqualIgnoreCase(buffer,"RAID"))
                                 tag = TAG_SOMERAID;
                             else
-                                if (!stricmp(buffer,"BATCHEVAL"))
+                                if (strEqualIgnoreCase(buffer,"BATCHEVAL"))
                                     tag = TAG_BATCHEVAL;
                 }
                 //
@@ -1014,8 +1023,11 @@ namespace IterateDecks {
             for (size_t i=0;i<len+1;i++)
                 if ((List[i] == ',') || ((List[i] == ':') && (!p)) || (!List[i]))
                 {
-                    if ((List[i] == ',') && (!strnicmp(List+p,CARD_NAME_SYNTAX_EXCLUSION,sizeof(CARD_NAME_SYNTAX_EXCLUSION))))
+                    if (    (List[i] == ',')
+                         && (strEqualIgnoreCase(List+p,CARD_NAME_SYNTAX_EXCLUSION))
+                       ) {
                         continue;
+                    }
                     if (!p)
                     {
                         if (List[i] == ':')
@@ -1086,7 +1098,7 @@ namespace IterateDecks {
                                                                 x++;
                                                                 bStore = false;
                                                             }
-                                                    if (!stricmp(ptr,"Blightbloom"))
+                                                    if (strEqualIgnoreCase(ptr,"Blightbloom"))
                                                     {
                                                         abv[0] = 'B';
                                                         abv[1] = 'B';
