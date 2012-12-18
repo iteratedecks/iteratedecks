@@ -2603,7 +2603,14 @@ namespace IterateDecks {
 
         // skipEffects is an array with a solitary 0 as a terminal
         // targetSkills is an array with a solitary 0 as a terminal
-        void ActiveDeck::FilterTargets(PPCIV &targets, const EFFECT_ARGUMENT skipEffects[], const EFFECT_ARGUMENT targetSkills[], const int waitMin, const int waitMax, const int attackLimit, bool skipPlayed)
+        void ActiveDeck::FilterTargets(PPCIV &targets
+                                      ,EFFECT_ARGUMENT const skipEffects[]
+                                      ,EFFECT_ARGUMENT const targetSkills[]
+                                      ,int const waitMin
+                                      ,int const waitMax
+                                      ,int const attackLimit
+                                      ,bool skipPlayed
+                                      )
         {
             PPCIV::iterator vi = targets.begin();
             const EFFECT_ARGUMENT* effect;
