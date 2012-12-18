@@ -25,7 +25,7 @@ do
         continue
     elif [ "${line:0:1}" == "#" ]; then
         # I think the comments may actually be useful for understanding the tests
-        echo ${line}
+        echo -e "\033[1;30m${line}\033[0m"
         continue
     fi
 
