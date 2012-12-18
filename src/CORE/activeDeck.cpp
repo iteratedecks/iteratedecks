@@ -1801,10 +1801,11 @@ namespace IterateDecks {
                         effect *= FusionMultiplier;
                         effect += procCard->GetEffect(ACTIVATION_AUGMENT);
 
-                        if (chaos)
+                        if (chaos) {
                             GetTargets(Units,faction,targets);
-                        else
+                        } else {
                             GetTargets(Dest.Units,faction,targets);
+                        }
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, DMGDEPENDANT_IMMOBILIZE, 0};
                         FilterTargets(targets,skipEffects,NULL,-1,0,1,chaos);
@@ -2583,13 +2584,19 @@ namespace IterateDecks {
         }
         void ActiveDeck::GetTargets(LCARDS &From, UCHAR TargetFaction, PPCIV &GetTo, bool bForInfuse)
         {
-            if (!bForInfuse)
+            if (!bForInfuse) {
                 GetTo.clear();
+            }
             UCHAR pos = 0;
-            for (LCARDS::iterator vi = From.begin();vi != From.end();vi++)
-            {
-                if ((vi->IsAlive()) && (((vi->GetFaction() == TargetFaction) && (!bForInfuse)) || (TargetFaction == FACTION_NONE) || ((vi->GetFaction() != TargetFaction) && (bForInfuse))))
+            for (LCARDS::iterator vi = From.begin(); vi != From.end(); vi++) {
+                if (    (vi->IsAlive())
+                     && (    ((vi->GetFaction() == TargetFaction) && (!bForInfuse))
+                          || (TargetFaction == FACTION_NONE)
+                          || ((vi->GetFaction() != TargetFaction) && (bForInfuse))
+                        )
+                   ) {
                     GetTo.push_back(PPCARDINDEX(&(*vi),pos));
+                }
                 pos++;
             }
         }
