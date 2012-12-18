@@ -1,7 +1,7 @@
-TEST_FEATURE:=tests $(wildcard tests_*)
+TESTS_FEATURE:=tests $(wildcard tests_*)
 TESTS_REGRESSION:=$(wildcard regression-issue-*)
 TESTS:=${TESTS_FEATURE} ${TESTS_REGRESSION}
 TEST_DEPENDENCIES:= test.sh ../../builddir/linux-on-linux/iteratedecks-cli ../../builddir/linux-on-linux/XML
 
-$(phony test TEST): ${TEST_CASES} ${TEST_DEPENDENCIES}
-    cat ${TEST_CASES} | ./test.sh
+$(phony test TEST): ${TESTS} ${TEST_DEPENDENCIES}
+    cat ${TESTS} | ./test.sh
