@@ -4,5 +4,5 @@
 # protect + on kill
 --verify 1:1 -so PoAJOB PoAB+k
 
-# protect + on kill should only happen on kill
---verify 1:1 PoOB QHgW
+# protect + on kill skills should only happen on kill
+--verify 0:0 PoOB QHff
