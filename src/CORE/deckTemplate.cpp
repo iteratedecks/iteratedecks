@@ -12,7 +12,7 @@ namespace IterateDecks {
         std::list<unsigned int> hashToId(std::string const & hash)
         {
             std::list<unsigned int> list;
-            
+
             size_t const len = hash.length();
             if(len % 2 != 0) {
                 throw InvalidDeckHashError(InvalidDeckHashError::notEvenChars);
@@ -74,11 +74,22 @@ namespace IterateDecks {
                 PooledTemplate(Card const * commander, VCARDPOOL const & pools, CardDB const & cardDB);
                 PooledTemplate(Card const * commander, VID const & alwaysInclude, VCARDPOOL const & pools, CardDB const & cardDB);
                 static PooledTemplate::Ptr createFromRaidId(unsigned int const raidId, CardDB const & cardDB);
-                static PooledTemplate::Ptr createFromQuestId(unsigned int const questId, CardDB const & cardDB);
 
                 virtual ActiveDeck instantiate() const;
-                
+
         };
+
+        class QuestTemplate : public PooledTemplate {
+            private:
+                BattleGroundEffect battleGroundEffect;
+            public:
+                QuestTemplate(Card const * commander, VCARDPOOL const & pools, CardDB const & cardDB, BattleGroundEffect const battleGroundEffect);
+
+                virtual BattleGroundEffect getBattleGroundEffect() const;
+                static DeckTemplate::Ptr createFromQuestId(unsigned int const questId, CardDB const & cardDB);
+        };
+
+        //##############################################################
 
         OrderedDeckTemplate::OrderedDeckTemplate(DeckArgument const & argument, CardDB const & cardDB)
         : DeckTemplate(cardDB)
@@ -103,7 +114,7 @@ namespace IterateDecks {
             }
             assertX(activeDeck.IsValid());
             assertX(activeDeck.isAlive());
-            return activeDeck;            
+            return activeDeck;
         }
 
         UnorderedDeckTemplate::UnorderedDeckTemplate(DeckArgument const & argument, CardDB const & cardDB)
@@ -113,14 +124,14 @@ namespace IterateDecks {
             std::list<unsigned int> ids = hashToId(argument.getHash());
             std::list<unsigned int>::const_iterator iter = ids.begin();
             unsigned int const commanderId = *iter;
-            Card const * const commanderCard = &cardDB.GetCard(commanderId);            
+            Card const * const commanderCard = &cardDB.GetCard(commanderId);
             assertEQ(commanderCard->GetType(), TYPE_COMMANDER);
             this->commander = commanderCard;
             for(iter++ ;iter != ids.end(); iter++) {
                 Card const & card = cardDB.GetCard(*iter);
                 this->cards.insert(&card);
             }
-        }        
+        }
 
         ActiveDeck UnorderedDeckTemplate::instantiate() const
         {
@@ -135,7 +146,7 @@ namespace IterateDecks {
             assertX(activeDeck.Commander.IsDefined());
             assertX(activeDeck.IsValid());
             assertX(activeDeck.isAlive());
-            return activeDeck;            
+            return activeDeck;
         }
 
         //##############################################################
@@ -177,8 +188,8 @@ namespace IterateDecks {
                 this->pools.insert(&(*iter));
             }
         }
-                                      
-        PooledTemplate::Ptr PooledTemplate::createFromRaidId(unsigned int const raidId, CardDB const & cardDB)
+
+        DeckTemplate::Ptr PooledTemplate::createFromRaidId(unsigned int const raidId, CardDB const & cardDB)
         {
             assertLT(raidId,RAID_MAX_ID);
             RaidInfo const & raidInfo = cardDB.getRaidInfo(raidId);
@@ -186,18 +197,7 @@ namespace IterateDecks {
             unsigned int const & commanderId(raidInfo.GetCommander());
             Card const * commander = &cardDB.GetCard(commanderId);
 
-            return PooledTemplate::Ptr(new PooledTemplate(commander, raidInfo.AlwaysInclude, raidInfo.Pools, cardDB));
-        }
-
-        PooledTemplate::Ptr PooledTemplate::createFromQuestId(unsigned int const questId, CardDB const & cardDB)
-        {
-            assertLT(questId,STEP_MAX_ID);
-            StepInfo const & stepInfo = cardDB.getQuestInfo(questId);
-            assertX(stepInfo.IsValid());
-            unsigned int const & commanderId(stepInfo.GetCommander());
-            Card const * commander = &cardDB.GetCard(commanderId);
-
-            return PooledTemplate::Ptr(new PooledTemplate(commander, stepInfo.pools, cardDB));
+            return DeckTemplate::Ptr(new PooledTemplate(commander, raidInfo.AlwaysInclude, raidInfo.Pools, cardDB));
         }
 
         ActiveDeck PooledTemplate::instantiate() const
@@ -219,13 +219,42 @@ namespace IterateDecks {
                 CardPool const * pool = *iter;
                 pool->GetPool(this->cardDB.GetPointer(), activeDeck.Deck);
             }
-            
+
             assertX(activeDeck.IsValid());
             //std::clog << activeDeck.GetDeck() << std::endl;
             //activeDeck.PrintShort();
             return activeDeck;
         }
 
+        //##############################################################
+
+
+        QuestTemplate::QuestTemplate(Card const * commander
+                                    ,VCARDPOOL const & pools
+                                    ,CardDB const & cardDB
+                                    ,BattleGroundEffect const battleGroundEffect
+                                    )
+        : PooledTemplate(commander, pools, cardDB)
+        , battleGroundEffect(battleGroundEffect)
+        {
+        }
+
+        BattleGroundEffect QuestTemplate::getBattleGroundEffect() const
+        {
+            return this->battleGroundEffect;
+        }
+
+        DeckTemplate::Ptr QuestTemplate::createFromQuestId(unsigned int const questId, CardDB const & cardDB)
+        {
+            assertLT(questId,STEP_MAX_ID);
+            StepInfo const & stepInfo = cardDB.getQuestInfo(questId);
+            assertX(stepInfo.IsValid());
+            unsigned int const & commanderId(stepInfo.GetCommander());
+            Card const * commander = &cardDB.GetCard(commanderId);
+            BattleGroundEffect battleGroundEffect = cardDB.GetQuestEffectId(questId);
+
+            return DeckTemplate::Ptr(new QuestTemplate(commander, stepInfo.pools, cardDB, battleGroundEffect));
+        }
 
         //##############################################################
 
@@ -259,7 +288,7 @@ namespace IterateDecks {
                 case DeckArgument::RAID_ID:
                     return PooledTemplate::createFromRaidId(argument.getRaidId(), cardDB);
                 case DeckArgument::QUEST_ID:
-                    return PooledTemplate::createFromQuestId(argument.getQuestId(), cardDB);
+                    return QuestTemplate::createFromQuestId(argument.getQuestId(), cardDB);
                 default:
                     throw LogicError("Switch Case fall through");
             }

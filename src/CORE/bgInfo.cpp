@@ -29,7 +29,7 @@ namespace IterateDecks {
             return this->name;
         }
 
-        BattleGroundEffect BgInfo::GetEffectId()
+        BattleGroundEffect BgInfo::GetEffectId() const
         {
             return this->effectId;
         }

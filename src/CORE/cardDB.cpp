@@ -534,7 +534,7 @@ namespace IterateDecks {
             }
             return (loaded > 0);
         }
-        const BattleGroundEffect CardDB::GetQuestEffectId(UINT QuestId)
+        const BattleGroundEffect CardDB::GetQuestEffectId(UINT QuestId) const
         {
             assertX(QuestId < STEP_MAX_ID);
             UINT bg = STDB[QuestId].GetBGId();

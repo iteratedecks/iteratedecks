@@ -18,7 +18,7 @@
                     BgInfo(UINT const id,char const * const name, char const * const desc, BattleGroundEffect const effectid);
                     BgInfo(BgInfo const & BI);
                     std::string GetName();
-                    BattleGroundEffect GetEffectId();
+                    BattleGroundEffect GetEffectId() const;
             };
 
         }

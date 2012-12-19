@@ -56,7 +56,7 @@
                     bool LoadMissionXML(const char *FileName);
                     bool LoadRaidXML(const char *FileName);
                     bool LoadQuestXML(const char *FileName);
-                    const BattleGroundEffect GetQuestEffectId(UINT QuestId);
+                    const BattleGroundEffect GetQuestEffectId(UINT QuestId) const;
                     bool RateCard(const UINT Id, double &OffenceValue, double &DefenceValue, const UCHAR iFormulaVersion = 0);
                     void GenRaidDeck(ActiveDeck &D, UINT RaidID);
                     void GenQuestDeck(ActiveDeck &D, UINT QuestID);
