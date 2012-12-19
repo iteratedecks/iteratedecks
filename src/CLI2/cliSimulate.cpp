@@ -423,8 +423,16 @@ namespace IterateDecks {
             double l1, u1, l2, u2;
             twoSidedBounds(k1, n1, confidence, l1, u1);
             twoSidedBounds(k2, n2, confidence, l2, u2);
-            assertLE(l1, u2);
-            assertGE(u1, l2);
+            std::stringstream ssMessage;
+            ssMessage << msg;
+            ssMessage << ", k1=" << k1;
+            ssMessage << ", n1=" << n1;
+            ssMessage << ", k2=" << k2;
+            ssMessage << ", n2=" << n2;
+            ssMessage << ": ";
+            std::string const message = ssMessage.str();
+            assertLEM(l1, u2, message);
+            assertGEM(u1, l2, message);
         }
 
 
