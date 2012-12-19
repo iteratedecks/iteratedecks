@@ -507,8 +507,11 @@ namespace IterateDecks {
             //          << "DA" << r2.pointsDefenderAuto << std::endl;
             assertDEE(static_cast<double>(r.Points)      / static_cast<double>(r.Games), static_cast<double>(r2.pointsAttacker    ) / static_cast<double>(r2.numberOfGames), 2);
             assertDEE(static_cast<double>(r.AutoPoints)  / static_cast<double>(r.Games), static_cast<double>(r2.pointsAttackerAuto) / static_cast<double>(r2.numberOfGames), 2);
-            assertDEE(static_cast<double>(r.LPoints)     / static_cast<double>(r.Games), static_cast<double>(r2.pointsDefender    ) / static_cast<double>(r2.numberOfGames), 2);
-            assertDEE(static_cast<double>(r.LAutoPoints) / static_cast<double>(r.Games), static_cast<double>(r2.pointsDefenderAuto) / static_cast<double>(r2.numberOfGames), 2);
+            // NETRAT decided to be lazy and not implement points for Quest and Raid, hence we cannot check them
+            if(defenseDeck.getType() != DeckArgument::RAID_ID && defenseDeck.getType() != DeckArgument::QUEST_ID) {
+                assertDEE(static_cast<double>(r.LPoints)     / static_cast<double>(r.Games), static_cast<double>(r2.pointsDefender    ) / static_cast<double>(r2.numberOfGames), 2);
+                assertDEE(static_cast<double>(r.LAutoPoints) / static_cast<double>(r.Games), static_cast<double>(r2.pointsDefenderAuto) / static_cast<double>(r2.numberOfGames), 2);
+            }
             return r;
         }
 
