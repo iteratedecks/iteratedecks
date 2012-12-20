@@ -42,12 +42,11 @@
              * This is a bit field, new elements should be powers of two.
              * Zero is a special case. Would be easer if it were not.
              */
-            #define EVENT_EMPTY				0
-            #define EVENT_DIED				1
-            #define EVENT_PLAYED			2
-            //#define EVENT_BOTH				3 // bad name, but means: on play on death. no longer used.
-            #define EVENT_ATTACKED          4 // on attacked
-            // next EVENT_SOMETHING         8
+            #define EVENT_EMPTY     0
+            #define EVENT_DIED      1
+            #define EVENT_PLAYED    2
+            #define EVENT_ATTACKED  4 // on attacked
+            #define EVENT_KILL      8
 
             enum Rarity {
                 RARITY_COMMON = 0,

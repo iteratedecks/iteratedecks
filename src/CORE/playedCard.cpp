@@ -298,10 +298,6 @@ namespace IterateDecks {
 
             return false;
         }
-        void PlayedCard::EndTurn()
-        {
-            Played(); // for rally
-        }
         const UCHAR PlayedCard::GetAbilitiesCount() const { return OriginalCard->GetAbilitiesCount(); }
         const UCHAR PlayedCard::GetAbilityInOrder(const UCHAR order) const { return OriginalCard->GetAbilityInOrder(order); }
         void PlayedCard::Infuse(const UCHAR setfaction)
