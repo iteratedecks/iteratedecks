@@ -1,5 +1,4 @@
-# run using the following command
-# cat THIS_FILE | ./test.sh
+# WEAKEN
 
 # weaken targets units with delay 1
 --verify 1:1 QVH0 SAAl

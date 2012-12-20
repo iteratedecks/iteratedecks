@@ -1,5 +1,4 @@
-# run using the following command
-# cat THIS_FILE | ./test.sh
+# CHAOS
 
 # chaos can target something with Wait 1
 --verify 1:1 RiAU PoAe
