@@ -1,5 +1,4 @@
-# run using the following command
-# cat THIS_FILE | ./test.sh
+# GENERAL TESTS
 
 # simple tripwire
 --verify 1:1 P3AD+q Pr
