@@ -847,30 +847,32 @@ namespace IterateDecks {
         }
         const bool ActiveDeck::IsValid(bool bSoftCheck) const
         {
-            if (!Commander.IsDefined())
+            if (!Commander.IsDefined()) {
                 return false;
-            if (Deck.empty())
+            } else if (Deck.empty()) {
                 return true;
-            if (bSoftCheck)
+            } else if (bSoftCheck) {
                 return true;
+            }
             std::set<UINT> cards;
             bool bLegendary = false;
-            for (LCARDS::const_iterator iter = Deck.begin(); iter != Deck.end(); iter++)
+            for (LCARDS::const_iterator iter = Deck.begin()
+                ;iter != Deck.end()
+                ;iter++
+                )
             {
                 UINT rarity = iter->GetRarity();
-                if (rarity == RARITY_LEGENDARY)
-                {
-                    if (bLegendary)
+                if (rarity == RARITY_LEGENDARY) {
+                    if (bLegendary) {
                         return false;
-                    else
+                    } else {
                         bLegendary = true;
-                } else {
-                    if (iter->GetRarity() == RARITY_UNIQUE)
-                    {
-                        if (cards.find(iter->GetId()) != cards.end())
-                            return false;
-                        else
-                            cards.insert(iter->GetId());
+                    }
+                } else if (iter->GetRarity() == RARITY_UNIQUE) {
+                    if (cards.find(iter->GetId()) != cards.end()) {
+                        return false;
+                    } else {
+                        cards.insert(iter->GetId());
                     }
                 }
             }
