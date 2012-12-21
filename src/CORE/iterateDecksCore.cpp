@@ -3,6 +3,7 @@
 #include "assert.hpp"
 
 #include <iostream>
+#include <cstdlib>
 
 namespace IterateDecks {
     namespace Core {
@@ -44,7 +45,7 @@ namespace IterateDecks {
             Result result;
 
             // Setup seed
-            srand(task.randomSeed);
+            std::srand(task.randomSeed);
             
             unsigned int const n = task.minimalNumberOfGames;
             this->aborted = false;
