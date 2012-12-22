@@ -167,6 +167,7 @@ namespace IterateDecks {
         , colorMode(Logger::COLOR_NONE)
         , printHelpAndExit(false)
         , surge(false)
+        , allowInvalidDecks(false)
         {
         }
     } // namespace CLI
