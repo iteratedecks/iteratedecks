@@ -29,7 +29,7 @@ using namespace IterateDecks::Core;
             };
 
             enum OptionConstant {
-                VERIFY = 256,
+                VERIFY = 257,
                 SEED,
                 COLOR,
                 ALLOW_INVALID_DECKS
