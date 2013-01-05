@@ -28,8 +28,9 @@ using namespace IterateDecks::Core;
                 std::string comment;
             };
 
+            // FIXME: For now the constants are non printably chracaters, but this solution sucks.
             enum OptionConstant {
-                VERIFY = 256,
+                VERIFY = 1,
                 SEED,
                 COLOR,
                 ALLOW_INVALID_DECKS
