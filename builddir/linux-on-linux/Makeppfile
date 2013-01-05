@@ -9,7 +9,8 @@
 # Some flags
 COMMON_FLAGS=
 CXXFLAGS+=${COMMON_FLAGS}
-LDFLAGS+=${COMMON_FLAGS} -static -ldl
+LDFLAGS+=${COMMON_FLAGS} -static
+LIBS+=-ldl
 
 # Our release
 RELEASE_BINARY_CLI=iteratedecks-cli

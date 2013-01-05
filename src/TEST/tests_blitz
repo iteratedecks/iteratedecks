@@ -1,5 +1,4 @@
-# run using the following command
-# cat THIS_FILE | ./test.sh
+# BLITZ
 
 --verify 1:1 PoKKKK PrNr
 --verify 1:1 PofW+iNr PrEt

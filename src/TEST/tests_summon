@@ -1,7 +1,4 @@
-# run using the following command
-# cat THIS_FILE | ./test.sh
-
-# summon
+# SUMMON
 --verify 1:1 QVLh QVEi
 # summon + mimic
 --verify 0.9:1 S0hF PoHN
