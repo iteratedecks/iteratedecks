@@ -143,7 +143,7 @@ namespace IterateDecks {
                      case SEED: {
                             if (optarg == NULL) {
                                 // no data, random seed
-                                options.seed = time(NULL);
+                                options.seed = unsigned int(time(NULL));
                             } else {
                                 std::stringstream ssSeed(optarg);
                                 ssSeed >> options.seed;
