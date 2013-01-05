@@ -205,7 +205,7 @@ namespace IterateDecks {
                 if (strEqualIgnoreCase(it->name(),"unit"))
                 {
                     char Name[250];
-                    strcpy(Name,it->child("name").child_value());
+                    strcpy_s(Name,it->child("name").child_value());
                     FormatCardName(Name);
                     UINT Id = atoi(it->child("id").child_value());
                     const char *Pic = it->child("picture").child_value();
@@ -727,7 +727,7 @@ namespace IterateDecks {
         {
             char buffer[CARD_NAME_MAX_LENGTH];
             strcpy_s(buffer,CARD_NAME_MAX_LENGTH,Name);
-            strlwr(buffer);
+            _strlwr_s(buffer);
             strcpy_s(Skills[Id].SkillName,CARD_NAME_MAX_LENGTH,Name);
             SIndex.insert(PAIRMSKILLS(buffer,Id));
         }
@@ -735,7 +735,7 @@ namespace IterateDecks {
         {
             char buffer[CARD_NAME_MAX_LENGTH];
             strcpy_s(buffer,CARD_NAME_MAX_LENGTH,Name);
-            strlwr(buffer);
+            _strlwr_s(buffer);
             QuestEffectIndex.insert(PairBattleGroundEffects(buffer,effect));
         }
         const char *CardDB::GetSkill(UCHAR Indx) const
@@ -746,7 +746,7 @@ namespace IterateDecks {
         {
             char buffer[CARD_NAME_MAX_LENGTH];
             strcpy_s(buffer,CARD_NAME_MAX_LENGTH,Name);
-            strlwr(buffer);
+            _strlwr_s(buffer);
             MSKILLS::iterator it = SIndex.find(buffer);
             if (it == SIndex.end())
                 return 0;
@@ -1012,12 +1012,14 @@ namespace IterateDecks {
             }
             return -2; // fnf
         }
-        bool CardDB::InsertDeck(Tag tag, const char *List, char *output_id_buffer)
+        // TODO: output_id_buffer is never passed in
+        bool CardDB::InsertDeck(Tag tag, const char *List, char *output_id_buffer, size_t output_id_buffer_size)
         {
             VSTRINGS cardlist;
             MDECKS *Into = &DIndex;
             MDECKS::iterator mi = Into->end();
-            char buffer[4*CARD_NAME_MAX_LENGTH]; // somehow it's corrupted often, overflows :(
+            const size_t buffer_size = 4*CARD_NAME_MAX_LENGTH;
+            char buffer[buffer_size]; // somehow it's corrupted often, overflows :(
             size_t len = strlen(List);
             size_t p = 0,brs = 0,cnt = 0;
             size_t decknameend = 0;
@@ -1064,7 +1066,7 @@ namespace IterateDecks {
                                         buffer[z]=0;
                                         buffer[x]=0;
                                         NewTag = intToTag(atoi(trim(buffer + z + 1)));
-                                        strcat(buffer,trim(buffer+x+1)); // remove [id] from deck name
+                                        strcat_s(buffer,buffer_size,trim(buffer+x+1)); // remove [id] from deck name
                                     }
                                     if (tag == TAG_SOMERAID)
                                     {
@@ -1175,8 +1177,8 @@ namespace IterateDecks {
                                     char itoabuffer[10];
                                     _itoa_s(c->GetId(),itoabuffer,10);
                                     if (output_id_buffer[0])
-                                        strcat(output_id_buffer,",");
-                                    strcat(output_id_buffer,itoabuffer);
+                                        strcat_s(output_id_buffer,output_id_buffer_size,",");
+                                    strcat_s(output_id_buffer,output_id_buffer_size,itoabuffer);
                                 }
                             }
                             if (cnt)
@@ -1250,7 +1252,7 @@ namespace IterateDecks {
             {
                 std::string str;
                 str = MDB[it->second].GetDeck();
-                strncat(buffer, str.c_str(), MAX_ID_LEN * DEFAULT_DECK_RESERVE_SIZE);
+                strncat_s(buffer, str.c_str(), MAX_ID_LEN * DEFAULT_DECK_RESERVE_SIZE);
                 printf("%s:%s\n",it->first.c_str(),buffer);
             }
             for (MDECKS::iterator it=DIndex.begin();it!=DIndex.end();it++)
@@ -1329,7 +1331,7 @@ namespace IterateDecks {
                     s = CDB[i].GetName();
                     if (!CDB[i].GetSet())
                     {
-                        sprintf(lbuff,"[%d]",i);
+                        sprintf_s(lbuff,"[%d]",i);
                         s += lbuff;
                     }
                     ss.insert(s);
@@ -1343,7 +1345,7 @@ namespace IterateDecks {
             }
             if (s.length() > size)
                 return false;
-            strcpy(buffer,s.c_str());
+            strcpy_s(buffer,size,s.c_str());
             return (!s.empty());
         }
         const char* CardDB::GetCustomDecksList(char *buffer, size_t size, Tag byTag)
@@ -1422,7 +1424,7 @@ namespace IterateDecks {
 
             std::string str;
             str = MDB[mi->second].GetDeck();
-            strncat(buffer, str.c_str(), size);
+            strncat_s(buffer, size, str.c_str(), size);
             return buffer;
         }
         // named decks
@@ -1471,12 +1473,12 @@ namespace IterateDecks {
                     strcat_s(buffer,size,BGDB[STDB[i].GetBGId()].GetName().c_str());
                     char bu[5];
                     strcat_s(buffer,size,"(");
-                    itoa(i,bu,10);
+                    _itoa_s(i,bu,10);
                     strcat_s(buffer,size,bu);
                     strcat_s(buffer,size,") - ");
                     strcat_s(buffer,size,CDB[STDB[i].GetCommander()].GetName());
                     strcat_s(buffer,size,"[");
-                    itoa(STDB[i].GetCommander(),bu,10);
+                    _itoa_s(STDB[i].GetCommander(),bu,10);
                     strcat_s(buffer,size,bu);
                     strcat_s(buffer,size,"]\""); // yep, it's bad, but i dont care since it's called from delphi
                 }
