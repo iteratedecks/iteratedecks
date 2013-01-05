@@ -136,11 +136,11 @@ namespace IterateDecks {
                             }
                             options.defenseDeck.setMission(missionId);
                         } break;
-                    case char(VERIFY): {
+                    case VERIFY: {
                             //std::clog << "verify" << std::endl;
                             options.verifyOptions = VerifyOptions(optarg);
                         } break;
-                     case char(SEED): {
+                     case SEED: {
                             if (optarg == NULL) {
                                 // no data, random seed
                                 options.seed = time(NULL);
@@ -152,11 +152,11 @@ namespace IterateDecks {
                                 }
                             }
                         } break;
-                    case char(COLOR): {
+                    case COLOR: {
                             // TODO better logic
                             options.colorMode = Logger::COLOR_ANSI;                            
                         } break;
-                    case char(ALLOW_INVALID_DECKS): {
+                    case ALLOW_INVALID_DECKS: {
                             options.allowInvalidDecks = true;
                         } break;
                     case '?':
