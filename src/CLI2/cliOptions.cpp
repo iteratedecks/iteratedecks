@@ -25,7 +25,10 @@ namespace IterateDecks {
                 CommentedOption const & commentedOption(options[i]);
                 option const & getOptPart(commentedOption.getOptPart);
                 std::string const & comment(commentedOption.comment);
-                bool const hasShortOpt(getOptPart.flag == NULL && getOptPart.val != 0);
+                bool const hasShortOpt(    getOptPart.flag == NULL
+                                        && getOptPart.val > 0
+                                        && getOptPart.val < 256
+                                      );
                 if(hasShortOpt) {
                     char const & shortOpt(getOptPart.val);
                     std::cout << "-" << shortOpt;
@@ -167,6 +170,7 @@ namespace IterateDecks {
         , colorMode(Logger::COLOR_NONE)
         , printHelpAndExit(false)
         , surge(false)
+        , allowInvalidDecks(false)
         {
         }
     } // namespace CLI
