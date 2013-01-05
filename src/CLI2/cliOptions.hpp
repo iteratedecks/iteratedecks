@@ -28,22 +28,32 @@ using namespace IterateDecks::Core;
                 std::string comment;
             };
 
-        /**
-         * Option table
-         */
+            // FIXME: For now the constants are non printably chracaters, but this solution sucks.
+            enum OptionConstant {
+                VERIFY = 1,
+                SEED,
+                COLOR,
+                ALLOW_INVALID_DECKS
+            };
+
+            /**
+             * Option table
+             */
             static CommentedOption const options[] =
+                //  { name                   , has_arg        ,flag, val }, comment
                 { { { "number-of-iterations" , required_argument, 0, 'n' }, "sets the number of simulations to do" }
                 , { { "first-deck-is-ordered", no_argument      , 0, 'o' }, "marks the first deck (player deck) as ordered" }
                 , { { "achievement-index"    , required_argument, 0, 'a' }, "index (not id) of achievement. not sure where the difference is" }
-                , { { "verify"               , required_argument, 0, 0   }, "verify a result, provide an accepted range in the form <lower bound>:<upper bound>, like \"--verify 1:1\" if the deck should win all the time" }
+                , { { "verify"               , required_argument, 0, VERIFY }, "verify a result, provide an accepted range in the form <lower bound>:<upper bound>, like \"--verify 1:1\" if the deck should win all the time" }
                 , { { "verbose"              , no_argument      , 0, 'v' }, "verbose output" }
-                , { { "seed"                 , optional_argument, 0, 0   }, "set the seed, takes an optional argument. if none given use seed based on time." }
-                , { { "color"                , optional_argument, 0, 0   }, "color the output, currently only ANSI colors supported" }
+                , { { "seed"                 , optional_argument, 0, SEED }, "set the seed, takes an optional argument. if none given use seed based on time." }
+                , { { "color"                , optional_argument, 0, COLOR }, "color the output, currently only ANSI colors supported" }
                 , { { "help"                 , no_argument      , 0, 'h' }, "print help" }
                 , { { "surge"                , no_argument      , 0, 's' }, "first deck will surge" }
                 , { { "raid-id"              , required_argument, 0, 'r' }, "raid id" }
                 , { { "quest-id"             , required_argument, 0, 'Q' }, "quest id" }
                 , { { "mission-id"           , required_argument, 0, 'm' }, "mission id" }
+                , { { "allow-invalid-decks"  , no_argument      , 0, ALLOW_INVALID_DECKS }, "allows decks which are invalid (same unique twice, two legendaries)" }
                 };
 
 
@@ -118,6 +128,7 @@ using namespace IterateDecks::Core;
                 Logger::ColorMode colorMode;
                 bool printHelpAndExit;
                 bool surge;
+                bool allowInvalidDecks;
 
                 CliOptions();
             };
