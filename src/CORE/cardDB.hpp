@@ -77,7 +77,7 @@
                     int LoadDecks(const char *FileName, bool bRewrite = false);
                     int LoadOwnedCards(const char *FileName, MUUINT &OwnedCards);
                     int LoadCardList(const char *FileName, SCID &CardPool) const;
-                    bool InsertDeck(Tag tag, const char *List, char *output_id_buffer = 0, size_t output_id_buffer_size = 0);
+                    bool InsertDeck(Tag tag, const char *List, char *output_id_buffer = 0);
                     void GetAchievementList(char *Buffer, DWORD MaxBufferSize);
                     const char *GetAchievementDescription(DWORD AchievementIndex);
                     const UINT GetAchievementID(DWORD AchievementIndex);
