@@ -6,7 +6,7 @@
     namespace IterateDecks {
         namespace Core {
 
-            class CardPool;
+            struct CardPool;
             typedef std::vector<CardPool> VCARDPOOL;
 
             // FIXME these should not be defines
