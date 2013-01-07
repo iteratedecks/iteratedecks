@@ -259,7 +259,8 @@ namespace IterateDecks {
         //##############################################################
 
         DeckTemplate::DeckTemplate(CardDB const & cardDB)
-        : cardDB(cardDB)
+        : commander(0)
+        , cardDB(cardDB)
         , allowInvalid(false)
         {}
 
