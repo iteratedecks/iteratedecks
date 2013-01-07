@@ -448,6 +448,7 @@ namespace IterateDecks {
                         // future: battlefield id
                         ,CardDB const & cardDB
                         ,unsigned int seed
+                        ,bool allowInvalidDecks
                         )
         {
             // construct the decks
@@ -491,6 +492,7 @@ namespace IterateDecks {
             task.randomSeed = seed;
             task.attacker = attackDeck;
             task.defender = defenseDeck;
+            task.allowInvalidDecks = allowInvalidDecks;
 
             Result r2 = simulator.simulate(task);
             // Compare

@@ -20,6 +20,7 @@
                     
                 public:
                     typedef std::shared_ptr<DeckTemplate> Ptr;
+                    bool allowInvalid;
 
                 protected:
                     DeckTemplate(CardDB const & cardDB);

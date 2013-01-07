@@ -38,7 +38,7 @@
 --verify 0:0 PoHV QAgYgZga
 
 # Fusioned repair
---verify 0:0 PoKC+i QVgYgZga
+--verify 0:0 PoKC+i QVgYgZga --allow-invalid-decks
 
 # Unfusioned siege
 --verify 0:0 PoEFgYgZ Pqgk
@@ -53,7 +53,7 @@
 --verify 1:1 PoHV QAgYgZ
 
 # Unfusioned repair
---verify 1:1 PoKC+i QVgZga
+--verify 1:1 PoKC+i QVgZga --allow-invalid-decks
 
 # Fusioned siege
 --verify 1:1 PoEFgYgZga Pqgk

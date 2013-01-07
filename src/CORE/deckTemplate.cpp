@@ -144,7 +144,7 @@ namespace IterateDecks {
             assertEQ(activeDeck.Commander.GetOriginalCard()->GetType(), TYPE_COMMANDER);
             assertEQ(activeDeck.Commander.GetType(),TYPE_COMMANDER);
             assertX(activeDeck.Commander.IsDefined());
-            assertX(activeDeck.IsValid());
+            assertX(this->allowInvalid || activeDeck.IsValid());
             assertX(activeDeck.isAlive());
             return activeDeck;
         }
@@ -260,11 +260,13 @@ namespace IterateDecks {
 
         DeckTemplate::DeckTemplate(CardDB const & cardDB)
         : cardDB(cardDB)
+        , allowInvalid(false)
         {}
 
         DeckTemplate::DeckTemplate(Card const * commander, CardDB const & cardDB)
         : commander(commander)
         , cardDB(cardDB)
+        , allowInvalid(false)
         {}
 
         DeckTemplate::~DeckTemplate() {}

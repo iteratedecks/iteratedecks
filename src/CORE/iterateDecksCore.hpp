@@ -36,6 +36,7 @@
                 BattleGroundEffect battleGround; //< for quests and conquest
                 AchievementOptions achievementOptions;
                 unsigned int randomSeed;
+                bool allowInvalidDecks;
                 
                 DeckArgument attacker;
                 DeckArgument defender;

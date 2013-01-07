@@ -99,7 +99,7 @@ int mainWithOptions(CliOptions const & options
     DeckArgument attackDeck = options.attackDeck;
     DeckArgument const & defenseDeck = options.defenseDeck;
 
-    RESULTS r = simulate(attackDeck, defenseDeck, &attackLogger, &defenseLogger, &simulationLogger, options.numberOfIterations, options.surge, DB, options.seed);
+    RESULTS r = simulate(attackDeck, defenseDeck, &attackLogger, &defenseLogger, &simulationLogger, options.numberOfIterations, options.surge, DB, options.seed, options.allowInvalidDecks);
 
     printResults(r);
 

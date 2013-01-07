@@ -17,7 +17,9 @@ namespace IterateDecks {
         , randomSeed(task.randomSeed)
         {
             this->attacker = DeckTemplate::create(task.attacker, cardDB);
+            this->attacker->allowInvalid = task.allowInvalidDecks;
             this->defender = DeckTemplate::create(task.defender, cardDB);
+            this->defender->allowInvalid = task.allowInvalidDecks;
         }
 
         SimulatorCore::~SimulatorCore() {}
