@@ -2531,8 +2531,10 @@ namespace IterateDecks {
             typedef std::multiset<UINT> MSID; // I <3 sets, they keep stuff sorted ;)
     #endif
             MSID ids;
-            if (!bCardPicks) {
-                for (LCARDS::const_iterator iter = Deck.begin(); iter != Deck.end(); iter++) {
+            if (!bCardPicks)
+            {
+                for (LCARDS::const_iterator iter = Deck.begin(); iter != Deck.end(); iter++)
+                {
     #if HASH_SAVES_ORDER
                     ids.push_back(iter->GetId());
     #else
@@ -2541,65 +2543,71 @@ namespace IterateDecks {
                 }
             }
             else
-                for (UCHAR i=0;(i<DEFAULT_DECK_RESERVE_SIZE) && (CardPicks[i]);i++)
+            {
+                for (UCHAR i=0;(i<DEFAULT_DECK_RESERVE_SIZE) && (CardPicks[i]);i++) 
+                {
                     ids.push_back(CardPicks[i]); // multiset is disallowed!
-            std::string s;
-            UINT tmp = 0, t;
+                }
+            }
+
+            std::string deckHash;
+            UINT cardHash = 0, t;
             unsigned short lastid = 0, cnt = 1;
             if (Commander.IsDefined())
             {
-                tmp = ID2BASE64(Commander.GetId());
-                s.append((char*)&tmp);
+                cardHash = ID2BASE64(Commander.GetId());
+                deckHash.append((char*)&cardHash);
                 //printf("1: %s -commander\n",(char*)&tmp);
             }
+
+            // TODO: Change to support >4000 ids may not be fully tested; I am not sure if any of this code is used
+            bool isCardOver4000;
+            unsigned short cardId;
             MSID::iterator si = ids.begin();
             do
             {
+                isCardOver4000 = *si >= 4000;
+
                 // we can actually use Id range 4000-4095 (CARD_MAX_ID - 0xFFF) for special codes,
                 // adding RLE here
-                tmp = ID2BASE64(*si);
+                if(isCardOver4000)
+                {
+                    cardHash = ID2BASE64(*si - 4000);
+                }
+                else
+                {
+                    cardHash = ID2BASE64(*si);
+                }
+                cardId = *si; // save the id and advance the pointer so we can tell if we are at the end of the deck
                 si++;
-                if ((lastid != tmp) || (si == ids.end()))
+                if ((lastid != cardId) || (si == ids.end()))
                 {
                     if (lastid)
                     {
                         t = lastid;
-                        if (cnt == 2)
-                        {
-                            s.append((char*)&t);
-                            s.append((char*)&t);
-                            //printf("4: %s -dupe\n",(char*)&t);
-                            //printf("4: %s -dupe\n",(char*)&t);
-
+                        if(isCardOver4000) {
+                            deckHash += '-';
                         }
-                        else
-                            if (cnt > 2)
-                            {
-                                s.append((char*)&t);
-                                //printf("3: %s -value\n",(char*)&t);
-                                t = ID2BASE64(CARD_MAX_ID + cnt); // special code, RLE count
-                                s.append((char*)&t);
-                                //printf("3: %s -rle\n",(char*)&t);
-                            }
-                            else
-                            {
-                                s.append((char*)&t);
-                                //printf("5: %s\n",(char*)&t);
-                            }
+                        deckHash.append((char*)&t);
+                        if (cnt > 1)
+                        {
+                            t = ID2BASE64(4000 + cnt); // special code, RLE count
+                            deckHash.append((char*)&t);
+                        }
                         cnt = 1;
                     }
                     if (si == ids.end())
                     {
-                        s.append((char*)&tmp);
+                        deckHash.append((char*)&cardHash);
                         //printf("2: %s\n",(char*)&tmp);
                     }
-                    lastid = tmp;
+                    lastid = cardId;
                 }
                 else
                     cnt++;  // RLE, count IDs
             }
             while (si != ids.end());
-            return s;
+            return deckHash;
         }
         void ActiveDeck::GetTargets(LCARDS &From, UCHAR TargetFaction, PPCIV &GetTo, bool bForInfuse)
         {
