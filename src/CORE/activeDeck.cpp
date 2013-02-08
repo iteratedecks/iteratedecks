@@ -665,12 +665,12 @@ namespace IterateDecks {
             QuestEffectId = EffectId;
         }
         // please note, contructors don't clean up storages, must do it manually and beforehand, even copy constructor
-        ActiveDeck::ActiveDeck(const char *HashBase64, const Card *pCDB)
+        ActiveDeck::ActiveDeck(const char *DeckHash, const Card *pCDB)
         : pCDB(pCDB)
         , logger(NULL)
         {
             assertX(pCDB);
-            assertX(HashBase64);
+            assertX(DeckHash);
             QuestEffectId = BattleGroundEffect::normal;
             Log = 0;
             CSIndex = 0;
@@ -684,21 +684,35 @@ namespace IterateDecks {
             memset(SkillProcs,0,sizeof(SkillProcs));
             memset(CardPicks,0,sizeof(CardPicks));
             memset(CardDeaths,0,sizeof(CardDeaths));
+
+            bool isCardOver4000;
             //
-            size_t len = strlen(HashBase64);
-            if(len % 2 != 0) {
-                throw InvalidDeckHashError(InvalidDeckHashError::notEvenChars);
-            }
-            assertX(!(len & 1)); // bytes should go in pairs
-            if (len & 1)
-                return;
-            len = len >> 1; // div 2
+            size_t len = strlen(DeckHash);
+            //if(len % 2 != 0) {
+            //    throw InvalidDeckHashError(InvalidDeckHashError::notEvenChars);
+            //}
+            //assertX(!(len & 1)); // bytes should go in pairs
+            //if (len & 1)
+            //    return;
+            //len = len >> 1; // div 2
             //Deck.reserve(DEFAULT_DECK_RESERVE_SIZE);
-            for (UCHAR i = 0; i < len; i++)
+
+            for (UCHAR i = 0; i < len; i+=2)
             {
-                if (HashBase64[i << 1] == '.') break; // delimeter
-                if (isspace(HashBase64[i << 1])) break; // not a hash
-                tid = BASE64ID((HashBase64[i << 1] << 8) + HashBase64[(i << 1) + 1]);
+                if (DeckHash[i] == '.') break; // delimeter
+                if (isspace(DeckHash[i])) break; // not a hash
+
+                if(DeckHash[i] == '-') {
+                    i++;
+                    isCardOver4000 = true;
+                    tid = 4000;
+                } else {
+                    isCardOver4000 = false;
+                    tid = 0;
+                }
+                assertX(i + 1 < len); // make sure we have a full hash
+                unsigned short cardHash = (DeckHash[i] << 8) + DeckHash[i + 1];
+                tid += BASE64ID(cardHash);
                 if (i==0)
                 {
                     // first card is commander
@@ -711,7 +725,7 @@ namespace IterateDecks {
                 {
                     // later cards are not commander
                     assertX(i || (tid < CARD_MAX_ID)); // commander card can't be encoded with RLE
-                    if (tid < CARD_MAX_ID)
+                    if (tid < 4000 || isCardOver4000)
                     {
                         // this is a card
                         Deck.push_back(&pCDB[tid]);
@@ -720,7 +734,7 @@ namespace IterateDecks {
                     else
                     {
                         // this is an encoding for rle
-                        for (UINT k = CARD_MAX_ID+1; k < tid; k++) // decode RLE, +1 because we already added one card
+                        for (UINT k = 4000+1; k < tid; k++) // decode RLE, +1 because we already added one card
                             Deck.push_back(&pCDB[lastid]);
                     }
                 }
