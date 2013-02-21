@@ -33,12 +33,12 @@
 --verify .4:.6 ScKM PoOz
 
 # TODO not sure what these are testing...
-#--verify 0:0 QVAV+q ShAV+q
-#--verify 0:0 QVAV+q SoAV+q
-#--verify 0:0 P7DugJ SnLf
-#--verify 0:1 -o QVLwgjhG QVKBDh
-#--verify 0:1 -v QVIWL2 RLIG
-#--verify 1:1 PrH0 P8Jy
+--verify 0:0 QVAV+q ShAV+q
+--verify 0:0 QVAV+q SoAV+q
+--verify 0:0 P7DugJ SnLf
+--verify 0:1 -o QVLwgjhG QVKBDh
+--verify 0:1 -v QVIWL2 RLIG
+--verify 1:1 PrH0 P8Jy
 
 # jam on death does not assert
 --verify 0:1 -o P2AVGn QVLKF5
