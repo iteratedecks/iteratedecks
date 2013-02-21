@@ -12,7 +12,6 @@ namespace IterateDecks {
 
         unsigned short ID2BASE64(const UINT Id)
         {
-            if(Id > 4000) {}
             assertX(Id < 0xFFF);
             #define EncodeBase64(x) (x < 26) ? (x + 'A') : ((x < 52) ? (x + 'a' - 26) : ((x < 62) ? (x + '0' - 52) : ((x == 62) ? ('+') : ('/'))))
             // please keep in mind that any integer type has swapped hi and lo bytes

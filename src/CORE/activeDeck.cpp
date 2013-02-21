@@ -2561,12 +2561,11 @@ namespace IterateDecks {
             }
 
             // TODO: Change to support >4000 ids may not be fully tested; I am not sure if any of this code is used
-            bool isCardOver4000;
             unsigned short cardId;
             MSID::iterator si = ids.begin();
             do
             {
-                isCardOver4000 = *si >= 4000;
+                bool isCardOver4000 = *si >= 4000;
 
                 // we can actually use Id range 4000-4095 (CARD_MAX_ID - 0xFFF) for special codes,
                 // adding RLE here
