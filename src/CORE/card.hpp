@@ -43,8 +43,8 @@
                     const bool IsCard() const;
                     const UINT GetId() const;
                     const char* GetID16(UINT &ID16Storage, bool bLowerCase = false) const;
-                    const unsigned short GetID64() const;
-                    const char* GetID64(UINT &ID64Storage) const;
+                    //const unsigned short GetID64() const;
+                    //const char* GetID64(UINT &ID64Storage) const;
                     const UCHAR GetAttack() const;
                     const UCHAR GetHealth() const;
                     const UCHAR GetWait() const;

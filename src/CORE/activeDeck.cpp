@@ -665,12 +665,12 @@ namespace IterateDecks {
             QuestEffectId = EffectId;
         }
         // please note, contructors don't clean up storages, must do it manually and beforehand, even copy constructor
-        ActiveDeck::ActiveDeck(const char *HashBase64, const Card *pCDB)
+        ActiveDeck::ActiveDeck(const char *DeckHash, const Card *pCDB)
         : pCDB(pCDB)
         , logger(NULL)
         {
             assertX(pCDB);
-            assertX(HashBase64);
+            assertX(DeckHash);
             QuestEffectId = BattleGroundEffect::normal;
             Log = 0;
             CSIndex = 0;
@@ -684,21 +684,35 @@ namespace IterateDecks {
             memset(SkillProcs,0,sizeof(SkillProcs));
             memset(CardPicks,0,sizeof(CardPicks));
             memset(CardDeaths,0,sizeof(CardDeaths));
+
+            bool isCardOver4000;
             //
-            size_t len = strlen(HashBase64);
-            if(len % 2 != 0) {
-                throw InvalidDeckHashError(InvalidDeckHashError::notEvenChars);
-            }
-            assertX(!(len & 1)); // bytes should go in pairs
-            if (len & 1)
-                return;
-            len = len >> 1; // div 2
+            size_t len = strlen(DeckHash);
+            //if(len % 2 != 0) {
+            //    throw InvalidDeckHashError(InvalidDeckHashError::notEvenChars);
+            //}
+            //assertX(!(len & 1)); // bytes should go in pairs
+            //if (len & 1)
+            //    return;
+            //len = len >> 1; // div 2
             //Deck.reserve(DEFAULT_DECK_RESERVE_SIZE);
-            for (UCHAR i = 0; i < len; i++)
+
+            for (UCHAR i = 0; i < len; i+=2)
             {
-                if (HashBase64[i << 1] == '.') break; // delimeter
-                if (isspace(HashBase64[i << 1])) break; // not a hash
-                tid = BASE64ID((HashBase64[i << 1] << 8) + HashBase64[(i << 1) + 1]);
+                if (DeckHash[i] == '.') break; // delimeter
+                if (isspace(DeckHash[i])) break; // not a hash
+
+                if(DeckHash[i] == '-') {
+                    i++;
+                    isCardOver4000 = true;
+                    tid = 4000;
+                } else {
+                    isCardOver4000 = false;
+                    tid = 0;
+                }
+                assertX(i + 1 < len); // make sure we have a full hash
+                unsigned short cardHash = (DeckHash[i] << 8) + DeckHash[i + 1];
+                tid += BASE64ID(cardHash);
                 if (i==0)
                 {
                     // first card is commander
@@ -711,7 +725,7 @@ namespace IterateDecks {
                 {
                     // later cards are not commander
                     assertX(i || (tid < CARD_MAX_ID)); // commander card can't be encoded with RLE
-                    if (tid < CARD_MAX_ID)
+                    if (tid < 4000 || isCardOver4000)
                     {
                         // this is a card
                         Deck.push_back(&pCDB[tid]);
@@ -720,7 +734,7 @@ namespace IterateDecks {
                     else
                     {
                         // this is an encoding for rle
-                        for (UINT k = CARD_MAX_ID+1; k < tid; k++) // decode RLE, +1 because we already added one card
+                        for (UINT k = 4000+1; k < tid; k++) // decode RLE, +1 because we already added one card
                             Deck.push_back(&pCDB[lastid]);
                     }
                 }
@@ -2517,8 +2531,10 @@ namespace IterateDecks {
             typedef std::multiset<UINT> MSID; // I <3 sets, they keep stuff sorted ;)
     #endif
             MSID ids;
-            if (!bCardPicks) {
-                for (LCARDS::const_iterator iter = Deck.begin(); iter != Deck.end(); iter++) {
+            if (!bCardPicks)
+            {
+                for (LCARDS::const_iterator iter = Deck.begin(); iter != Deck.end(); iter++)
+                {
     #if HASH_SAVES_ORDER
                     ids.push_back(iter->GetId());
     #else
@@ -2527,65 +2543,70 @@ namespace IterateDecks {
                 }
             }
             else
-                for (UCHAR i=0;(i<DEFAULT_DECK_RESERVE_SIZE) && (CardPicks[i]);i++)
+            {
+                for (UCHAR i=0;(i<DEFAULT_DECK_RESERVE_SIZE) && (CardPicks[i]);i++) 
+                {
                     ids.push_back(CardPicks[i]); // multiset is disallowed!
-            std::string s;
-            UINT tmp = 0, t;
+                }
+            }
+
+            std::string deckHash;
+            UINT cardHash = 0, t;
             unsigned short lastid = 0, cnt = 1;
             if (Commander.IsDefined())
             {
-                tmp = ID2BASE64(Commander.GetId());
-                s.append((char*)&tmp);
+                cardHash = ID2BASE64(Commander.GetId());
+                deckHash.append((char*)&cardHash);
                 //printf("1: %s -commander\n",(char*)&tmp);
             }
+
+            // TODO: Change to support >4000 ids may not be fully tested; I am not sure if any of this code is used
+            unsigned short cardId;
             MSID::iterator si = ids.begin();
             do
             {
+                bool isCardOver4000 = *si >= 4000;
+
                 // we can actually use Id range 4000-4095 (CARD_MAX_ID - 0xFFF) for special codes,
                 // adding RLE here
-                tmp = ID2BASE64(*si);
+                if(isCardOver4000)
+                {
+                    cardHash = ID2BASE64(*si - 4000);
+                }
+                else
+                {
+                    cardHash = ID2BASE64(*si);
+                }
+                cardId = *si; // save the id and advance the pointer so we can tell if we are at the end of the deck
                 si++;
-                if ((lastid != tmp) || (si == ids.end()))
+                if ((lastid != cardId) || (si == ids.end()))
                 {
                     if (lastid)
                     {
                         t = lastid;
-                        if (cnt == 2)
-                        {
-                            s.append((char*)&t);
-                            s.append((char*)&t);
-                            //printf("4: %s -dupe\n",(char*)&t);
-                            //printf("4: %s -dupe\n",(char*)&t);
-
+                        if(isCardOver4000) {
+                            deckHash += '-';
                         }
-                        else
-                            if (cnt > 2)
-                            {
-                                s.append((char*)&t);
-                                //printf("3: %s -value\n",(char*)&t);
-                                t = ID2BASE64(CARD_MAX_ID + cnt); // special code, RLE count
-                                s.append((char*)&t);
-                                //printf("3: %s -rle\n",(char*)&t);
-                            }
-                            else
-                            {
-                                s.append((char*)&t);
-                                //printf("5: %s\n",(char*)&t);
-                            }
+                        deckHash.append((char*)&t);
+                        if (cnt > 1)
+                        {
+                            t = ID2BASE64(4000 + cnt); // special code, RLE count
+                            deckHash.append((char*)&t);
+                        }
                         cnt = 1;
                     }
                     if (si == ids.end())
                     {
-                        s.append((char*)&tmp);
+                        deckHash.append((char*)&cardHash);
                         //printf("2: %s\n",(char*)&tmp);
                     }
-                    lastid = tmp;
+                    lastid = cardId;
                 }
                 else
                     cnt++;  // RLE, count IDs
             }
             while (si != ids.end());
-            return s;
+            return deckHash;
         }
         void ActiveDeck::GetTargets(LCARDS &From, UCHAR TargetFaction, PPCIV &GetTo, bool bForInfuse)
         {

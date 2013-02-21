@@ -178,16 +178,16 @@ namespace IterateDecks {
             ptr[3] = 0;
             return (const char*)ptr;
         }
-        const unsigned short Card::GetID64() const
-        {
-            return ID2BASE64(Id);
-        }
-        const char* Card::GetID64(UINT &ID64Storage) const
-        {
-            //ID64Storage = 0; // is it nessesary?
-            ID64Storage = GetID64();
-            return (char *)&ID64Storage;
-        }
+        //const unsigned short Card::GetID64() const
+        //{
+        //    return ID2BASE64(Id);
+        //}
+        //const char* Card::GetID64(UINT &ID64Storage) const
+        //{
+        //    //ID64Storage = 0; // is it nessesary?
+        //    ID64Storage = GetID64();
+        //    return (char *)&ID64Storage;
+        //}
         const UCHAR Card::GetAttack() const	{	return Attack;	}
         const UCHAR Card::GetHealth() const	{	return Health;	}
         const UCHAR Card::GetWait() const		{	return Wait;	}
