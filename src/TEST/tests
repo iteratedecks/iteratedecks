@@ -14,6 +14,9 @@
 # strike on attacked
 --verify 0:0 PuBz PuK/
 
+# swipe when the middle unit dies mid-swipe
+--verify .4:.6 -o RhEiLUgt PqCk+j
+
 # disease on attacked
 --verify 0:0 P7Kp RJffg/
 
