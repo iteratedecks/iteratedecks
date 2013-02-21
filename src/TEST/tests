@@ -23,6 +23,9 @@
 # jam does not prevent payback
 --verify .4:.6 SBAl PoNh
 
+# payback cannot be evaded
+--verify .4:.6 ScKM PoOz
+
 # TODO not sure what these are testing...
 --verify 0:0 QVAV+q ShAV+q
 --verify 0:0 QVAV+q SoAV+q
