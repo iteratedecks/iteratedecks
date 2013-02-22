@@ -702,6 +702,7 @@ namespace IterateDecks {
             AddSkill(SPECIAL_MIST,"Mist");
             AddSkill(SPECIAL_BLIZZARD,"Blizzard");
             AddSkill(SPECIAL_BLITZ,"Blitz");
+            AddSkill(SPECIAL_LEGION,"Legion");
 
             AddSkill(SPECIAL_ATTACK,"Attack");
 
