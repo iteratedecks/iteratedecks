@@ -198,8 +198,8 @@ namespace IterateDecks {
         }
         void PlayedCard::ProcessLegion(int count, BattleGroundEffect QuestEffectId)
         {
-            if (count > 0 && IsAlive() && (Effects[SPECIAL_LEGION])) {
-                int amount = count * Effects[SPECIAL_LEGION];
+            if (count > 0 && IsAlive() && (GetAbility(SPECIAL_LEGION))) {
+                int amount = count * GetAbility(SPECIAL_LEGION);
                 this->Rally(amount);
                 this->Heal(amount);
             }
