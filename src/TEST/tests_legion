@@ -1,0 +1,36 @@
+# LEGION
+
+# legion rally
+--verify 1:1 -o Po-ANBQ PoAD
+
+# legion heal
+--verify 1:1 -o Po-AYN+ PoAN
+
+# legion counts both left and right adjacent
+--verify 1:1 -o QVBQ-ANBQ PoAr+i
+
+# legion works on Wait 0
+--verify 1:1 Q6-AJ+i PqHY+q
+
+# legion 2 heal/rally
+--verify 1:1 Po-AQ+i P+AN+i
+
+# legion triggers after poison
+--verify 0:0 Po-AN+i P9g++i
+
+# legion triggers before Commander
+--verify 1:1 TY-AQB+ P+AN+i
+
+# TODO legion triggers after card play but before On Play abilities
+
+# legion still rallies when Jammed
+--verify 1:1 -o TF-ANBQ SBI1
+
+# TODO legion still rallies when Immobilized
+# TODO legion still rallies after Freeze
+# TODO legion cannot be emulated
+# TODO legion only uses Bloodthirsty post-Infuse
+
+# legion does not trigger without adjacent faction
+--verify 0:0 Po-AN PoAD
+--verify 0:0 Po-AY PoAN
