@@ -159,6 +159,9 @@ namespace IterateDecks {
                     case ALLOW_INVALID_DECKS: {
                             options.allowInvalidDecks = true;
                         } break;
+                    case VERSION: {
+                            options.printVersion = true;
+                        } break;
                     case '?':
                         throw InvalidUserInputError("no such option");
                     case 0: {
