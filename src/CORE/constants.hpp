@@ -74,7 +74,8 @@
                 DMGDEPENDANT_SIPHON,
 
                 SPECIAL_BACKFIRE,  // Destroyed - When this is destroyed, deal damage to own Commander.
-                SPECIAL_BLITZ, // showed up in cards.xml; not implemented
+                SPECIAL_BLITZ,
+                SPECIAL_LEGION,
 
                 // SKILLS THAT ARE NOT DEFINED AND NOT WORKING:
                 SPECIAL_FUSION, // in this sim only works for ACTIVATION skills of STRUCTURES
