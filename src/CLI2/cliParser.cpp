@@ -189,6 +189,7 @@ namespace IterateDecks {
                 // other arguments, we expect exactly two decks
                 options.attackDeck.setHash(argv[optind+0]);
                 options.defenseDeck.setHash(argv[optind+1]);
+            } else if(options.printVersion) { // --version can no op safely
             } else {
                 throw std::invalid_argument("please specify exactly two decks to test");
             }
