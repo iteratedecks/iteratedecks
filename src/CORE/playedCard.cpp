@@ -196,6 +196,14 @@ namespace IterateDecks {
                 bActivated = true;
             return bDoBegin;
         }
+        void PlayedCard::ProcessLegion(int count, BattleGroundEffect QuestEffectId)
+        {
+            if (count > 0 && IsAlive() && (GetAbility(SPECIAL_LEGION))) {
+                int amount = count * GetAbility(SPECIAL_LEGION);
+                this->Rally(amount);
+                this->Heal(amount);
+            }
+        }
         void PlayedCard::ProcessPoison(BattleGroundEffect QuestEffectId)
         {
             if (IsAlive() && (Effects[DMGDEPENDANT_POISON]))

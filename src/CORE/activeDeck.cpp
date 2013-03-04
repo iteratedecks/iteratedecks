@@ -2299,6 +2299,33 @@ namespace IterateDecks {
                 SweepFancyStats(*vi);
             }
             Actions.clear();
+
+            // LEGION; exact order of when this should happen during turn begin is undetermined for now
+            LCARDS::iterator prev = Units.end();
+            LCARDS::iterator target = Units.begin();
+            LCARDS::iterator next = Units.begin();
+            while (next != Units.end()) {
+                next++;
+
+                if(target->GetAbility(SPECIAL_LEGION) > 0) {
+                    UCHAR faction = target->GetFaction();
+                    UCHAR count = 0;
+                    if(prev != Units.end() && prev->GetFaction() == faction) {
+                        count++;
+                    }
+
+                    if(next != Units.end() && next->GetFaction() == faction) {
+                        count++;
+                    }
+                    target->ProcessLegion(count, QuestEffectId);
+                }
+
+                prev = target;
+                target = next;
+            }
+
+
+
             // commander card
             // lets work out Infuse:
             // afaik it changes one random card from either of your or enemy deck into bloodthirsty

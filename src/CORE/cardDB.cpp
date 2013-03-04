@@ -113,7 +113,11 @@ namespace IterateDecks {
                 return TYPE_COMMANDER;
             if (ID < 3000)
                 return TYPE_STRUCTURE;
-            return TYPE_ACTION;
+            if (ID < 4000)
+                return TYPE_ACTION;
+            if (ID < 5000)
+                return TYPE_ASSAULT;
+            return TYPE_ASSAULT;
         }
 
         Faction CardDB::RemapFaction(UCHAR XmlID)
@@ -702,6 +706,7 @@ namespace IterateDecks {
             AddSkill(SPECIAL_MIST,"Mist");
             AddSkill(SPECIAL_BLIZZARD,"Blizzard");
             AddSkill(SPECIAL_BLITZ,"Blitz");
+            AddSkill(SPECIAL_LEGION,"Legion");
 
             AddSkill(SPECIAL_ATTACK,"Attack");
 
