@@ -1091,7 +1091,7 @@ namespace IterateDecks {
                 }
 
                 // Need to check this every time card uses skill because it could be paybacked chaos
-                bool chaos = Src.GetEffect(ACTIVATION_CHAOS) != 0;
+                bool chaos = procCard->GetEffect(ACTIVATION_CHAOS) != 0;
 
                 if(aindex < ac) {
                     aid = Src.GetAbilityInOrder(aindex);
