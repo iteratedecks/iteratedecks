@@ -1573,7 +1573,11 @@ namespace IterateDecks {
                         GetTargets(Units,faction,targets);
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, DMGDEPENDANT_IMMOBILIZE, 0};
-                        FilterTargets(targets,skipEffects,NULL,-1,0,-1,true);
+                        if(EffectType == EVENT_DIED) {
+                            FilterTargets(targets,skipEffects,NULL,-1,1,-1,true);
+                        } else {
+                            FilterTargets(targets,skipEffects,NULL,-1,0,-1,true);
+                        }
 
                         bool bTributable = IsInTargets(procCard,&targets);
 
