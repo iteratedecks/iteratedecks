@@ -64,6 +64,11 @@ namespace IterateDecks {
             char const * const short_options(shortOptions.c_str());
 
             CliOptions options;
+
+            if (argc == 1) {
+                options.printHelpAndExit = true;
+            }
+
             // gnu getopt stuff
             while(true) {
                 int option_index = 0;
@@ -176,6 +181,7 @@ namespace IterateDecks {
                         }
                 }
             }
+
             if (options.printHelpAndExit) {
                 // no more arguments expected
             } else if((options.defenseDeck.getType() == DeckArgument::RAID_ID

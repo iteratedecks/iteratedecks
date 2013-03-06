@@ -7,7 +7,8 @@ namespace IterateDecks {
 
         void printUsage()
         {
-            std::cout << "Usage:" << std::endl;
+            std::cout << "Standard usage: iteratedecks-cli.exe attackhash defensehash" << std::endl;
+            std::cout << "Flags:" << std::endl;
             for(unsigned int i = 0; i < numberOfOptions; i++) {
                 CommentedOption const & commentedOption(options[i]);
                 option const & getOptPart(commentedOption.getOptPart);
