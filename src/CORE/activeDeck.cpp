@@ -5,6 +5,8 @@
 #include "card.hpp"
 #include "assert.hpp"
 #include <cstring>
+#include <sstream>
+#include <iomanip>
 
 // FIXME remove ancient first generation logging code
 #include <cstdio>

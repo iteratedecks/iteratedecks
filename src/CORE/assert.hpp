@@ -7,19 +7,113 @@
      * will still be defined but resolve to an empty expression.)
      */
 
+    #include <string>
+    #include "exceptions.hpp"
+    #include <cmath>
+
+    // This should return the name of the function. Unfortunately
+    // this is compiler dependant.
+    #if defined(__GNUC__)
+        #define FUNCTION_NAME __PRETTY_FUNCTION__
+    #else
+        #define FUNCTION_NAME "<unknown>"
+    #endif
+
+
+    /**
+        * A namespace for the functions so they don't clutter global
+        * namespace.
+        * (macros ignore namespaces, to indicate that they are defined
+        * outside the namespace)
+        */
+    namespace Assert {
+
+        /**
+            * A logic error thrown if an assertion fails.
+            */
+        class AssertionError : public LogicError {
+            public:
+                AssertionError(std::string const & message
+                                ,std::string const & file
+                                ,unsigned int const line
+                                ,std::string const &function
+                                );
+        };
+
+        /**
+            * Assertion helper functions.
+            */
+        template<typename T>
+        AssertionError assertGT_(T const & a
+                                ,T const & b
+                                ,std::string const & sa
+                                ,std::string const & sb
+                                ,std::string const & file
+                                ,unsigned int const line
+                                ,std::string const & function
+                                );
+        template<typename T>
+        AssertionError assertGE_(T const & a
+                                ,T const & b
+                                ,std::string const & sa
+                                ,std::string const & sb
+                                ,std::string const & file
+                                ,unsigned int const line
+                                ,std::string const & function
+                                );
+        template<typename T>
+        AssertionError assertLT_(T const & a
+                                ,T const & b
+                                ,std::string const & sa
+                                ,std::string const & sb
+                                ,std::string const & file
+                                ,unsigned int const line
+                                ,std::string const & function
+                                );
+        template<typename T>
+        AssertionError assertLE_(T const & a
+                                ,T const & b
+                                ,std::string const & sa
+                                ,std::string const & sb
+                                ,std::string const & file
+                                ,unsigned int const line
+                                ,std::string const & function
+                                );
+        template<typename T>
+        AssertionError assertEQ_(T const & a
+                                ,T const & b
+                                ,std::string const & sa
+                                ,std::string const & sb
+                                ,std::string const & file
+                                ,unsigned int const line
+                                ,std::string const & function
+                                );
+        AssertionError assertDEE_(double const a
+                                    ,double const b
+                                    ,double const delta
+                                    ,std::string const & sa
+                                    ,std::string const & sb
+                                    ,std::string const & file
+                                    ,unsigned int const line
+                                    ,std::string const & function
+                                    );
+
+        /**
+            * Conmversion helper functions
+            */
+        template<typename T>
+        std::string xtos(T const & x);
+
+    } // namespace
+
+    // Unfortunetaly template methods need to be in the header :(
+    #include "assert.tpl.hpp"
+    #ifdef INLINE
+        // similar for inline methods
+        #include "assert.inline.hpp"
+    #endif
+
     #ifndef NDEBUG
-        #include "exceptions.hpp"
-        #include <string>
-        #include <cmath>
-
-        // This should return the name of the function. Unfortunately
-        // this is compiler dependant.
-        #if defined(__GNUC__)
-            #define FUNCTION_NAME __PRETTY_FUNCTION__
-        #else
-            #define FUNCTION_NAME "<unknown>"
-        #endif
-
         /**
          * Asserts that a condition is true.
          * @param b the condition
@@ -47,99 +141,6 @@
         #define assertLT(a,b) do { if(!(a< b)) { throw Assert::assertLT_(a,b,#a,#b,__FILE__,__LINE__,FUNCTION_NAME); } } while(false)
         #define assertLE(a,b) do { if(!(a<=b)) { throw Assert::assertLE_(a,b,#a,#b,__FILE__,__LINE__,FUNCTION_NAME); } } while(false)
         #define assertEQ(a,b) do { if(!(a==b)) { throw Assert::assertEQ_(a,b,#a,#b,__FILE__,__LINE__,FUNCTION_NAME); } } while(false)
-
-        /**
-         * A namespace for the functions so they don't clutter global
-         * namespace.
-         * (macros ignore namespaces, to indicate that they are defined
-         * outside the namespace)
-         */
-        namespace Assert {
-
-            /**
-             * A logic error thrown if an assertion fails.
-             */
-            class AssertionError : public LogicError {
-                public:
-                    AssertionError(std::string const & message
-                                  ,std::string const & file
-                                  ,unsigned int const line
-                                  ,std::string const &function
-                                  );
-            };
-
-            /**
-             * Assertion helper functions.
-             */
-            template<typename T>
-            AssertionError assertGT_(T const & a
-                                    ,T const & b
-                                    ,std::string const & sa
-                                    ,std::string const & sb
-                                    ,std::string const & file
-                                    ,unsigned int const line
-                                    ,std::string const & function
-                                    );
-            template<typename T>
-            AssertionError assertGE_(T const & a
-                                    ,T const & b
-                                    ,std::string const & sa
-                                    ,std::string const & sb
-                                    ,std::string const & file
-                                    ,unsigned int const line
-                                    ,std::string const & function
-                                    );
-            template<typename T>
-            AssertionError assertLT_(T const & a
-                                    ,T const & b
-                                    ,std::string const & sa
-                                    ,std::string const & sb
-                                    ,std::string const & file
-                                    ,unsigned int const line
-                                    ,std::string const & function
-                                    );
-            template<typename T>
-            AssertionError assertLE_(T const & a
-                                    ,T const & b
-                                    ,std::string const & sa
-                                    ,std::string const & sb
-                                    ,std::string const & file
-                                    ,unsigned int const line
-                                    ,std::string const & function
-                                    );
-            template<typename T>
-            AssertionError assertEQ_(T const & a
-                                    ,T const & b
-                                    ,std::string const & sa
-                                    ,std::string const & sb
-                                    ,std::string const & file
-                                    ,unsigned int const line
-                                    ,std::string const & function
-                                    );
-            AssertionError assertDEE_(double const a
-                                     ,double const b
-                                     ,double const delta
-                                     ,std::string const & sa
-                                     ,std::string const & sb
-                                     ,std::string const & file
-                                     ,unsigned int const line
-                                     ,std::string const & function
-                                     );
-
-            /**
-             * Conmversion helper functions
-             */
-            template<typename T>
-            std::string xtos(T const & x);
-
-        } // namespace
-
-        // Unfortunetaly template methods need to be in the header :(
-        #include "assert.tpl.hpp"
-        #ifdef INLINE
-            // similar for inline methods
-            #include "assert.inline.hpp"
-        #endif
     #else
         #define assertX
         #define assertDEE
@@ -147,5 +148,6 @@
         #define assertGE
         #define assertLT
         #define assertLE
+        #define assertEQ
     #endif
 #endif
