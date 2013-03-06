@@ -33,7 +33,8 @@ using namespace IterateDecks::Core;
                 VERIFY = 1,
                 SEED,
                 COLOR,
-                ALLOW_INVALID_DECKS
+                ALLOW_INVALID_DECKS,
+                VERSION
             };
 
             /**
@@ -54,6 +55,7 @@ using namespace IterateDecks::Core;
                 , { { "quest-id"             , required_argument, 0, 'Q' }, "quest id" }
                 , { { "mission-id"           , required_argument, 0, 'm' }, "mission id" }
                 , { { "allow-invalid-decks"  , no_argument      , 0, ALLOW_INVALID_DECKS }, "allows decks which are invalid (same unique twice, two legendaries)" }
+                , { { "version"              , no_argument      , 0, VERSION }, "output the version" }
                 };
 
 
@@ -127,6 +129,7 @@ using namespace IterateDecks::Core;
                 unsigned int seed;
                 Logger::ColorMode colorMode;
                 bool printHelpAndExit;
+                bool printVersion;
                 bool surge;
                 bool allowInvalidDecks;
 

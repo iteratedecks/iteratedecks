@@ -1086,12 +1086,12 @@ namespace IterateDecks {
                 {
                     if (Src.GetEffect(ACTIVATION_JAM) > 0)
                         break; // card was jammed by payback (or chaos?)
-                    if (Src.GetEffect(ACTIVATION_FREEZE) > 0)
+                    if (Src.GetEffect(ACTIVATION_FREEZE) > 0 && EffectType != EVENT_DIED)
                         break; // chaos-mimic-freeze makes this possible
                 }
 
                 // Need to check this every time card uses skill because it could be paybacked chaos
-                bool chaos = Src.GetEffect(ACTIVATION_CHAOS) != 0;
+                bool chaos = procCard->GetEffect(ACTIVATION_CHAOS) != 0;
 
                 if(aindex < ac) {
                     aid = Src.GetAbilityInOrder(aindex);
@@ -1573,7 +1573,11 @@ namespace IterateDecks {
                         GetTargets(Units,faction,targets);
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, DMGDEPENDANT_IMMOBILIZE, 0};
-                        FilterTargets(targets,skipEffects,NULL,-1,0,-1,true);
+                        if(EffectType == EVENT_DIED) {
+                            FilterTargets(targets,skipEffects,NULL,-1,1,-1,true);
+                        } else {
+                            FilterTargets(targets,skipEffects,NULL,-1,0,-1,true);
+                        }
 
                         bool bTributable = IsInTargets(procCard,&targets);
 
@@ -1857,7 +1861,7 @@ namespace IterateDecks {
                         }
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, ACTIVATION_CHAOS, 0};
-                        FilterTargets(targets,skipEffects,NULL,-1,1,1,chaos);
+                        FilterTargets(targets,skipEffects,NULL,-1,1,-1,chaos);
                         RandomizeTarget(targets,targetCount,Dest,!chaos);
 
                         if (targets.size() <= 0) {
