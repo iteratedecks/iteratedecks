@@ -65,6 +65,11 @@ int mainWithOptions(CliOptions const & options
                    )
 {
     // only help, then we quit
+    if (options.printVersion) {
+        std::cout << "iteratedecks version 1.0" << std::endl;
+    }
+
+    // only help, then we quit
     if (options.printHelpAndExit) {
         printUsage();
         return 0;
