@@ -1021,6 +1021,9 @@ namespace IterateDecks {
             //if ((!ac) && (QuestEffectId == QEFFECT_TIME_SURGE) && (!IsMimiced) && (EffectType == EVENT_EMPTY))
             //	ac = 1;
 
+            // abilities that target units "active next turn" are smart enough to know that On Death and On Attacked should include Wait 1
+            unsigned int activeNextTurnWait = (EffectType == EVENT_DIED || EffectType == EVENT_ATTACKED) ? 1 : 0;
+
             // TODO probably unnecessary to do all of this quest checking here;
             // should roll it up a level at some point.
             // Also, this could probably be another switch.
@@ -1575,11 +1578,7 @@ namespace IterateDecks {
                         GetTargets(Units,faction,targets);
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, DMGDEPENDANT_IMMOBILIZE, 0};
-                        if(EffectType == EVENT_DIED) {
-                            FilterTargets(targets,skipEffects,NULL,-1,1,-1,true);
-                        } else {
-                            FilterTargets(targets,skipEffects,NULL,-1,0,-1,true);
-                        }
+                        FilterTargets(targets,skipEffects,NULL,-1,activeNextTurnWait,-1,true);
 
                         bool bTributable = IsInTargets(procCard,&targets);
 
@@ -1969,7 +1968,7 @@ namespace IterateDecks {
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, 0};
                         EFFECT_ARGUMENT targetSkills[] = {ACTIVATION_ENFEEBLE, ACTIVATION_HEAL, ACTIVATION_PROTECT, ACTIVATION_RALLY, ACTIVATION_REPAIR, ACTIVATION_SIEGE, ACTIVATION_STRIKE, ACTIVATION_SUPPLY, ACTIVATION_WEAKEN, 0};
-                        FilterTargets(targets,skipEffects,targetSkills,-1,0,-1,true);
+                        FilterTargets(targets,skipEffects,targetSkills,-1,activeNextTurnWait,-1,true);
 
                         bool bTributable = IsInTargets(procCard,&targets);
 
