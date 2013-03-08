@@ -141,6 +141,16 @@ namespace IterateDecks {
                             }
                             options.defenseDeck.setMission(missionId);
                         } break;
+                    case 'b': {
+                            std::stringstream ssBattleGroundEffectId(optarg);
+                            int battleGroundEffectId;
+                            ssBattleGroundEffectId >> battleGroundEffectId;
+                            if(ssBattleGroundEffectId.fail()) {
+                                throw std::invalid_argument ("-b --battleground-id requires an integer argument");
+                            }
+                            BattleGroundEffect battleGroundEffect = static_cast<BattleGroundEffect>(battleGroundEffectId);
+                            options.battleGroundEffect = battleGroundEffect;
+                        } break;
                     case VERIFY: {
                             //std::clog << "verify" << std::endl;
                             options.verifyOptions = VerifyOptions(optarg);
