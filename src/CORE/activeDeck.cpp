@@ -2236,6 +2236,11 @@ namespace IterateDecks {
                     Units.back().SetEffect(DMGDEPENDANT_POISON,1);
                     Units.back().SetEffect(DMGDEPENDANT_DISEASE,ABILITY_ENABLED);
                 }
+
+                if (QuestEffectId == BattleGroundEffect::poisonAll)
+                {
+                    Units.back().SetEffect(DMGDEPENDANT_POISON,1);
+                }
             }
         }
 
