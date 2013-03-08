@@ -2250,8 +2250,10 @@ namespace IterateDecks {
 
         void ActiveDeck::CheckDeathEvents(PlayedCard &src, ActiveDeck &Def)
         {
-            if (src.OnDeathEvent())
+            if (src.OnDeathEvent()) {
                 ApplyEffects(QuestEffectId,EVENT_DIED,src,-1,Def);
+                src.Regenerate(QuestEffectId);
+            }
         }
         
         void ActiveDeck::AttackDeck(ActiveDeck &Def, bool bSkipCardPicks, unsigned int turn)

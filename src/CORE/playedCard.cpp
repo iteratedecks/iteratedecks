@@ -306,6 +306,47 @@ namespace IterateDecks {
 
             return false;
         }
+        bool PlayedCard::Regenerate(BattleGroundEffect QuestEffectId) {
+            // regnerate?
+            if(this->IsDiseased()) return false;
+
+            EFFECT_ARGUMENT const regenerateAmount = this->OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
+            //bool const hasAbilityRegenerate = (regenerateAmount > 0);
+            if ((regenerateAmount > 0) && (PROC50))
+            {
+                // This unit regenerates.
+                this->Health = regenerateAmount;
+                fsHealed += regenerateAmount;
+                if (QuestEffectId == BattleGroundEffect::invigorate) {
+                    this->Attack += regenerateAmount;
+                }
+                CardSkillProc(DEFENSIVE_REGENERATE);
+                //if (lr && log)
+                //    log->push_back(LOG_RECORD(lr->Target,DEFENSIVE_REGENERATE,Health));
+                // TODO Replace by new logging system, but right now PlayedCards do not know the logger
+                if (bConsoleOutput)
+                {
+                    PrintDesc();
+                    printf(" regenerated %d health\n",Health);
+                }
+                return true;
+            } else {
+                // This unit does not regenerate
+                if (IsAlive()) { // shouldn't die twice ;)
+                    fsDeaths++;
+                }
+                this->Health = 0;
+                //if (lr && log)
+                //    log->push_back(LOG_RECORD(lr->Target,0,0)); // death
+                if (bConsoleOutput)
+                {
+                    PrintDesc();
+                    printf(" died!\n");
+                }
+            }
+            return false;
+        }
+
         const UCHAR PlayedCard::GetAbilitiesCount() const { return OriginalCard->GetAbilitiesCount(); }
         const UCHAR PlayedCard::GetAbilityInOrder(const UCHAR order) const { return OriginalCard->GetAbilityInOrder(order); }
         void PlayedCard::Infuse(const UCHAR setfaction)
@@ -356,45 +397,8 @@ namespace IterateDecks {
                 // We deal as much as the unit has
                 UCHAR dealt = Health;
 
-                // regnerate?
-                bool const diseased = this->IsDiseased();
-                EFFECT_ARGUMENT const regenerateAmount = this->OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
-                bool const hasAbilityRegenerate = (regenerateAmount > 0);
-                if (    (!diseased)
-                     && (bCanRegenerate)
-                     && (hasAbilityRegenerate)
-                     && (PROC50)
-                   )
-                {
-                    // This unit regenerates.
-                    this->Health = regenerateAmount;
-                    fsHealed += regenerateAmount;
-                    if (QuestEffectId == BattleGroundEffect::invigorate) {
-                        this->Attack += regenerateAmount;
-                    }
-                    CardSkillProc(DEFENSIVE_REGENERATE);
-                    if (lr && log)
-                        log->push_back(LOG_RECORD(lr->Target,DEFENSIVE_REGENERATE,Health));
-                    // TODO Replace by new logging system, but right now PlayedCards do not know the logger
-                    if (bConsoleOutput)
-                    {
-                        PrintDesc();
-                        printf(" regenerated %d health\n",Health);
-                    }
-                } else {
-                    // This unit does not regenerate
-                    if (IsAlive()) { // shouldn't die twice ;)
-                        fsDeaths++;
-                    }
-                    this->Health = 0;
-                    if (lr && log)
-                        log->push_back(LOG_RECORD(lr->Target,0,0)); // death
-                    if (bConsoleOutput)
-                    {
-                        PrintDesc();
-                        printf(" died!\n");
-                    }
-                }
+                this->Health = 0;
+
                 DeathEvents++;
                 if (actualdamagedealt) // siphon and leech are kinda bugged - overkill damage counts as full attack damage even if card has 1 hp left, therefore this workaround
                 {
