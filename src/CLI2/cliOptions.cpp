@@ -159,6 +159,7 @@ namespace IterateDecks {
         , printHelpAndExit(false)
         , printVersion(false)
         , surge(false)
+        , battleGroundEffect(BattleGroundEffect::normal)
         , allowInvalidDecks(false)
         {
         }

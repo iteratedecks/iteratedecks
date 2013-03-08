@@ -54,6 +54,7 @@ using namespace IterateDecks::Core;
                 , { { "raid-id"              , required_argument, 0, 'r' }, "raid id" }
                 , { { "quest-id"             , required_argument, 0, 'Q' }, "quest id" }
                 , { { "mission-id"           , required_argument, 0, 'm' }, "mission id" }
+                , { { "battleground-id"      , required_argument, 0, 'b' }, "battleground effect. overrides quest effect." }
                 , { { "allow-invalid-decks"  , no_argument      , 0, ALLOW_INVALID_DECKS }, "allows decks which are invalid (same unique twice, two legendaries)" }
                 , { { "version"              , no_argument      , 0, VERSION }, "output the version" }
                 };
@@ -131,6 +132,7 @@ using namespace IterateDecks::Core;
                 bool printHelpAndExit;
                 bool printVersion;
                 bool surge;
+                BattleGroundEffect battleGroundEffect;
                 bool allowInvalidDecks;
 
                 CliOptions();
