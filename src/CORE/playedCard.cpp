@@ -351,6 +351,8 @@ namespace IterateDecks {
         const UCHAR PlayedCard::GetAbilityInOrder(const UCHAR order) const { return OriginalCard->GetAbilityInOrder(order); }
         void PlayedCard::Infuse(const UCHAR setfaction)
         {
+            // this is kind of a kludge...
+            SetEffect(ACTIVATION_INFUSE, FACTION_BLOODTHIRSTY);
             //OriginalCard.Infuse(setfaction);
             Faction = setfaction;
             SkillProcBuffer[ACTIVATION_INFUSE]++;

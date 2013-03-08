@@ -986,7 +986,7 @@ namespace IterateDecks {
 
         void ActiveDeck::ApplyEffects(BattleGroundEffect QuestEffectId,EVENT_CONDITION EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced,bool IsFusioned,PlayedCard *Mimicer,UCHAR StructureIndex, PlayedCard * target)
         {
-            UCHAR aid,faction,targetCount;
+            UCHAR aid,faction,infusedFaction,targetCount;
             PPCIV targets;
             targets.reserve(DEFAULT_DECK_RESERVE_SIZE);
             PPCARDINDEX tmp;
@@ -1135,6 +1135,7 @@ namespace IterateDecks {
 
                     effect = Src.GetAbility(aid); // fusion is applied in the SWTITCH below
                     faction = IsMimiced ? FACTION_NONE : Src.GetTargetFaction(aid);
+                    infusedFaction = Src.GetEffect(ACTIVATION_INFUSE) ? Src.GetEffect(ACTIVATION_INFUSE) : faction;
                     targetCount = Src.GetTargetCount(aid);
                 } else {
                     aid = questAbilityId;
@@ -1152,7 +1153,7 @@ namespace IterateDecks {
 
                         effect *= FusionMultiplier;
                         assertGT(effect,0u);
-                        GetTargets(Units,faction,targets);
+                        GetTargets(Units,infusedFaction,targets);
                         LOG_CARD lc(LogDeckID,TYPE_ASSAULT,100);
 
                         PPCIV::iterator vi = targets.begin();
@@ -1264,7 +1265,7 @@ namespace IterateDecks {
                         effect *= FusionMultiplier;
                         effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                         assertGT(effect,0u);
-                        GetTargets(Units,faction,targets);
+                        GetTargets(Units,infusedFaction,targets);
 
                         PPCIV::iterator vi = targets.begin();
                         while (vi != targets.end())
@@ -1410,7 +1411,7 @@ namespace IterateDecks {
                         effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                         assertGT(effect,0u);
 
-                        GetTargets(Units,faction,targets);
+                        GetTargets(Units,infusedFaction,targets);
 
                         RandomizeTarget(targets,targetCount,Dest,false);
 
@@ -1586,7 +1587,7 @@ namespace IterateDecks {
                         effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                         assertGT(effect,0u);
 
-                        GetTargets(Units,faction,targets);
+                        GetTargets(Units,infusedFaction,targets);
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, DMGDEPENDANT_IMMOBILIZE, 0};
                         FilterTargets(targets,skipEffects,NULL,-1,activeNextTurnWait,-1,true);
@@ -1643,7 +1644,7 @@ namespace IterateDecks {
                         effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                         assertGT(effect,0u);
 
-                        GetTargets(Structures,faction,targets);
+                        GetTargets(Structures,infusedFaction,targets);
 
                         PPCIV::iterator vi = targets.begin();
                         while (vi != targets.end())
@@ -1907,7 +1908,7 @@ namespace IterateDecks {
                 case ACTIVATION_RUSH:
                     {
                         assertGT(effect,0u);
-                        GetTargets(Units,faction,targets);
+                        GetTargets(Units,infusedFaction,targets);
 
                         FilterTargets(targets,NULL,NULL,1,-1,-1,false);
 
@@ -1975,7 +1976,7 @@ namespace IterateDecks {
                         effect *= FusionMultiplier;
                         assertGT(effect,0u);
 
-                        GetTargets(Units,faction,targets);
+                        GetTargets(Units,infusedFaction,targets);
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, 0};
                         EFFECT_ARGUMENT targetSkills[] = {ACTIVATION_ENFEEBLE, ACTIVATION_HEAL, ACTIVATION_PROTECT, ACTIVATION_RALLY, ACTIVATION_REPAIR, ACTIVATION_SIEGE, ACTIVATION_STRIKE, ACTIVATION_SUPPLY, ACTIVATION_WEAKEN, 0};
@@ -2665,17 +2666,17 @@ namespace IterateDecks {
             while (si != ids.end());
             return deckHash;
         }
-        void ActiveDeck::GetTargets(LCARDS &From, UCHAR TargetFaction, PPCIV &GetTo, bool bForInfuse)
+        void ActiveDeck::GetTargets(LCARDS &From, UCHAR TargetFaction, PPCIV &GetTo, bool invertFactionCheck)
         {
-            if (!bForInfuse) {
+            if (!invertFactionCheck) {
                 GetTo.clear();
             }
             UCHAR pos = 0;
             for (LCARDS::iterator vi = From.begin(); vi != From.end(); vi++) {
                 if (    (vi->IsAlive())
-                     && (    ((vi->GetFaction() == TargetFaction) && (!bForInfuse))
+                     && (    ((vi->GetFaction() == TargetFaction) && (!invertFactionCheck))
                           || (TargetFaction == FACTION_NONE)
-                          || ((vi->GetFaction() != TargetFaction) && (bForInfuse))
+                          || ((vi->GetFaction() != TargetFaction) && (invertFactionCheck))
                         )
                    ) {
                     GetTo.push_back(PPCARDINDEX(&(*vi),pos));
