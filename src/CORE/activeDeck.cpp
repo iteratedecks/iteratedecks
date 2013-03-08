@@ -197,7 +197,10 @@ namespace IterateDecks {
             src.fsOverkill += overkill;
             src.fsDmgDealt += cdmg;
             // can go berserk after hitting commander too
-            if ((src.GetAttack()+valor > 0) && src.GetAbility(DMGDEPENDANT_BERSERK))
+            if ((src.GetAttack()+valor > 0)
+                && src.GetAbility(DMGDEPENDANT_BERSERK)
+                && (QuestEffectId != BattleGroundEffect::impenetrable || hitCommander) // berserk does not proc when hitting an impenetrable wall
+                )
             {
                 src.Berserk(src.GetAbility(DMGDEPENDANT_BERSERK));
                 LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_BERSERK,src.GetAbility(DMGDEPENDANT_BERSERK));
