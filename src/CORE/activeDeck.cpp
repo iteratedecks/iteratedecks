@@ -2761,7 +2761,7 @@ namespace IterateDecks {
                                      , PlayedCard &Src
                                      , ActiveDeck & ownDeck
                                      , ActiveDeck & otherDeck
-                                     , bool bCanBeCountered
+                                     , bool isCrushDamage
                                      , UCHAR *overkill
                                      , VLOG *log
                                      , LOG_RECORD *lr
@@ -2779,9 +2779,11 @@ namespace IterateDecks {
             UCHAR index = 0;
             for (LCARDS::iterator vi = Structures.begin();vi!=Structures.end();vi++)
             {
+                // will a wall *block* the damage?
                 if (vi->GetAbility(DEFENSIVE_WALL) && vi->IsAlive())
                 {
-                    if (QuestEffectId != BattleGroundEffect::impenetrable)
+                    // will the wall *take* the damage?
+                    if (QuestEffectId != BattleGroundEffect::impenetrable || !isCrushDamage)
                     {
                         vi->CardSkillProc(DEFENSIVE_WALL);
                         if (lr)
@@ -2789,8 +2791,6 @@ namespace IterateDecks {
                             lr->Target.CardID = index;
                             lr->Target.RowID = TYPE_STRUCTURE;
                         }
-
-
 
                         // walls can counter and regenerate
                         vi->SufferDmg(QuestEffectId,Dmg,0,0,0,overkill);
@@ -2800,7 +2800,7 @@ namespace IterateDecks {
                         assertX(Src.IsDefined());
                         ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*vi,index,otherDeck,false,false,NULL,0,&Src);
 
-                        if (vi->GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // counter, dmg from crush can't be countered
+                        if (vi->GetAbility(DEFENSIVE_COUNTER) && isCrushDamage) // counter, dmg from crush can't be countered
                         {
                             vi->CardSkillProc(DEFENSIVE_COUNTER);
                             EFFECT_ARGUMENT cdmg = vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
@@ -2822,7 +2822,7 @@ namespace IterateDecks {
 
             // no walls found then hit commander
             // ugly - counter procs before commander takes dmg, but whatever
-            if (GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // commander can counter aswell
+            if (GetAbility(DEFENSIVE_COUNTER) && isCrushDamage) // commander can counter aswell
             {
                 CardSkillProc(DEFENSIVE_COUNTER);
                 UCHAR loverkill = 0;
