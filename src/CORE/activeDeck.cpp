@@ -1031,10 +1031,12 @@ namespace IterateDecks {
             if(QuestEffectId == BattleGroundEffect::friendlyFire && EffectType == EVENT_EMPTY) {
                 switch(Src.GetType()) {
                 case TYPE_COMMANDER: {
-                    questAbilityId = ACTIVATION_CHAOS;
-                    questAbilityEffect = 1;
-                    questAbilityTargets = TARGETSCOUNT_ALL;
-                    questAbilityCount++;
+                    if(Src.GetAbility(ACTIVATION_CHAOS) <= 0) {
+                        questAbilityId = ACTIVATION_CHAOS;
+                        questAbilityEffect = 1;
+                        questAbilityTargets = TARGETSCOUNT_ALL;
+                        questAbilityCount++;
+                    }
                                      } break;
                 case TYPE_ASSAULT: {
                     // if the unit already has strike, don't give it to them again
@@ -1555,7 +1557,7 @@ namespace IterateDecks {
                         SkillProcs[aid]++;
 
                         for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-                            if (Evade(vi->first, QuestEffectId, chaos))
+                            if (QuestEffectId != BattleGroundEffect::copyCat && Evade(vi->first, QuestEffectId, chaos))
                             {
                                 LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
                                 Dest.SkillProcs[DEFENSIVE_EVADE]++;
@@ -2039,8 +2041,10 @@ namespace IterateDecks {
             LOG(this->logger,abilityOffensive(EVENT_ATTACKED, src, abilityId, target, effectArgument));
             switch(abilityId) {
                 case DMGDEPENDANT_BERSERK: {
-                        src.Berserk(effectArgument);
-                        SkillProcs[DMGDEPENDANT_BERSERK]++;
+                        if(questEffectId != BattleGroundEffect::impenetrable || target.GetType() != TYPE_STRUCTURE) {
+                            src.Berserk(effectArgument);
+                            SkillProcs[DMGDEPENDANT_BERSERK]++;
+                        }
                     } break;
                 case DMGDEPENDANT_CRUSH:
                     throw std::logic_error("crush on attack ... that was not expected");
@@ -2277,7 +2281,7 @@ namespace IterateDecks {
                 {
                     if ((vi->IsAlive()) &&
                         (vi->GetWait() == 0) &&
-                        (!vi->GetEffect(ACTIVATION_JAM)) && // Jammed
+                        //(!vi->GetEffect(ACTIVATION_JAM)) && // Jammed
                         (!vi->GetEffect(ACTIVATION_FREEZE)) && // Frozen
                         (!vi->GetEffect(DMGDEPENDANT_IMMOBILIZE)))
                         GetTo.push_back(PPCARDINDEX(&(*vi),0));
