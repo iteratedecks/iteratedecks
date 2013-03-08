@@ -1,0 +1,13 @@
+# PROTECT
+
+# protect + on kill
+--verify 1:1 -so PoAJOB PoAB+k
+
+# protect + on kill skills should only happen on kill
+--verify 0:0 PoOB QHff
+
+# protect + on kill versus strike on attacked; UNKNOWN BEHAVIOR
+--verify 0:0,1:1 QVOB P9LV
+
+# protect + on kill versus strike on death; UNKNOWN BEHAVIOR
+--verify 0:0,0:0 -so PoMUvH SVOB

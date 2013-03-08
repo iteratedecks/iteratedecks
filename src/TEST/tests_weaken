@@ -1,0 +1,16 @@
+# WEAKEN
+
+# weaken targets units with delay 1
+--verify 1:1 QVH0 SAAl
+# weaken targets randomly
+--verify .6:.8 -so PoCZCA QHAu
+# weaken ignores 0 attack
+--verify 1:1 QVf2Au PoAdAf
+# weaken ignores negative attack
+--verify 1:1 QHf2Au PoAfAf
+# weaken on attack
+--verify 0:0 PoAB+q PoLN
+# weaken on attack ignores fear
+--verify 1:1 PoCb+q PoLN
+# weaken on attack ignores attacker
+--verify 1:1 QHC4 PoNi

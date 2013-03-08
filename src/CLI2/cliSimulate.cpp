@@ -39,6 +39,8 @@ namespace IterateDecks {
 
         #define assertDE(a,b) assert(a-DBL_EPSILON < b && b < a+DBL_EPSILON)
 
+        #define M_PI 3.14159265358979323846
+
         /**
          * @see http://en.wikipedia.org/wiki/Binomial_coefficient
          */
@@ -324,12 +326,12 @@ namespace IterateDecks {
             assertX(estimator >= 0);
             assertX(summand2 >= 0);
             assertX(!isinf(summand3));
-            assertGE(estimator + summand2, summand3);
+            assertGE(estimator + summand2 + .001, summand3);
             double const factor2l = estimator + summand2 - summand3;
             double const factor2u = estimator + summand2 + summand3;
-            assertX(factor1 >= 0);
-            assertX(factor2l >= 0);
-            assertX(factor2u >= 0);
+            assertX(factor1 + 0.000 >= 0);
+            assertX(factor2l + 0.001 >= 0);
+            assertX(factor2u + 0.001 >= 0);
             lower = factor1 * factor2l;
             upper = factor1 * factor2u;
         }
@@ -358,9 +360,9 @@ namespace IterateDecks {
             } else {
                 wilson(k,n,gamma,true,lower,upper);
             }
-            assertLE(0 -.00001,lower);
-            assertLE(lower -.00001,upper);
-            assertLE(upper -.00001,1.0);
+            assertLE(0 -.001,lower);
+            assertLE(lower -.001,upper);
+            assertLE(upper -.001,1.0);
         }
 
 
@@ -539,17 +541,21 @@ namespace IterateDecks {
             std::cout << "Games lost:  " << std::setw(11) << r.Loss << " /" << std::setw(11) << r.Games << " " << std::endl;
             std::cout << "Games drawn: " << std::setw(11) << r.Games - r.Loss - r.Win << " /" << std::setw(11) << r.Games << " " << std::endl;
 
-            double const winRate = (double)r.Win / (double)r.Games; // estimator
-            std::cout << "estimator=" << std::setiosflags(std::ios::fixed) << std::setprecision(4) << winRate << " ";
-            std::cout.flush();
-            double const gamma(0.90); // confidence level
-            double lBound, uBound;
-            twoSidedBounds(r.Win, r.Games, gamma, lBound, uBound);
-            std::cout << "confidence [" << lBound << ";" << uBound << "]";
-            assertLE(0 -.00001,lBound);
-            assertLE(lBound -.00001,winRate);
-            assertLE(winRate -.00001, uBound);
-            assertLE(uBound -.00001,1.0);
+            if(r.Win > 0 && r.Win < r.Games) {
+                double const winRate = (double)r.Win / (double)r.Games; // estimator
+                std::cout << "estimator=" << std::setiosflags(std::ios::fixed) << std::setprecision(4) << winRate << " ";
+                std::cout.flush();
+                double const gamma(0.90); // confidence level
+                double lBound, uBound;
+                twoSidedBounds(r.Win, r.Games, gamma, lBound, uBound);
+                std::cout << "confidence [" << lBound << ";" << uBound << "]";
+                assertLE(0 -.001,lBound);
+                assertLE(lBound -.001,winRate);
+                assertLE(winRate -.001, uBound);
+                assertLE(uBound -.001,1.0);
+            } else {
+                std::cout << "confidence skipped";
+            }
             std::cout << "; ";
             double const averageNetPoints ((double)r.Points / (double)r.Games);
             std::cout << "ANP=" << averageNetPoints;

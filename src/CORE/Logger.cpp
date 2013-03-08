@@ -54,6 +54,8 @@ std::string eventConditionToString(EVENT_CONDITION const & eventCondition)
         return "On Death ";
     } else if(eventCondition == EVENT_PLAYED) {
         return "On Play ";
+    } else if(eventCondition == EVENT_KILL) {
+        return "On Kill ";
     } else {
         throw std::invalid_argument("Unknown EVENT_CONDITION");
     }

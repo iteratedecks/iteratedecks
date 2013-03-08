@@ -786,7 +786,7 @@ void EvaluateInThreads(DWORD Seed, const ActiveDeck &gAtk, const ActiveDeck &gDe
 		for (DWORD i=0;i<threadscount;i++)
 		{
 #if defined(_WIN32) || defined(_WIN64)
-			cwait(NULL,m_ulThreadHandle[i],NULL); // now wait them all, order doesn't matter since we will have to wait all of them
+			_cwait(NULL,m_ulThreadHandle[i],NULL); // now wait them all, order doesn't matter since we will have to wait all of them
 #else
             pthread_join(m_ulThreadHandle[i],NULL);
 #endif

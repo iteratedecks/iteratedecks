@@ -5,8 +5,8 @@
 
     namespace IterateDecks { namespace Core {
 
-    class LOG_RECORD;
-    class LOG_CARD;
+    struct LOG_RECORD;
+    struct LOG_CARD;
 
     struct REQUIREMENT {
         UCHAR SkillID;

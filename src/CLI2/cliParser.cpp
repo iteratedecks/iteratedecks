@@ -49,7 +49,10 @@ namespace IterateDecks {
             std::string shortOptions;
             for(unsigned int i = 0; i < numberOfOptions; i++) {
                 long_options[i] = options[i].getOptPart;
-                if (long_options[i].flag == NULL && long_options[i].val != 0) {
+                if (    long_options[i].flag == NULL
+                     && long_options[i].val != 0
+                     && long_options[i].val < 256
+                   ){
                     shortOptions += long_options[i].val;
                     if(long_options[i].has_arg == required_argument) {
                         shortOptions += ":";
@@ -71,18 +74,17 @@ namespace IterateDecks {
 
                 switch(c) {
                     case 'n': {
-                        std::stringstream ssNumberOfIterations(optarg);
-                        //std::stringstream ssNumberOfIterations("10");
-                        ssNumberOfIterations >> options.numberOfIterations;
-                        if(ssNumberOfIterations.fail()) {
-                            throw std::invalid_argument("-n --number-of-iterations requires an integer argument");
-                        }
-                            } break;
+                            std::stringstream ssNumberOfIterations(optarg);
+                            ssNumberOfIterations >> options.numberOfIterations;
+                            if(ssNumberOfIterations.fail()) {
+                                throw InvalidUserInputError("-n --number-of-iterations requires an integer argument");
+                            }
+                        } break;
                     case 'o': {
                             if (options.attackDeck.getType() == DeckArgument::HASH) {
                                 options.attackDeck.setOrdered(true);
                             } else {
-                                throw std::invalid_argument("ordered deck only makes sense for hash decks");
+                                throw InvalidUserInputError("ordered deck only makes sense for hash decks");
                             }
                         } break;
                     case 'a': {
@@ -90,7 +92,7 @@ namespace IterateDecks {
                             int achievementIndex;
                             ssAchievementIndex >> achievementIndex;
                             if(ssAchievementIndex.fail()) {
-                                throw std::invalid_argument ("-a --achievement-index requires an integer argument");
+                                throw InvalidUserInputError ("-a --achievement-index requires an integer argument");
                             }
                             if (achievementIndex >= 0) {
                                 options.achievementOptions.enableCheck(achievementIndex);
@@ -112,7 +114,7 @@ namespace IterateDecks {
                             int questId;
                             ssQuestId>> questId;
                             if(ssQuestId.fail()) {
-                                throw std::invalid_argument ("-Q --quest-id requires an integer argument");
+                                throw InvalidUserInputError ("-Q --quest-id requires an integer argument");
                             }
                             options.defenseDeck.setQuest(questId);
                         } break;
@@ -121,7 +123,7 @@ namespace IterateDecks {
                             int raidId;
                             ssRaidId>> raidId;
                             if(ssRaidId.fail()) {
-                                throw std::invalid_argument ("-r --raid-id requires an integer argument");
+                                throw InvalidUserInputError ("-r --raid-id requires an integer argument");
                             }
                             options.defenseDeck.setRaid(raidId);
                         } break;
@@ -130,7 +132,7 @@ namespace IterateDecks {
                             int missionId;
                             ssMissionId>> missionId;
                             if(ssMissionId.fail()) {
-                                throw std::invalid_argument ("-m --mission-id requires an integer argument");
+                                throw InvalidUserInputError ("-m --mission-id requires an integer argument");
                             }
                             options.defenseDeck.setMission(missionId);
                         } break;
@@ -144,39 +146,43 @@ namespace IterateDecks {
                             BattleGroundEffect battleGroundEffect = static_cast<BattleGroundEffect>(battleGroundEffectId);
                             options.battleGroundEffect = battleGroundEffect;
                         } break;
+                    case VERIFY: {
+                            //std::clog << "verify" << std::endl;
+                            options.verifyOptions = VerifyOptions(optarg);
+                        } break;
+                     case SEED: {
+                            if (optarg == NULL) {
+                                // no data, random seed
+                                options.seed = static_cast<unsigned int>(time(NULL));
+                            } else {
+                                std::stringstream ssSeed(optarg);
+                                ssSeed >> options.seed;
+                                if (ssSeed.fail()) {
+                                    throw InvalidUserInputError("--seed requires an positive integer argument");
+                                }
+                            }
+                        } break;
+                    case COLOR: {
+                            // TODO better logic
+                            options.colorMode = Logger::COLOR_ANSI;                            
+                        } break;
+                    case ALLOW_INVALID_DECKS: {
+                            options.allowInvalidDecks = true;
+                        } break;
+                    case VERSION: {
+                            options.printVersion = true;
+                        } break;
                     case '?':
-                        throw std::invalid_argument("no such option");
-                    case 0:
-                        switch(option_index) {
-                            case 3: {
-                                    options.verifyOptions = VerifyOptions(optarg);
-                                } break;
-                            case 5: {
-                                    if (optarg == NULL) {
-                                        // no data, random seed
-                                        options.seed = time(NULL);
-                                    } else {
-                                        std::stringstream ssSeed(optarg);
-                                        ssSeed >> options.seed;
-                                        if (ssSeed.fail()) {
-                                            throw std::invalid_argument("--seed requires an positive integer argument");
-                                        }
-                                    }
-                                } break;
-                            case 6: {
-                                    // TODO better logic
-                                    options.colorMode = Logger::COLOR_ANSI;
-                                } break;
-                            default: {
-                                    std::stringstream message;
-                                    message << "0 default: " << (int)option_index;
-                                    throw std::invalid_argument(message.str());
-                                } break;
+                        throw InvalidUserInputError("no such option");
+                    case 0: {
+                            std::stringstream message;
+                            message << "0 default: " << (int)option_index;
+                            throw InvalidUserInputError(message.str());
                         } break;
                     default: {
                             std::stringstream message;
                             message << "default: " << c;
-                            throw std::invalid_argument(message.str());
+                            throw InvalidUserInputError(message.str());
                         }
                 }
             }
@@ -193,6 +199,7 @@ namespace IterateDecks {
                 // other arguments, we expect exactly two decks
                 options.attackDeck.setHash(argv[optind+0]);
                 options.defenseDeck.setHash(argv[optind+1]);
+            } else if(options.printVersion) { // --version can no op safely
             } else {
                 throw std::invalid_argument("please specify exactly two decks to test");
             }

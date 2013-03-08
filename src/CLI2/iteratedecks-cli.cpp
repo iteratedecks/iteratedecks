@@ -65,6 +65,11 @@ int mainWithOptions(CliOptions const & options
                    )
 {
     // only help, then we quit
+    if (options.printVersion) {
+        std::cout << "iteratedecks version 1.0" << std::endl;
+    }
+
+    // only help, then we quit
     if (options.printHelpAndExit) {
         printUsage();
         return 0;
@@ -108,12 +113,22 @@ int mainWithOptions(CliOptions const & options
     VerifyOptions const & verifyOptions(options.verifyOptions);
     if(verifyOptions.doVerify) {
         double const winRate = (double)r.Win / (double)r.Games;
-        if(verifyOptions.min <= winRate && winRate <= verifyOptions.max) {
-            // pass
-            return 0;
-        } else {
+        if(verifyOptions.winMin > winRate || winRate > verifyOptions.winMax) {
             return 1;
         }
+
+        double const drawRate = ((double)r.Games - (double)r.Loss - (double)r.Win) / (double)r.Games;
+        if(verifyOptions.drawMin > drawRate || drawRate > verifyOptions.drawMax) {
+            return 1;
+        }
+
+        double const lossRate = (double)r.Loss / (double)r.Games;
+        if(verifyOptions.lossMin > lossRate || lossRate > verifyOptions.lossMax) {
+            return 1;
+        }
+
+        // pass
+        return 0;
     } else {
         return 0;
     }

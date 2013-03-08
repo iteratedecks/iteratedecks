@@ -1,5 +1,4 @@
-# run using the following command
-# cat THIS_FILE | ./test.sh
+# EMULATE
 
 # tests verified on version 2.5.8
 
@@ -7,6 +6,8 @@
 # TODO emulate + cleanse
 # emulate + heal
 --verify 1:1 P9NG P7AG
+# emulate does not heal if diseased
+--verify 1:1 -o PoG6f2 P9NG
 # emulate + protect
 --verify 1:1 PoNG SdBn
 # emulate + rally
@@ -14,6 +15,7 @@
 # TODO emulate + rush
 # emulate + supply
 --verify 0:0 -o PoG0u8 P9NG
+# TODO emulate does not supply if diseased
 
 # emulate + on play
 --verify 0:0 -o PoNifTMI QHNG

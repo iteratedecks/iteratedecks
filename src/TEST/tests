@@ -1,23 +1,55 @@
---verify 1:1 PoKKKK PrNr
---verify 1:1 PofW+iNr PrEt
---verify 0:0 PoKK PrNr
---verify 0:0 PofT+iNr RjNx
---verify 0:0 PoNr P8fWKK
---verify 1:1 SvD3 PoHh
---verify 1:1 SvCa P7AF
---verify 1:1 PoCa PoNs
---verify 0.4:0.6 SvAs PoEd
---verify 0.9:1 S0hF PoHN
+# GENERAL TESTS
+
+# simple tripwire
 --verify 1:1 P3AD+q Pr
---verify 1:1 Prvr Pr
+
+# 1 wait showdown (and surge flips win rate)
+--verify 1:1 PoAQ PoAQ
+--verify 0:0 -s PoAQ PoAQ
+
+# 0 wait attacks on its played turn (and surge flips win rate)
+--verify 0:0 PoIa PoIa
+--verify 1:1 -s PoIa PoIa
+
+# strike on attacked
 --verify 0:0 PuBz PuK/
+
+# swipe when the middle unit dies mid-swipe
+--verify .4:.6 -o RhEiLUgt PqCk+j
+
+# swipe + valor checks for each hit
+--verify 1:1 -o PoDVAr PoGh
+
+# swipe + valor will still count regenerated units
+--verify .4:.6 -o PoBkBK QVGh
+
+# disease on attacked
+--verify 0:0 P7Kp RJffg/
+
+# jam does not prevent payback
+--verify .4:.6 SBAl PoNh
+
+# payback cannot be evaded
+--verify .4:.6 ScKM PoOz
+
+# TODO not sure what these are testing...
 --verify 0:0 QVAV+q ShAV+q
 --verify 0:0 QVAV+q SoAV+q
 --verify 0:0 P7DugJ SnLf
---verify 1:1 QVLh QVEi
---verify 0:0 P7Kp RJffg/
 --verify 0:1 -o QVLwgjhG QVKBDh
---verify 0:1 -o P2AVGn QVLKF5
---verify 0:0 Si SiI4
 --verify 0:1 -v QVIWL2 RLIG
 --verify 1:1 PrH0 P8Jy
+
+# jam on death does not assert
+--verify 0:1 -o P2AVGn QVLKF5
+
+# flurry + weaken on attack does not assert
+--verify 0:0 Si SiI4
+
+# cards with odd names
+# Pip, Epic Arbiter
+--verify 1:1 PoNg Po
+# Kogoth, the Consumer
+--verify 1:1 PoJD Po
+# Kapak, the Deceiver
+--verify 1:1 PoIo Po

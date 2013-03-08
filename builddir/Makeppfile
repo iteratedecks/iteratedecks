@@ -7,7 +7,7 @@ ARCHIVE_EXTENSIONS=.tar.gz .zip
 
 $(phony ALL): DIRTY_RELEASES GIT_RELEASES
 
-$(phony UPLOAD): UPLOAD_ALPHA
+#$(phony UPLOAD): UPLOAD_ALPHA
 
 ########################################################################
 ########################################################################
@@ -42,8 +42,6 @@ DIRTY_%.zip: DIRTY_bin_%.zip DIRTY_src.tar.gz
 ########################################################################
 ########################################################################
 
-$(phony SVN_RELEASES): SVN_ALPHA_RELEASES
-
 $(phony IS_CLEAN_HEAD):
     @if [ `git diff HEAD | wc --chars` -gt 0 ]; then \
         echo "dirty head, can't continue" 1>&2; \
@@ -55,30 +53,6 @@ $(phony IS_PUSHED):
         echo "not pushed, can't continue" 1>&2; \
         false; \
     else true; fi
-
-SVN_REVISION;=$(shell git svn info | grep "Revision:" | cut -d " " -f 2)
-
-$(phony CAN_SVN_RELEASE): IS_CLEAN_HEAD IS_PUSHED IS_TESTED
-
-SVN_ALPHA_RELEASES:=$(foreach ext,${ARCHIVE_EXTENSIONS},$(foreach platform,${TARGET_PLATFORMS},${SVN_REVISION}_${platform}${ext}))
-
-$(phony SVN_ALPHA_RELEASES): ${SVN_ALPHA_RELEASES}
-
-${SVN_REVISION}_bin_${foreach}.tar.gz: ${foreach}-on-${OS}/release.tar.gz CAN_SVN_RELEASE : foreach ${TARGET_PLATFORMS}
-    cp -f $(input) $(output)
-
-${SVN_REVISION}_bin_${foreach}.zip: ${foreach}-on-${OS}/release.zip CAN_SVN_RELEASE : foreach ${TARGET_PLATFORMS}
-    cp -f $(input) $(output)
-
-${SVN_REVISION}_src.tar.gz: CAN_SVN_RELEASE
-    cd ..; git archive --format=tar.gz `git rev-parse HEAD` > builddir/$(output)
-
-${SVN_REVISION}_%.tar.gz: ${SVN_REVISION}_bin_%.tar.gz ${SVN_REVISION}_src.tar.gz
-    tar --create --gzip --dereference --file=$(output) $(inputs)
-
-${SVN_REVISION}_%.zip: ${SVN_REVISION}_bin_%.zip ${SVN_REVISION}_src.tar.gz
-    @if [ -e $(output) ]; then echo rm $(output); rm $(output); fi
-    zip -9 $(output) $(inputs)
 
 ########################################################################
 
@@ -113,37 +87,22 @@ ${GIT_HASH}_%.zip: ${GIT_HASH}_bin_%.zip ${GIT_HASH}_src.tar.gz
 ########################################################################
 
 #upload rules
+# deprecated for now
 
-$(phony UPLOAD_ALPHA): UPLOAD_${GIT_ALPHA_RELEASES}
-
-$(phony UPLOAD_${SVN_REVISION}_linux${foreach}): ${SVN_REVISION}_linux${foreach} : foreach ${ARCHIVE_EXTENSIONS}
-    sleep 1s
-    ./googlecode_upload.py \
-    --project=evaluatedecks \
-    --summary="linux alpha ${SVN_REVISION}" \
-    --labels="OpSys-Linux,Type-Package" \
-    $(input)
-
-$(phony UPLOAD_${SVN_REVISION}_mingw32${foreach}): ${SVN_REVISION}_mingw32${foreach} : foreach ${ARCHIVE_EXTENSIONS}
-    sleep 1s
-    ./googlecode_upload.py \
-    --project=evaluatedecks \
-    --summary="windows(mingw32) alpha ${SVN_REVISION}" \
-    --labels="OpSys-Windows,Type-Package" \
-    $(input)
-
-$(phony UPLOAD_${GIT_HASH}_linux${foreach}): ${GIT_HASH}_linux${foreach} : foreach ${ARCHIVE_EXTENSIONS}
-    sleep 1s
-    ./googlecode_upload.py \
-    --project=evaluatedecks \
-    --summary="linux alpha ${GIT_HASH}" \
-    --labels="OpSys-Linux,Type-Package" \
-    $(input)
-
-$(phony UPLOAD_${GIT_HASH}_mingw32${foreach}): ${GIT_HASH}_mingw32${foreach} : foreach ${ARCHIVE_EXTENSIONS}
-    sleep 1s
-    ./googlecode_upload.py \
-    --project=evaluatedecks \
-    --summary="windows(mingw32) alpha ${GIT_HASH}" \
-    --labels="OpSys-Windows,Type-Package" \
-    $(input)
+#$(phony UPLOAD_ALPHA): UPLOAD_${GIT_ALPHA_RELEASES}
+#
+#$(phony UPLOAD_${GIT_HASH}_linux${foreach}): ${GIT_HASH}_linux${foreach} : foreach ${ARCHIVE_EXTENSIONS}
+#    sleep 1s
+#    ./googlecode_upload.py \
+#    --project=evaluatedecks \
+#    --summary="linux alpha ${GIT_HASH}" \
+#    --labels="OpSys-Linux,Type-Package" \
+#    $(input)
+#
+#$(phony UPLOAD_${GIT_HASH}_mingw32${foreach}): ${GIT_HASH}_mingw32${foreach} : foreach ${ARCHIVE_EXTENSIONS}
+#    sleep 1s
+#    ./googlecode_upload.py \
+#    --project=evaluatedecks \
+#    --summary="windows(mingw32) alpha ${GIT_HASH}" \
+#    --labels="OpSys-Windows,Type-Package" \
+#    $(input)

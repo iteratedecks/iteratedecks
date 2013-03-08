@@ -1,0 +1,10 @@
+# CHAOS
+
+# chaos can target something with Wait 1
+--verify 1:1 RiAU PoAe
+
+# chaos respects faction restrictions
+--verify 1:1 PoA8 Ri
+
+# can you evade a chaosed jam?
+--verify .2:.3 -s RiIT PoEF

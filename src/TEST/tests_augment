@@ -1,0 +1,11 @@
+# AUGMENT
+
+# augment + strike
+--verify 1:1 SvD3 PoHh
+--verify 1:1 SvCa P7AF
+--verify 1:1 PoCa PoNs
+
+--verify 0:0,1:1 SvD3 PoIT
+
+# does payback use the augmented value?
+--verify 0.2:0.3,0.2:0.3 SvBS PoLu

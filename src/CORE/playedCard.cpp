@@ -196,6 +196,14 @@ namespace IterateDecks {
                 bActivated = true;
             return bDoBegin;
         }
+        void PlayedCard::ProcessLegion(int count, BattleGroundEffect QuestEffectId)
+        {
+            if (count > 0 && IsAlive() && (GetAbility(SPECIAL_LEGION))) {
+                int amount = count * GetAbility(SPECIAL_LEGION);
+                this->Rally(amount);
+                this->Heal(amount);
+            }
+        }
         void PlayedCard::ProcessPoison(BattleGroundEffect QuestEffectId)
         {
             if (IsAlive() && (Effects[DMGDEPENDANT_POISON]))
@@ -285,23 +293,18 @@ namespace IterateDecks {
         {
             if(!(this->GetAbility(DEFENSIVE_EMULATE))) return false;
 
-            switch(effect) {
-            case ACTIVATION_AUGMENT:
-            case ACTIVATION_CLEANSE:
-            case ACTIVATION_HEAL:
-            case ACTIVATION_PROTECT:
-            case ACTIVATION_RALLY:
-            case ACTIVATION_REPAIR:
-            case ACTIVATION_RUSH:
-            case ACTIVATION_SUPPLY:
-                return true;
+            if(effect == ACTIVATION_AUGMENT
+                || effect == ACTIVATION_CLEANSE
+                || (effect == ACTIVATION_HEAL && !IsDiseased())
+                || effect == ACTIVATION_PROTECT
+                || effect == ACTIVATION_RALLY
+                || effect == ACTIVATION_REPAIR
+                || effect == ACTIVATION_RUSH
+                || (effect == ACTIVATION_SUPPLY && !IsDiseased())) {
+                    return true;
             }
 
             return false;
-        }
-        void PlayedCard::EndTurn()
-        {
-            Played(); // for rally
         }
         const UCHAR PlayedCard::GetAbilitiesCount() const { return OriginalCard->GetAbilitiesCount(); }
         const UCHAR PlayedCard::GetAbilityInOrder(const UCHAR order) const { return OriginalCard->GetAbilityInOrder(order); }

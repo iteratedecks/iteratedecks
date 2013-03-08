@@ -1,9 +1,13 @@
 # Built file for windows releases compiled on linux.
 
 # For cross compilation we need a different toolchain
-TOOLCHAIN_PREFIX:=i686-w64-mingw32-
+TOOLCHAIN_PREFIX:=i686-pc-mingw32-
 CC:=${TOOLCHAIN_PREFIX}gcc
 CXX:=${TOOLCHAIN_PREFIX}g++
+LD:=${TOOLCHAIN_PREFIX}ld
+
+LIBS:=$(subst -lboost_system,-lboost_system-mt,${LIBS})
+LIBS:=$(subst -lboost_filesystem,-lboost_filesystem-mt,${LIBS})
 
 # Make it a static application, don't want to ship libraries to windows.
 COMMON_FLAGS=
