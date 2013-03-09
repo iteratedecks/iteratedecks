@@ -6,12 +6,23 @@
 <h1>iteratedecks</h1>
 <h2>downloads</h2>
 <ul>
-<li><a href="downloads/iteratedecks101.zip">1.0.1 (latest version)</a></li>
+<li><a href="downloads/iteratedecks102.zip">1.0.2 (latest version)</a></li>
+<li><a href="downloads/iteratedecks101.zip">1.0.1</a></li>
 <li><a href="downloads/iteratedecks100.zip">1.0.0</a></li>
 </ul>
 
 <h2>release notes</h2>
 <pre>
+1.0.2
+  * Enabled battleground flag (-b)
+  * Regenerate now happens after On Death abilities
+  * Infuse only changes faction for helpful abilities
+  * Crush damage now ignores Impenetrable battleground effect
+  * Berzerk no longer procs on walls during Impenetrable battleground effect
+  * Added support for Toxic battleground effect (Decay was already supported)
+  * Friendly Fire battleground effect no longer overrides Commander's chaos
+  * Mimic is no longer evadable during Copycat battleground effect
+  * Split now targets Jammed units
 1.0.1
   * Windows XP and Windows 7 support
   * On Death and On Attacked now Rally and Augment Wait 1 units
@@ -19,6 +30,26 @@
   * Initial public release
   * Supports Legion
 </pre>
+
+<h2>faq</h2>
+<h3>How do I run the program?</h3>
+<ol>
+<li>Start a Command Prompt</li>
+<li>Use "cd" to navigate to the iteratedecks directory</li>
+<li>Run "iteratedecks-cli.exe --help" to get started</li>
+</ol>
+
+<h3>Where should I run the program?</h3>
+You can run the program from anywhere but the working directory needs to have the .xml files. This means you will typically run it from the iteratedecks directory.
+
+<h3>What happened to EvaluateDecks?</h3>
+iteratedecks is the successor to EvaluateDecks and was built from the same codebase. The old sim was out of date, the GUI was broken and the Kongregate thread was owned by the old developers.
+
+<h3>Will there be a GUI?</h3>
+No GUI is in the plans but we understand it is highly desired. Once we are happy with the core code base we will probably discuss the creation of a GUI.
+
+<h3>Can iteratedecks submit simulations to the Fansite?</h3>
+Yes! Version 1.0.2 or later fully supports the Fansite submission API. If you are interested, PM me and I will get you a token.
 
 <h2>links</h2>
 <ul>

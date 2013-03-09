@@ -1,4 +1,4 @@
-iteratedecks 1.0.1 has released!
+iteratedecks 1.0.2 has released!
 
 ----
 
@@ -12,6 +12,18 @@ Special thanks to hunterhogan for the hosting.
 
 ----
 <h2>Release Notes</h2>
+<h3>1.0.2</h3>
+
+  * Enabled battleground flag (-b)
+  * Regenerate now happens after On Death abilities
+  * Infuse only changes faction for helpful abilities
+  * Crush damage now ignores Impenetrable battleground effect
+  * Berzerk no longer procs on walls during Impenetrable battleground effect
+  * Added support for Toxic battleground effect (Decay was already supported)
+  * Friendly Fire battleground effect no longer overrides Commander's chaos
+  * Mimic is no longer evadable during Copycat battleground effect
+  * Split now targets Jammed units
+
 <h3>1.0.1</h3>
 
   * Windows XP and Windows 7 support
@@ -39,4 +51,4 @@ iteratedecks is the successor to EvaluateDecks and was built from the same codeb
 No GUI is in the plans but we understand it is highly desired. Once we are happy with the core code base we will probably discuss the creation of a GUI.
 
 <h3>Can iteratedecks submit simulations to the Fansite?</h3>
-Yes! But only in beta. If you are interested in helping us work out the kinks send me a PM and I will get you a token.
+Yes! Version 1.0.2 or later fully supports the Fansite submission API. If you are interested, PM me and I will get you a token.
