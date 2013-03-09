@@ -483,7 +483,7 @@ namespace IterateDecks {
             return true;
         }
     // #############################################################################
-        void ActiveDeck::Attack(UCHAR index, ActiveDeck &Def)
+        void ActiveDeck::Attack(UINT index, ActiveDeck &Def)
         {
             PlayedCard & attacker = this->getUnitAt(index);
 
@@ -2405,7 +2405,7 @@ namespace IterateDecks {
                 iter->Played();
             }}
             // assault cards
-            { UCHAR i = 0;
+            { UINT i = 0;
             for (LCARDS::iterator iter = Units.begin(); iter != Units.end(); iter++,i++) {
                 if (iter->BeginTurn()) {
                     ApplyEffects(QuestEffectId,EVENT_EMPTY,*iter,i,Def);
