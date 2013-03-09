@@ -47,7 +47,7 @@
                             ,SimulationLogger * simulationLogger
                             ,unsigned int const & numberOfIterations
                             ,bool surge
-                            // future: battlefield id
+                            ,BattleGroundEffect battleGroundEffect
                             ,CardDB const & cardDB
                             ,unsigned int seed
                             );

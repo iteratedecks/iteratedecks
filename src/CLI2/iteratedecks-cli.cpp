@@ -66,7 +66,7 @@ int mainWithOptions(CliOptions const & options
 {
     // only help, then we quit
     if (options.printVersion) {
-        std::cout << "iteratedecks version 1.0.1" << std::endl;
+        std::cout << "iteratedecks version 1.0.2" << std::endl;
     }
 
     // only help, then we quit
@@ -104,7 +104,8 @@ int mainWithOptions(CliOptions const & options
     DeckArgument attackDeck = options.attackDeck;
     DeckArgument const & defenseDeck = options.defenseDeck;
 
-    RESULTS r = simulate(attackDeck, defenseDeck, &attackLogger, &defenseLogger, &simulationLogger, options.numberOfIterations, options.surge, DB, options.seed);
+    BattleGroundEffect battleGroundEffect = options.battleGroundEffect;
+    RESULTS r = simulate(attackDeck, defenseDeck, &attackLogger, &defenseLogger, &simulationLogger, options.numberOfIterations, options.surge, battleGroundEffect, DB, options.seed);
 
     printResults(r);
 

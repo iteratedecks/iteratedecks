@@ -118,7 +118,7 @@
                     void SweepFancyStatsRemaining();
                     const Card *PickNextCard(bool bNormalPick = true);
                     void CheckDeathEvents(PlayedCard &src, ActiveDeck &Def);
-                    void AttackDeck(ActiveDeck &Def, bool bSkipCardPicks = false);
+                    void AttackDeck(ActiveDeck &Def, bool bSkipCardPicks, unsigned int turn);
                     void PrintShort();
                     //void appendCard(std::stringstream * os,PlayedCard const & card,unsigned int const w);
                     //void appendCards(std::stringstream * os, LCARDS const & cards, unsigned int const w);

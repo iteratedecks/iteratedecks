@@ -66,6 +66,7 @@
                     void Cleanse();
                     bool IsCleanseTarget();
                     bool CanEmulate(const UCHAR effect);
+                    bool Regenerate(BattleGroundEffect QuestEffectId);
                     const UCHAR GetAbilitiesCount() const;
                     const UCHAR GetAbilityInOrder(const UCHAR order) const;
                     void Infuse(const UCHAR setfaction);

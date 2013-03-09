@@ -12,6 +12,7 @@
 #include <string>
 #include <algorithm>
 #include <cctype>
+#include <iostream>
 #include <sstream>
 
 // TODO should be replaced by a cheaper implementation
@@ -172,6 +173,7 @@ namespace IterateDecks {
             if (returnnewcards)
                 returnnewcards[0] = 0;
             if (!doc.load_file(FileName)) {
+                std::cerr << "Error opening file: " << FileName << std::endl;
                 assertX(false);
                 return false;
             }
@@ -320,6 +322,7 @@ namespace IterateDecks {
         {
             pugi::xml_document doc;
             if (!doc.load_file(FileName)) {
+                std::cerr << "Error opening file: " << FileName << std::endl;
                 assertX(false);
                 return false;
             }
@@ -420,6 +423,7 @@ namespace IterateDecks {
         {
             pugi::xml_document doc;
             if (!doc.load_file(FileName)) {
+                std::cerr << "Error opening file: " << FileName << std::endl;
                 assertX(false);
                 return false;
             }
@@ -457,6 +461,7 @@ namespace IterateDecks {
         {
             pugi::xml_document doc;
             if (!doc.load_file(FileName)) {
+                std::cerr << "Error opening file: " << FileName << std::endl;
                 assertX(false);
                 return false;
             }
@@ -506,6 +511,7 @@ namespace IterateDecks {
         {
             pugi::xml_document doc;
             if (!doc.load_file(FileName)) {
+                std::cerr << "Error opening file: " << FileName << std::endl;
                 throw LogicError("");
             }
 
