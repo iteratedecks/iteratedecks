@@ -12,6 +12,7 @@
 #include <string>
 #include <algorithm>
 #include <cctype>
+#include <iostream>
 #include <sstream>
 
 // TODO should be replaced by a cheaper implementation
