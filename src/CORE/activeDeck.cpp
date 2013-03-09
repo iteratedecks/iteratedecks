@@ -1141,7 +1141,7 @@ namespace IterateDecks {
                     aid = questAbilityId;
                     effect = questAbilityEffect;
                     targetCount = questAbilityTargets;
-                    faction = FACTION_NONE;
+                    infusedFaction = faction = FACTION_NONE;
                 }
 
                 switch(aid) {

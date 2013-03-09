@@ -599,15 +599,7 @@ namespace IterateDecks {
             return this->OriginalCard->GetAbility(id);
         }
         const UCHAR PlayedCard::GetTargetCount(const UCHAR id) const { return OriginalCard->GetTargetCount(id); }
-        const UCHAR PlayedCard::GetTargetFaction(const UCHAR id) const
-        {
-            // this is for infuse
-            // if card was infused, we gotta force target faction it was infused into
-            if ((Faction != OriginalCard->GetFaction()) && (OriginalCard->GetTargetFaction(id) != FACTION_NONE))// check if card was infused and targetfaction is determined
-                return Faction; // force faction it was infused into
-            else
-                return OriginalCard->GetTargetFaction(id);
-        }
+        const UCHAR PlayedCard::GetTargetFaction(const UCHAR id) const { return OriginalCard->GetTargetFaction(id); }
         const UCHAR PlayedCard::GetAbilityEvent(const UCHAR id) const { return OriginalCard->GetAbilityEvent(id); }
         const bool PlayedCard::GetPlayed() const { return bPlayed; }
         void PlayedCard::Played() { bPlayed = true; }
