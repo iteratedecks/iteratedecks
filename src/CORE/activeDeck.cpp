@@ -177,7 +177,7 @@ namespace IterateDecks {
             bool const hitCommander(Def.Commander.HitCommander(QuestEffectId
                                                               ,cdmg
                                                               ,src,Def,*this
-                                                              ,true,&overkill,Log
+                                                              ,false,&overkill,Log
                                                               ,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index)
                                                                      ,LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0)
                                                                      ,0,cdmg)
@@ -368,7 +368,7 @@ namespace IterateDecks {
                 if (SRC.GetAbility(DMGDEPENDANT_CRUSH))
                 {
                     UCHAR overkill = 0;
-                    if (Def.Commander.HitCommander(QuestEffectId,SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def,*this,false,&overkill,
+                    if (Def.Commander.HitCommander(QuestEffectId,SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def,*this,true,&overkill,
                         Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),DMGDEPENDANT_CRUSH,SRC.GetAbility(DMGDEPENDANT_CRUSH))))
                     {
                         DamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
@@ -483,7 +483,7 @@ namespace IterateDecks {
             return true;
         }
     // #############################################################################
-        void ActiveDeck::Attack(UCHAR index, ActiveDeck &Def)
+        void ActiveDeck::Attack(UINT index, ActiveDeck &Def)
         {
             PlayedCard & attacker = this->getUnitAt(index);
 
@@ -2405,7 +2405,7 @@ namespace IterateDecks {
                 iter->Played();
             }}
             // assault cards
-            { UCHAR i = 0;
+            { UINT i = 0;
             for (LCARDS::iterator iter = Units.begin(); iter != Units.end(); iter++,i++) {
                 if (iter->BeginTurn()) {
                     ApplyEffects(QuestEffectId,EVENT_EMPTY,*iter,i,Def);
@@ -2787,7 +2787,7 @@ namespace IterateDecks {
                 if (vi->GetAbility(DEFENSIVE_WALL) && vi->IsAlive())
                 {
                     // will the wall *take* the damage?
-                    if (QuestEffectId != BattleGroundEffect::impenetrable || !isCrushDamage)
+                    if (QuestEffectId != BattleGroundEffect::impenetrable || isCrushDamage)
                     {
                         vi->CardSkillProc(DEFENSIVE_WALL);
                         if (lr)
@@ -2802,18 +2802,22 @@ namespace IterateDecks {
                         // probably here wall's "on attacked" skills
                         assertX(vi->IsDefined());
                         assertX(Src.IsDefined());
-                        ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*vi,index,otherDeck,false,false,NULL,0,&Src);
 
-                        if (vi->GetAbility(DEFENSIVE_COUNTER) && isCrushDamage) // counter, dmg from crush can't be countered
-                        {
-                            vi->CardSkillProc(DEFENSIVE_COUNTER);
-                            EFFECT_ARGUMENT cdmg = vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
-                            vi->fsDmgDealt += cdmg;
-                            UCHAR loverkill = 0;
-                            if (lr && log)
-                                log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
-                            Src.SufferDmg(QuestEffectId,cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
-                            vi->fsOverkill += loverkill;
+                        // dmg from crush can't be countered
+                        if(!isCrushDamage) {
+                            ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*vi,index,otherDeck,false,false,NULL,0,&Src);
+
+                            if (vi->GetAbility(DEFENSIVE_COUNTER)) // counter
+                            {
+                                vi->CardSkillProc(DEFENSIVE_COUNTER);
+                                EFFECT_ARGUMENT cdmg = vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
+                                vi->fsDmgDealt += cdmg;
+                                UCHAR loverkill = 0;
+                                if (lr && log)
+                                    log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
+                                Src.SufferDmg(QuestEffectId,cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
+                                vi->fsOverkill += loverkill;
+                            }
                         }
                     }
                     return false;
@@ -2821,20 +2825,22 @@ namespace IterateDecks {
                 index++;
             }
 
-            // Commander was attacked, trigger event.
-            ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*this,0,otherDeck,false,false,NULL,0,&Src);
+            if(!isCrushDamage) {
+                // Commander was attacked, trigger event.
+                ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*this,0,otherDeck,false,false,NULL,0,&Src);
 
-            // no walls found then hit commander
-            // ugly - counter procs before commander takes dmg, but whatever
-            if (GetAbility(DEFENSIVE_COUNTER) && isCrushDamage) // commander can counter aswell
-            {
-                CardSkillProc(DEFENSIVE_COUNTER);
-                UCHAR loverkill = 0;
-                EFFECT_ARGUMENT cdmg = GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
-                if (lr && log)
-                    log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
-                Src.SufferDmg(QuestEffectId,cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
-                fsOverkill += loverkill;
+                // no walls found then hit commander
+                // ugly - counter procs before commander takes dmg, but whatever
+                if (GetAbility(DEFENSIVE_COUNTER)) // commander can counter aswell
+                {
+                    CardSkillProc(DEFENSIVE_COUNTER);
+                    UCHAR loverkill = 0;
+                    EFFECT_ARGUMENT cdmg = GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
+                    if (lr && log)
+                        log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
+                    Src.SufferDmg(QuestEffectId,cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
+                    fsOverkill += loverkill;
+                }
             }
             return (SufferDmg(QuestEffectId,Dmg,0,0,0,overkill) > 0);
         }

@@ -44,7 +44,7 @@ using namespace IterateDecks::Core;
                 //  { name                   , has_arg        ,flag, val }, comment
                 { { { "number-of-iterations" , required_argument, 0, 'n' }, "sets the number of simulations to do" }
                 , { { "first-deck-is-ordered", no_argument      , 0, 'o' }, "marks the first deck (player deck) as ordered" }
-                , { { "achievement-index"    , required_argument, 0, 'a' }, "index (not id) of achievement. not sure where the difference is" }
+                , { { "achievement-id"       , required_argument, 0, 'a' }, "id of achievement" }
                 , { { "verify"               , required_argument, 0, VERIFY }, "verify a result, provide an accepted range in the form <lower bound>:<upper bound>, like \"--verify 1:1\" if the deck should win all the time" }
                 , { { "verbose"              , no_argument      , 0, 'v' }, "verbose output" }
                 , { { "seed"                 , optional_argument, 0, SEED }, "set the seed, takes an optional argument. if none given use seed based on time." }
@@ -110,11 +110,11 @@ using namespace IterateDecks::Core;
             struct AchievementOptions {
                 private:
                     bool doAchievementCheck;
-                    unsigned int achievementIndex;
+                    unsigned int achievementId;
                 public:
                     AchievementOptions();
 
-                    void enableCheck(unsigned int const & achievementIndex);
+                    void enableCheck(unsigned int const & achievementId);
                     void disableCheck();
                     operator int() const;
             };

@@ -71,7 +71,7 @@
                     const UCHAR GetAbilityInOrder(const UCHAR order) const;
                     void Infuse(const UCHAR setfaction);
                     const UCHAR SufferDmg(BattleGroundEffect QuestEffectId, const UCHAR Dmg, const UCHAR Pierce = 0, UCHAR * const actualdamagedealt = 0, UCHAR *SkillProcBuffer = 0, UCHAR *OverkillDamage = 0, bool bCanRegenerate = true, VLOG *log = 0, LOG_RECORD *lr=0, bool * const damageWasDeadly = NULL);
-                    bool HitCommander(BattleGroundEffect QuestEffectId,const UCHAR Dmg,PlayedCard &Src,ActiveDeck & ownDeck, ActiveDeck & otherDeck, bool bCanBeCountered = true,UCHAR *overkill = NULL,VLOG *log = NULL,LOG_RECORD *lr = NULL);
+                    bool HitCommander(BattleGroundEffect QuestEffectId,const UCHAR Dmg,PlayedCard &Src,ActiveDeck & ownDeck, ActiveDeck & otherDeck, bool isCrushDamage = false,UCHAR *overkill = NULL,VLOG *log = NULL,LOG_RECORD *lr = NULL);
                     UCHAR StrikeDmg(BattleGroundEffect const QuestEffectId, const UCHAR Dmg, UCHAR *overkill = 0); // returns dealt dmg
                     const bool IsAlive() const;
                     const bool IsDefined() const;

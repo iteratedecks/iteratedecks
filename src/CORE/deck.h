@@ -24,5 +24,5 @@ using namespace std;
 
 namespace IterateDecks { namespace Core {
 bool bConsoleOutput = false; // this is global just for convinience, should be DEFINE instead, to cleanup the code
-int AchievementIndex = -1; // index, not id
+int AchievementId = -1;
 }}

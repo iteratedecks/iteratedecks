@@ -84,7 +84,7 @@
                                                    ,UCHAR & iSwiped
                                                    ,ActiveDeck & Def
                                                    );
-                    void Attack(UCHAR index, ActiveDeck &Def);
+                    void Attack(UINT index, ActiveDeck &Def);
                 public:
                     ActiveDeck();
                     ~ActiveDeck();
