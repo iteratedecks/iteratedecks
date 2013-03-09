@@ -87,7 +87,7 @@ int mainWithOptions(CliOptions const & options
     srand(options.seed);
 
     // TODO need to discover what this does
-    AchievementIndex = (int)(options.achievementOptions); // index, not id
+    AchievementId = (int)(options.achievementOptions);
 
     // TODO will replace console output by better logging system sometime
     bConsoleOutput = (options.verbosity > 0);
