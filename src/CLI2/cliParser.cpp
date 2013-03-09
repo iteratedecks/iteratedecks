@@ -93,14 +93,14 @@ namespace IterateDecks {
                             }
                         } break;
                     case 'a': {
-                            std::stringstream ssAchievementIndex(optarg);
-                            int achievementIndex;
-                            ssAchievementIndex >> achievementIndex;
-                            if(ssAchievementIndex.fail()) {
-                                throw InvalidUserInputError ("-a --achievement-index requires an integer argument");
+                            std::stringstream ssAchievementId(optarg);
+                            int achievementId;
+                            ssAchievementId >> achievementId;
+                            if(ssAchievementId.fail()) {
+                                throw InvalidUserInputError ("-a --achievement-id requires an integer argument");
                             }
-                            if (achievementIndex >= 0) {
-                                options.achievementOptions.enableCheck(achievementIndex);
+                            if (achievementId >= 0) {
+                                options.achievementOptions.enableCheck(achievementId);
                             } else {
                                 options.achievementOptions.disableCheck();
                             }
