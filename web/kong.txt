@@ -12,6 +12,12 @@ Special thanks to hunterhogan for the hosting.
 
 ----
 <h2>Release Notes</h2>
+<h3>1.0.3</h3>
+
+  * Crush damage no longer triggers On Attack abilities
+  * <pre>-a</pre> now uses achievement id instead of achievement index
+  * Now supports more than 256 units at a time
+
 <h3>1.0.2</h3>
 
   * Enabled battleground flag (-b)
