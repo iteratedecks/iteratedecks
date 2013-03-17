@@ -1463,7 +1463,7 @@ namespace IterateDecks {
                             GetTargets(Dest.Units,faction,targets);
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, 0};
-                        FilterTargets(targets,skipEffects,NULL,-1,1,-1,false);
+                        FilterTargets(targets,skipEffects,NULL,-1,1,-1,!chaos);
                         RandomizeTarget(targets,targetCount,Dest,!chaos);
 
                         if (targets.size() <= 0) {
