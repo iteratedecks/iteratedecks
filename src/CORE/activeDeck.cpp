@@ -944,12 +944,12 @@ namespace IterateDecks {
         }
 
         // Will target unit use Payback?
-        bool ActiveDeck::Payback(PlayedCard *defender, PlayedCard &Src, ActiveDeck &Dest, EVENT_CONDITION EffectType, AbilityId effectId, EFFECT_ARGUMENT effect, bool chaos) {
+        bool ActiveDeck::Payback(PlayedCard *defender, PlayedCard &Src, EVENT_CONDITION EffectType, AbilityId effectId, EFFECT_ARGUMENT effect, bool chaos) {
             if (Src.IsAlive()
                 && EffectType != EVENT_DIED
                 && defender->GetAbility(DEFENSIVE_PAYBACK)
                 && (Src.GetType() == TYPE_ASSAULT)
-                && (Src.GetAttack() > 0)
+                //&& (Src.GetAttack() > 0)
                 && (!chaos)
                 && PROC50)
             {
@@ -1251,11 +1251,11 @@ namespace IterateDecks {
                                 procCard->fsSpecial += effect;
                                 LogAdd(LOG_CARD(procDeck->LogDeckID,procCard->GetType(),SrcPos),lc,aid,effect);
 
-                                if (Payback(vi->first, Src, Dest, EffectType, ACTIVATION_ENFEEBLE, effect, chaos))  // payback
+                                if (Payback(vi->first, *procCard, EffectType, ACTIVATION_ENFEEBLE, effect, chaos))  // payback
                                 {
-                                    Src.SetEffect(aid,Src.GetEffect(aid) + effect);
+                                    procCard->SetEffect(aid,procCard->GetEffect(aid) + effect);
                                     vi->first->fsSpecial += effect;
-                                    Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+                                    procDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
                                 }
                             }
                     } break;
@@ -1490,11 +1490,11 @@ namespace IterateDecks {
 
                                     procDeck->SkillProcs[aid]++;
 
-                                    if (Payback(vi->first, Src, Dest, EffectType, ACTIVATION_JAM, effect, chaos))  // payback is it 1/2 or 1/4 chance to return jam with payback????
+                                    if (Payback(vi->first, *procCard, EffectType, ACTIVATION_JAM, effect, chaos))  // payback is it 1/2 or 1/4 chance to return jam with payback????
                                     {
-                                        Src.SetEffect(aid,effect);
+                                        procCard->SetEffect(aid,effect);
                                         vi->first->fsSpecial += effect;
-                                        Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+                                        procDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
                                     }
                                 }
                             }
@@ -1534,11 +1534,11 @@ namespace IterateDecks {
                                 procCard->fsSpecial += effect;
                                 //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
 
-                                if (Payback(vi->first, Src, Dest, EffectType, ACTIVATION_FREEZE, effect, chaos))
+                                if (Payback(vi->first, *procCard, EffectType, ACTIVATION_FREEZE, effect, chaos))
                                 {
-                                    Src.SetEffect(aid,effect);
+                                    procCard->SetEffect(aid,effect);
                                     vi->first->fsSpecial += effect;
-                                    Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+                                    procDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
                                 }
                             }
                     } break;
@@ -1778,11 +1778,11 @@ namespace IterateDecks {
                                 procCard->fsOverkill += overkill;
                                 //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
 
-                                if (Payback(vi->first, Src, Dest, EffectType, ACTIVATION_STRIKE, effect, chaos))  // payback
+                                if (Payback(vi->first, *procCard, EffectType, ACTIVATION_STRIKE, effect, chaos))  // payback
                                 {
                                     UCHAR overkill = 0;
-                                    vi->first->fsDmgDealt += Src.StrikeDmg(QuestEffectId,effect,&overkill);
-                                    CheckDeathEvents(Src,Dest);
+                                    vi->first->fsDmgDealt += procCard->StrikeDmg(QuestEffectId,effect,&overkill);
+                                    CheckDeathEvents(*procCard,*procDeck);
                                     vi->first->fsOverkill += overkill;
                                     Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
                                 }
@@ -1856,10 +1856,10 @@ namespace IterateDecks {
                                 procCard->fsSpecial += we;
                                 //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
 
-                                if(Payback(vi->first, Src, Dest, EffectType, ACTIVATION_WEAKEN, effect, chaos))
+                                if(Payback(vi->first, *procCard, EffectType, ACTIVATION_WEAKEN, effect, chaos))
                                 {
-                                    vi->first->fsSpecial += Src.Weaken(effect);
-                                    Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+                                    vi->first->fsSpecial += procCard->Weaken(effect);
+                                    procDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
                                 }
                             }
                     } break;
@@ -1897,11 +1897,11 @@ namespace IterateDecks {
                                 procCard->fsSpecial += effect;
                                 //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
 
-                                if(Payback(vi->first, Src, Dest, EffectType, ACTIVATION_CHAOS, effect, chaos))
+                                if(Payback(vi->first, *procCard, EffectType, ACTIVATION_CHAOS, effect, chaos))
                                 {
-                                    Src.SetEffect(ACTIVATION_CHAOS, effect);
+                                    procCard->SetEffect(ACTIVATION_CHAOS, effect);
                                     vi->first->fsSpecial += effect;
-                                    Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+                                    procDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
                                 }
                             }
                     } break;
