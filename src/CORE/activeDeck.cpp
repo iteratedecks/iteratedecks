@@ -2701,10 +2701,13 @@ namespace IterateDecks {
             bool erase;
             while (vi != targets.end())
             {
+                UCHAR wait = vi->first->GetWait();
+                if(vi->first->GetEffect(SPECIAL_BLITZ) > 0) wait = 0;
+
                 erase = false;
-                if(waitMax >= 0 && vi->first->GetWait() > waitMax) {
+                if(waitMax >= 0 && wait > waitMax) {
                     erase = true;
-                } else if(waitMin > 0 && vi->first->GetWait() < waitMin) {
+                } else if(waitMin > 0 && wait < waitMin) {
                     // we can ignore a waitMin of 0 since that is the minimum anyway
                     erase = true;
                 } else if(attackLimit >= 0 && vi->first->GetAttack() < attackLimit) {
