@@ -7,7 +7,8 @@ namespace IterateDecks {
 
         void printUsage()
         {
-            std::cout << "Usage:" << std::endl;
+            std::cout << "Standard usage: iteratedecks-cli.exe attackhash defensehash" << std::endl;
+            std::cout << "Flags:" << std::endl;
             for(unsigned int i = 0; i < numberOfOptions; i++) {
                 CommentedOption const & commentedOption(options[i]);
                 option const & getOptPart(commentedOption.getOptPart);
@@ -125,26 +126,26 @@ namespace IterateDecks {
 
         AchievementOptions::AchievementOptions()
         : doAchievementCheck(false)
-        , achievementIndex(0)
+        , achievementId(0)
         {
         }
 
-        void AchievementOptions::enableCheck(unsigned int const & achievementIndex)
+        void AchievementOptions::enableCheck(unsigned int const & achievementId)
         {
             this->doAchievementCheck = true;
-            this->achievementIndex = achievementIndex;
+            this->achievementId = achievementId;
         }
 
         void AchievementOptions::disableCheck()
         {
             this->doAchievementCheck = false;
-            this->achievementIndex = 0;
+            this->achievementId = 0;
         }
 
         AchievementOptions::operator int() const
         {
             if(this->doAchievementCheck) {
-                return this->achievementIndex;
+                return this->achievementId;
             } else {
                 return -1;
             }

@@ -5,6 +5,8 @@
 #include "card.hpp"
 #include "assert.hpp"
 #include <cstring>
+#include <sstream>
+#include <iomanip>
 
 // FIXME remove ancient first generation logging code
 #include <cstdio>
@@ -175,7 +177,7 @@ namespace IterateDecks {
             bool const hitCommander(Def.Commander.HitCommander(QuestEffectId
                                                               ,cdmg
                                                               ,src,Def,*this
-                                                              ,true,&overkill,Log
+                                                              ,false,&overkill,Log
                                                               ,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index)
                                                                      ,LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0)
                                                                      ,0,cdmg)
@@ -366,7 +368,7 @@ namespace IterateDecks {
                 if (SRC.GetAbility(DMGDEPENDANT_CRUSH))
                 {
                     UCHAR overkill = 0;
-                    if (Def.Commander.HitCommander(QuestEffectId,SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def,*this,false,&overkill,
+                    if (Def.Commander.HitCommander(QuestEffectId,SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def,*this,true,&overkill,
                         Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),DMGDEPENDANT_CRUSH,SRC.GetAbility(DMGDEPENDANT_CRUSH))))
                     {
                         DamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
@@ -481,7 +483,7 @@ namespace IterateDecks {
             return true;
         }
     // #############################################################################
-        void ActiveDeck::Attack(UCHAR index, ActiveDeck &Def)
+        void ActiveDeck::Attack(UINT index, ActiveDeck &Def)
         {
             PlayedCard & attacker = this->getUnitAt(index);
 
@@ -984,7 +986,7 @@ namespace IterateDecks {
 
         void ActiveDeck::ApplyEffects(BattleGroundEffect QuestEffectId,EVENT_CONDITION EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced,bool IsFusioned,PlayedCard *Mimicer,UCHAR StructureIndex, PlayedCard * target)
         {
-            UCHAR aid,faction,targetCount;
+            UCHAR aid,faction,infusedFaction,targetCount;
             PPCIV targets;
             targets.reserve(DEFAULT_DECK_RESERVE_SIZE);
             PPCARDINDEX tmp;
@@ -1021,6 +1023,9 @@ namespace IterateDecks {
             UCHAR ac = Src.GetAbilitiesCount();
             //if ((!ac) && (QuestEffectId == QEFFECT_TIME_SURGE) && (!IsMimiced) && (EffectType == EVENT_EMPTY))
             //	ac = 1;
+
+            // abilities that target units "active next turn" are smart enough to know that On Death and On Attacked should include Wait 1
+            unsigned int activeNextTurnWait = (EffectType == EVENT_DIED || EffectType == EVENT_ATTACKED) ? 1 : 0;
 
             // TODO probably unnecessary to do all of this quest checking here;
             // should roll it up a level at some point.
@@ -1130,12 +1135,13 @@ namespace IterateDecks {
 
                     effect = Src.GetAbility(aid); // fusion is applied in the SWTITCH below
                     faction = IsMimiced ? FACTION_NONE : Src.GetTargetFaction(aid);
+                    infusedFaction = Src.GetEffect(ACTIVATION_INFUSE) ? Src.GetEffect(ACTIVATION_INFUSE) : faction;
                     targetCount = Src.GetTargetCount(aid);
                 } else {
                     aid = questAbilityId;
                     effect = questAbilityEffect;
                     targetCount = questAbilityTargets;
-                    faction = FACTION_NONE;
+                    infusedFaction = faction = FACTION_NONE;
                 }
 
                 switch(aid) {
@@ -1147,7 +1153,7 @@ namespace IterateDecks {
 
                         effect *= FusionMultiplier;
                         assertGT(effect,0u);
-                        GetTargets(Units,faction,targets);
+                        GetTargets(Units,infusedFaction,targets);
                         LOG_CARD lc(LogDeckID,TYPE_ASSAULT,100);
 
                         PPCIV::iterator vi = targets.begin();
@@ -1259,7 +1265,7 @@ namespace IterateDecks {
                         effect *= FusionMultiplier;
                         effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                         assertGT(effect,0u);
-                        GetTargets(Units,faction,targets);
+                        GetTargets(Units,infusedFaction,targets);
 
                         PPCIV::iterator vi = targets.begin();
                         while (vi != targets.end())
@@ -1405,7 +1411,7 @@ namespace IterateDecks {
                         effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                         assertGT(effect,0u);
 
-                        GetTargets(Units,faction,targets);
+                        GetTargets(Units,infusedFaction,targets);
 
                         RandomizeTarget(targets,targetCount,Dest,false);
 
@@ -1581,14 +1587,10 @@ namespace IterateDecks {
                         effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                         assertGT(effect,0u);
 
-                        GetTargets(Units,faction,targets);
+                        GetTargets(Units,infusedFaction,targets);
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, DMGDEPENDANT_IMMOBILIZE, 0};
-                        if(EffectType == EVENT_DIED) {
-                            FilterTargets(targets,skipEffects,NULL,-1,1,-1,true);
-                        } else {
-                            FilterTargets(targets,skipEffects,NULL,-1,0,-1,true);
-                        }
+                        FilterTargets(targets,skipEffects,NULL,-1,activeNextTurnWait,-1,true);
 
                         bool bTributable = IsInTargets(procCard,&targets);
 
@@ -1642,7 +1644,7 @@ namespace IterateDecks {
                         effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                         assertGT(effect,0u);
 
-                        GetTargets(Structures,faction,targets);
+                        GetTargets(Structures,infusedFaction,targets);
 
                         PPCIV::iterator vi = targets.begin();
                         while (vi != targets.end())
@@ -1906,7 +1908,7 @@ namespace IterateDecks {
                 case ACTIVATION_RUSH:
                     {
                         assertGT(effect,0u);
-                        GetTargets(Units,faction,targets);
+                        GetTargets(Units,infusedFaction,targets);
 
                         FilterTargets(targets,NULL,NULL,1,-1,-1,false);
 
@@ -1974,11 +1976,11 @@ namespace IterateDecks {
                         effect *= FusionMultiplier;
                         assertGT(effect,0u);
 
-                        GetTargets(Units,faction,targets);
+                        GetTargets(Units,infusedFaction,targets);
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, 0};
                         EFFECT_ARGUMENT targetSkills[] = {ACTIVATION_ENFEEBLE, ACTIVATION_HEAL, ACTIVATION_PROTECT, ACTIVATION_RALLY, ACTIVATION_REPAIR, ACTIVATION_SIEGE, ACTIVATION_STRIKE, ACTIVATION_SUPPLY, ACTIVATION_WEAKEN, 0};
-                        FilterTargets(targets,skipEffects,targetSkills,-1,0,-1,true);
+                        FilterTargets(targets,skipEffects,targetSkills,-1,activeNextTurnWait,-1,true);
 
                         bool bTributable = IsInTargets(procCard,&targets);
 
@@ -2249,8 +2251,10 @@ namespace IterateDecks {
 
         void ActiveDeck::CheckDeathEvents(PlayedCard &src, ActiveDeck &Def)
         {
-            if (src.OnDeathEvent())
+            if (src.OnDeathEvent()) {
                 ApplyEffects(QuestEffectId,EVENT_DIED,src,-1,Def);
+                src.Regenerate(QuestEffectId);
+            }
         }
         
         void ActiveDeck::AttackDeck(ActiveDeck &Def, bool bSkipCardPicks, unsigned int turn)
@@ -2401,7 +2405,7 @@ namespace IterateDecks {
                 iter->Played();
             }}
             // assault cards
-            { UCHAR i = 0;
+            { UINT i = 0;
             for (LCARDS::iterator iter = Units.begin(); iter != Units.end(); iter++,i++) {
                 if (iter->BeginTurn()) {
                     ApplyEffects(QuestEffectId,EVENT_EMPTY,*iter,i,Def);
@@ -2662,17 +2666,17 @@ namespace IterateDecks {
             while (si != ids.end());
             return deckHash;
         }
-        void ActiveDeck::GetTargets(LCARDS &From, UCHAR TargetFaction, PPCIV &GetTo, bool bForInfuse)
+        void ActiveDeck::GetTargets(LCARDS &From, UCHAR TargetFaction, PPCIV &GetTo, bool invertFactionCheck)
         {
-            if (!bForInfuse) {
+            if (!invertFactionCheck) {
                 GetTo.clear();
             }
             UCHAR pos = 0;
             for (LCARDS::iterator vi = From.begin(); vi != From.end(); vi++) {
                 if (    (vi->IsAlive())
-                     && (    ((vi->GetFaction() == TargetFaction) && (!bForInfuse))
+                     && (    ((vi->GetFaction() == TargetFaction) && (!invertFactionCheck))
                           || (TargetFaction == FACTION_NONE)
-                          || ((vi->GetFaction() != TargetFaction) && (bForInfuse))
+                          || ((vi->GetFaction() != TargetFaction) && (invertFactionCheck))
                         )
                    ) {
                     GetTo.push_back(PPCARDINDEX(&(*vi),pos));
@@ -2783,7 +2787,7 @@ namespace IterateDecks {
                 if (vi->GetAbility(DEFENSIVE_WALL) && vi->IsAlive())
                 {
                     // will the wall *take* the damage?
-                    if (QuestEffectId != BattleGroundEffect::impenetrable || !isCrushDamage)
+                    if (QuestEffectId != BattleGroundEffect::impenetrable || isCrushDamage)
                     {
                         vi->CardSkillProc(DEFENSIVE_WALL);
                         if (lr)
@@ -2798,18 +2802,22 @@ namespace IterateDecks {
                         // probably here wall's "on attacked" skills
                         assertX(vi->IsDefined());
                         assertX(Src.IsDefined());
-                        ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*vi,index,otherDeck,false,false,NULL,0,&Src);
 
-                        if (vi->GetAbility(DEFENSIVE_COUNTER) && isCrushDamage) // counter, dmg from crush can't be countered
-                        {
-                            vi->CardSkillProc(DEFENSIVE_COUNTER);
-                            EFFECT_ARGUMENT cdmg = vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
-                            vi->fsDmgDealt += cdmg;
-                            UCHAR loverkill = 0;
-                            if (lr && log)
-                                log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
-                            Src.SufferDmg(QuestEffectId,cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
-                            vi->fsOverkill += loverkill;
+                        // dmg from crush can't be countered
+                        if(!isCrushDamage) {
+                            ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*vi,index,otherDeck,false,false,NULL,0,&Src);
+
+                            if (vi->GetAbility(DEFENSIVE_COUNTER)) // counter
+                            {
+                                vi->CardSkillProc(DEFENSIVE_COUNTER);
+                                EFFECT_ARGUMENT cdmg = vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
+                                vi->fsDmgDealt += cdmg;
+                                UCHAR loverkill = 0;
+                                if (lr && log)
+                                    log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
+                                Src.SufferDmg(QuestEffectId,cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
+                                vi->fsOverkill += loverkill;
+                            }
                         }
                     }
                     return false;
@@ -2817,20 +2825,22 @@ namespace IterateDecks {
                 index++;
             }
 
-            // Commander was attacked, trigger event.
-            ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*this,0,otherDeck,false,false,NULL,0,&Src);
+            if(!isCrushDamage) {
+                // Commander was attacked, trigger event.
+                ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*this,0,otherDeck,false,false,NULL,0,&Src);
 
-            // no walls found then hit commander
-            // ugly - counter procs before commander takes dmg, but whatever
-            if (GetAbility(DEFENSIVE_COUNTER) && isCrushDamage) // commander can counter aswell
-            {
-                CardSkillProc(DEFENSIVE_COUNTER);
-                UCHAR loverkill = 0;
-                EFFECT_ARGUMENT cdmg = GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
-                if (lr && log)
-                    log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
-                Src.SufferDmg(QuestEffectId,cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
-                fsOverkill += loverkill;
+                // no walls found then hit commander
+                // ugly - counter procs before commander takes dmg, but whatever
+                if (GetAbility(DEFENSIVE_COUNTER)) // commander can counter aswell
+                {
+                    CardSkillProc(DEFENSIVE_COUNTER);
+                    UCHAR loverkill = 0;
+                    EFFECT_ARGUMENT cdmg = GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
+                    if (lr && log)
+                        log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
+                    Src.SufferDmg(QuestEffectId,cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
+                    fsOverkill += loverkill;
+                }
             }
             return (SufferDmg(QuestEffectId,Dmg,0,0,0,overkill) > 0);
         }
