@@ -112,6 +112,7 @@
                     bool Payback(PlayedCard *defender, PlayedCard &Src, ActiveDeck &dest, EVENT_CONDITION EffectType, UCHAR effectId, EFFECT_ARGUMENT effect, bool chaos);
                     bool Tribute(PlayedCard *tributeCard, PlayedCard *targetCard, ActiveDeck *procDeck, EVENT_CONDITION EffectType, AbilityId effectId, EFFECT_ARGUMENT effect);
                     void PlayCard(const Card *c, ActiveDeck &Def);
+                    void ApplyDefensiveEffects(BattleGroundEffect QuestEffectId,PlayedCard &defender,PlayedCard &attacker,ActiveDeck &attackDeck, UCHAR dmg);
                     void ApplyEffects(BattleGroundEffect QuestEffectId,EVENT_CONDITION EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false,PlayedCard *Mimicer=0,UCHAR StructureIndex = 0, PlayedCard * target=NULL);
                     void applyDamageDependentEffectOnAttack(BattleGroundEffect questEffectId, PlayedCard & src, AbilityId const & abilityId, EFFECT_ARGUMENT const & effectArgument, ActiveDeck & otherDeck, PlayedCard & target);
                     void SweepFancyStats(PlayedCard &pc);
