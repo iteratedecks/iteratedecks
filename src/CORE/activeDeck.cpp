@@ -197,7 +197,10 @@ namespace IterateDecks {
             src.fsOverkill += overkill;
             src.fsDmgDealt += cdmg;
             // can go berserk after hitting commander too
-            if ((src.GetAttack()+valor > 0) && src.GetAbility(DMGDEPENDANT_BERSERK))
+            if ((src.GetAttack()+valor > 0)
+                && src.GetAbility(DMGDEPENDANT_BERSERK)
+                && (QuestEffectId != BattleGroundEffect::impenetrable || hitCommander) // berserk does not proc when hitting an impenetrable wall
+                )
             {
                 src.Berserk(src.GetAbility(DMGDEPENDANT_BERSERK));
                 LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_BERSERK,src.GetAbility(DMGDEPENDANT_BERSERK));
@@ -1031,10 +1034,12 @@ namespace IterateDecks {
             if(QuestEffectId == BattleGroundEffect::friendlyFire && EffectType == EVENT_EMPTY) {
                 switch(Src.GetType()) {
                 case TYPE_COMMANDER: {
-                    questAbilityId = ACTIVATION_CHAOS;
-                    questAbilityEffect = 1;
-                    questAbilityTargets = TARGETSCOUNT_ALL;
-                    questAbilityCount++;
+                    if(Src.GetAbility(ACTIVATION_CHAOS) <= 0) {
+                        questAbilityId = ACTIVATION_CHAOS;
+                        questAbilityEffect = 1;
+                        questAbilityTargets = TARGETSCOUNT_ALL;
+                        questAbilityCount++;
+                    }
                                      } break;
                 case TYPE_ASSAULT: {
                     // if the unit already has strike, don't give it to them again
@@ -1071,7 +1076,13 @@ namespace IterateDecks {
                 }
             }
 
-            if ((QuestEffectId == BattleGroundEffect::cloneProject) && (!IsMimiced) && (Src.GetQuestSplit()) && (EffectType == EVENT_EMPTY))
+            if (    (    QuestEffectId == BattleGroundEffect::cloneProject
+                      || QuestEffectId == BattleGroundEffect::splitFive
+                    )
+                 && (!IsMimiced)
+                 && (Src.GetQuestSplit())
+                 && (EffectType == EVENT_EMPTY)
+               )
             {
                 Src.SetQuestSplit(false); // remove mark
                 questAbilityId = ACTIVATION_SPLIT;
@@ -1549,7 +1560,7 @@ namespace IterateDecks {
                         SkillProcs[aid]++;
 
                         for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-                            if (Evade(vi->first, QuestEffectId, chaos))
+                            if (QuestEffectId != BattleGroundEffect::copyCat && Evade(vi->first, QuestEffectId, chaos))
                             {
                                 LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
                                 Dest.SkillProcs[DEFENSIVE_EVADE]++;
@@ -2033,8 +2044,10 @@ namespace IterateDecks {
             LOG(this->logger,abilityOffensive(EVENT_ATTACKED, src, abilityId, target, effectArgument));
             switch(abilityId) {
                 case DMGDEPENDANT_BERSERK: {
-                        src.Berserk(effectArgument);
-                        SkillProcs[DMGDEPENDANT_BERSERK]++;
+                        if(questEffectId != BattleGroundEffect::impenetrable || target.GetType() != TYPE_STRUCTURE) {
+                            src.Berserk(effectArgument);
+                            SkillProcs[DMGDEPENDANT_BERSERK]++;
+                        }
                     } break;
                 case DMGDEPENDANT_CRUSH:
                     throw std::logic_error("crush on attack ... that was not expected");
@@ -2226,6 +2239,11 @@ namespace IterateDecks {
                     Units.back().SetEffect(DMGDEPENDANT_POISON,1);
                     Units.back().SetEffect(DMGDEPENDANT_DISEASE,ABILITY_ENABLED);
                 }
+
+                if (QuestEffectId == BattleGroundEffect::poisonAll)
+                {
+                    Units.back().SetEffect(DMGDEPENDANT_POISON,1);
+                }
             }
         }
 
@@ -2234,7 +2252,8 @@ namespace IterateDecks {
             if (src.OnDeathEvent())
                 ApplyEffects(QuestEffectId,EVENT_DIED,src,-1,Def);
         }
-        void ActiveDeck::AttackDeck(ActiveDeck &Def, bool bSkipCardPicks)
+        
+        void ActiveDeck::AttackDeck(ActiveDeck &Def, bool bSkipCardPicks, unsigned int turn)
         {
             // assume for now that timer is decreased first
             for(LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
@@ -2259,14 +2278,18 @@ namespace IterateDecks {
             }
 
             // Quest split mark
-            if (QuestEffectId == BattleGroundEffect::cloneProject)
+            if (    (QuestEffectId == BattleGroundEffect::cloneProject)
+                 || (    (QuestEffectId == BattleGroundEffect::splitFive)
+                      && (turn == 9 || turn == 10)
+                    )
+               )
             {
                 PPCIV GetTo;
                 for (LCARDS::iterator vi = Units.begin();vi != Units.end();vi++)
                 {
                     if ((vi->IsAlive()) &&
                         (vi->GetWait() == 0) &&
-                        (!vi->GetEffect(ACTIVATION_JAM)) && // Jammed
+                        //(!vi->GetEffect(ACTIVATION_JAM)) && // Jammed
                         (!vi->GetEffect(ACTIVATION_FREEZE)) && // Frozen
                         (!vi->GetEffect(DMGDEPENDANT_IMMOBILIZE)))
                         GetTo.push_back(PPCARDINDEX(&(*vi),0));
@@ -2738,7 +2761,7 @@ namespace IterateDecks {
                                      , PlayedCard &Src
                                      , ActiveDeck & ownDeck
                                      , ActiveDeck & otherDeck
-                                     , bool bCanBeCountered
+                                     , bool isCrushDamage
                                      , UCHAR *overkill
                                      , VLOG *log
                                      , LOG_RECORD *lr
@@ -2756,9 +2779,11 @@ namespace IterateDecks {
             UCHAR index = 0;
             for (LCARDS::iterator vi = Structures.begin();vi!=Structures.end();vi++)
             {
+                // will a wall *block* the damage?
                 if (vi->GetAbility(DEFENSIVE_WALL) && vi->IsAlive())
                 {
-                    if (QuestEffectId != BattleGroundEffect::impenetrable)
+                    // will the wall *take* the damage?
+                    if (QuestEffectId != BattleGroundEffect::impenetrable || !isCrushDamage)
                     {
                         vi->CardSkillProc(DEFENSIVE_WALL);
                         if (lr)
@@ -2766,8 +2791,6 @@ namespace IterateDecks {
                             lr->Target.CardID = index;
                             lr->Target.RowID = TYPE_STRUCTURE;
                         }
-
-
 
                         // walls can counter and regenerate
                         vi->SufferDmg(QuestEffectId,Dmg,0,0,0,overkill);
@@ -2777,7 +2800,7 @@ namespace IterateDecks {
                         assertX(Src.IsDefined());
                         ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*vi,index,otherDeck,false,false,NULL,0,&Src);
 
-                        if (vi->GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // counter, dmg from crush can't be countered
+                        if (vi->GetAbility(DEFENSIVE_COUNTER) && isCrushDamage) // counter, dmg from crush can't be countered
                         {
                             vi->CardSkillProc(DEFENSIVE_COUNTER);
                             EFFECT_ARGUMENT cdmg = vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
@@ -2799,7 +2822,7 @@ namespace IterateDecks {
 
             // no walls found then hit commander
             // ugly - counter procs before commander takes dmg, but whatever
-            if (GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // commander can counter aswell
+            if (GetAbility(DEFENSIVE_COUNTER) && isCrushDamage) // commander can counter aswell
             {
                 CardSkillProc(DEFENSIVE_COUNTER);
                 UCHAR loverkill = 0;
