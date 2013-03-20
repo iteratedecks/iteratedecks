@@ -66,7 +66,7 @@ int mainWithOptions(CliOptions const & options
 {
     // only help, then we quit
     if (options.printVersion) {
-        std::cout << "iteratedecks version 1.0" << std::endl;
+        std::cout << "iteratedecks version 1.0.2" << std::endl;
     }
 
     // only help, then we quit
@@ -87,7 +87,7 @@ int mainWithOptions(CliOptions const & options
     srand(options.seed);
 
     // TODO need to discover what this does
-    AchievementIndex = (int)(options.achievementOptions); // index, not id
+    AchievementId = (int)(options.achievementOptions);
 
     // TODO will replace console output by better logging system sometime
     bConsoleOutput = (options.verbosity > 0);

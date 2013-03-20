@@ -64,6 +64,11 @@ namespace IterateDecks {
             char const * const short_options(shortOptions.c_str());
 
             CliOptions options;
+
+            if (argc == 1) {
+                options.printHelpAndExit = true;
+            }
+
             // gnu getopt stuff
             while(true) {
                 int option_index = 0;
@@ -88,14 +93,14 @@ namespace IterateDecks {
                             }
                         } break;
                     case 'a': {
-                            std::stringstream ssAchievementIndex(optarg);
-                            int achievementIndex;
-                            ssAchievementIndex >> achievementIndex;
-                            if(ssAchievementIndex.fail()) {
-                                throw InvalidUserInputError ("-a --achievement-index requires an integer argument");
+                            std::stringstream ssAchievementId(optarg);
+                            int achievementId;
+                            ssAchievementId >> achievementId;
+                            if(ssAchievementId.fail()) {
+                                throw InvalidUserInputError ("-a --achievement-id requires an integer argument");
                             }
-                            if (achievementIndex >= 0) {
-                                options.achievementOptions.enableCheck(achievementIndex);
+                            if (achievementId >= 0) {
+                                options.achievementOptions.enableCheck(achievementId);
                             } else {
                                 options.achievementOptions.disableCheck();
                             }
@@ -186,6 +191,7 @@ namespace IterateDecks {
                         }
                 }
             }
+
             if (options.printHelpAndExit) {
                 // no more arguments expected
             } else if((options.defenseDeck.getType() == DeckArgument::RAID_ID
