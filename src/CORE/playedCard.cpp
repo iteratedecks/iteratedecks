@@ -30,6 +30,8 @@ namespace IterateDecks {
                 return false;
             } else if (this->GetAttack() <= 0) {
                 return false;
+            } else if (this->GetEffect(DEFENSIVE_STUN) > 0) {
+                return false;
             }
             return true;
         }
@@ -262,6 +264,10 @@ namespace IterateDecks {
             Effects[ACTIVATION_WEAKEN] = 0;
             Effects[ACTIVATION_AUGMENT] = 0;
 
+            if(Effects[DEFENSIVE_STUN] > 0) {
+                Effects[DEFENSIVE_STUN]--;
+            }
+
             if(Effects[SPECIAL_BLITZ]) {
                 Effects[SPECIAL_BLITZ] = 0;
                 bActivated = false;
@@ -277,6 +283,7 @@ namespace IterateDecks {
             Effects[DMGDEPENDANT_IMMOBILIZE] = 0;
             Effects[ACTIVATION_ENFEEBLE] = 0;
             Effects[ACTIVATION_CHAOS] = 0;
+            Effects[DEFENSIVE_STUN] = 0;
         }
         bool PlayedCard::IsCleanseTarget()
         {
@@ -287,7 +294,8 @@ namespace IterateDecks {
                     (Effects[ACTIVATION_FREEZE] && bActivated) ||
                     Effects[DMGDEPENDANT_IMMOBILIZE] ||
                     Effects[ACTIVATION_ENFEEBLE] ||
-                    Effects[ACTIVATION_CHAOS]);
+                    Effects[ACTIVATION_CHAOS] ||
+                    Effects[DEFENSIVE_STUN]);
         }
         bool PlayedCard::CanEmulate(const UCHAR effect)
         {

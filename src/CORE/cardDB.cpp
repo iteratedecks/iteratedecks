@@ -689,6 +689,7 @@ namespace IterateDecks {
             AddSkill(DEFENSIVE_TRIBUTE,"Tribute");
             AddSkill(DEFENSIVE_WALL,"Wall");
             AddSkill(DEFENSIVE_EMULATE,"Emulate");
+            AddSkill(DEFENSIVE_STUN,"Stun");
 
             AddSkill(COMBAT_ANTIAIR,"AntiAir");
             AddSkill(COMBAT_BURST,"Burst");
