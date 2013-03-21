@@ -1,4 +1,4 @@
-iteratedecks 1.0.3 has released!
+iteratedecks 1.0.4 has released!
 
 ----
 
@@ -12,6 +12,14 @@ Special thanks to hunterhogan for the hosting.
 
 ----
 <h2>Release Notes</h2>
+<h3>1.0.4</h3>
+
+  * Now supports Stun
+  * Chaosed Jam now targets units that have already attacked
+  * Blitzed units can now be Rallied
+  * Mimicked Payback can now hit the mimicker
+  * Chaosed abilities can now target already played units
+
 <h3>1.0.3</h3>
 
   * Crush damage no longer triggers On Attack abilities
