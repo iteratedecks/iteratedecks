@@ -243,13 +243,8 @@ namespace IterateDecks {
         {
             bool bGoBerserk = false;
             UCHAR burst = 0;
-            if ((SRC.GetAbility(COMBAT_BURST)) && (target.GetHealth() == target.GetOriginalCard()->GetHealth()))
+            if ((SRC.GetAbility(COMBAT_BURST)) && (target.GetHealth() == target.GetOriginalCard()->GetHealth())) {
                 burst = SRC.GetAbility(COMBAT_BURST);
-            if (burst > 0)
-            {
-                SkillProcs[COMBAT_BURST]++;
-                LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_BURST,burst);
-                LOG(this->logger,attackBonus(SRC,target,COMBAT_BURST,burst));
             }
 
             // we should have a valid attaker
@@ -304,6 +299,14 @@ namespace IterateDecks {
                 LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_ANTIAIR,antiair);
                 LOG(this->logger,attackBonus(SRC,target,COMBAT_ANTIAIR,antiair));
             }
+
+            // burst "procs" after flying
+            if (burst > 0)
+            {
+                SkillProcs[COMBAT_BURST]++;
+                LOG(this->logger,attackBonus(SRC,target,COMBAT_BURST,burst));
+            }
+
             // enfeeble is taken into account before armor
             UCHAR enfeeble = target.GetEffect(ACTIVATION_ENFEEBLE);
             // now armor & pierce
