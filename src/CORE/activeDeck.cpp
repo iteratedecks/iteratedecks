@@ -1023,7 +1023,8 @@ namespace IterateDecks {
                     }
             }
 
-            ActiveDeck *procDeck = ((!IsMimiced) || bIsSelfMimic) ? this : &Dest;
+            //ActiveDeck *procDeck = ((!IsMimiced) || bIsSelfMimic) ? this : &Dest;
+            ActiveDeck *procDeck = this;
             PlayedCard *procCard = (IsMimiced) ? Mimicer : &Src;
 
             // here is a good question - can paybacked skill be paybacked? - nope
