@@ -27,6 +27,7 @@
                     UCHAR Effects[CARD_ABILITIES_MAX];
                     bool bPlayed;
                     bool bActivated;
+                    bool isSummoned;
                     bool bQuestSplit;
                     UCHAR DeathEvents;
                 public:
@@ -86,6 +87,7 @@
                     const UCHAR GetNativeAttack() const;
                     const UCHAR GetAttack() const;
                     const UCHAR GetHealth() const;
+                    const bool PlayedCard::GetIsSummoned() const;
                     const UCHAR GetMaxHealth() const;
                     const UCHAR GetFaction() const;
                     const UCHAR GetWait() const;
@@ -101,6 +103,7 @@
                     void SetAttack(const UCHAR attack);
                     void SetEffect(const UCHAR id, const UCHAR value);
                     void SetHealth(const UCHAR health);
+                    void PlayedCard::SetIsSummoned(const bool summoned);
                     void Augment(const EFFECT_ARGUMENT amount);
                     void Rally(const EFFECT_ARGUMENT amount);
                     EFFECT_ARGUMENT Weaken(const EFFECT_ARGUMENT amount);

@@ -1789,12 +1789,14 @@ namespace IterateDecks {
                         if(summonedCard->GetType() == TYPE_ASSAULT) {
                             Units.push_back(summonedCard);
                             LOG(this->logger,abilitySummon(EffectType,Src,Units.back()));
+                            Units.back().SetIsSummoned(true);
                             Units.back().SetCardSkillProcBuffer(SkillProcs);
                             // TODO this is where the fix for Decay on Summoning needs to happen
                             //ApplyEffects(QuestEffectId,EVENT_PLAYED,Units.back(),-1,Dest);
                         } else if (summonedCard->GetType() == TYPE_STRUCTURE) {
                             Structures.push_back(summonedCard);
                             LOG(this->logger,abilitySummon(EffectType,Src,Structures.back()));
+                            Structures.back().SetIsSummoned(true);
                             Structures.back().SetCardSkillProcBuffer(SkillProcs);
                             //ApplyEffects(QuestEffectId,EVENT_PLAYED,Structures.back(),-1,Dest);
                         } else {
@@ -2452,7 +2454,7 @@ namespace IterateDecks {
                     if (!vi->IsAlive())
                     {
                         for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
-                            if (!CardDeaths[i])
+                            if (!CardDeaths[i] && !vi->GetIsSummoned())
                             {
                                 CardDeaths[i] = vi->GetId();
                                 break;
@@ -2477,7 +2479,7 @@ namespace IterateDecks {
                     if (!vi->IsAlive())
                     {
                         for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
-                            if (!Def.CardDeaths[i])
+                            if (!Def.CardDeaths[i] && !vi->GetIsSummoned())
                             {
                                 Def.CardDeaths[i] = vi->GetId();
                                 break;
