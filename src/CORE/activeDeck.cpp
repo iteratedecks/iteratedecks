@@ -965,12 +965,6 @@ namespace IterateDecks {
                 && (targetCard != tributeCard)
                 && PROC50)
             {
-                //TODO need to figure out how to get the abstract form of Cleanse() into here
-                //procDeck->SkillProcs[DEFENSIVE_TRIBUTE]++;
-                //targetCard->Cleanse();
-                //LogAdd(lc,DEFENSIVE_TRIBUTE);
-                //LogAdd(lc,LOG_CARD(LogDeckID,targetCard->GetType(),SrcPos),aid);
-                //vi->first->fsSpecial += effect;
                 LOG(this->logger,abilityTribute(EffectType,*(tributeCard),*(targetCard),aid,effect));
                 procDeck->SkillProcs[DEFENSIVE_TRIBUTE]++;
                 return true;
@@ -1203,11 +1197,7 @@ namespace IterateDecks {
 
                             if(bTributable && Tribute(vi->first, procCard, procDeck, EffectType, aid, effect))
                             {
-                                //LOG(this->logger,abilityTribute(EffectType,*(vi->first),Src,aid,effect));
-                                //procDeck->SkillProcs[DEFENSIVE_TRIBUTE]++;
                                 procCard->Cleanse();
-                                //LogAdd(lc,DEFENSIVE_TRIBUTE);
-                                //LogAdd(lc,LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),aid);
                                 vi->first->fsSpecial += effect;
                             }
 
@@ -1311,7 +1301,6 @@ namespace IterateDecks {
 
                             if(bTributable && Tribute(vi->first, procCard, procDeck, EffectType, aid, effect))
                             {
-                                //procDeck->SkillProcs[DEFENSIVE_TRIBUTE]++;
                                 vi->first->fsHealed += procCard->Heal(effect,QuestEffectId);
                             }
 
@@ -1390,22 +1379,9 @@ namespace IterateDecks {
                                 procCard->fsHealed += vi->first->Heal(effect,QuestEffectId);
                                 //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
 
-                                // tribute
-                                bool const targetHasTribute(vi->first->GetAbility(DEFENSIVE_TRIBUTE)>0);
-                                if (targetHasTribute) {
-                                    if (PROC50) {
-                                        LOG(this->logger,abilityTribute(EffectType,*(vi->first),Src,aid,effect));
-                                        if ((procCard->GetType() == TYPE_ASSAULT)
-                                            && (procCard != vi->first)
-                                            && (!procCard->IsDiseased())
-                                            ) {
-                                                procDeck->SkillProcs[DEFENSIVE_TRIBUTE]++;
-                                                vi->first->fsHealed += procCard->Heal(effect,QuestEffectId);
-                                        }
-                                    } else {
-                                        LOG(this->logger,abilityFailNoProc(EffectType,*(vi->first),aid,Src));
-                                    }// proc
-                                } // tribute
+                                if (bTributable && Tribute(vi->first, procCard, procDeck, EffectType, aid,effect)) {
+                                    vi->first->fsHealed += procCard->Heal(effect,QuestEffectId);
+                                }
 
                                 UCHAR pos = vi->second;
                                 PlayedCard *oppositeCard = NULL;
@@ -1448,10 +1424,8 @@ namespace IterateDecks {
 
                             if(Tribute(vi->first, procCard, procDeck, EffectType, aid, effect))
                             {
-                                //LOG(this->logger,abilityTribute(EffectType,*(vi->first),Src,aid,effect));
                                 procCard->Protect(effect);
                                 vi->first->fsSpecial += effect;
-                                //procDeck->SkillProcs[DEFENSIVE_TRIBUTE]++;
                             }
 
                             UCHAR pos = vi->second;
@@ -1625,10 +1599,8 @@ namespace IterateDecks {
 
                             if(bTributable && Tribute(vi->first, procCard, procDeck, EffectType, aid, effect))
                             {
-                                //LOG(this->logger,abilityTribute(EffectType,*(vi->first),Src,aid,effect));
                                 procCard->Rally(effect);
                                 vi->first->fsSpecial += effect;
-                                //procDeck->SkillProcs[DEFENSIVE_TRIBUTE]++;
                             }
 
                             UCHAR pos = vi->second;
@@ -2016,10 +1988,8 @@ namespace IterateDecks {
 
                             if(bTributable && Tribute(vi->first, procCard, procDeck, EffectType, aid, effect))
                             {
-                                //LOG(this->logger,abilityTribute(EffectType,*(vi->first),Src,aid,effect));
                                 procCard->Augment(effect);
                                 vi->first->fsSpecial += effect;
-                                //procDeck->SkillProcs[DEFENSIVE_TRIBUTE]++;
 
                                 UCHAR pos = vi->second;
                                 PlayedCard *oppositeCard = NULL;
