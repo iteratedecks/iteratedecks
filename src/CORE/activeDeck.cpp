@@ -381,6 +381,7 @@ namespace IterateDecks {
                     }
 
                     SRC.fsOverkill += overkill;
+                    LOG(this->logger,abilityOffensive(EVENT_KILL, SRC, DMGDEPENDANT_CRUSH, target, SRC.GetAbility(DMGDEPENDANT_CRUSH)));
                     SkillProcs[DMGDEPENDANT_CRUSH]++;
                 }
 
@@ -411,10 +412,13 @@ namespace IterateDecks {
                 // disease
                 if (SRC.GetAbility(DMGDEPENDANT_DISEASE))
                 {
-                    target.SetEffect(DMGDEPENDANT_DISEASE,SRC.GetAbility(DMGDEPENDANT_DISEASE));
-                    SRC.fsSpecial++; // is it good?
-                    SkillProcs[DMGDEPENDANT_DISEASE]++;
-                    LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DMGDEPENDANT_DISEASE);
+                    if(!target.GetEffect(DMGDEPENDANT_DISEASE)) {
+                        target.SetEffect(DMGDEPENDANT_DISEASE,SRC.GetAbility(DMGDEPENDANT_DISEASE));
+                        SRC.fsSpecial++; // is it good?
+                        SkillProcs[DMGDEPENDANT_DISEASE]++;
+                        LOG(this->logger,abilityOffensive(EVENT_ATTACKED, SRC, DMGDEPENDANT_DISEASE, target, 1));
+                    }
+                    //LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DMGDEPENDANT_DISEASE);
                 }
                 // poison
                 if (SRC.GetAbility(DMGDEPENDANT_POISON))
