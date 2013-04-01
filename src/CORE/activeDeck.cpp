@@ -2419,6 +2419,8 @@ namespace IterateDecks {
             // assault cards
             { UINT i = 0;
             for (LCARDS::iterator iter = Units.begin(); iter != Units.end(); iter++,i++) {
+                if(!Def.Commander.IsAlive()) break;
+
                 if (iter->BeginTurn()) {
                     ApplyEffects(QuestEffectId,EVENT_EMPTY,*iter,i,Def);
                     iter->Played();
