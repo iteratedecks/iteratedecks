@@ -1119,6 +1119,7 @@ namespace IterateDecks {
 
                 // Need to check this every time card uses skill because it could be paybacked chaos
                 bool chaos = procCard->GetEffect(ACTIVATION_CHAOS) != 0;
+                ActiveDeck *targetDeck = chaos ? this : &Dest;
 
                 if(aindex < ac) {
                     aid = Src.GetAbilityInOrder(aindex);
@@ -1266,7 +1267,7 @@ namespace IterateDecks {
                                 {
                                     procCard->SetEffect(aid,procCard->GetEffect(aid) + effect);
                                     vi->first->fsSpecial += effect;
-                                    procDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
+                                    targetDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
                                 }
                             }
                     } break;
@@ -1505,7 +1506,7 @@ namespace IterateDecks {
                                     {
                                         procCard->SetEffect(aid,effect);
                                         vi->first->fsSpecial += effect;
-                                        procDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
+                                        targetDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
                                     }
                                 }
                             }
@@ -1549,7 +1550,7 @@ namespace IterateDecks {
                                 {
                                     procCard->SetEffect(aid,effect);
                                     vi->first->fsSpecial += effect;
-                                    procDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
+                                    targetDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
                                 }
                             }
                     } break;
@@ -1870,7 +1871,7 @@ namespace IterateDecks {
                                 if(Payback(vi->first, *procCard, EffectType, ACTIVATION_WEAKEN, effect, chaos))
                                 {
                                     vi->first->fsSpecial += procCard->Weaken(effect);
-                                    procDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
+                                    targetDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
                                 }
                             }
                     } break;
@@ -1912,7 +1913,7 @@ namespace IterateDecks {
                                 {
                                     procCard->SetEffect(ACTIVATION_CHAOS, effect);
                                     vi->first->fsSpecial += effect;
-                                    procDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
+                                    targetDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
                                 }
                             }
                     } break;
