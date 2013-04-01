@@ -917,18 +917,20 @@ namespace IterateDecks {
                 (targets[destindex-1].second == targets[destindex].second - 1) &&
                 (targets[destindex-1].first->GetAbility(DEFENSIVE_INTERCEPT) > 0))
             {
-                destindex = destindex-1;
                 Dest.SkillProcs[DEFENSIVE_INTERCEPT]++;
-                LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,destindex),DEFENSIVE_INTERCEPT);
+                LOG(this->logger,defensiveAbility(*targets[destindex-1].first,*targets[destindex].first,DEFENSIVE_INTERCEPT,1));
+
+                destindex = destindex-1;
             }
             else
                 if ((destindex < targets.size() - 1) &&
                     (targets[destindex+1].second == targets[destindex].second + 1) &&
                     (targets[destindex+1].first->GetAbility(DEFENSIVE_INTERCEPT) > 0))
                 {
-                    destindex = destindex+1;
                     Dest.SkillProcs[DEFENSIVE_INTERCEPT]++;
-                    LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,destindex),DEFENSIVE_INTERCEPT);
+                    LOG(this->logger,defensiveAbility(*targets[destindex+1].first,*targets[destindex].first,DEFENSIVE_INTERCEPT,1));
+
+                    destindex = destindex+1;
                 }
             return destindex;
         }
