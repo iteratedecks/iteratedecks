@@ -288,7 +288,7 @@ namespace IterateDecks {
                 {
                     target.fsAvoided += SRC.GetAttack() + valor + burst + target.GetEffect(ACTIVATION_ENFEEBLE); // note that this IGNORES armor and protect
                     Def.SkillProcs[DEFENSIVE_FLYING]++;
-                    LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DEFENSIVE_FLYING);
+                    LOG(this->logger,defensiveAbility(target,SRC,DEFENSIVE_FLYING,1));
                     return true;
                 }
             }
