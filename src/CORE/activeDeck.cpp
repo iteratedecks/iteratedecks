@@ -1805,6 +1805,9 @@ namespace IterateDecks {
                         assertGT(effect,0u);
                         assertLT(effect,(UINT)CARD_MAX_ID);
                         assertX(pCDB != NULL);
+
+                        procDeck->SkillProcs[aid]++;
+
                         Card const * const summonedCard = &pCDB[effect];
                         if(summonedCard->GetType() == TYPE_ASSAULT) {
                             Units.push_back(summonedCard);
