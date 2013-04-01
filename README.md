@@ -51,6 +51,39 @@ There are various flags available to alter how the simulation works. Here are th
 
 * [Kongregate discussion thread](http://www.kongregate.com/forums/65-tyrant/topics/328599-sim-iteratedecks-1-0-3)
 
+## Release Notes
+
+###1.0.4
+* Now supports Stun
+* Chaosed Jam now targets units that have already attacked
+* Blitzed units can now be Rallied
+* Mimicked Payback can now hit the mimicker
+* Chaosed abilities can now target already played units
+
+###1.0.3
+* Crush damage no longer triggers On Attack abilities
+* -a now uses achievement id instead of achievement index
+* Now supports more than 256 units at a time
+
+###1.0.2
+* Enabled battleground flag (-b)
+* Regenerate now happens after On Death abilities
+* Infuse only changes faction for helpful abilities
+* Crush damage now ignores Impenetrable battleground effect
+* Berzerk no longer procs on walls during Impenetrable battleground effect
+* Added support for Toxic battleground effect (Decay was already supported)
+* Friendly Fire battleground effect no longer overrides Commander's chaos
+* Mimic is no longer evadable during Copycat battleground effect
+* Split now targets Jammed units
+
+###1.0.1
+* Windows XP and Windows 7 support
+* On Death and On Attacked now Rally and Augment Wait 1 units
+
+###1.0.0
+* Initial public release
+* Supports Legion
+
 ## Acknowledgements
 
 Our codebase is a direct descendant of NETRAT's EvaluateDecks simulator which is still being hosted:
