@@ -47,9 +47,12 @@ There are various flags available to alter how the simulation works. Here are th
     -Q --quest-id              quest id
     -m --mission-id            mission id
 
+## Resources
+
+* [Kongregate discussion thread](http://www.kongregate.com/forums/65-tyrant/topics/328599-sim-iteratedecks-1-0-3)
+
 ## Acknowledgements
 
 Our codebase is a direct descendant of NETRAT's EvaluateDecks simulator which is still being hosted:
 
-* [Kongregate thread](http://www.kongregate.com/forums/65-tyrant/topics/195043-evaluate-decks-game-simulator)
 * [Codebase](http://code.google.com/p/evaluatedecks/)
