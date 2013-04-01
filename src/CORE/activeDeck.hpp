@@ -109,7 +109,7 @@
                     bool IsInTargets(PlayedCard *pc, PPCIV *targets);
                     bool Evade(PlayedCard *defender, BattleGroundEffect QuestEffectId, bool chaos);
                     UCHAR Intercept(PPCIV &targets, UCHAR destindex, ActiveDeck &Dest);
-                    bool Payback(PlayedCard *defender, PlayedCard &Src, EVENT_CONDITION EffectType, UCHAR effectId, EFFECT_ARGUMENT effect, bool chaos);
+                    bool Payback(ActiveDeck &targetDeck, PlayedCard *target, PlayedCard &attacker, EVENT_CONDITION EffectType, AbilityId effectId, EFFECT_ARGUMENT effect, bool chaos);
                     bool Tribute(PlayedCard *tributeCard, PlayedCard *targetCard, ActiveDeck *procDeck, EVENT_CONDITION EffectType, AbilityId effectId, EFFECT_ARGUMENT effect);
                     void PlayCard(const Card *c, ActiveDeck &Def);
                     void ApplyDefensiveEffects(BattleGroundEffect QuestEffectId,PlayedCard &defender,PlayedCard &attacker,ActiveDeck &attackDeck, UCHAR dmg);

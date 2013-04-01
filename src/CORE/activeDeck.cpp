@@ -934,15 +934,17 @@ namespace IterateDecks {
         }
 
         // Will target unit use Payback?
-        bool ActiveDeck::Payback(PlayedCard *defender, PlayedCard &Src, EVENT_CONDITION EffectType, AbilityId effectId, EFFECT_ARGUMENT effect, bool chaos) {
-            if (Src.IsAlive()
+        bool ActiveDeck::Payback(ActiveDeck &targetDeck, PlayedCard *target, PlayedCard &attacker, EVENT_CONDITION EffectType, AbilityId effectId, EFFECT_ARGUMENT effect, bool chaos) {
+            if (attacker.IsAlive()
                 && EffectType != EVENT_DIED
-                && defender->GetAbility(DEFENSIVE_PAYBACK)
-                && (Src.GetType() == TYPE_ASSAULT)
+                && target->GetAbility(DEFENSIVE_PAYBACK)
+                && (attacker.GetType() == TYPE_ASSAULT)
                 //&& (Src.GetAttack() > 0)
                 && (!chaos)
                 && PROC50)
             {
+                LOG(targetDeck.logger,defensiveAbility(*target,attacker,DEFENSIVE_PAYBACK,1));
+                targetDeck.SkillProcs[DEFENSIVE_PAYBACK]++;
                 // TODO there are some complications preventing us from currently performing
                 // the payback here; for now just send back whether we did.
                 //Src.SetEffect(effectId,effect);
@@ -1263,11 +1265,10 @@ namespace IterateDecks {
                                 procCard->fsSpecial += effect;
                                 LogAdd(LOG_CARD(procDeck->LogDeckID,procCard->GetType(),SrcPos),lc,aid,effect);
 
-                                if (Payback(vi->first, *procCard, EffectType, ACTIVATION_ENFEEBLE, effect, chaos))  // payback
+                                if (Payback(*targetDeck, vi->first, *procCard, EffectType, aid, effect, chaos))  // payback
                                 {
                                     procCard->SetEffect(aid,procCard->GetEffect(aid) + effect);
                                     vi->first->fsSpecial += effect;
-                                    targetDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
                                 }
                             }
                     } break;
@@ -1502,11 +1503,10 @@ namespace IterateDecks {
 
                                     procDeck->SkillProcs[aid]++;
 
-                                    if (Payback(vi->first, *procCard, EffectType, ACTIVATION_JAM, effect, chaos))  // payback is it 1/2 or 1/4 chance to return jam with payback????
+                                    if (Payback(*targetDeck, vi->first, *procCard, EffectType, aid, effect, chaos))  // payback is it 1/2 or 1/4 chance to return jam with payback????
                                     {
                                         procCard->SetEffect(aid,effect);
                                         vi->first->fsSpecial += effect;
-                                        targetDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
                                     }
                                 }
                             }
@@ -1546,11 +1546,10 @@ namespace IterateDecks {
                                 procCard->fsSpecial += effect;
                                 //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
 
-                                if (Payback(vi->first, *procCard, EffectType, ACTIVATION_FREEZE, effect, chaos))
+                                if (Payback(*targetDeck, vi->first, *procCard, EffectType, aid, effect, chaos))  // payback
                                 {
                                     procCard->SetEffect(aid,effect);
                                     vi->first->fsSpecial += effect;
-                                    targetDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
                                 }
                             }
                     } break;
@@ -1790,13 +1789,12 @@ namespace IterateDecks {
                                 procCard->fsOverkill += overkill;
                                 //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
 
-                                if (Payback(vi->first, *procCard, EffectType, ACTIVATION_STRIKE, effect, chaos))  // payback
+                                if (Payback(*targetDeck, vi->first, *procCard, EffectType, aid, effect, chaos))  // payback
                                 {
                                     UCHAR overkill = 0;
                                     vi->first->fsDmgDealt += procCard->StrikeDmg(QuestEffectId,effect,&overkill);
                                     CheckDeathEvents(*procCard,*procDeck);
                                     vi->first->fsOverkill += overkill;
-                                    Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
                                 }
                             }
                         }
@@ -1868,10 +1866,9 @@ namespace IterateDecks {
                                 procCard->fsSpecial += we;
                                 //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
 
-                                if(Payback(vi->first, *procCard, EffectType, ACTIVATION_WEAKEN, effect, chaos))
+                                if (Payback(*targetDeck, vi->first, *procCard, EffectType, aid, effect, chaos))  // payback
                                 {
                                     vi->first->fsSpecial += procCard->Weaken(effect);
-                                    targetDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
                                 }
                             }
                     } break;
@@ -1909,11 +1906,10 @@ namespace IterateDecks {
                                 procCard->fsSpecial += effect;
                                 //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
 
-                                if(Payback(vi->first, *procCard, EffectType, ACTIVATION_CHAOS, effect, chaos))
+                                if (Payback(*targetDeck, vi->first, *procCard, EffectType, aid, effect, chaos))  // payback
                                 {
                                     procCard->SetEffect(ACTIVATION_CHAOS, effect);
                                     vi->first->fsSpecial += effect;
-                                    targetDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
                                 }
                             }
                     } break;
