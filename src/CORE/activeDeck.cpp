@@ -527,27 +527,21 @@ namespace IterateDecks {
 
                     PlayedCard *targets[3]; //< our potential swipe targets
 
-                    bool const canSwipeLeft = (index > 0) && (Def.getUnitAt(index-1).IsAlive());
-                    bool const canSwipeRight = (index+1 < (UCHAR)Def.Units.size()) && (Def.getUnitAt(index+1).IsAlive());
-
                     // amount of targets
                     UCHAR const swipe = (attacker.GetAbility(COMBAT_SWIPE)) ? 3 : 1;
                     if (swipe > 1) {
-                        // swipe technically procs always
-                        LOG(this->logger,attackSwipe(attacker));
+                        LOG(this->logger,attackSwipe(attacker)); // swipe "procs" always even if it only hits the unit before it
                         SkillProcs[COMBAT_SWIPE]++;
 
                         // we do swipe
-                        if (canSwipeLeft) {
+                        if ((index > 0) && (Def.getUnitAt(index-1).IsAlive())) {
                             targets[0] = &Def.getUnitAt(index-1);
                         } else {
                             targets[0] = NULL;
                         }
-
                         targets[1] = &Def.getUnitAt(index);
                         assertX(targets[1]); // this is aligned to SRC and must be present
-
-                        if (canSwipeRight) {
+                        if ((index+1 < (UCHAR)Def.Units.size()) && (Def.getUnitAt(index+1).IsAlive())) {
                             targets[2] = &Def.getUnitAt(index+1);
                         } else {
                             targets[2] = NULL;
