@@ -1556,7 +1556,7 @@ namespace IterateDecks {
                         else
                             GetTargets(Dest.Units,faction,targets);
 
-                        RandomizeTarget(targets,targetCount,Dest,!chaos);
+                        RandomizeTarget(targets,targetCount,Dest,!chaos && (QuestEffectId != BattleGroundEffect::copyCat));
 
                         if (targets.size() <= 0) {
                             LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
