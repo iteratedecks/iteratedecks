@@ -527,24 +527,31 @@ namespace IterateDecks {
 
                     PlayedCard *targets[3]; //< our potential swipe targets
 
+                    bool const canSwipeLeft = (index > 0) && (Def.getUnitAt(index-1).IsAlive());
+                    bool const canSwipeRight = (index+1 < (UCHAR)Def.Units.size()) && (Def.getUnitAt(index+1).IsAlive());
+
                     // amount of targets
                     UCHAR const swipe = (attacker.GetAbility(COMBAT_SWIPE)) ? 3 : 1;
                     if (swipe > 1) {
+                        // swipe technically procs always
+                        LOG(this->logger,attackSwipe(attacker));
+                        SkillProcs[COMBAT_SWIPE]++;
+
                         // we do swipe
-                        if ((index > 0) && (Def.getUnitAt(index-1).IsAlive())) {
+                        if (canSwipeLeft) {
                             targets[0] = &Def.getUnitAt(index-1);
                         } else {
                             targets[0] = NULL;
                         }
+
                         targets[1] = &Def.getUnitAt(index);
                         assertX(targets[1]); // this is aligned to SRC and must be present
-                        if ((index+1 < (UCHAR)Def.Units.size()) && (Def.getUnitAt(index+1).IsAlive())) {
+
+                        if (canSwipeRight) {
                             targets[2] = &Def.getUnitAt(index+1);
                         } else {
                             targets[2] = NULL;
                         }
-                        LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),COMBAT_SWIPE);
-                        LOG(this->logger,attackSwipe(attacker));
                     } else {
                         // we do not swipe
                         targets[0] = &Def.getUnitAt(index);
@@ -587,11 +594,6 @@ namespace IterateDecks {
                         bool doContinue = AttackUnitOrCommanderOnce2(attacker, index, *targets[s], targetindex, swipe,s, iSwiped, Def);
                         if(doContinue) {continue;} else {break;}
                     } // end of swipe
-
-                    // update stats
-                    if (iSwiped > 1) {
-                        SkillProcs[COMBAT_SWIPE]++;
-                    }
                 } // end of "not hit commander directly"
             } // end of flurry
 
