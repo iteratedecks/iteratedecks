@@ -1968,6 +1968,7 @@ namespace IterateDecks {
                                 )
                             {
                                 Src.SetEffect(aid,effect);
+                                procDeck->SkillProcs[SPECIAL_BLITZ]++;
                                 LOG(this->logger,abilitySupport(EffectType,Src,aid,Src,effect));
                             } else {
                                 // TODO probably want a more appropriate fail message
