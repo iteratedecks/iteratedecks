@@ -66,7 +66,7 @@ int mainWithOptions(CliOptions const & options
 {
     // only help, then we quit
     if (options.printVersion) {
-        std::cout << "iteratedecks version 1.0.4" << std::endl;
+        std::cout << "iteratedecks version 1.0.4a" << std::endl;
     }
 
     // only help, then we quit
