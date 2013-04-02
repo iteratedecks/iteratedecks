@@ -483,6 +483,7 @@ namespace IterateDecks {
 
             // Refactoring: Also use new simulator to check for same results.
             IterateDecksCore simulator;
+            simulator.logger = simulationLogger;
             SimulationTaskStruct task;
             task.minimalNumberOfGames = numberOfIterations;
             task.surge = surge;

@@ -70,6 +70,7 @@
                     bool aborted;
                     CardDB cardDB;
 
+                public:
                     SimulationLogger * logger;
 
                 public:

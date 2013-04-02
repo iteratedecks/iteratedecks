@@ -18,6 +18,7 @@ unsigned long const Logger::LOG_ATTACK_BEGIN_END         (1<<logInit++);
 unsigned long const Logger::LOG_DEFENSIVE_REFRESH        (1<<logInit++);
 unsigned long const Logger::LOG_TURN                     (1<<logInit++);
 unsigned long const Logger::LOG_SIMULATION               (1<<logInit++);
+unsigned long const Logger::LOG_SCORE_VERBOSE            (1<<logInit++);
 unsigned long const Logger::LOG_ALL                      ((1<<logInit)-1);
 
 enum Color {
@@ -188,6 +189,34 @@ void SimulationLogger::simulationEnd(unsigned int const & simulation)
         ssMessage << "Simulation " << simulation << " ends";
         std::string message(ssMessage.str());
         this->delegate.log(Logger::LOG_SIMULATION,colorSimulation(message));
+    }
+}
+
+void SimulationLogger::scoreTime(bool const isAttacker, bool const isAuto, unsigned int const points)
+{
+    if (this->delegate.isEnabled(Logger::LOG_SCORE_VERBOSE)) {
+        std::stringstream ssMessage;
+        ssMessage << "awarding " << points << " points to ";
+        ssMessage << (isAttacker ? "attacker" : "defender");
+        ssMessage << " on ";
+        ssMessage << (isAuto ? "auto" : "manual");
+        ssMessage << " for time";
+        std::string message(ssMessage.str());
+        this->delegate.log(Logger::LOG_SIMULATION,message);
+    }
+}
+
+void SimulationLogger::scoreDamage(bool const isAttacker, bool const isAuto, unsigned int const points)
+{
+    if (this->delegate.isEnabled(Logger::LOG_SCORE_VERBOSE)) {
+        std::stringstream ssMessage;
+        ssMessage << "awarding " << points << " points to ";
+        ssMessage << (isAttacker ? "attacker" : "defender");
+        ssMessage << " on ";
+        ssMessage << (isAuto ? "auto" : "manual");
+        ssMessage << " for damage done";
+        std::string message(ssMessage.str());
+        this->delegate.log(Logger::LOG_SIMULATION,message);
     }
 }
 

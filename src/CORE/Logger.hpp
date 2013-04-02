@@ -24,6 +24,7 @@
             static unsigned long const LOG_DEFENSIVE_REFRESH;
             static unsigned long const LOG_TURN;
             static unsigned long const LOG_SIMULATION;
+            static unsigned long const LOG_SCORE_VERBOSE;
             static unsigned long const LOG_ALL;
         private:
             unsigned long flags;
@@ -57,6 +58,8 @@
             void turnEnd(unsigned int const & turn);
             void simulationStart(unsigned int const & simulation);
             void simulationEnd(unsigned int const & simulation);
+            void scoreTime(bool const isAttacker, bool const isAuto, unsigned int const amount);
+            void scoreDamage(bool const isAttacker, bool const isAuto, unsigned int const amount);
     };
 
     class DeckLogger {

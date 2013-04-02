@@ -148,9 +148,11 @@ namespace IterateDecks {
                 result.pointsDefenderAuto += 10u;
                 // time bonus?
                 if(i < lastManualTurn + 10) {
+                    LOG(this->logger,scoreTime(false, false, 5u));
                     result.pointsDefender     += 5u;
                 }
                 if(i <= 10) {
+                    LOG(this->logger,scoreTime(false, true, 5u));
                     result.pointsDefenderAuto += 5u;
                 }
             } else if(!defenderAlive) {
@@ -161,11 +163,11 @@ namespace IterateDecks {
                 result.pointsAttackerAuto += surge ? 30u : 10u;
                 // time bonus?                
                 if(i < lastManualTurn + 10) {
-                    //std::clog << "awarding points to attacker for time bonus in manual" << std::endl;
+                    LOG(this->logger,scoreTime(true, false, 5u));
                     result.pointsAttacker     += 5u;
                 }
                 if(i <= 10) {
-                    //std::clog << "awarding points to attacker for time bonus in auto" << std::endl;
+                    LOG(this->logger,scoreTime(true, true, 5u));
                     result.pointsAttackerAuto += 5u;
                 }                
             } else {
@@ -180,10 +182,18 @@ namespace IterateDecks {
             //std::clog << "damage for attacker. "
             //          << "manual=" << attManualDamageToCommander << " "
             //          << "auto=" << attAutoDamageToCommander << std::endl;
-            result.pointsAttacker     += std::min(attManualDamageToCommander, 10u);
-            result.pointsAttackerAuto += std::min(attAutoDamageToCommander  , 10u);
-            result.pointsDefender     += std::min(defManualDamageToCommander, 10u);
-            result.pointsDefenderAuto += std::min(defAutoDamageToCommander  , 10u);
+            unsigned int const attManualDamagePoints = std::min(attManualDamageToCommander, 10u);
+            unsigned int const attAutoDamagePoints = std::min(attAutoDamageToCommander, 10u);
+            unsigned int const defManualDamagePoints = std::min(defManualDamageToCommander, 10u);
+            unsigned int const defAutoDamagePoints = std::min(defAutoDamageToCommander, 10u);
+            LOG(this->logger, scoreDamage(true , false, attManualDamagePoints));
+            LOG(this->logger, scoreDamage(true , true , attAutoDamagePoints));
+            LOG(this->logger, scoreDamage(false, false, defManualDamagePoints));
+            LOG(this->logger, scoreDamage(false, true , defAutoDamagePoints));
+            result.pointsAttacker     += attManualDamagePoints;
+            result.pointsAttackerAuto += attAutoDamagePoints;
+            result.pointsDefender     += defManualDamagePoints;
+            result.pointsDefenderAuto += defAutoDamagePoints;
 
             // also increase number of games
             result.numberOfGames++;
