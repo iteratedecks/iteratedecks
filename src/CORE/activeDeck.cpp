@@ -1058,13 +1058,12 @@ namespace IterateDecks {
             if(QuestEffectId == BattleGroundEffect::friendlyFire && EffectType == EVENT_EMPTY) {
                 switch(Src.GetType()) {
                 case TYPE_COMMANDER: {
-                    if(Src.GetAbility(ACTIVATION_CHAOS) <= 0) {
-                        questAbilityId = ACTIVATION_CHAOS;
-                        questAbilityEffect = 1;
-                        questAbilityTargets = TARGETSCOUNT_ALL;
-                        questAbilityCount++;
-                    }
+                    questAbilityId = ACTIVATION_CHAOS;
+                    questAbilityEffect = 1;
+                    questAbilityTargets = TARGETSCOUNT_ALL;
+                    questAbilityCount++;
                                      } break;
+
                 case TYPE_ASSAULT: {
                     // if the unit already has strike, don't give it to them again
                     if(Src.GetAbility(ACTIVATION_STRIKE) == 0) {
@@ -1131,6 +1130,12 @@ namespace IterateDecks {
 
                 if(aindex < ac) {
                     aid = Src.GetAbilityInOrder(aindex);
+
+                    // ignore the commander's normal chaos
+                    // TODO should probably move to the deck building code at some point...
+                    if(aid == ACTIVATION_CHAOS && QuestEffectId == BattleGroundEffect::friendlyFire && Src.GetType() == TYPE_COMMANDER) {
+                        continue;
+                    }
 
                     // filter certain types of skills
                     // EMPTY - EMPTY
