@@ -449,6 +449,7 @@ namespace IterateDecks {
                         ,CardDB const & cardDB
                         ,unsigned int seed
                         ,bool allowInvalidDecks
+                        ,Logger * logger
                         )
         {
             // construct the decks
@@ -492,7 +493,7 @@ namespace IterateDecks {
 
             // Refactoring: Also use new simulator to check for same results.
             IterateDecksCore simulator;
-            simulator.logger = simulationLogger;
+            simulator.setLogger(logger);
             SimulationTaskStruct task;
             task.minimalNumberOfGames = numberOfIterations;
             task.surge = surge;

@@ -70,17 +70,20 @@
                     bool aborted;
                     CardDB cardDB;
 
-                public:
+                private:
+                    Logger * loggerDelegate;
                     SimulationLogger * logger;
 
                 public:
                     IterateDecksCore();
+                    virtual ~IterateDecksCore();
+                    void setLogger(Logger * loggerDelegate);
                     Result simulate(SimulationTaskStruct const &);
                     Result simulate(SimulationTaskClass const &);
                     void abort();
 
                 private:
-                    void simulateOnce(SimulationTaskClass const &, Result &);
+                    void simulateOnce(SimulationTaskClass const &, Result &, DeckLogger * attackLogger, DeckLogger * defenseLogger);
             };
 
         }

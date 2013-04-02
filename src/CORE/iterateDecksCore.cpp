@@ -34,6 +34,24 @@ namespace IterateDecks {
             this->cardDB.LoadQuestXML("quests.xml");
         }
 
+        void IterateDecksCore::setLogger(Logger * loggerDelegate) {
+            if (this->logger != NULL) {
+                delete this->logger;
+                this->logger = NULL;
+            }
+            this->loggerDelegate = loggerDelegate;
+            if (this->loggerDelegate) {
+                this->logger = new SimulationLogger(*this->loggerDelegate);
+            }
+        }
+
+        IterateDecksCore::~IterateDecksCore() {
+            if (this->logger != NULL) {
+                delete this->logger;
+                this->logger = NULL;
+            }
+        }
+
         Result IterateDecksCore::simulate(SimulationTaskStruct const & taskStruct)
         {
             // We first translate the simple struct-like simulationTask
@@ -48,17 +66,27 @@ namespace IterateDecks {
 
             // Setup seed
             std::srand(task.randomSeed);
-            
+
+            // Logging?
+            DeckLogger * attackLogger  = this->loggerDelegate ? new DeckLogger(DeckLogger::ATTACK , *(this->loggerDelegate)) : NULL;
+            DeckLogger * defenseLogger = this->loggerDelegate ? new DeckLogger(DeckLogger::DEFENSE, *(this->loggerDelegate)) : NULL;
+
             unsigned int const n = task.minimalNumberOfGames;
             this->aborted = false;
             for(unsigned int i = 0; i < n; i++) {
-                this->simulateOnce(task, result);
+                LOG(this->logger,simulationStart(i));
+                this->simulateOnce(task, result, attackLogger, defenseLogger);
+                LOG(this->logger,simulationEnd(i));
 
                 // aborted?
                 if (this->aborted) {
                     break;
                 }
             }
+
+            delete attackLogger;
+            delete defenseLogger;
+
             return result;
         }
 
@@ -68,8 +96,10 @@ namespace IterateDecks {
 
         void IterateDecksCore::simulateOnce(SimulationTaskClass const & task
                                            ,Result & result
+                                           ,DeckLogger * attackLogger
+                                           ,DeckLogger * defenseLogger
                                            )
-        {            
+        {
             // We play one game.
             // 1. What about the battleground ?
             BattleGroundEffect questEffect = task.battleGround;
@@ -81,13 +111,15 @@ namespace IterateDecks {
             // 2. We need the decks
             ActiveDeck attacker = task.attacker->instantiate();
             attacker.SetQuestEffect(questEffect);
+            attacker.logger = attackLogger;
             ActiveDeck defender = task.defender->instantiate();
             defender.SetQuestEffect(questEffect);
+            defender.logger = defenseLogger;
 
             // Surge or not?
             bool const surge = task.surge;
             bool defendersTurn = surge;
-            
+
 
             unsigned int attAutoDamageToCommander = 0;
             unsigned int defAutoDamageToCommander = 0;
@@ -105,15 +137,15 @@ namespace IterateDecks {
                     defender.DamageToCommander = 0;
                     lastManualTurn = i;
                 }
-                
+
                 // Attack
-                LOG(logger,turnStart(i));
+                LOG(this->logger,turnStart(i));
                 if(defendersTurn) {
                     defender.AttackDeck(attacker, false, i);
                 } else {
                     attacker.AttackDeck(defender, false, i);
                 }
-                LOG(logger,turnEnd(i));
+                LOG(this->logger,turnEnd(i));
 
                 // One might be dead
                 bool const attackerAlive = attacker.isAlive();
@@ -161,7 +193,7 @@ namespace IterateDecks {
                 result.gamesWon++;
                 result.pointsAttacker     += surge ? 30u : 10u;
                 result.pointsAttackerAuto += surge ? 30u : 10u;
-                // time bonus?                
+                // time bonus?
                 if(i < lastManualTurn + 10) {
                     LOG(this->logger,scoreTime(true, false, 5u));
                     result.pointsAttacker     += 5u;
@@ -169,7 +201,7 @@ namespace IterateDecks {
                 if(i <= 10) {
                     LOG(this->logger,scoreTime(true, true, 5u));
                     result.pointsAttackerAuto += 5u;
-                }                
+                }
             } else {
                 // both alive
                 result.gamesStalled++;
@@ -198,7 +230,7 @@ namespace IterateDecks {
             // also increase number of games
             result.numberOfGames++;
         }
-                                            
+
 
     }
 }

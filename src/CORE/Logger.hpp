@@ -28,7 +28,7 @@
             static unsigned long const LOG_ALL;
         private:
             unsigned long flags;
-            CardDB const * const cDB;
+            CardDB const & cDB;
             ColorMode colorMode;
 
             void write(std::string const & message);
@@ -39,7 +39,7 @@
             std::string colorTurn(std::string const & str) const;
             std::string colorSimulation(std::string const & str) const;
         public:
-            Logger(unsigned long const & flags, CardDB const * const & cDB);
+            Logger(unsigned long const & flags, CardDB const & cDB);
             void setColorMode(ColorMode const & colorMode);
 
             void log(unsigned long const & flags, std::string const & message);

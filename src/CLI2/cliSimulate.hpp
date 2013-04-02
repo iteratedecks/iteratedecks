@@ -51,6 +51,7 @@
                             ,CardDB const & cardDB
                             ,unsigned int seed
                             ,bool allowInvalidDecks
+                            ,Logger * logger
                             );
                             
 

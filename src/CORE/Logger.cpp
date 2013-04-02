@@ -9,17 +9,17 @@ namespace IterateDecks {
     namespace Core {
 
 static int logInit=0;
-unsigned long const Logger::LOG_NONE                     (0);
-unsigned long const Logger::LOG_ABILITY                  (1<<logInit++);
-unsigned long const Logger::LOG_ABILITY_FAILED           (1<<logInit++);
-unsigned long const Logger::LOG_ABILITY_FAILED_NOTARGET  (1<<logInit++);
-unsigned long const Logger::LOG_ATTACK                   (1<<logInit++);
-unsigned long const Logger::LOG_ATTACK_BEGIN_END         (1<<logInit++);
-unsigned long const Logger::LOG_DEFENSIVE_REFRESH        (1<<logInit++);
-unsigned long const Logger::LOG_TURN                     (1<<logInit++);
-unsigned long const Logger::LOG_SIMULATION               (1<<logInit++);
-unsigned long const Logger::LOG_SCORE_VERBOSE            (1<<logInit++);
-unsigned long const Logger::LOG_ALL                      ((1<<logInit)-1);
+unsigned long const Logger::LOG_NONE                     (0ul);
+unsigned long const Logger::LOG_ABILITY                  (1ul<<logInit++);
+unsigned long const Logger::LOG_ABILITY_FAILED           (1ul<<logInit++);
+unsigned long const Logger::LOG_ABILITY_FAILED_NOTARGET  (1ul<<logInit++);
+unsigned long const Logger::LOG_ATTACK                   (1ul<<logInit++);
+unsigned long const Logger::LOG_ATTACK_BEGIN_END         (1ul<<logInit++);
+unsigned long const Logger::LOG_DEFENSIVE_REFRESH        (1ul<<logInit++);
+unsigned long const Logger::LOG_TURN                     (1ul<<logInit++);
+unsigned long const Logger::LOG_SIMULATION               (1ul<<logInit++);
+unsigned long const Logger::LOG_SCORE_VERBOSE            (1ul<<logInit++);
+unsigned long const Logger::LOG_ALL                      ((1ul<<logInit)-1);
 
 enum Color {
     GREEN,
@@ -72,7 +72,7 @@ std::string factionIdToString(FactionId const & factionId)
     }
 }
 
-Logger::Logger(unsigned long const & flags, CardDB const * const & cDB)
+Logger::Logger(unsigned long const & flags, CardDB const & cDB)
 : flags(flags)
 , cDB(cDB)
 , colorMode(COLOR_NONE)
@@ -139,6 +139,7 @@ void Logger::write(std::string const & message)
 {
     std::cout.flush();
     std::clog << message << std::endl;
+    std::clog.flush();
 }
 
 bool Logger::isEnabled(unsigned long const & flags) const
@@ -526,7 +527,7 @@ void DeckLogger::defensiveRefresh(EVENT_CONDITION const & eventCondition, Played
         // FIXME: After fixing class CardDB, move this to Logger.cpp
         std::string Logger::abilityIdToString(AbilityId const & abilityId) const
         {
-            char const * cStrName = cDB->GetSkill(abilityId);
+            char const * cStrName = cDB.GetSkill(abilityId);
             return std::string(cStrName);
         }
 

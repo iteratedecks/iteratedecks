@@ -94,8 +94,8 @@ int mainWithOptions(CliOptions const & options
 
     // Set up logging
     // TODO add support for more fine grained logging control
-    unsigned int const loggingFlags ((options.verbosity) > 0 ? Logger::LOG_ALL : Logger::LOG_NONE);
-    Logger logger(loggingFlags,&DB);
+    unsigned long const loggingFlags ((options.verbosity) > 0 ? Logger::LOG_ALL : Logger::LOG_NONE);
+    Logger logger(loggingFlags, DB);
     logger.setColorMode(options.colorMode);
     DeckLogger attackLogger(DeckLogger::ATTACK, logger);
     DeckLogger defenseLogger(DeckLogger::DEFENSE, logger);
@@ -116,6 +116,7 @@ int mainWithOptions(CliOptions const & options
                         ,DB
                         ,options.seed
                         ,options.allowInvalidDecks
+                        ,&logger
                         );
 
     printResults(r);
