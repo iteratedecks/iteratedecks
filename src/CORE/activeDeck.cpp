@@ -509,6 +509,7 @@ namespace IterateDecks {
             }
 
             for (UCHAR i=0;i<flurries;i++) {
+                if(!Def.Commander.IsAlive()) break;
 
                 // Check whether attacker is still alive. (Could die, get jammed, whatever during flurry/swipe)
                 if(!attacker.IsDefined() || !attacker.IsAlive() || !attacker.canAttack()) {
@@ -569,6 +570,7 @@ namespace IterateDecks {
                     attacker.CardSkillProc(SPECIAL_ATTACK); // attack counter
                     // the swipe loop
                     for (UCHAR s=0;s<swipe;s++) {
+                        if(!Def.Commander.IsAlive()) break;
                         if(!attacker.IsAlive() || !attacker.IsDefined() || !attacker.canAttack()) {
                             // can no longer attack most likely because of
                             // an "on attack" or "on death" ability by a previous swipe target
