@@ -322,8 +322,8 @@ namespace IterateDecks {
                     bPierce = true;
                 if (pierce >= armor)
                 {
-                    armor = 0;
                     pierce -= armor; // this is for shield
+                    armor = 0;
                 }
                 else
                 {
