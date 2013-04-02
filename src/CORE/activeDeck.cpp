@@ -401,16 +401,20 @@ namespace IterateDecks {
             // berserk
             if ((dmg > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
                 bGoBerserk = true;
-            // if target is dead, we dont need to process this effects
-            if (/*targets[s]->IsAlive() && */(dmg > 0))
+
+            if (dmg > 0)
             {
                 // immobilize
                 if (SRC.GetAbility(DMGDEPENDANT_IMMOBILIZE) && PROC50)
                 {
-                    target.SetEffect(DMGDEPENDANT_IMMOBILIZE,SRC.GetAbility(DMGDEPENDANT_IMMOBILIZE));
-                    SRC.fsSpecial++; // is it good?
-                    SkillProcs[DMGDEPENDANT_IMMOBILIZE]++;
-                    LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DMGDEPENDANT_IMMOBILIZE);
+                    if(!target.GetEffect(DMGDEPENDANT_IMMOBILIZE)
+                        && !target.GetEffect(ACTIVATION_JAM)
+                        && target.GetWait() <= 1) {
+                        target.SetEffect(DMGDEPENDANT_IMMOBILIZE,SRC.GetAbility(DMGDEPENDANT_IMMOBILIZE));
+                        SRC.fsSpecial++; // is it good?
+                        SkillProcs[DMGDEPENDANT_IMMOBILIZE]++;
+                        LOG(this->logger,abilityOffensive(EVENT_ATTACKED, SRC, DMGDEPENDANT_IMMOBILIZE, target, 1));
+                    }
                 }
                 // disease
                 if (SRC.GetAbility(DMGDEPENDANT_DISEASE))
