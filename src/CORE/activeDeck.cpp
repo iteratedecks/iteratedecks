@@ -1121,7 +1121,7 @@ namespace IterateDecks {
                 {
                     if (Src.GetEffect(ACTIVATION_JAM) > 0)
                         break; // card was jammed by payback (or chaos?)
-                    if (Src.GetEffect(ACTIVATION_FREEZE) > 0 && EffectType != EVENT_DIED)
+                    if (Src.GetEffect(ACTIVATION_FREEZE) > 0 && !(EffectType == EVENT_DIED || EffectType == EVENT_ATTACKED))
                         break; // chaos-mimic-freeze makes this possible
                 }
 
