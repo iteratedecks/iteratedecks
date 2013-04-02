@@ -65,6 +65,11 @@ int mainWithOptions(CliOptions const & options
                    )
 {
     // only help, then we quit
+    if (options.printVersion) {
+        std::cout << "iteratedecks version 1.0.4" << std::endl;
+    }
+
+    // only help, then we quit
     if (options.printHelpAndExit) {
         printUsage();
         return 0;
@@ -82,7 +87,7 @@ int mainWithOptions(CliOptions const & options
     srand(options.seed);
 
     // TODO need to discover what this does
-    AchievementIndex = (int)(options.achievementOptions); // index, not id
+    AchievementId = (int)(options.achievementOptions);
 
     // TODO will replace console output by better logging system sometime
     bConsoleOutput = (options.verbosity > 0);
@@ -99,7 +104,19 @@ int mainWithOptions(CliOptions const & options
     DeckArgument attackDeck = options.attackDeck;
     DeckArgument const & defenseDeck = options.defenseDeck;
 
-    RESULTS r = simulate(attackDeck, defenseDeck, &attackLogger, &defenseLogger, &simulationLogger, options.numberOfIterations, options.surge, DB, options.seed, options.allowInvalidDecks);
+    BattleGroundEffect battleGroundEffect = options.battleGroundEffect;
+    RESULTS r = simulate(attackDeck
+                        ,defenseDeck
+                        ,&attackLogger
+                        ,&defenseLogger
+                        ,&simulationLogger
+                        ,options.numberOfIterations
+                        ,options.surge
+                        ,battleGroundEffect
+                        ,DB
+                        ,options.seed
+                        ,options.allowInvalidDecks
+                        );
 
     printResults(r);
 

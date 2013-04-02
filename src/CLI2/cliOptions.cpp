@@ -5,22 +5,10 @@
 namespace IterateDecks {
     namespace CLI {
 
-        //CommentedOption const options[] =
-        //		{ { { "number-of-iterations" , required_argument, 0, 'n' }, "sets the number of simulations to do" }
-        //		, { { "first-deck-is-ordered", no_argument      , 0, 'o' }, "marks the first deck (player deck) as ordered" }
-        //		, { { "achievement-index"    , required_argument, 0, 'a' }, "index (not id) of achievement. not sure where the difference is" }
-        //		, { { "verify"               , required_argument, 0, 0   }, "verify a result, provide an accepted range in the form <lower bound>:<upper bound>, like \"--verify 1:1\" if the deck should win all the time" }
-        //		, { { "verbose"              , no_argument      , 0, 'v' }, "verbose output" }
-        //		, { { "seed"                 , optional_argument, 0, 0   }, "set the seed, takes an optional argument. if none given use seed based on time." }
-        //		, { { "color"                , optional_argument, 0, 0   }, "color the output, currently only ANSI colors supported" }
-        //		, { { "help"                 , no_argument      , 0, 'h' }, "print help" }
-        //		};
-
-        //size_t const numberOfOptions(sizeof(options)/sizeof(CommentedOption));
-
         void printUsage()
         {
-            std::cout << "Usage:" << std::endl;
+            std::cout << "Standard usage: iteratedecks-cli.exe attackhash defensehash" << std::endl;
+            std::cout << "Flags:" << std::endl;
             for(unsigned int i = 0; i < numberOfOptions; i++) {
                 CommentedOption const & commentedOption(options[i]);
                 option const & getOptPart(commentedOption.getOptPart);
@@ -138,26 +126,26 @@ namespace IterateDecks {
 
         AchievementOptions::AchievementOptions()
         : doAchievementCheck(false)
-        , achievementIndex(0)
+        , achievementId(0)
         {
         }
 
-        void AchievementOptions::enableCheck(unsigned int const & achievementIndex)
+        void AchievementOptions::enableCheck(unsigned int const & achievementId)
         {
             this->doAchievementCheck = true;
-            this->achievementIndex = achievementIndex;
+            this->achievementId = achievementId;
         }
 
         void AchievementOptions::disableCheck()
         {
             this->doAchievementCheck = false;
-            this->achievementIndex = 0;
+            this->achievementId = 0;
         }
 
         AchievementOptions::operator int() const
         {
             if(this->doAchievementCheck) {
-                return this->achievementIndex;
+                return this->achievementId;
             } else {
                 return -1;
             }
@@ -169,7 +157,9 @@ namespace IterateDecks {
         , seed(1)
         , colorMode(Logger::COLOR_NONE)
         , printHelpAndExit(false)
+        , printVersion(false)
         , surge(false)
+        , battleGroundEffect(BattleGroundEffect::normal)
         , allowInvalidDecks(false)
         {
         }

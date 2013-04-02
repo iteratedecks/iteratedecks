@@ -12,3 +12,5 @@
 --verify 0:0 PoAB+q PoLN
 # weaken on attack ignores fear
 --verify 1:1 PoCb+q PoLN
+# weaken on attack ignores attacker
+--verify 1:1 QHC4 PoNi

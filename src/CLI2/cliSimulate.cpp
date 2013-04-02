@@ -328,12 +328,12 @@ namespace IterateDecks {
             assertX(estimator >= 0);
             assertX(summand2 >= 0);
             assertX(!isinf(summand3));
-            assertGE(estimator + summand2, summand3);
+            assertGE(estimator + summand2 + .001, summand3);
             double const factor2l = estimator + summand2 - summand3;
             double const factor2u = estimator + summand2 + summand3;
-            assertX(factor1 >= 0);
-            assertX(factor2l >= 0);
-            assertX(factor2u >= 0);
+            assertX(factor1 + 0.000 >= 0);
+            assertX(factor2l + 0.001 >= 0);
+            assertX(factor2u + 0.001 >= 0);
             lower = factor1 * factor2l;
             upper = factor1 * factor2u;
         }
@@ -362,9 +362,9 @@ namespace IterateDecks {
             } else {
                 wilson(k,n,gamma,true,lower,upper);
             }
-            assertLE(0 -.00001,lower);
-            assertLE(lower -.00001,upper);
-            assertLE(upper -.00001,1.0);
+            assertLE(0 -.001,lower);
+            assertLE(lower -.001,upper);
+            assertLE(upper -.001,1.0);
         }
 
 
@@ -445,7 +445,7 @@ namespace IterateDecks {
                         ,SimulationLogger * simulationLogger
                         ,unsigned int const & numberOfIterations
                         ,bool surge
-                        // future: battlefield id
+                        ,BattleGroundEffect battleGroundEffect
                         ,CardDB const & cardDB
                         ,unsigned int seed
                         ,bool allowInvalidDecks
@@ -458,12 +458,18 @@ namespace IterateDecks {
             // FIXME: should not pass c_str
             ActiveDeck deck1(attackDeck.getHash().c_str(), cardDB.GetPointer());
             deck1.SetOrderMatters(attackDeck.isOrdered());
+            if(battleGroundEffect != BattleGroundEffect::normal) {
+                deck1.SetQuestEffect(battleGroundEffect);
+            }
 
             RESULTS r;
             switch(defenseDeck.getType()) {
                 case DeckArgument::HASH: {
                     ActiveDeck deck2(defenseDeck.getHash().c_str(), cardDB.GetPointer());
                     deck2.SetOrderMatters(defenseDeck.isOrdered());
+                    if(battleGroundEffect != BattleGroundEffect::normal) {
+                        deck2.SetQuestEffect(battleGroundEffect);
+                    }
                     r = simulateSimple(deck1,deck2,attackLogger,defenseLogger,simulationLogger, numberOfIterations, surge);
                 } break;
 
@@ -477,6 +483,9 @@ namespace IterateDecks {
 
                 case DeckArgument::MISSION_ID: {
                     ActiveDeck deck2 = cardDB.GetMissionDeck(defenseDeck.getMissionId());
+                    if(battleGroundEffect != BattleGroundEffect::normal) {
+                        deck2.SetQuestEffect(battleGroundEffect);
+                    }
                     r = simulateSimple(deck1,deck2,attackLogger,defenseLogger,simulationLogger, numberOfIterations, surge);
                 } break;
             }
@@ -595,17 +604,21 @@ namespace IterateDecks {
             std::cout << "Games lost:  " << std::setw(11) << r.Loss << " /" << std::setw(11) << r.Games << " " << std::endl;
             std::cout << "Games drawn: " << std::setw(11) << r.Games - r.Loss - r.Win << " /" << std::setw(11) << r.Games << " " << std::endl;
 
-            double const winRate = (double)r.Win / (double)r.Games; // estimator
-            std::cout << "estimator=" << std::setiosflags(std::ios::fixed) << std::setprecision(4) << winRate << " ";
-            std::cout.flush();
-            double const gamma(0.90); // confidence level
-            double lBound, uBound;
-            twoSidedBounds(r.Win, r.Games, gamma, lBound, uBound);
-            std::cout << "confidence [" << lBound << ";" << uBound << "]";
-            assertLE(0 -.00001,lBound);
-            assertLE(lBound -.00001,winRate);
-            assertLE(winRate -.00001, uBound);
-            assertLE(uBound -.00001,1.0);
+            if(r.Win > 0 && r.Win < r.Games) {
+                double const winRate = (double)r.Win / (double)r.Games; // estimator
+                std::cout << "estimator=" << std::setiosflags(std::ios::fixed) << std::setprecision(4) << winRate << " ";
+                std::cout.flush();
+                double const gamma(0.90); // confidence level
+                double lBound, uBound;
+                twoSidedBounds(r.Win, r.Games, gamma, lBound, uBound);
+                std::cout << "confidence [" << lBound << ";" << uBound << "]";
+                assertLE(0 -.001,lBound);
+                assertLE(lBound -.001,winRate);
+                assertLE(winRate -.001, uBound);
+                assertLE(uBound -.001,1.0);
+            } else {
+                std::cout << "confidence skipped";
+            }
             std::cout << "; ";
             double const averageNetPoints ((double)r.Points / (double)r.Games);
             std::cout << "ANP=" << averageNetPoints;

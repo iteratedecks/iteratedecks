@@ -64,6 +64,11 @@ namespace IterateDecks {
             char const * const short_options(shortOptions.c_str());
 
             CliOptions options;
+
+            if (argc == 1) {
+                options.printHelpAndExit = true;
+            }
+
             // gnu getopt stuff
             while(true) {
                 int option_index = 0;
@@ -88,14 +93,14 @@ namespace IterateDecks {
                             }
                         } break;
                     case 'a': {
-                            std::stringstream ssAchievementIndex(optarg);
-                            int achievementIndex;
-                            ssAchievementIndex >> achievementIndex;
-                            if(ssAchievementIndex.fail()) {
-                                throw InvalidUserInputError ("-a --achievement-index requires an integer argument");
+                            std::stringstream ssAchievementId(optarg);
+                            int achievementId;
+                            ssAchievementId >> achievementId;
+                            if(ssAchievementId.fail()) {
+                                throw InvalidUserInputError ("-a --achievement-id requires an integer argument");
                             }
-                            if (achievementIndex >= 0) {
-                                options.achievementOptions.enableCheck(achievementIndex);
+                            if (achievementId >= 0) {
+                                options.achievementOptions.enableCheck(achievementId);
                             } else {
                                 options.achievementOptions.disableCheck();
                             }
@@ -136,6 +141,16 @@ namespace IterateDecks {
                             }
                             options.defenseDeck.setMission(missionId);
                         } break;
+                    case 'b': {
+                            std::stringstream ssBattleGroundEffectId(optarg);
+                            int battleGroundEffectId;
+                            ssBattleGroundEffectId >> battleGroundEffectId;
+                            if(ssBattleGroundEffectId.fail()) {
+                                throw std::invalid_argument ("-b --battleground-id requires an integer argument");
+                            }
+                            BattleGroundEffect battleGroundEffect = static_cast<BattleGroundEffect>(battleGroundEffectId);
+                            options.battleGroundEffect = battleGroundEffect;
+                        } break;
                     case VERIFY: {
                             //std::clog << "verify" << std::endl;
                             options.verifyOptions = VerifyOptions(optarg);
@@ -159,6 +174,9 @@ namespace IterateDecks {
                     case ALLOW_INVALID_DECKS: {
                             options.allowInvalidDecks = true;
                         } break;
+                    case VERSION: {
+                            options.printVersion = true;
+                        } break;
                     case '?':
                         throw InvalidUserInputError("no such option");
                     case 0: {
@@ -173,6 +191,7 @@ namespace IterateDecks {
                         }
                 }
             }
+
             if (options.printHelpAndExit) {
                 // no more arguments expected
             } else if((options.defenseDeck.getType() == DeckArgument::RAID_ID
@@ -186,6 +205,7 @@ namespace IterateDecks {
                 // other arguments, we expect exactly two decks
                 options.attackDeck.setHash(argv[optind+0]);
                 options.defenseDeck.setHash(argv[optind+1]);
+            } else if(options.printVersion) { // --version can no op safely
             } else {
                 throw std::invalid_argument("please specify exactly two decks to test");
             }

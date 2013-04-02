@@ -84,7 +84,7 @@
                                                    ,UCHAR & iSwiped
                                                    ,ActiveDeck & Def
                                                    );
-                    void Attack(UCHAR index, ActiveDeck &Def);
+                    void Attack(UINT index, ActiveDeck &Def);
                 public:
                     ActiveDeck();
                     ~ActiveDeck();
@@ -109,16 +109,17 @@
                     bool IsInTargets(PlayedCard *pc, PPCIV *targets);
                     bool Evade(PlayedCard *defender, BattleGroundEffect QuestEffectId, bool chaos);
                     UCHAR Intercept(PPCIV &targets, UCHAR destindex, ActiveDeck &Dest);
-                    bool Payback(PlayedCard *defender, PlayedCard &Src, ActiveDeck &dest, EVENT_CONDITION EffectType, UCHAR effectId, EFFECT_ARGUMENT effect, bool chaos);
+                    bool Payback(PlayedCard *defender, PlayedCard &Src, EVENT_CONDITION EffectType, UCHAR effectId, EFFECT_ARGUMENT effect, bool chaos);
                     bool Tribute(PlayedCard *tributeCard, PlayedCard *targetCard, ActiveDeck *procDeck, EVENT_CONDITION EffectType, AbilityId effectId, EFFECT_ARGUMENT effect);
                     void PlayCard(const Card *c, ActiveDeck &Def);
+                    void ApplyDefensiveEffects(BattleGroundEffect QuestEffectId,PlayedCard &defender,PlayedCard &attacker,ActiveDeck &attackDeck, UCHAR dmg);
                     void ApplyEffects(BattleGroundEffect QuestEffectId,EVENT_CONDITION EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced=false,bool IsFusioned=false,PlayedCard *Mimicer=0,UCHAR StructureIndex = 0, PlayedCard * target=NULL);
                     void applyDamageDependentEffectOnAttack(BattleGroundEffect questEffectId, PlayedCard & src, AbilityId const & abilityId, EFFECT_ARGUMENT const & effectArgument, ActiveDeck & otherDeck, PlayedCard & target);
                     void SweepFancyStats(PlayedCard &pc);
                     void SweepFancyStatsRemaining();
                     const Card *PickNextCard(bool bNormalPick = true);
                     void CheckDeathEvents(PlayedCard &src, ActiveDeck &Def);
-                    void AttackDeck(ActiveDeck &Def, bool bSkipCardPicks = false);
+                    void AttackDeck(ActiveDeck &Def, bool bSkipCardPicks, unsigned int turn);
                     void PrintShort();
                     //void appendCard(std::stringstream * os,PlayedCard const & card,unsigned int const w);
                     //void appendCards(std::stringstream * os, LCARDS const & cards, unsigned int const w);

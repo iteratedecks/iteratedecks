@@ -162,7 +162,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
         LOG(logger,turnStart(i+1));
 		if (bSurge)
 		{
-			tDef.AttackDeck(tAtk);
+			tDef.AttackDeck(tAtk, false, i+1);
 			if (!tAtk.Commander.IsAlive())
 			{
                 // defender attacked (surge). attacker is dead
@@ -228,7 +228,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 				{
 					if (bSurge && (iwl > i)) // double defence turn without this check
 					{	
-						ywl.AttackDeck(xwl);
+						ywl.AttackDeck(xwl, false, i+1);
 						iwl++;
 						if (!xwl.Commander.IsAlive())
 						{
@@ -236,17 +236,17 @@ In other words, it is the same as on auto, only the counters reset every time yo
 							break;
 						}
 					}
-					xwl.AttackDeck(ywl);
+					xwl.AttackDeck(ywl, false, i+1);
 					iwl++;
 					if (!ywl.Commander.IsAlive())
 					{
-						if (xwl.CheckRequirements(Reqs) && ((!bAnnihilator) || (ywl.IsAnnihilated())) && (DB.CheckAchievement(AchievementIndex,i+1,xwl,ywl)))
+						if (xwl.CheckRequirements(Reqs) && ((!bAnnihilator) || (ywl.IsAnnihilated())) && (DB.CheckAchievement(AchievementId,i+1,xwl,ywl)))
 							rbc[CSIndex[id]].WLWin++;
 						break;
 					}
 					if (!bSurge)
 					{
-						ywl.AttackDeck(xwl);
+						ywl.AttackDeck(xwl, false, i+1);
 						iwl++;
 						if (!xwl.Commander.IsAlive())
 						{
@@ -270,10 +270,10 @@ In other words, it is the same as on auto, only the counters reset every time yo
         if(bSurge) {
             LOG(logger,turnStart(i+1));
         }
-        tAtk.AttackDeck(tDef);
+        tAtk.AttackDeck(tDef, false, i+1);
 		if (!tDef.Commander.IsAlive())
 		{			
-			if (tAtk.CheckRequirements(Reqs) && ((!bAnnihilator) || (tDef.IsAnnihilated())) && (DB.CheckAchievement(AchievementIndex,i+1,tAtk,tDef)))
+			if (tAtk.CheckRequirements(Reqs) && ((!bAnnihilator) || (tDef.IsAnnihilated())) && (DB.CheckAchievement(AchievementId,i+1,tAtk,tDef)))
 			{
 				InsertOrder(tAtk.GetHash64(true),1);
 				if (CSIndex && rbc)
@@ -329,7 +329,7 @@ In other words, it is the same as on auto, only the counters reset every time yo
 		if (!bSurge)
 		{
             LOG(logger,turnStart(i+1));
-			tDef.AttackDeck(tAtk);
+			tDef.AttackDeck(tAtk, false, i+1);
 			if (!tAtk.Commander.IsAlive())
 			{
 				if (CSIndex && rbc)
@@ -485,14 +485,14 @@ void EvaluateRaidQuestOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSInd
 				xwl.Deck.clear();
 				for (UCHAR iwl=i; (iwl < MaxTurn); )
 				{
-					xwl.AttackDeck(ywl);
+					xwl.AttackDeck(ywl, false, i+1);
 					iwl++;
 					if (!ywl.Commander.IsAlive())
 					{
 						rbc[CSIndex[id]].WLWin++;
 						break;
 					}
-					ywl.AttackDeck(xwl);
+					ywl.AttackDeck(xwl, false, i+1);
 					iwl++;
 					if (!xwl.Commander.IsAlive())
 					{
@@ -509,7 +509,7 @@ void EvaluateRaidQuestOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSInd
 		}
 		if (tAtk.Deck.size() >= 2)
 			iLastManualTurn = i;
-		tAtk.AttackDeck(tDef);
+		tAtk.AttackDeck(tDef, false, i+1);
 		if (!tDef.Commander.IsAlive())
 		{
 			if (tAtk.CheckRequirements(Reqs) && ((!bAnnihilator) || (tDef.IsAnnihilated())))
@@ -547,7 +547,7 @@ void EvaluateRaidQuestOnce(const ActiveDeck gAtk, RESULTS &r, const UCHAR *CSInd
 			break;
 		}
 		i++;
-		tDef.AttackDeck(tAtk);
+		tDef.AttackDeck(tAtk, false, i+1);
 		if (!tAtk.Commander.IsAlive())
 		{
 			InsertOrder(tAtk.GetHash64(true),-1);
@@ -855,7 +855,7 @@ struct EVAL_PARAMS
 	bool Annihilator;
 	bool SurrenderAtLoss;
 	//
-	int AchievementIndex;
+	int AchievementId;
 	DWORD SecondPassMultiplier;
 };
 

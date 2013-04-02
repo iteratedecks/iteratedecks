@@ -109,9 +109,9 @@ namespace IterateDecks {
                 // Attack
                 LOG(logger,turnStart(i));
                 if(defendersTurn) {
-                    defender.AttackDeck(attacker);
+                    defender.AttackDeck(attacker, false, i);
                 } else {
-                    attacker.AttackDeck(defender);
+                    attacker.AttackDeck(defender, false, i);
                 }
                 LOG(logger,turnEnd(i));
 

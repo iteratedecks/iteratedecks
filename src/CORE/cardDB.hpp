@@ -102,7 +102,7 @@
                     void GenRandomDeckFromCard(VCARDS &Deck,size_t i);
                     const UINT GetCustomCount();
                     bool GetCustomDeck(UINT Index, ActiveDeck &R);
-                    bool CheckAchievement(int achievementIndex, const UINT iTurn, ActiveDeck &Atk, ActiveDeck &Def);
+                    bool CheckAchievement(int achievementId, const UINT iTurn, ActiveDeck &Atk, ActiveDeck &Def);
                     // named decks
                     ActiveDeck GetNamedDeck(const char* DeckName, Tag tag);
 

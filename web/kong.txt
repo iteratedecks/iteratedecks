@@ -1,0 +1,68 @@
+iteratedecks 1.0.4 has released!
+
+----
+
+<h2>Downloads</h2>
+
+You can download the latest version for Windows here:
+
+http://www.hunterthinks.com/id/
+
+Special thanks to hunterhogan for the hosting.
+
+----
+<h2>Release Notes</h2>
+<h3>1.0.4</h3>
+
+  * Now supports Stun
+  * Chaosed Jam now targets units that have already attacked
+  * Blitzed units can now be Rallied
+  * Mimicked Payback can now hit the mimicker
+  * Chaosed abilities can now target already played units
+
+<h3>1.0.3</h3>
+
+  * Crush damage no longer triggers On Attack abilities
+  * <pre>-a</pre> now uses achievement id instead of achievement index
+  * Now supports more than 256 units at a time
+
+<h3>1.0.2</h3>
+
+  * Enabled battleground flag (-b)
+  * Regenerate now happens after On Death abilities
+  * Infuse only changes faction for helpful abilities
+  * Crush damage now ignores Impenetrable battleground effect
+  * Berzerk no longer procs on walls during Impenetrable battleground effect
+  * Added support for Toxic battleground effect (Decay was already supported)
+  * Friendly Fire battleground effect no longer overrides Commander's chaos
+  * Mimic is no longer evadable during Copycat battleground effect
+  * Split now targets Jammed units
+
+<h3>1.0.1</h3>
+
+  * Windows XP and Windows 7 support
+  * On Death and On Attacked now Rally and Augment Wait 1 units
+
+<h3>1.0.0</h3>
+
+  * Initial public release
+  * Supports Legion
+
+----
+<h2>FAQ</h2>
+<h3>How do I run the program?</h3>
+* Start a Command Prompt
+* Use "cd" to navigate to the iteratedecks directory
+* Run "iteratedecks-cli.exe --help" to get started
+
+<h3>Where should I run the program?</h3>
+You can run the program from anywhere but the working directory needs to have the .xml files. This means you will typically run it from the iteratedecks directory.
+
+<h3>What happened to EvaluateDecks?</h3>
+iteratedecks is the successor to EvaluateDecks and was built from the same codebase. The old sim was out of date, the GUI was broken and the Kongregate thread was owned by the old developers.
+
+<h3>Will there be a GUI?</h3>
+No GUI is in the plans but we understand it is highly desired. Once we are happy with the core code base we will probably discuss the creation of a GUI.
+
+<h3>Can iteratedecks submit simulations to the Fansite?</h3>
+Yes! Version 1.0.2 or later fully supports the Fansite submission API. If you are interested, PM me and I will get you a token.

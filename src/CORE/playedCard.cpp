@@ -30,6 +30,8 @@ namespace IterateDecks {
                 return false;
             } else if (this->GetAttack() <= 0) {
                 return false;
+            } else if (this->GetEffect(DEFENSIVE_STUN) > 0) {
+                return false;
             }
             return true;
         }
@@ -196,6 +198,14 @@ namespace IterateDecks {
                 bActivated = true;
             return bDoBegin;
         }
+        void PlayedCard::ProcessLegion(int count, BattleGroundEffect QuestEffectId)
+        {
+            if (count > 0 && IsAlive() && (GetAbility(SPECIAL_LEGION))) {
+                int amount = count * GetAbility(SPECIAL_LEGION);
+                this->Rally(amount);
+                this->Heal(amount);
+            }
+        }
         void PlayedCard::ProcessPoison(BattleGroundEffect QuestEffectId)
         {
             if (IsAlive() && (Effects[DMGDEPENDANT_POISON]))
@@ -254,6 +264,10 @@ namespace IterateDecks {
             Effects[ACTIVATION_WEAKEN] = 0;
             Effects[ACTIVATION_AUGMENT] = 0;
 
+            if(Effects[DEFENSIVE_STUN] > 0) {
+                Effects[DEFENSIVE_STUN]--;
+            }
+
             if(Effects[SPECIAL_BLITZ]) {
                 Effects[SPECIAL_BLITZ] = 0;
                 bActivated = false;
@@ -269,6 +283,7 @@ namespace IterateDecks {
             Effects[DMGDEPENDANT_IMMOBILIZE] = 0;
             Effects[ACTIVATION_ENFEEBLE] = 0;
             Effects[ACTIVATION_CHAOS] = 0;
+            Effects[DEFENSIVE_STUN] = 0;
         }
         bool PlayedCard::IsCleanseTarget()
         {
@@ -279,7 +294,8 @@ namespace IterateDecks {
                     (Effects[ACTIVATION_FREEZE] && bActivated) ||
                     Effects[DMGDEPENDANT_IMMOBILIZE] ||
                     Effects[ACTIVATION_ENFEEBLE] ||
-                    Effects[ACTIVATION_CHAOS]);
+                    Effects[ACTIVATION_CHAOS] ||
+                    Effects[DEFENSIVE_STUN]);
         }
         bool PlayedCard::CanEmulate(const UCHAR effect)
         {
@@ -298,10 +314,53 @@ namespace IterateDecks {
 
             return false;
         }
+        bool PlayedCard::Regenerate(BattleGroundEffect QuestEffectId) {
+            // regnerate?
+            if(this->IsDiseased()) return false;
+
+            EFFECT_ARGUMENT const regenerateAmount = this->OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
+            //bool const hasAbilityRegenerate = (regenerateAmount > 0);
+            if ((regenerateAmount > 0) && (PROC50))
+            {
+                // This unit regenerates.
+                this->Health = regenerateAmount;
+                fsHealed += regenerateAmount;
+                if (QuestEffectId == BattleGroundEffect::invigorate) {
+                    this->Attack += regenerateAmount;
+                }
+                CardSkillProc(DEFENSIVE_REGENERATE);
+                //if (lr && log)
+                //    log->push_back(LOG_RECORD(lr->Target,DEFENSIVE_REGENERATE,Health));
+                // TODO Replace by new logging system, but right now PlayedCards do not know the logger
+                if (bConsoleOutput)
+                {
+                    PrintDesc();
+                    printf(" regenerated %d health\n",Health);
+                }
+                return true;
+            } else {
+                // This unit does not regenerate
+                if (IsAlive()) { // shouldn't die twice ;)
+                    fsDeaths++;
+                }
+                this->Health = 0;
+                //if (lr && log)
+                //    log->push_back(LOG_RECORD(lr->Target,0,0)); // death
+                if (bConsoleOutput)
+                {
+                    PrintDesc();
+                    printf(" died!\n");
+                }
+            }
+            return false;
+        }
+
         const UCHAR PlayedCard::GetAbilitiesCount() const { return OriginalCard->GetAbilitiesCount(); }
         const UCHAR PlayedCard::GetAbilityInOrder(const UCHAR order) const { return OriginalCard->GetAbilityInOrder(order); }
         void PlayedCard::Infuse(const UCHAR setfaction)
         {
+            // this is kind of a kludge...
+            SetEffect(ACTIVATION_INFUSE, FACTION_BLOODTHIRSTY);
             //OriginalCard.Infuse(setfaction);
             Faction = setfaction;
             SkillProcBuffer[ACTIVATION_INFUSE]++;
@@ -348,45 +407,8 @@ namespace IterateDecks {
                 // We deal as much as the unit has
                 UCHAR dealt = Health;
 
-                // regnerate?
-                bool const diseased = this->IsDiseased();
-                EFFECT_ARGUMENT const regenerateAmount = this->OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
-                bool const hasAbilityRegenerate = (regenerateAmount > 0);
-                if (    (!diseased)
-                     && (bCanRegenerate)
-                     && (hasAbilityRegenerate)
-                     && (PROC50)
-                   )
-                {
-                    // This unit regenerates.
-                    this->Health = regenerateAmount;
-                    fsHealed += regenerateAmount;
-                    if (QuestEffectId == BattleGroundEffect::invigorate) {
-                        this->Attack += regenerateAmount;
-                    }
-                    CardSkillProc(DEFENSIVE_REGENERATE);
-                    if (lr && log)
-                        log->push_back(LOG_RECORD(lr->Target,DEFENSIVE_REGENERATE,Health));
-                    // TODO Replace by new logging system, but right now PlayedCards do not know the logger
-                    if (bConsoleOutput)
-                    {
-                        PrintDesc();
-                        printf(" regenerated %d health\n",Health);
-                    }
-                } else {
-                    // This unit does not regenerate
-                    if (IsAlive()) { // shouldn't die twice ;)
-                        fsDeaths++;
-                    }
-                    this->Health = 0;
-                    if (lr && log)
-                        log->push_back(LOG_RECORD(lr->Target,0,0)); // death
-                    if (bConsoleOutput)
-                    {
-                        PrintDesc();
-                        printf(" died!\n");
-                    }
-                }
+                this->Health = 0;
+
                 DeathEvents++;
                 if (actualdamagedealt) // siphon and leech are kinda bugged - overkill damage counts as full attack damage even if card has 1 hp left, therefore this workaround
                 {
@@ -585,15 +607,7 @@ namespace IterateDecks {
             return this->OriginalCard->GetAbility(id);
         }
         const UCHAR PlayedCard::GetTargetCount(const UCHAR id) const { return OriginalCard->GetTargetCount(id); }
-        const UCHAR PlayedCard::GetTargetFaction(const UCHAR id) const
-        {
-            // this is for infuse
-            // if card was infused, we gotta force target faction it was infused into
-            if ((Faction != OriginalCard->GetFaction()) && (OriginalCard->GetTargetFaction(id) != FACTION_NONE))// check if card was infused and targetfaction is determined
-                return Faction; // force faction it was infused into
-            else
-                return OriginalCard->GetTargetFaction(id);
-        }
+        const UCHAR PlayedCard::GetTargetFaction(const UCHAR id) const { return OriginalCard->GetTargetFaction(id); }
         const UCHAR PlayedCard::GetAbilityEvent(const UCHAR id) const { return OriginalCard->GetAbilityEvent(id); }
         const bool PlayedCard::GetPlayed() const { return bPlayed; }
         void PlayedCard::Played() { bPlayed = true; }

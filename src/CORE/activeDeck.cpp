@@ -5,6 +5,8 @@
 #include "card.hpp"
 #include "assert.hpp"
 #include <cstring>
+#include <sstream>
+#include <iomanip>
 
 // FIXME remove ancient first generation logging code
 #include <cstdio>
@@ -175,7 +177,7 @@ namespace IterateDecks {
             bool const hitCommander(Def.Commander.HitCommander(QuestEffectId
                                                               ,cdmg
                                                               ,src,Def,*this
-                                                              ,true,&overkill,Log
+                                                              ,false,&overkill,Log
                                                               ,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index)
                                                                      ,LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0)
                                                                      ,0,cdmg)
@@ -197,7 +199,10 @@ namespace IterateDecks {
             src.fsOverkill += overkill;
             src.fsDmgDealt += cdmg;
             // can go berserk after hitting commander too
-            if ((src.GetAttack()+valor > 0) && src.GetAbility(DMGDEPENDANT_BERSERK))
+            if ((src.GetAttack()+valor > 0)
+                && src.GetAbility(DMGDEPENDANT_BERSERK)
+                && (QuestEffectId != BattleGroundEffect::impenetrable || hitCommander) // berserk does not proc when hitting an impenetrable wall
+                )
             {
                 src.Berserk(src.GetAbility(DMGDEPENDANT_BERSERK));
                 LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_BERSERK,src.GetAbility(DMGDEPENDANT_BERSERK));
@@ -363,7 +368,7 @@ namespace IterateDecks {
                 if (SRC.GetAbility(DMGDEPENDANT_CRUSH))
                 {
                     UCHAR overkill = 0;
-                    if (Def.Commander.HitCommander(QuestEffectId,SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def,*this,false,&overkill,
+                    if (Def.Commander.HitCommander(QuestEffectId,SRC.GetAbility(DMGDEPENDANT_CRUSH),SRC,Def,*this,true,&overkill,
                         Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_COMMANDER,0),DMGDEPENDANT_CRUSH,SRC.GetAbility(DMGDEPENDANT_CRUSH))))
                     {
                         DamageToCommander += SRC.GetAbility(DMGDEPENDANT_CRUSH);
@@ -385,18 +390,8 @@ namespace IterateDecks {
             // Moraku suggests that "on attack" triggers after crush
             Def.ApplyEffects(QuestEffectId,EVENT_ATTACKED,target,targetindex,*this,false,false,NULL,0,&SRC);
 
-            // counter
-            if ((dmg > 0) && target.GetAbility(DEFENSIVE_COUNTER))
-            {
-                UCHAR overkill = 0;
-                UCHAR cdmg = target.GetAbility(DEFENSIVE_COUNTER) + SRC.GetEffect(ACTIVATION_ENFEEBLE);
-                LOG(this->logger,defensiveAbility(target,SRC,DEFENSIVE_COUNTER,cdmg));
-                target.fsDmgDealt += SRC.SufferDmg(QuestEffectId,cdmg,0,0,0,&overkill); // counter dmg is enhanced by enfeeble
-                LogAdd(LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DEFENSIVE_COUNTER,cdmg);
-                target.fsOverkill += overkill;
-                Def.SkillProcs[DEFENSIVE_COUNTER]++;
-                CheckDeathEvents(SRC,Def);
-            }
+            Def.ApplyDefensiveEffects(QuestEffectId, target, SRC, *this, dmg);
+
             if (dmg > StrongestAttack)
                 StrongestAttack = dmg;
             // berserk
@@ -478,7 +473,7 @@ namespace IterateDecks {
             return true;
         }
     // #############################################################################
-        void ActiveDeck::Attack(UCHAR index, ActiveDeck &Def)
+        void ActiveDeck::Attack(UINT index, ActiveDeck &Def)
         {
             PlayedCard & attacker = this->getUnitAt(index);
 
@@ -665,12 +660,12 @@ namespace IterateDecks {
             QuestEffectId = EffectId;
         }
         // please note, contructors don't clean up storages, must do it manually and beforehand, even copy constructor
-        ActiveDeck::ActiveDeck(const char *HashBase64, const Card *pCDB)
+        ActiveDeck::ActiveDeck(const char *DeckHash, const Card *pCDB)
         : pCDB(pCDB)
         , logger(NULL)
         {
             assertX(pCDB);
-            assertX(HashBase64);
+            assertX(DeckHash);
             QuestEffectId = BattleGroundEffect::normal;
             Log = 0;
             CSIndex = 0;
@@ -684,21 +679,35 @@ namespace IterateDecks {
             memset(SkillProcs,0,sizeof(SkillProcs));
             memset(CardPicks,0,sizeof(CardPicks));
             memset(CardDeaths,0,sizeof(CardDeaths));
+
+            bool isCardOver4000;
             //
-            size_t len = strlen(HashBase64);
-            if(len % 2 != 0) {
-                throw InvalidDeckHashError(InvalidDeckHashError::notEvenChars);
-            }
-            assertX(!(len & 1)); // bytes should go in pairs
-            if (len & 1)
-                return;
-            len = len >> 1; // div 2
+            size_t len = strlen(DeckHash);
+            //if(len % 2 != 0) {
+            //    throw InvalidDeckHashError(InvalidDeckHashError::notEvenChars);
+            //}
+            //assertX(!(len & 1)); // bytes should go in pairs
+            //if (len & 1)
+            //    return;
+            //len = len >> 1; // div 2
             //Deck.reserve(DEFAULT_DECK_RESERVE_SIZE);
-            for (UCHAR i = 0; i < len; i++)
+
+            for (UCHAR i = 0; i < len; i+=2)
             {
-                if (HashBase64[i << 1] == '.') break; // delimeter
-                if (isspace(HashBase64[i << 1])) break; // not a hash
-                tid = BASE64ID((HashBase64[i << 1] << 8) + HashBase64[(i << 1) + 1]);
+                if (DeckHash[i] == '.') break; // delimeter
+                if (isspace(DeckHash[i])) break; // not a hash
+
+                if(DeckHash[i] == '-') {
+                    i++;
+                    isCardOver4000 = true;
+                    tid = 4000;
+                } else {
+                    isCardOver4000 = false;
+                    tid = 0;
+                }
+                assertX(i + 1 < len); // make sure we have a full hash
+                unsigned short cardHash = (DeckHash[i] << 8) + DeckHash[i + 1];
+                tid += BASE64ID(cardHash);
                 if (i==0)
                 {
                     // first card is commander
@@ -711,7 +720,7 @@ namespace IterateDecks {
                 {
                     // later cards are not commander
                     assertX(i || (tid < CARD_MAX_ID)); // commander card can't be encoded with RLE
-                    if (tid < CARD_MAX_ID)
+                    if (tid < 4000 || isCardOver4000)
                     {
                         // this is a card
                         Deck.push_back(&pCDB[tid]);
@@ -720,7 +729,7 @@ namespace IterateDecks {
                     else
                     {
                         // this is an encoding for rle
-                        for (UINT k = CARD_MAX_ID+1; k < tid; k++) // decode RLE, +1 because we already added one card
+                        for (UINT k = 4000+1; k < tid; k++) // decode RLE, +1 because we already added one card
                             Deck.push_back(&pCDB[lastid]);
                     }
                 }
@@ -927,12 +936,12 @@ namespace IterateDecks {
         }
 
         // Will target unit use Payback?
-        bool ActiveDeck::Payback(PlayedCard *defender, PlayedCard &Src, ActiveDeck &Dest, EVENT_CONDITION EffectType, AbilityId effectId, EFFECT_ARGUMENT effect, bool chaos) {
+        bool ActiveDeck::Payback(PlayedCard *defender, PlayedCard &Src, EVENT_CONDITION EffectType, AbilityId effectId, EFFECT_ARGUMENT effect, bool chaos) {
             if (Src.IsAlive()
                 && EffectType != EVENT_DIED
                 && defender->GetAbility(DEFENSIVE_PAYBACK)
                 && (Src.GetType() == TYPE_ASSAULT)
-                && (Src.GetAttack() > 0)
+                //&& (Src.GetAttack() > 0)
                 && (!chaos)
                 && PROC50)
             {
@@ -967,9 +976,30 @@ namespace IterateDecks {
             return false;
         }
 
+        void ActiveDeck::ApplyDefensiveEffects(BattleGroundEffect QuestEffectId,PlayedCard &defender,PlayedCard &attacker,ActiveDeck &attackDeck, UCHAR dmg) {
+            if ((dmg > 0) && defender.GetAbility(DEFENSIVE_STUN))
+            {
+                LOG(this->logger,defensiveAbility(defender,attacker,DEFENSIVE_STUN,1));
+                this->SkillProcs[DEFENSIVE_STUN]++;
+                // we just decrement STUN at the end of turn so if we set it to "2" it will skip 1 turn's attacks
+                attacker.SetEffect(DEFENSIVE_STUN,2);
+            }
+
+            if ((dmg > 0) && defender.GetAbility(DEFENSIVE_COUNTER))
+            {
+                UCHAR overkill = 0;
+                UCHAR cdmg = defender.GetAbility(DEFENSIVE_COUNTER) + attacker.GetEffect(ACTIVATION_ENFEEBLE);
+                LOG(this->logger,defensiveAbility(defender,attacker,DEFENSIVE_COUNTER,cdmg));
+                defender.fsDmgDealt += attacker.SufferDmg(QuestEffectId,cdmg,0,0,0,&overkill); // counter dmg is enhanced by enfeeble
+                defender.fsOverkill += overkill;
+                this->SkillProcs[DEFENSIVE_COUNTER]++;
+                CheckDeathEvents(attacker,*this);
+            }
+        }
+
         void ActiveDeck::ApplyEffects(BattleGroundEffect QuestEffectId,EVENT_CONDITION EffectType, PlayedCard &Src,int Position,ActiveDeck &Dest,bool IsMimiced,bool IsFusioned,PlayedCard *Mimicer,UCHAR StructureIndex, PlayedCard * target)
         {
-            UCHAR aid,faction,targetCount;
+            UCHAR aid,faction,infusedFaction,targetCount;
             PPCIV targets;
             targets.reserve(DEFAULT_DECK_RESERVE_SIZE);
             PPCARDINDEX tmp;
@@ -1007,6 +1037,9 @@ namespace IterateDecks {
             //if ((!ac) && (QuestEffectId == QEFFECT_TIME_SURGE) && (!IsMimiced) && (EffectType == EVENT_EMPTY))
             //	ac = 1;
 
+            // abilities that target units "active next turn" are smart enough to know that On Death and On Attacked should include Wait 1
+            unsigned int activeNextTurnWait = (EffectType == EVENT_DIED || EffectType == EVENT_ATTACKED) ? 1 : 0;
+
             // TODO probably unnecessary to do all of this quest checking here;
             // should roll it up a level at some point.
             // Also, this could probably be another switch.
@@ -1019,10 +1052,12 @@ namespace IterateDecks {
             if(QuestEffectId == BattleGroundEffect::friendlyFire && EffectType == EVENT_EMPTY) {
                 switch(Src.GetType()) {
                 case TYPE_COMMANDER: {
-                    questAbilityId = ACTIVATION_CHAOS;
-                    questAbilityEffect = 1;
-                    questAbilityTargets = TARGETSCOUNT_ALL;
-                    questAbilityCount++;
+                    if(Src.GetAbility(ACTIVATION_CHAOS) <= 0) {
+                        questAbilityId = ACTIVATION_CHAOS;
+                        questAbilityEffect = 1;
+                        questAbilityTargets = TARGETSCOUNT_ALL;
+                        questAbilityCount++;
+                    }
                                      } break;
                 case TYPE_ASSAULT: {
                     // if the unit already has strike, don't give it to them again
@@ -1059,7 +1094,13 @@ namespace IterateDecks {
                 }
             }
 
-            if ((QuestEffectId == BattleGroundEffect::cloneProject) && (!IsMimiced) && (Src.GetQuestSplit()) && (EffectType == EVENT_EMPTY))
+            if (    (    QuestEffectId == BattleGroundEffect::cloneProject
+                      || QuestEffectId == BattleGroundEffect::splitFive
+                    )
+                 && (!IsMimiced)
+                 && (Src.GetQuestSplit())
+                 && (EffectType == EVENT_EMPTY)
+               )
             {
                 Src.SetQuestSplit(false); // remove mark
                 questAbilityId = ACTIVATION_SPLIT;
@@ -1074,12 +1115,12 @@ namespace IterateDecks {
                 {
                     if (Src.GetEffect(ACTIVATION_JAM) > 0)
                         break; // card was jammed by payback (or chaos?)
-                    if (Src.GetEffect(ACTIVATION_FREEZE) > 0)
+                    if (Src.GetEffect(ACTIVATION_FREEZE) > 0 && EffectType != EVENT_DIED)
                         break; // chaos-mimic-freeze makes this possible
                 }
 
                 // Need to check this every time card uses skill because it could be paybacked chaos
-                bool chaos = Src.GetEffect(ACTIVATION_CHAOS) != 0;
+                bool chaos = procCard->GetEffect(ACTIVATION_CHAOS) != 0;
 
                 if(aindex < ac) {
                     aid = Src.GetAbilityInOrder(aindex);
@@ -1107,12 +1148,13 @@ namespace IterateDecks {
 
                     effect = Src.GetAbility(aid); // fusion is applied in the SWTITCH below
                     faction = IsMimiced ? FACTION_NONE : Src.GetTargetFaction(aid);
+                    infusedFaction = Src.GetEffect(ACTIVATION_INFUSE) ? Src.GetEffect(ACTIVATION_INFUSE) : faction;
                     targetCount = Src.GetTargetCount(aid);
                 } else {
                     aid = questAbilityId;
                     effect = questAbilityEffect;
                     targetCount = questAbilityTargets;
-                    faction = FACTION_NONE;
+                    infusedFaction = faction = FACTION_NONE;
                 }
 
                 switch(aid) {
@@ -1124,7 +1166,7 @@ namespace IterateDecks {
 
                         effect *= FusionMultiplier;
                         assertGT(effect,0u);
-                        GetTargets(Units,faction,targets);
+                        GetTargets(Units,infusedFaction,targets);
                         LOG_CARD lc(LogDeckID,TYPE_ASSAULT,100);
 
                         PPCIV::iterator vi = targets.begin();
@@ -1222,11 +1264,11 @@ namespace IterateDecks {
                                 procCard->fsSpecial += effect;
                                 LogAdd(LOG_CARD(procDeck->LogDeckID,procCard->GetType(),SrcPos),lc,aid,effect);
 
-                                if (Payback(vi->first, Src, Dest, EffectType, ACTIVATION_ENFEEBLE, effect, chaos))  // payback
+                                if (Payback(vi->first, *procCard, EffectType, ACTIVATION_ENFEEBLE, effect, chaos))  // payback
                                 {
-                                    Src.SetEffect(aid,Src.GetEffect(aid) + effect);
+                                    procCard->SetEffect(aid,procCard->GetEffect(aid) + effect);
                                     vi->first->fsSpecial += effect;
-                                    Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+                                    procDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
                                 }
                             }
                     } break;
@@ -1236,7 +1278,7 @@ namespace IterateDecks {
                         effect *= FusionMultiplier;
                         effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                         assertGT(effect,0u);
-                        GetTargets(Units,faction,targets);
+                        GetTargets(Units,infusedFaction,targets);
 
                         PPCIV::iterator vi = targets.begin();
                         while (vi != targets.end())
@@ -1382,7 +1424,7 @@ namespace IterateDecks {
                         effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                         assertGT(effect,0u);
 
-                        GetTargets(Units,faction,targets);
+                        GetTargets(Units,infusedFaction,targets);
 
                         RandomizeTarget(targets,targetCount,Dest,false);
 
@@ -1434,7 +1476,7 @@ namespace IterateDecks {
                             GetTargets(Dest.Units,faction,targets);
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, 0};
-                        FilterTargets(targets,skipEffects,NULL,-1,1,-1,false);
+                        FilterTargets(targets,skipEffects,NULL,-1,1,-1,!chaos);
                         RandomizeTarget(targets,targetCount,Dest,!chaos);
 
                         if (targets.size() <= 0) {
@@ -1461,11 +1503,11 @@ namespace IterateDecks {
 
                                     procDeck->SkillProcs[aid]++;
 
-                                    if (Payback(vi->first, Src, Dest, EffectType, ACTIVATION_JAM, effect, chaos))  // payback is it 1/2 or 1/4 chance to return jam with payback????
+                                    if (Payback(vi->first, *procCard, EffectType, ACTIVATION_JAM, effect, chaos))  // payback is it 1/2 or 1/4 chance to return jam with payback????
                                     {
-                                        Src.SetEffect(aid,effect);
+                                        procCard->SetEffect(aid,effect);
                                         vi->first->fsSpecial += effect;
-                                        Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+                                        procDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
                                     }
                                 }
                             }
@@ -1505,11 +1547,11 @@ namespace IterateDecks {
                                 procCard->fsSpecial += effect;
                                 //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
 
-                                if (Payback(vi->first, Src, Dest, EffectType, ACTIVATION_FREEZE, effect, chaos))
+                                if (Payback(vi->first, *procCard, EffectType, ACTIVATION_FREEZE, effect, chaos))
                                 {
-                                    Src.SetEffect(aid,effect);
+                                    procCard->SetEffect(aid,effect);
                                     vi->first->fsSpecial += effect;
-                                    Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+                                    procDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
                                 }
                             }
                     } break;
@@ -1537,7 +1579,7 @@ namespace IterateDecks {
                         SkillProcs[aid]++;
 
                         for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
-                            if (Evade(vi->first, QuestEffectId, chaos))
+                            if (QuestEffectId != BattleGroundEffect::copyCat && Evade(vi->first, QuestEffectId, chaos))
                             {
                                 LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
                                 Dest.SkillProcs[DEFENSIVE_EVADE]++;
@@ -1558,10 +1600,10 @@ namespace IterateDecks {
                         effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                         assertGT(effect,0u);
 
-                        GetTargets(Units,faction,targets);
+                        GetTargets(Units,infusedFaction,targets);
 
-                        EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, DMGDEPENDANT_IMMOBILIZE, 0};
-                        FilterTargets(targets,skipEffects,NULL,-1,0,-1,true);
+                        EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, DMGDEPENDANT_IMMOBILIZE, DEFENSIVE_STUN, 0};
+                        FilterTargets(targets,skipEffects,NULL,-1,activeNextTurnWait,-1,true);
 
                         bool bTributable = IsInTargets(procCard,&targets);
 
@@ -1615,7 +1657,7 @@ namespace IterateDecks {
                         effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                         assertGT(effect,0u);
 
-                        GetTargets(Structures,faction,targets);
+                        GetTargets(Structures,infusedFaction,targets);
 
                         PPCIV::iterator vi = targets.begin();
                         while (vi != targets.end())
@@ -1749,11 +1791,11 @@ namespace IterateDecks {
                                 procCard->fsOverkill += overkill;
                                 //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
 
-                                if (Payback(vi->first, Src, Dest, EffectType, ACTIVATION_STRIKE, effect, chaos))  // payback
+                                if (Payback(vi->first, *procCard, EffectType, ACTIVATION_STRIKE, effect, chaos))  // payback
                                 {
                                     UCHAR overkill = 0;
-                                    vi->first->fsDmgDealt += Src.StrikeDmg(QuestEffectId,effect,&overkill);
-                                    CheckDeathEvents(Src,Dest);
+                                    vi->first->fsDmgDealt += procCard->StrikeDmg(QuestEffectId,effect,&overkill);
+                                    CheckDeathEvents(*procCard,*procDeck);
                                     vi->first->fsOverkill += overkill;
                                     Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
                                 }
@@ -1803,8 +1845,8 @@ namespace IterateDecks {
                             GetTargets(Dest.Units,faction,targets);
                         }
 
-                        EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, DMGDEPENDANT_IMMOBILIZE, 0};
-                        FilterTargets(targets,skipEffects,NULL,-1,1,1,chaos);
+                        EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, DMGDEPENDANT_IMMOBILIZE, DEFENSIVE_STUN, 0};
+                        FilterTargets(targets,skipEffects,NULL,-1,1,1,!chaos);
                         RandomizeTarget(targets,targetCount,Dest,!chaos);
 
                         if (targets.size() <= 0) {
@@ -1827,10 +1869,10 @@ namespace IterateDecks {
                                 procCard->fsSpecial += we;
                                 //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
 
-                                if(Payback(vi->first, Src, Dest, EffectType, ACTIVATION_WEAKEN, effect, chaos))
+                                if(Payback(vi->first, *procCard, EffectType, ACTIVATION_WEAKEN, effect, chaos))
                                 {
-                                    vi->first->fsSpecial += Src.Weaken(effect);
-                                    Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+                                    vi->first->fsSpecial += procCard->Weaken(effect);
+                                    procDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
                                 }
                             }
                     } break;
@@ -1845,7 +1887,7 @@ namespace IterateDecks {
                         }
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, ACTIVATION_CHAOS, 0};
-                        FilterTargets(targets,skipEffects,NULL,-1,1,1,chaos);
+                        FilterTargets(targets,skipEffects,NULL,-1,1,-1,!chaos);
                         RandomizeTarget(targets,targetCount,Dest,!chaos);
 
                         if (targets.size() <= 0) {
@@ -1868,18 +1910,18 @@ namespace IterateDecks {
                                 procCard->fsSpecial += effect;
                                 //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
 
-                                if(Payback(vi->first, Src, Dest, EffectType, ACTIVATION_CHAOS, effect, chaos))
+                                if(Payback(vi->first, *procCard, EffectType, ACTIVATION_CHAOS, effect, chaos))
                                 {
-                                    Src.SetEffect(ACTIVATION_CHAOS, effect);
+                                    procCard->SetEffect(ACTIVATION_CHAOS, effect);
                                     vi->first->fsSpecial += effect;
-                                    Dest.SkillProcs[DEFENSIVE_PAYBACK]++;
+                                    procDeck->SkillProcs[DEFENSIVE_PAYBACK]++;
                                 }
                             }
                     } break;
                 case ACTIVATION_RUSH:
                     {
                         assertGT(effect,0u);
-                        GetTargets(Units,faction,targets);
+                        GetTargets(Units,infusedFaction,targets);
 
                         FilterTargets(targets,NULL,NULL,1,-1,-1,false);
 
@@ -1947,11 +1989,11 @@ namespace IterateDecks {
                         effect *= FusionMultiplier;
                         assertGT(effect,0u);
 
-                        GetTargets(Units,faction,targets);
+                        GetTargets(Units,infusedFaction,targets);
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, 0};
                         EFFECT_ARGUMENT targetSkills[] = {ACTIVATION_ENFEEBLE, ACTIVATION_HEAL, ACTIVATION_PROTECT, ACTIVATION_RALLY, ACTIVATION_REPAIR, ACTIVATION_SIEGE, ACTIVATION_STRIKE, ACTIVATION_SUPPLY, ACTIVATION_WEAKEN, 0};
-                        FilterTargets(targets,skipEffects,targetSkills,-1,0,-1,true);
+                        FilterTargets(targets,skipEffects,targetSkills,-1,activeNextTurnWait,-1,true);
 
                         bool bTributable = IsInTargets(procCard,&targets);
 
@@ -2017,8 +2059,10 @@ namespace IterateDecks {
             LOG(this->logger,abilityOffensive(EVENT_ATTACKED, src, abilityId, target, effectArgument));
             switch(abilityId) {
                 case DMGDEPENDANT_BERSERK: {
-                        src.Berserk(effectArgument);
-                        SkillProcs[DMGDEPENDANT_BERSERK]++;
+                        if(questEffectId != BattleGroundEffect::impenetrable || target.GetType() != TYPE_STRUCTURE) {
+                            src.Berserk(effectArgument);
+                            SkillProcs[DMGDEPENDANT_BERSERK]++;
+                        }
                     } break;
                 case DMGDEPENDANT_CRUSH:
                     throw std::logic_error("crush on attack ... that was not expected");
@@ -2210,15 +2254,23 @@ namespace IterateDecks {
                     Units.back().SetEffect(DMGDEPENDANT_POISON,1);
                     Units.back().SetEffect(DMGDEPENDANT_DISEASE,ABILITY_ENABLED);
                 }
+
+                if (QuestEffectId == BattleGroundEffect::poisonAll)
+                {
+                    Units.back().SetEffect(DMGDEPENDANT_POISON,1);
+                }
             }
         }
 
         void ActiveDeck::CheckDeathEvents(PlayedCard &src, ActiveDeck &Def)
         {
-            if (src.OnDeathEvent())
+            if (src.OnDeathEvent()) {
                 ApplyEffects(QuestEffectId,EVENT_DIED,src,-1,Def);
+                src.Regenerate(QuestEffectId);
+            }
         }
-        void ActiveDeck::AttackDeck(ActiveDeck &Def, bool bSkipCardPicks)
+        
+        void ActiveDeck::AttackDeck(ActiveDeck &Def, bool bSkipCardPicks, unsigned int turn)
         {
             // assume for now that timer is decreased first
             for(LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
@@ -2243,14 +2295,18 @@ namespace IterateDecks {
             }
 
             // Quest split mark
-            if (QuestEffectId == BattleGroundEffect::cloneProject)
+            if (    (QuestEffectId == BattleGroundEffect::cloneProject)
+                 || (    (QuestEffectId == BattleGroundEffect::splitFive)
+                      && (turn == 9 || turn == 10)
+                    )
+               )
             {
                 PPCIV GetTo;
                 for (LCARDS::iterator vi = Units.begin();vi != Units.end();vi++)
                 {
                     if ((vi->IsAlive()) &&
                         (vi->GetWait() == 0) &&
-                        (!vi->GetEffect(ACTIVATION_JAM)) && // Jammed
+                        //(!vi->GetEffect(ACTIVATION_JAM)) && // Jammed
                         (!vi->GetEffect(ACTIVATION_FREEZE)) && // Frozen
                         (!vi->GetEffect(DMGDEPENDANT_IMMOBILIZE)))
                         GetTo.push_back(PPCARDINDEX(&(*vi),0));
@@ -2287,6 +2343,33 @@ namespace IterateDecks {
                 SweepFancyStats(*vi);
             }
             Actions.clear();
+
+            // LEGION; exact order of when this should happen during turn begin is undetermined for now
+            LCARDS::iterator prev = Units.end();
+            LCARDS::iterator target = Units.begin();
+            LCARDS::iterator next = Units.begin();
+            while (next != Units.end()) {
+                next++;
+
+                if(target->GetAbility(SPECIAL_LEGION) > 0) {
+                    UCHAR faction = target->GetFaction();
+                    UCHAR count = 0;
+                    if(prev != Units.end() && prev->GetFaction() == faction) {
+                        count++;
+                    }
+
+                    if(next != Units.end() && next->GetFaction() == faction) {
+                        count++;
+                    }
+                    target->ProcessLegion(count, QuestEffectId);
+                }
+
+                prev = target;
+                target = next;
+            }
+
+
+
             // commander card
             // lets work out Infuse:
             // afaik it changes one random card from either of your or enemy deck into bloodthirsty
@@ -2335,12 +2418,17 @@ namespace IterateDecks {
                 iter->Played();
             }}
             // assault cards
-            { UCHAR i = 0;
+            { UINT i = 0;
             for (LCARDS::iterator iter = Units.begin(); iter != Units.end(); iter++,i++) {
                 if (iter->BeginTurn()) {
                     ApplyEffects(QuestEffectId,EVENT_EMPTY,*iter,i,Def);
                     iter->Played();
-                    if ((!iter->GetEffect(DMGDEPENDANT_IMMOBILIZE)) && (!iter->GetEffect(ACTIVATION_JAM)) && (!iter->GetEffect(ACTIVATION_FREEZE))) // tis funny but I need to check Jam for second time in case it was just paybacked
+
+                    // tis funny but I need to check Jam for second time in case it was just paybacked
+                    if ((!iter->GetEffect(DMGDEPENDANT_IMMOBILIZE))
+                    && (!iter->GetEffect(ACTIVATION_JAM))
+                    && (!iter->GetEffect(ACTIVATION_FREEZE))
+                    && (!iter->GetEffect(DEFENSIVE_STUN)))
                     {
                         if (iter->IsAlive() && iter->GetAttack() > 0 && Def.Commander.IsAlive()) { // can't attack with dead unit ;) also if attack = 0 then dont attack at all
                             Attack(i,Def);
@@ -2519,8 +2607,10 @@ namespace IterateDecks {
             typedef std::multiset<UINT> MSID; // I <3 sets, they keep stuff sorted ;)
     #endif
             MSID ids;
-            if (!bCardPicks) {
-                for (LCARDS::const_iterator iter = Deck.begin(); iter != Deck.end(); iter++) {
+            if (!bCardPicks)
+            {
+                for (LCARDS::const_iterator iter = Deck.begin(); iter != Deck.end(); iter++)
+                {
     #if HASH_SAVES_ORDER
                     ids.push_back(iter->GetId());
     #else
@@ -2529,77 +2619,82 @@ namespace IterateDecks {
                 }
             }
             else
-                for (UCHAR i=0;(i<DEFAULT_DECK_RESERVE_SIZE) && (CardPicks[i]);i++)
+            {
+                for (UCHAR i=0;(i<DEFAULT_DECK_RESERVE_SIZE) && (CardPicks[i]);i++) 
+                {
                     ids.push_back(CardPicks[i]); // multiset is disallowed!
-            std::string s;
-            UINT tmp = 0, t;
+                }
+            }
+
+            std::string deckHash;
+            UINT cardHash = 0, t;
             unsigned short lastid = 0, cnt = 1;
             if (Commander.IsDefined())
             {
-                tmp = ID2BASE64(Commander.GetId());
-                s.append((char*)&tmp);
+                cardHash = ID2BASE64(Commander.GetId());
+                deckHash.append((char*)&cardHash);
                 //printf("1: %s -commander\n",(char*)&tmp);
             }
+
+            // TODO: Change to support >4000 ids may not be fully tested; I am not sure if any of this code is used
+            unsigned short cardId;
             MSID::iterator si = ids.begin();
             do
             {
+                bool isCardOver4000 = *si >= 4000;
+
                 // we can actually use Id range 4000-4095 (CARD_MAX_ID - 0xFFF) for special codes,
                 // adding RLE here
-                tmp = ID2BASE64(*si);
+                if(isCardOver4000)
+                {
+                    cardHash = ID2BASE64(*si - 4000);
+                }
+                else
+                {
+                    cardHash = ID2BASE64(*si);
+                }
+                cardId = *si; // save the id and advance the pointer so we can tell if we are at the end of the deck
                 si++;
-                if ((lastid != tmp) || (si == ids.end()))
+                if ((lastid != cardId) || (si == ids.end()))
                 {
                     if (lastid)
                     {
                         t = lastid;
-                        if (cnt == 2)
-                        {
-                            s.append((char*)&t);
-                            s.append((char*)&t);
-                            //printf("4: %s -dupe\n",(char*)&t);
-                            //printf("4: %s -dupe\n",(char*)&t);
-
+                        if(isCardOver4000) {
+                            deckHash += '-';
                         }
-                        else
-                            if (cnt > 2)
-                            {
-                                s.append((char*)&t);
-                                //printf("3: %s -value\n",(char*)&t);
-                                t = ID2BASE64(CARD_MAX_ID + cnt); // special code, RLE count
-                                s.append((char*)&t);
-                                //printf("3: %s -rle\n",(char*)&t);
-                            }
-                            else
-                            {
-                                s.append((char*)&t);
-                                //printf("5: %s\n",(char*)&t);
-                            }
+                        deckHash.append((char*)&t);
+                        if (cnt > 1)
+                        {
+                            t = ID2BASE64(4000 + cnt); // special code, RLE count
+                            deckHash.append((char*)&t);
+                        }
                         cnt = 1;
                     }
                     if (si == ids.end())
                     {
-                        s.append((char*)&tmp);
+                        deckHash.append((char*)&cardHash);
                         //printf("2: %s\n",(char*)&tmp);
                     }
-                    lastid = tmp;
+                    lastid = cardId;
                 }
                 else
                     cnt++;  // RLE, count IDs
             }
             while (si != ids.end());
-            return s;
+            return deckHash;
         }
-        void ActiveDeck::GetTargets(LCARDS &From, UCHAR TargetFaction, PPCIV &GetTo, bool bForInfuse)
+        void ActiveDeck::GetTargets(LCARDS &From, UCHAR TargetFaction, PPCIV &GetTo, bool invertFactionCheck)
         {
-            if (!bForInfuse) {
+            if (!invertFactionCheck) {
                 GetTo.clear();
             }
             UCHAR pos = 0;
             for (LCARDS::iterator vi = From.begin(); vi != From.end(); vi++) {
                 if (    (vi->IsAlive())
-                     && (    ((vi->GetFaction() == TargetFaction) && (!bForInfuse))
+                     && (    ((vi->GetFaction() == TargetFaction) && (!invertFactionCheck))
                           || (TargetFaction == FACTION_NONE)
-                          || ((vi->GetFaction() != TargetFaction) && (bForInfuse))
+                          || ((vi->GetFaction() != TargetFaction) && (invertFactionCheck))
                         )
                    ) {
                     GetTo.push_back(PPCARDINDEX(&(*vi),pos));
@@ -2624,10 +2719,13 @@ namespace IterateDecks {
             bool erase;
             while (vi != targets.end())
             {
+                UCHAR wait = vi->first->GetWait();
+                if(vi->first->GetEffect(SPECIAL_BLITZ) > 0) wait = 0;
+
                 erase = false;
-                if(waitMax >= 0 && vi->first->GetWait() > waitMax) {
+                if(waitMax >= 0 && wait > waitMax) {
                     erase = true;
-                } else if(waitMin > 0 && vi->first->GetWait() < waitMin) {
+                } else if(waitMin > 0 && wait < waitMin) {
                     // we can ignore a waitMin of 0 since that is the minimum anyway
                     erase = true;
                 } else if(attackLimit >= 0 && vi->first->GetAttack() < attackLimit) {
@@ -2688,7 +2786,7 @@ namespace IterateDecks {
                                      , PlayedCard &Src
                                      , ActiveDeck & ownDeck
                                      , ActiveDeck & otherDeck
-                                     , bool bCanBeCountered
+                                     , bool isCrushDamage
                                      , UCHAR *overkill
                                      , VLOG *log
                                      , LOG_RECORD *lr
@@ -2706,9 +2804,11 @@ namespace IterateDecks {
             UCHAR index = 0;
             for (LCARDS::iterator vi = Structures.begin();vi!=Structures.end();vi++)
             {
+                // will a wall *block* the damage?
                 if (vi->GetAbility(DEFENSIVE_WALL) && vi->IsAlive())
                 {
-                    if (QuestEffectId != BattleGroundEffect::impenetrable)
+                    // will the wall *take* the damage?
+                    if (QuestEffectId != BattleGroundEffect::impenetrable || isCrushDamage)
                     {
                         vi->CardSkillProc(DEFENSIVE_WALL);
                         if (lr)
@@ -2717,26 +2817,29 @@ namespace IterateDecks {
                             lr->Target.RowID = TYPE_STRUCTURE;
                         }
 
-
-
                         // walls can counter and regenerate
                         vi->SufferDmg(QuestEffectId,Dmg,0,0,0,overkill);
 
                         // probably here wall's "on attacked" skills
                         assertX(vi->IsDefined());
                         assertX(Src.IsDefined());
-                        ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*vi,index,otherDeck,false,false,NULL,0,&Src);
 
-                        if (vi->GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // counter, dmg from crush can't be countered
-                        {
-                            vi->CardSkillProc(DEFENSIVE_COUNTER);
-                            EFFECT_ARGUMENT cdmg = vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
-                            vi->fsDmgDealt += cdmg;
-                            UCHAR loverkill = 0;
-                            if (lr && log)
-                                log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
-                            Src.SufferDmg(QuestEffectId,cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
-                            vi->fsOverkill += loverkill;
+                        // dmg from crush can't be countered
+                        if(!isCrushDamage) {
+                            ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*vi,index,otherDeck,false,false,NULL,0,&Src);
+
+                            otherDeck.ApplyDefensiveEffects(QuestEffectId, *vi, Src, ownDeck, Dmg);
+                            //if (vi->GetAbility(DEFENSIVE_COUNTER)) // counter
+                            //{
+                            //    vi->CardSkillProc(DEFENSIVE_COUNTER);
+                            //    EFFECT_ARGUMENT cdmg = vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
+                            //    vi->fsDmgDealt += cdmg;
+                            //    UCHAR loverkill = 0;
+                            //    if (lr && log)
+                            //        log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
+                            //    Src.SufferDmg(QuestEffectId,cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
+                            //    vi->fsOverkill += loverkill;
+                            //}
                         }
                     }
                     return false;
@@ -2744,20 +2847,23 @@ namespace IterateDecks {
                 index++;
             }
 
-            // Commander was attacked, trigger event.
-            ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*this,0,otherDeck,false,false,NULL,0,&Src);
+            if(!isCrushDamage) {
+                // Commander was attacked, trigger event.
+                ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*this,0,otherDeck,false,false,NULL,0,&Src);
 
-            // no walls found then hit commander
-            // ugly - counter procs before commander takes dmg, but whatever
-            if (GetAbility(DEFENSIVE_COUNTER) && bCanBeCountered) // commander can counter aswell
-            {
-                CardSkillProc(DEFENSIVE_COUNTER);
-                UCHAR loverkill = 0;
-                EFFECT_ARGUMENT cdmg = GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
-                if (lr && log)
-                    log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
-                Src.SufferDmg(QuestEffectId,cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
-                fsOverkill += loverkill;
+                otherDeck.ApplyDefensiveEffects(QuestEffectId, *this, Src, ownDeck, Dmg);
+                // no walls found then hit commander
+                // ugly - counter procs before commander takes dmg, but whatever
+                //if (GetAbility(DEFENSIVE_COUNTER)) // commander can counter aswell
+                //{
+                //    CardSkillProc(DEFENSIVE_COUNTER);
+                //    UCHAR loverkill = 0;
+                //    EFFECT_ARGUMENT cdmg = GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
+                //    if (lr && log)
+                //        log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
+                //    Src.SufferDmg(QuestEffectId,cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
+                //    fsOverkill += loverkill;
+                //}
             }
             return (SufferDmg(QuestEffectId,Dmg,0,0,0,overkill) > 0);
         }

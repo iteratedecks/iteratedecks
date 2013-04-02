@@ -5,7 +5,7 @@
         namespace Core {
 
             // These should be constexpr, but Microsoft's compilers are hopelessly outdated and still do not support them.
-            #define CARD_MAX_ID				4000u // sizes of storage arrays
+            #define CARD_MAX_ID				5000u // sizes of storage arrays
             #define MISSION_MAX_ID			400u
             #define ACHIEVEMENT_MAX_COUNT	300u
             #define RAID_MAX_ID				30u
@@ -56,6 +56,7 @@
                 DEFENSIVE_TRIBUTE,
                 DEFENSIVE_WALL,
                 DEFENSIVE_EMULATE,
+                DEFENSIVE_STUN,
 
                 COMBAT_ANTIAIR,
                 COMBAT_BURST,
@@ -74,7 +75,8 @@
                 DMGDEPENDANT_SIPHON,
 
                 SPECIAL_BACKFIRE,  // Destroyed - When this is destroyed, deal damage to own Commander.
-                SPECIAL_BLITZ, // showed up in cards.xml; not implemented
+                SPECIAL_BLITZ,
+                SPECIAL_LEGION,
 
                 // SKILLS THAT ARE NOT DEFINED AND NOT WORKING:
                 SPECIAL_FUSION, // in this sim only works for ACTIVATION skills of STRUCTURES

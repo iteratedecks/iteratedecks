@@ -12,6 +12,8 @@
 #include <string>
 #include <algorithm>
 #include <cctype>
+#include <iostream>
+#include <sstream>
 
 // TODO should be replaced by a cheaper implementation
 #include "activeDeck.hpp"
@@ -113,7 +115,11 @@ namespace IterateDecks {
                 return TYPE_COMMANDER;
             if (ID < 3000)
                 return TYPE_STRUCTURE;
-            return TYPE_ACTION;
+            if (ID < 4000)
+                return TYPE_ACTION;
+            if (ID < 5000)
+                return TYPE_ASSAULT;
+            return TYPE_ASSAULT;
         }
 
         Faction CardDB::RemapFaction(UCHAR XmlID)
@@ -167,6 +173,7 @@ namespace IterateDecks {
             if (returnnewcards)
                 returnnewcards[0] = 0;
             if (!doc.load_file(FileName)) {
+                std::cerr << "Error opening file: " << FileName << std::endl;
                 assertX(false);
                 return false;
             }
@@ -315,6 +322,7 @@ namespace IterateDecks {
         {
             pugi::xml_document doc;
             if (!doc.load_file(FileName)) {
+                std::cerr << "Error opening file: " << FileName << std::endl;
                 assertX(false);
                 return false;
             }
@@ -415,6 +423,7 @@ namespace IterateDecks {
         {
             pugi::xml_document doc;
             if (!doc.load_file(FileName)) {
+                std::cerr << "Error opening file: " << FileName << std::endl;
                 assertX(false);
                 return false;
             }
@@ -452,6 +461,7 @@ namespace IterateDecks {
         {
             pugi::xml_document doc;
             if (!doc.load_file(FileName)) {
+                std::cerr << "Error opening file: " << FileName << std::endl;
                 assertX(false);
                 return false;
             }
@@ -501,6 +511,7 @@ namespace IterateDecks {
         {
             pugi::xml_document doc;
             if (!doc.load_file(FileName)) {
+                std::cerr << "Error opening file: " << FileName << std::endl;
                 throw LogicError("");
             }
 
@@ -678,6 +689,7 @@ namespace IterateDecks {
             AddSkill(DEFENSIVE_TRIBUTE,"Tribute");
             AddSkill(DEFENSIVE_WALL,"Wall");
             AddSkill(DEFENSIVE_EMULATE,"Emulate");
+            AddSkill(DEFENSIVE_STUN,"Stun");
 
             AddSkill(COMBAT_ANTIAIR,"AntiAir");
             AddSkill(COMBAT_BURST,"Burst");
@@ -702,6 +714,7 @@ namespace IterateDecks {
             AddSkill(SPECIAL_MIST,"Mist");
             AddSkill(SPECIAL_BLIZZARD,"Blizzard");
             AddSkill(SPECIAL_BLITZ,"Blitz");
+            AddSkill(SPECIAL_LEGION,"Legion");
 
             AddSkill(SPECIAL_ATTACK,"Attack");
 
@@ -1532,10 +1545,20 @@ namespace IterateDecks {
                 }
             return false;
         }
-        bool CardDB::CheckAchievement(int achievementIndex, const UINT iTurn, ActiveDeck &Atk, ActiveDeck &Def)
+        bool CardDB::CheckAchievement(int achievementId, const UINT iTurn, ActiveDeck &Atk, ActiveDeck &Def)
         {
-            if (achievementIndex < 0) return true;
-            for (std::vector<AchievementRequirement>::iterator vi = ADB[achievementIndex].Reqs.begin(); vi != ADB[achievementIndex].Reqs.end(); vi++)
+            if (achievementId < 0) return true;
+
+            AchievementInfo achievementInfo;
+            for (int i = 0; i < ACHIEVEMENT_MAX_COUNT; i ++)
+            {
+                if(ADB[i].GetID() == achievementId) {
+                    achievementInfo = ADB[i];
+                    break;
+                }
+            }
+
+            for (std::vector<AchievementRequirement>::iterator vi = achievementInfo.Reqs.begin(); vi != achievementInfo.Reqs.end(); vi++)
             {
                 UINT cnt = 0;
                 UINT rcnt = 0;
