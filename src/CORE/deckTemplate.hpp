@@ -30,8 +30,6 @@
                     virtual ~DeckTemplate();
                     virtual BattleGroundEffect getBattleGroundEffect() const;
                     virtual ActiveDeck instantiate() const = 0;
-
-                    static Ptr create(DeckArgument const & argument, CardDB const & cardDB);
             };
 
         }

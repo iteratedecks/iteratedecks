@@ -29,19 +29,6 @@
                 // TODO Achievement?
             };
 
-            struct SimulationTaskStruct {
-                unsigned long minimalNumberOfGames;
-                bool surge;
-                bool delayFirstAttacker; //< live battles
-                BattleGroundEffect battleGround; //< for quests and conquest
-                AchievementOptions achievementOptions;
-                unsigned int randomSeed;
-                bool allowInvalidDecks;
-                
-                DeckArgument attacker;
-                DeckArgument defender;
-            };
-
             class SimulationTaskClass {
                 public:
                     unsigned long minimalNumberOfGames;
@@ -53,14 +40,12 @@
 
                     DeckTemplate::Ptr attacker;
                     DeckTemplate::Ptr defender;
-
-                    SimulationTaskClass(SimulationTaskStruct const & simple, CardDB const & cardDB);
             };
             
             class SimulatorCore {
                 public:
                     virtual ~SimulatorCore();
-                    virtual Result simulate(SimulationTaskStruct const &) = 0;
+                    virtual Result simulate(SimulationTaskClass const &) = 0;
                     virtual void abort() = 0;
             };
 
@@ -78,7 +63,6 @@
                     IterateDecksCore();
                     virtual ~IterateDecksCore();
                     void setLogger(Logger * loggerDelegate);
-                    Result simulate(SimulationTaskStruct const &);
                     Result simulate(SimulationTaskClass const &);
                     void abort();
 

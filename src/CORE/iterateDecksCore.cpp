@@ -8,20 +8,6 @@
 namespace IterateDecks {
     namespace Core {
 
-        SimulationTaskClass::SimulationTaskClass(SimulationTaskStruct const & task, CardDB const & cardDB)
-        : minimalNumberOfGames(task.minimalNumberOfGames)
-        , surge(task.surge)
-        , delayFirstAttacker(task.delayFirstAttacker)
-        , battleGround(task.battleGround)
-        , achievementOptions(task.achievementOptions)
-        , randomSeed(task.randomSeed)
-        {
-            this->attacker = DeckTemplate::create(task.attacker, cardDB);
-            this->attacker->allowInvalid = task.allowInvalidDecks;
-            this->defender = DeckTemplate::create(task.defender, cardDB);
-            this->defender->allowInvalid = task.allowInvalidDecks;
-        }
-
         SimulatorCore::~SimulatorCore() {}
 
         IterateDecksCore::IterateDecksCore()
@@ -50,14 +36,6 @@ namespace IterateDecks {
                 delete this->logger;
                 this->logger = NULL;
             }
-        }
-
-        Result IterateDecksCore::simulate(SimulationTaskStruct const & taskStruct)
-        {
-            // We first translate the simple struct-like simulationTask
-            // into a more appropriate object like one
-            SimulationTaskClass taskClass(taskStruct, cardDB);
-            return this->simulate(taskClass);
         }
 
         Result IterateDecksCore::simulate(SimulationTaskClass const & task) {

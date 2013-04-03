@@ -35,6 +35,7 @@
 #include "../CORE/cardDB.hpp"
 
 #include "../CORE/iterateDecksCore.hpp"
+#include "SimulationTaskStruct.hpp"
 
 namespace IterateDecks {
     namespace CLI {
@@ -505,7 +506,8 @@ namespace IterateDecks {
             task.defender = defenseDeck;
             task.allowInvalidDecks = allowInvalidDecks;
 
-            Result r2 = simulator.simulate(task);
+            SimulationTaskClass taskClass = task.toSimulationTaskClass(cardDB);
+            Result r2 = simulator.simulate(taskClass);
             // Compare
             assertEQ(r.Games, r2.numberOfGames);
             assertEQ(r2.numberOfGames, r2.gamesWon + r2.gamesLost + r2.gamesStalled);
