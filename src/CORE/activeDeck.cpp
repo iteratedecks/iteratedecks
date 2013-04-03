@@ -1675,6 +1675,7 @@ namespace IterateDecks {
                     {
                         effect *= FusionMultiplier;
                         assertGT(effect,0u);
+                        LOG(this->logger,abilityOffensive(EffectType,Src,aid,Dest.Commander,effect));
                         Src.fsDmgDealt += Dest.Commander.SufferDmg(QuestEffectId,effect);
                         DamageToCommander += effect;
                         FullDamageToCommander += effect;
