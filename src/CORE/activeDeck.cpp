@@ -1634,8 +1634,11 @@ namespace IterateDecks {
                 case ACTIVATION_RECHARGE:
                     {
                         if (Src.GetAbility(aid) > 0)
-                            if (PROC50)
+                            if (PROC50) {
+                                LOG(this->logger,abilitySupport(EffectType,Src,aid,Src,1));
+                                Src.SetEffect(ACTIVATION_RECHARGE, 1);
                                 Deck.push_back(Src);
+                            }
                     } break;
 
                 case ACTIVATION_REPAIR:
@@ -2105,12 +2108,29 @@ namespace IterateDecks {
             // pick a random card
             LCARDS::iterator vi = Deck.begin();
             UCHAR indx = 0;
+            int maxCard = Deck.size();
+
+            if(maxCard > 0) {
+                for (int i = maxCard; i > 0; i--) {
+                    if(this->getCardAt(i - 1).GetEffect(ACTIVATION_RECHARGE) > 0) {
+                        maxCard = i - 1;
+                    } else {
+                        break;
+                    }
+                }
+
+                // if all cards are recharged, take the first one
+                if (maxCard <= 0) {
+                    maxCard = 1;
+                }
+            }
+
             if (vi != Deck.end()) // gay ass STL updates !!!
             {
                 if (!bOrderMatters)
                 {
                     // standard random pick
-                    indx = UCHAR(rand() % Deck.size());
+                    indx = UCHAR(rand() % maxCard);
                 }
                 else
                 {
@@ -2130,10 +2150,10 @@ namespace IterateDecks {
                         do
                         {
                             // one random card in deck ...
-                            indx = UCHAR(rand() % Deck.size());
+                            indx = UCHAR(rand() % maxCard);
                             //std::clog << "random choice: " << (unsigned int)indx << " thats " << this->getCardAt(indx).toString() << std::endl;
                             // we need to pick first card of a same type, instead of picking this card
-                            for (UCHAR i=0;i<Deck.size();i++)
+                            for (UCHAR i=0;i<maxCard;i++)
                                 if (    (this->getCardAt(indx).GetId() == this->getCardAt(i).GetId())
                                      && (Hand.find(indx) == Hand.end())
                                      && (Hand.find(i) == Hand.end())
