@@ -1363,6 +1363,8 @@ namespace IterateDecks {
                                 while (vi != targets.end())	{
                                     if ((vi->first->GetHealth() == vi->first->GetMaxHealth())) {
                                         vi = targets.erase(vi);
+                                    } else if (!vi->first->IsAlive()) {
+                                        vi = targets.erase(vi);
                                     } else if (vi->first->IsDiseased()) {
                                         // remove diseased targets
                                         LOG(this->logger,abilityFailDisease(EffectType,aid,Src,*(vi->first),IsMimiced,FACTION_NONE,effect));
