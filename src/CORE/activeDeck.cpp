@@ -2295,6 +2295,7 @@ namespace IterateDecks {
             for (LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
                 iter->ResetShield(); // according to wiki, shield doesn't affect poison, it wears off before poison procs I believe
                 iter->ProcessPoison(QuestEffectId);
+                CheckDeathEvents(*iter, *this);
             }
 
             //  Moraku: If Heal on Death triggers from poison damage, it will NOT be able to heal another unit
