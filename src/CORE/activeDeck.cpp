@@ -1638,7 +1638,7 @@ namespace IterateDecks {
                                 LOG(this->logger,abilitySupport(EffectType,Src,aid,Src,1));
                                 Src.SetEffect(ACTIVATION_RECHARGE, 1);
                                 Deck.push_back(Src);
-                            }
+                                }
                     } break;
 
                 case ACTIVATION_REPAIR:
@@ -2431,10 +2431,14 @@ namespace IterateDecks {
             for (LCARDS::iterator iter = Units.begin(); iter != Units.end(); iter++,i++) {
                 if(!Def.Commander.IsAlive()) break;
 
-                if (iter->BeginTurn()) {
+                const bool doTurn = iter->BeginTurn();
+                if (doTurn) {
                     ApplyEffects(QuestEffectId,EVENT_EMPTY,*iter,i,Def);
-                    iter->Played();
+                }
 
+                iter->Played();
+
+                if(doTurn) {
                     // tis funny but I need to check Jam for second time in case it was just paybacked
                     if ((!iter->GetEffect(DMGDEPENDANT_IMMOBILIZE))
                     && (!iter->GetEffect(ACTIVATION_JAM))
