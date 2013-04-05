@@ -914,7 +914,9 @@ namespace IterateDecks {
 
         // Will target unit use Evade?
         bool ActiveDeck::Evade(PlayedCard *defender, BattleGroundEffect QuestEffectId, bool chaos) {
-            return ((defender->GetAbility(DEFENSIVE_EVADE) || (QuestEffectId == BattleGroundEffect::quicksilver)) && (PROC50) && (!chaos));
+            return ((defender->GetAbility(DEFENSIVE_EVADE) || (defender->GetType() == TYPE_ASSAULT && QuestEffectId == BattleGroundEffect::quicksilver))
+                && (PROC50)
+                && (!chaos));
         }
 
         UCHAR ActiveDeck::Intercept(PPCIV &targets, UCHAR destindex, ActiveDeck &Dest)
