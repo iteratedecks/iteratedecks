@@ -428,7 +428,7 @@ namespace IterateDecks {
                     //LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DMGDEPENDANT_DISEASE);
                 }
                 // poison
-                if (SRC.GetAbility(DMGDEPENDANT_POISON))
+                if (SRC.GetAbility(DMGDEPENDANT_POISON) && SRC.GetAbilityEvent(DMGDEPENDANT_POISON) == EVENT_EMPTY)
                     if (target.GetEffect(DMGDEPENDANT_POISON) < SRC.GetAbility(DMGDEPENDANT_POISON)) // overflow
                     {
                         target.SetEffect(DMGDEPENDANT_POISON,SRC.GetAbility(DMGDEPENDANT_POISON));
