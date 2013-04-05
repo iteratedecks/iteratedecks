@@ -198,16 +198,6 @@ namespace IterateDecks {
             CheckDeathEvents(src,Def);
             src.fsOverkill += overkill;
             src.fsDmgDealt += cdmg;
-            // can go berserk after hitting commander too
-            if ((src.GetAttack()+valor > 0)
-                && src.GetAbility(DMGDEPENDANT_BERSERK)
-                && (QuestEffectId != BattleGroundEffect::impenetrable || hitCommander) // berserk does not proc when hitting an impenetrable wall
-                )
-            {
-                src.Berserk(src.GetAbility(DMGDEPENDANT_BERSERK));
-                LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_BERSERK,src.GetAbility(DMGDEPENDANT_BERSERK));
-                SkillProcs[DMGDEPENDANT_BERSERK]++;
-            }
         }
     // #############################################################################
         void ActiveDeck::AttackCommanderOnce1(UCHAR const & index
@@ -394,88 +384,12 @@ namespace IterateDecks {
             // Moraku suggests that "on attack" triggers after crush
             Def.ApplyEffects(QuestEffectId,EVENT_ATTACKED,target,targetindex,*this,false,false,NULL,0,&SRC);
 
-            Def.ApplyDefensiveEffects(QuestEffectId, target, SRC, *this, dmg);
+            ApplyDefensiveEffects(QuestEffectId, SRC, Def, target, dmg);
 
             if (dmg > StrongestAttack)
                 StrongestAttack = dmg;
-            // berserk
-            if ((dmg > 0) && SRC.GetAbility(DMGDEPENDANT_BERSERK))
-                bGoBerserk = true;
 
-            if (dmg > 0)
-            {
-                // immobilize
-                if (SRC.GetAbility(DMGDEPENDANT_IMMOBILIZE) && PROC50)
-                {
-                    if(!target.GetEffect(DMGDEPENDANT_IMMOBILIZE)
-                        && !target.GetEffect(ACTIVATION_JAM)
-                        && target.GetWait() <= 1) {
-                        target.SetEffect(DMGDEPENDANT_IMMOBILIZE,SRC.GetAbility(DMGDEPENDANT_IMMOBILIZE));
-                        SRC.fsSpecial++; // is it good?
-                        SkillProcs[DMGDEPENDANT_IMMOBILIZE]++;
-                        LOG(this->logger,abilityOffensive(EVENT_ATTACKED, SRC, DMGDEPENDANT_IMMOBILIZE, target, 1));
-                    }
-                }
-                // disease
-                if (SRC.GetAbility(DMGDEPENDANT_DISEASE))
-                {
-                    if(!target.GetEffect(DMGDEPENDANT_DISEASE)) {
-                        target.SetEffect(DMGDEPENDANT_DISEASE,SRC.GetAbility(DMGDEPENDANT_DISEASE));
-                        SRC.fsSpecial++; // is it good?
-                        SkillProcs[DMGDEPENDANT_DISEASE]++;
-                        LOG(this->logger,abilityOffensive(EVENT_ATTACKED, SRC, DMGDEPENDANT_DISEASE, target, 1));
-                    }
-                    //LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DMGDEPENDANT_DISEASE);
-                }
-                // poison
-                if (SRC.GetAbility(DMGDEPENDANT_POISON) && SRC.GetAbilityEvent(DMGDEPENDANT_POISON) == EVENT_EMPTY)
-                    if (target.GetEffect(DMGDEPENDANT_POISON) < SRC.GetAbility(DMGDEPENDANT_POISON)) // overflow
-                    {
-                        target.SetEffect(DMGDEPENDANT_POISON,SRC.GetAbility(DMGDEPENDANT_POISON));
-                        SRC.fsSpecial += SRC.GetAbility(DMGDEPENDANT_POISON);
-                        SkillProcs[DMGDEPENDANT_POISON]++;
-                        LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DMGDEPENDANT_POISON,SRC.GetAbility(DMGDEPENDANT_POISON));
-                    }
-            }
-            // leech
-            if (SRC.IsAlive() && SRC.GetAbility(DMGDEPENDANT_LEECH))
-            {
-                UCHAR leech = (SRC.GetAbility(DMGDEPENDANT_LEECH) < dmg) ? SRC.GetAbility(DMGDEPENDANT_LEECH) : dmg;
-                if (leech && (!SRC.IsDiseased()))
-                {
-                    leech = SRC.Heal(leech,QuestEffectId);
-                    SRC.fsHealed += leech;
-                    if (leech > 0)
-                    {
-                        SkillProcs[DMGDEPENDANT_LEECH]++;
-                        LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_LEECH,leech);
-                    }
-                }
-            }
-            // siphon
-            if (SRC.GetAbility(DMGDEPENDANT_SIPHON))
-            {
-                UCHAR siphon = (SRC.GetAbility(DMGDEPENDANT_SIPHON) < dmg) ? SRC.GetAbility(DMGDEPENDANT_SIPHON) : dmg;
-                if (siphon)
-                {
-                    siphon = Commander.Heal(siphon,QuestEffectId);
-                    SRC.fsHealed += siphon;
-                    if (siphon > 0)
-                    {
-                        SkillProcs[DMGDEPENDANT_SIPHON]++;
-                        LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_SIPHON,siphon);
-                    }
-                }
-            }
-            if (bGoBerserk)
-            {
-                SRC.Berserk(SRC.GetAbility(DMGDEPENDANT_BERSERK));
-                if (SRC.GetAbility(DMGDEPENDANT_BERSERK))
-                {
-                    SkillProcs[DMGDEPENDANT_BERSERK]++;
-                    LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),DMGDEPENDANT_BERSERK,SRC.GetAbility(DMGDEPENDANT_BERSERK));
-                }
-            }
+            ApplyDamageDependentEffects(QuestEffectId, SRC, Def, target, dmg);
 
             Def.CheckDeathEvents(target,*this);
 
@@ -983,7 +897,99 @@ namespace IterateDecks {
             return false;
         }
 
-        void ActiveDeck::ApplyDefensiveEffects(BattleGroundEffect QuestEffectId,PlayedCard &defender,PlayedCard &attacker,ActiveDeck &attackDeck, UCHAR dmg) {
+        void ActiveDeck::ApplyDamageDependentEffects(BattleGroundEffect QuestEffectId,PlayedCard &attacker,ActiveDeck &defenseDeck,PlayedCard &defender,UCHAR dmg) {
+            if (dmg > 0 && defender.GetType() == TYPE_ASSAULT)
+            {
+                // immobilize
+                if (attacker.GetAbility(DMGDEPENDANT_IMMOBILIZE)
+                    && attacker.GetAbilityEvent(DMGDEPENDANT_DISEASE) == EVENT_EMPTY
+                    && PROC50)
+                {
+                    if(!defender.GetEffect(DMGDEPENDANT_IMMOBILIZE)
+                        && !defender.GetEffect(ACTIVATION_JAM)
+                        && defender.GetWait() <= 1) {
+                        defender.SetEffect(DMGDEPENDANT_IMMOBILIZE,attacker.GetAbility(DMGDEPENDANT_IMMOBILIZE));
+                        attacker.fsSpecial++; // is it good?
+                        LOG(this->logger,abilityOffensive(EVENT_ATTACKED, attacker, DMGDEPENDANT_IMMOBILIZE, defender, 1));
+                        SkillProcs[DMGDEPENDANT_IMMOBILIZE]++;
+                    }
+                }
+                // disease
+                if (attacker.GetAbility(DMGDEPENDANT_DISEASE)
+                    && attacker.GetAbilityEvent(DMGDEPENDANT_DISEASE) == EVENT_EMPTY)
+                {
+                    if(!defender.GetEffect(DMGDEPENDANT_DISEASE)) {
+                        defender.SetEffect(DMGDEPENDANT_DISEASE,attacker.GetAbility(DMGDEPENDANT_DISEASE));
+                        attacker.fsSpecial++; // is it good?
+                        LOG(this->logger,abilityOffensive(EVENT_EMPTY, attacker, DMGDEPENDANT_DISEASE, defender, 1));
+                        SkillProcs[DMGDEPENDANT_DISEASE]++;
+                    }
+                    //LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DMGDEPENDANT_DISEASE);
+                }
+
+                // poison
+                if (attacker.GetAbility(DMGDEPENDANT_POISON)
+                    && attacker.GetAbilityEvent(DMGDEPENDANT_POISON) == EVENT_EMPTY)
+                {
+                    if (defender.GetEffect(DMGDEPENDANT_POISON) < attacker.GetAbility(DMGDEPENDANT_POISON)) // overflow
+                    {
+                        defender.SetEffect(DMGDEPENDANT_POISON,attacker.GetAbility(DMGDEPENDANT_POISON));
+                        attacker.fsSpecial += attacker.GetAbility(DMGDEPENDANT_POISON);
+                        LOG(this->logger,abilityOffensive(EVENT_EMPTY, attacker, DMGDEPENDANT_POISON, defender, attacker.GetAbility(DMGDEPENDANT_POISON)));
+                        SkillProcs[DMGDEPENDANT_POISON]++;
+                    }
+                }
+
+                // leech
+                if (attacker.IsAlive()
+                    && attacker.GetAbility(DMGDEPENDANT_LEECH)
+                    && attacker.GetAbilityEvent(DMGDEPENDANT_DISEASE) == EVENT_EMPTY)
+                {
+                    UCHAR leech = (attacker.GetAbility(DMGDEPENDANT_LEECH) < dmg) ? attacker.GetAbility(DMGDEPENDANT_LEECH) : dmg;
+                    if (leech && (!attacker.IsDiseased()))
+                    {
+                        leech = attacker.Heal(leech,QuestEffectId);
+                        attacker.fsHealed += leech;
+                        if (leech > 0)
+                        {
+                            LOG(this->logger,abilityOffensive(EVENT_EMPTY, attacker, DMGDEPENDANT_LEECH, defender, leech));
+                            SkillProcs[DMGDEPENDANT_LEECH]++;
+                        }
+                    }
+                }
+
+                // siphon
+                if (attacker.GetAbility(DMGDEPENDANT_SIPHON)
+                    && defender.GetType() == TYPE_ASSAULT
+                    && attacker.GetAbilityEvent(DMGDEPENDANT_DISEASE) == EVENT_EMPTY)
+                {
+                    UCHAR siphon = (attacker.GetAbility(DMGDEPENDANT_SIPHON) < dmg) ? attacker.GetAbility(DMGDEPENDANT_SIPHON) : dmg;
+                    if (siphon)
+                    {
+                        siphon = Commander.Heal(siphon,QuestEffectId);
+                        attacker.fsHealed += siphon;
+                        if (siphon > 0)
+                        {
+                            LOG(this->logger,abilityOffensive(EVENT_EMPTY, attacker, DMGDEPENDANT_SIPHON, defender, siphon));
+                            SkillProcs[DMGDEPENDANT_SIPHON]++;
+                        }
+                    }
+                }
+            }
+
+            // berserk
+            if ((dmg > 0)
+                && attacker.GetAbility(DMGDEPENDANT_BERSERK)
+                && attacker.GetAbilityEvent(DMGDEPENDANT_BERSERK) == EVENT_EMPTY
+                && (defender.GetType() != TYPE_STRUCTURE || QuestEffectId != BattleGroundEffect::impenetrable))
+            {
+                attacker.Berserk(attacker.GetAbility(DMGDEPENDANT_BERSERK));
+                LOG(this->logger,abilityOffensive(EVENT_EMPTY, attacker, DMGDEPENDANT_BERSERK, defender, attacker.GetAbility(DMGDEPENDANT_BERSERK)));
+                SkillProcs[DMGDEPENDANT_BERSERK]++;
+            }
+        }
+
+        void ActiveDeck::ApplyDefensiveEffects(BattleGroundEffect QuestEffectId,PlayedCard &attacker,ActiveDeck &defenseDeck,PlayedCard &defender,UCHAR dmg) {
             if ((dmg > 0) && defender.GetAbility(DEFENSIVE_STUN))
             {
                 LOG(this->logger,defensiveAbility(defender,attacker,DEFENSIVE_STUN,1));
@@ -1000,7 +1006,7 @@ namespace IterateDecks {
                 defender.fsDmgDealt += attacker.SufferDmg(QuestEffectId,cdmg,0,0,0,&overkill); // counter dmg is enhanced by enfeeble
                 defender.fsOverkill += overkill;
                 this->SkillProcs[DEFENSIVE_COUNTER]++;
-                attackDeck.CheckDeathEvents(attacker,*this);
+                CheckDeathEvents(attacker,*this);
             }
         }
 
@@ -2847,18 +2853,9 @@ namespace IterateDecks {
                         if(!isCrushDamage) {
                             ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*vi,index,otherDeck,false,false,NULL,0,&Src);
 
-                            otherDeck.ApplyDefensiveEffects(QuestEffectId, *vi, Src, ownDeck, Dmg);
-                            //if (vi->GetAbility(DEFENSIVE_COUNTER)) // counter
-                            //{
-                            //    vi->CardSkillProc(DEFENSIVE_COUNTER);
-                            //    EFFECT_ARGUMENT cdmg = vi->GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
-                            //    vi->fsDmgDealt += cdmg;
-                            //    UCHAR loverkill = 0;
-                            //    if (lr && log)
-                            //        log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
-                            //    Src.SufferDmg(QuestEffectId,cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
-                            //    vi->fsOverkill += loverkill;
-                            //}
+                            ownDeck.ApplyDefensiveEffects(QuestEffectId, Src, otherDeck, *vi, Dmg);
+
+                            ownDeck.ApplyDamageDependentEffects(QuestEffectId, Src, otherDeck, *vi, Dmg);
                         }
                     }
                     return false;
@@ -2870,19 +2867,9 @@ namespace IterateDecks {
                 // Commander was attacked, trigger event.
                 ownDeck.ApplyEffects(QuestEffectId,EVENT_ATTACKED,*this,0,otherDeck,false,false,NULL,0,&Src);
 
-                otherDeck.ApplyDefensiveEffects(QuestEffectId, *this, Src, ownDeck, Dmg);
-                // no walls found then hit commander
-                // ugly - counter procs before commander takes dmg, but whatever
-                //if (GetAbility(DEFENSIVE_COUNTER)) // commander can counter aswell
-                //{
-                //    CardSkillProc(DEFENSIVE_COUNTER);
-                //    UCHAR loverkill = 0;
-                //    EFFECT_ARGUMENT cdmg = GetAbility(DEFENSIVE_COUNTER) + Src.GetEffect(ACTIVATION_ENFEEBLE);
-                //    if (lr && log)
-                //        log->push_back(LOG_RECORD(lr->Target,lr->Src,DEFENSIVE_COUNTER,cdmg));
-                //    Src.SufferDmg(QuestEffectId,cdmg,0,0,0,&loverkill); // counter dmg is enhanced by enfeeble
-                //    fsOverkill += loverkill;
-                //}
+                ownDeck.ApplyDefensiveEffects(QuestEffectId, Src, otherDeck, *this, Dmg);
+
+                ownDeck.ApplyDamageDependentEffects(QuestEffectId, Src, otherDeck, otherDeck.Commander, Dmg);
             }
             return (SufferDmg(QuestEffectId,Dmg,0,0,0,overkill) > 0);
         }
