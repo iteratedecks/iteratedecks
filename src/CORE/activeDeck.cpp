@@ -1029,8 +1029,7 @@ namespace IterateDecks {
             if (IsMimiced && Mimicer && (!Units.empty()))
             {
                 for (LCARDS::iterator iter = Deck.begin(); iter != Deck.end(); iter++)
-                    // FIXME: Intended asssigment? I think not!
-                    if (Mimicer = &(*iter))
+                    if (Mimicer == &(*iter))
                     {
                         bIsSelfMimic = true;
                         break;
