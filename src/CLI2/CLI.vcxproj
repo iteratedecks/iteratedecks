@@ -87,13 +87,17 @@
     <ClCompile Include="cliOptions.cpp" />
     <ClCompile Include="cliParser.cpp" />
     <ClCompile Include="cliSimulate.cpp" />
+    <ClCompile Include="deckTemplates.cpp" />
     <ClCompile Include="iteratedecks-cli.cpp" />
+    <ClCompile Include="SimulationTaskStruct.cpp" />
     <ClCompile Include="verify.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cliOptions.hpp" />
     <ClInclude Include="cliParser.hpp" />
     <ClInclude Include="cliSimulate.hpp" />
+    <ClInclude Include="deckTemplates.hpp" />
+    <ClInclude Include="SimulationTaskStruct.hpp" />
     <ClInclude Include="verify.hpp" />
   </ItemGroup>
   <ItemGroup>

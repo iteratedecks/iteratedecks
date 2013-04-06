@@ -178,7 +178,9 @@
     <ClCompile Include="card.cpp" />
     <ClCompile Include="cardDB.cpp" />
     <ClCompile Include="cardPool.cpp" />
+    <ClCompile Include="deckTemplate.cpp" />
     <ClCompile Include="exceptions.cpp" />
+    <ClCompile Include="iterateDecksCore.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="missionInfo.cpp" />
     <ClCompile Include="playedCard.cpp" />
@@ -212,7 +214,9 @@
     <ClInclude Include="deck.hpp" />
     <ClInclude Include="deckIndex.forward.hpp" />
     <ClInclude Include="deckIndex.hpp" />
+    <ClInclude Include="deckTemplate.hpp" />
     <ClInclude Include="exceptions.hpp" />
+    <ClInclude Include="iterateDecksCore.hpp" />
     <ClInclude Include="log.h" />
     <ClInclude Include="logger.forward.hpp" />
     <ClInclude Include="Logger.hpp" />
