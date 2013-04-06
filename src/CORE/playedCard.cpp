@@ -203,7 +203,7 @@ namespace IterateDecks {
             if (count > 0 && IsAlive() && (GetAbility(SPECIAL_LEGION))) {
                 int amount = count * GetAbility(SPECIAL_LEGION);
                 this->Rally(amount);
-                this->Heal(amount);
+                this->Heal(amount, QuestEffectId);
             }
         }
         void PlayedCard::ProcessPoison(BattleGroundEffect QuestEffectId)
