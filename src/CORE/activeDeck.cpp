@@ -2856,7 +2856,7 @@ namespace IterateDecks {
 
                             ownDeck.ApplyDefensiveEffects(QuestEffectId, Src, otherDeck, *vi, Dmg);
 
-                            ownDeck.ApplyDamageDependentEffects(QuestEffectId, Src, otherDeck, *vi, Dmg);
+                            otherDeck.ApplyDamageDependentEffects(QuestEffectId, Src, ownDeck, *vi, Dmg);
                         }
                     }
                     return false;
@@ -2870,7 +2870,7 @@ namespace IterateDecks {
 
                 ownDeck.ApplyDefensiveEffects(QuestEffectId, Src, otherDeck, *this, Dmg);
 
-                ownDeck.ApplyDamageDependentEffects(QuestEffectId, Src, otherDeck, otherDeck.Commander, Dmg);
+                otherDeck.ApplyDamageDependentEffects(QuestEffectId, Src, ownDeck, ownDeck.Commander, Dmg);
             }
             return (SufferDmg(QuestEffectId,Dmg,0,0,0,overkill) > 0);
         }
