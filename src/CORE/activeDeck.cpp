@@ -990,6 +990,8 @@ namespace IterateDecks {
         }
 
         void ActiveDeck::ApplyDefensiveEffects(BattleGroundEffect QuestEffectId,PlayedCard &attacker,ActiveDeck &defenseDeck,PlayedCard &defender,UCHAR dmg) {
+            if(!attacker.IsAlive()) return;
+
             if ((dmg > 0) && defender.GetAbility(DEFENSIVE_STUN))
             {
                 LOG(this->logger,defensiveAbility(defender,attacker,DEFENSIVE_STUN,1));
@@ -1006,7 +1008,7 @@ namespace IterateDecks {
                 defender.fsDmgDealt += attacker.SufferDmg(QuestEffectId,cdmg,0,0,0,&overkill); // counter dmg is enhanced by enfeeble
                 defender.fsOverkill += overkill;
                 this->SkillProcs[DEFENSIVE_COUNTER]++;
-                CheckDeathEvents(attacker,*this);
+                CheckDeathEvents(attacker,defenseDeck);
             }
         }
 
