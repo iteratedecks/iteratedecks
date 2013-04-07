@@ -1997,7 +1997,13 @@ namespace IterateDecks {
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, 0};
                         EFFECT_ARGUMENT targetSkills[] = {ACTIVATION_ENFEEBLE, ACTIVATION_HEAL, ACTIVATION_PROTECT, ACTIVATION_RALLY, ACTIVATION_REPAIR, ACTIVATION_SIEGE, ACTIVATION_STRIKE, ACTIVATION_SUPPLY, ACTIVATION_WEAKEN, 0};
-                        FilterTargets(targets,skipEffects,targetSkills,-1,activeNextTurnWait,-1,true);
+
+                        // friendly fire "gives" all units Strike 1
+                        if(QuestEffectId == BattleGroundEffect::friendlyFire) {
+                            FilterTargets(targets,skipEffects,NULL,-1,activeNextTurnWait,-1,true);
+                        } else {
+                            FilterTargets(targets,skipEffects,targetSkills,-1,activeNextTurnWait,-1,true);
+                        }
 
                         bool bTributable = IsInTargets(procCard,&targets);
 
