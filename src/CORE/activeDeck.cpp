@@ -2356,7 +2356,8 @@ namespace IterateDecks {
             PlayedCard Empty;
             UCHAR iFusionCount = 0;
             for (LCARDS::const_iterator iter = Structures.begin(); iter != Structures.end(); iter++) {
-                if (iter->GetAbility(SPECIAL_FUSION) > 0) {
+                if (iter->GetAbility(SPECIAL_FUSION) > 0
+                    && iter->GetWait() == 0) {
                     iFusionCount++;
                 }
             }
