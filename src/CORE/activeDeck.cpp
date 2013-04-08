@@ -2330,11 +2330,12 @@ namespace IterateDecks {
                 PPCIV GetTo;
                 for (LCARDS::iterator vi = Units.begin();vi != Units.end();vi++)
                 {
-                    if ((vi->IsAlive()) &&
-                        (vi->GetWait() == 0) &&
-                        //(!vi->GetEffect(ACTIVATION_JAM)) && // Jammed
-                        (!vi->GetEffect(ACTIVATION_FREEZE)) && // Frozen
-                        (!vi->GetEffect(DMGDEPENDANT_IMMOBILIZE)))
+                    if ((vi->IsAlive())
+                        && (vi->GetWait() == 0)
+                        //&& (!vi->GetEffect(ACTIVATION_JAM))
+                        && (!vi->GetEffect(ACTIVATION_FREEZE))
+                        //&& (!vi->GetEffect(DMGDEPENDANT_IMMOBILIZE))
+                        )
                         GetTo.push_back(PPCARDINDEX(&(*vi),0));
                 }
                 if (!GetTo.empty())
