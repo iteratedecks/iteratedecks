@@ -1436,6 +1436,8 @@ namespace IterateDecks {
                             break;
                         }
 
+                        bool bTributable = IsInTargets(procCard,&targets);
+
                         procDeck->SkillProcs[aid]++;
 
                         PPCIV::iterator vi = targets.begin();
@@ -1447,7 +1449,7 @@ namespace IterateDecks {
 
                             //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
 
-                            if(Tribute(vi->first, procCard, procDeck, EffectType, aid, effect))
+                            if(bTributable && Tribute(vi->first, procCard, procDeck, EffectType, aid, effect))
                             {
                                 procCard->Protect(effect);
                                 vi->first->fsSpecial += effect;
