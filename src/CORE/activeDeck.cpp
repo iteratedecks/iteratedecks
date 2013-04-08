@@ -995,7 +995,7 @@ namespace IterateDecks {
             if ((dmg > 0) && defender.GetAbility(DEFENSIVE_STUN))
             {
                 LOG(this->logger,defensiveAbility(defender,attacker,DEFENSIVE_STUN,1));
-                this->SkillProcs[DEFENSIVE_STUN]++;
+                defenseDeck.SkillProcs[DEFENSIVE_STUN]++;
                 // we just decrement STUN at the end of turn so if we set it to "2" it will skip 1 turn's attacks
                 attacker.SetEffect(DEFENSIVE_STUN,2);
             }
@@ -1007,7 +1007,7 @@ namespace IterateDecks {
                 LOG(this->logger,defensiveAbility(defender,attacker,DEFENSIVE_COUNTER,cdmg));
                 defender.fsDmgDealt += attacker.SufferDmg(QuestEffectId,cdmg,0,0,0,&overkill); // counter dmg is enhanced by enfeeble
                 defender.fsOverkill += overkill;
-                this->SkillProcs[DEFENSIVE_COUNTER]++;
+                defenseDeck.SkillProcs[DEFENSIVE_COUNTER]++;
                 CheckDeathEvents(attacker,defenseDeck);
             }
         }
