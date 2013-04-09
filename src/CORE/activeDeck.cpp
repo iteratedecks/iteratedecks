@@ -1507,11 +1507,10 @@ namespace IterateDecks {
                                     vi->first->SetEffect(aid,effect);
 
                                     procCard->fsSpecial += effect;
-                                    //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
-
                                     procDeck->SkillProcs[aid]++;
 
-                                    if (Payback(*targetDeck, vi->first, *procCard, EffectType, aid, effect, chaos))  // payback is it 1/2 or 1/4 chance to return jam with payback????
+                                    if (procCard->GetEffect(ACTIVATION_JAM)
+                                        && Payback(*targetDeck, vi->first, *procCard, EffectType, aid, effect, chaos))  // payback is it 1/2 or 1/4 chance to return jam with payback?
                                     {
                                         procCard->SetEffect(aid,effect);
                                         vi->first->fsSpecial += effect;
@@ -1885,7 +1884,8 @@ namespace IterateDecks {
                                 procCard->fsSpecial += we;
                                 //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
 
-                                if (Payback(*targetDeck, vi->first, *procCard, EffectType, aid, effect, chaos))  // payback
+                                if (procCard->GetAttack() > 0
+                                    && Payback(*targetDeck, vi->first, *procCard, EffectType, aid, effect, chaos))  // payback
                                 {
                                     vi->first->fsSpecial += procCard->Weaken(effect);
                                 }
@@ -1925,7 +1925,8 @@ namespace IterateDecks {
                                 procCard->fsSpecial += effect;
                                 //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
 
-                                if (Payback(*targetDeck, vi->first, *procCard, EffectType, aid, effect, chaos))  // payback
+                                if (procCard->GetEffect(ACTIVATION_CHAOS) == 0
+                                    && Payback(*targetDeck, vi->first, *procCard, EffectType, aid, effect, chaos))  // payback
                                 {
                                     procCard->SetEffect(ACTIVATION_CHAOS, effect);
                                     vi->first->fsSpecial += effect;
