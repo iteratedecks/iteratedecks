@@ -2038,17 +2038,17 @@ namespace IterateDecks {
                             {
                                 procCard->Augment(effect);
                                 vi->first->fsSpecial += effect;
+                            }
 
-                                UCHAR pos = vi->second;
-                                PlayedCard *oppositeCard = NULL;
-                                if(pos < EnemyDeck.Units.size()) {
-                                    oppositeCard = &EnemyDeck.getUnitAt(pos);
-                                }
-                                if(oppositeCard != NULL && oppositeCard->CanEmulate(aid)) {
-                                    oppositeCard->Augment(effect);
-                                    oppositeCard->fsSpecial += effect;
-                                    EnemyDeck.SkillProcs[DEFENSIVE_EMULATE]++;
-                                }
+                            UCHAR pos = vi->second;
+                            PlayedCard *oppositeCard = NULL;
+                            if(pos < EnemyDeck.Units.size()) {
+                                oppositeCard = &EnemyDeck.getUnitAt(pos);
+                            }
+                            if(oppositeCard != NULL && oppositeCard->CanEmulate(aid)) {
+                                oppositeCard->Augment(effect);
+                                oppositeCard->fsSpecial += effect;
+                                EnemyDeck.SkillProcs[DEFENSIVE_EMULATE]++;
                             }
                         }
                     } break;
