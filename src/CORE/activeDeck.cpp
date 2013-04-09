@@ -1478,6 +1478,9 @@ namespace IterateDecks {
                         else
                             GetTargets(EnemyDeck.Units,faction,targets);
 
+                        // HACK: Eventually need to check for intercept *after* the PROC50 below
+                        int interceptCount = EnemyDeck.SkillProcs[DEFENSIVE_INTERCEPT];
+
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, 0};
                         FilterTargets(targets,skipEffects,NULL,-1,1,-1,!chaos);
                         RandomizeTarget(targets,targetCount,EnemyDeck,!chaos);
@@ -1491,6 +1494,8 @@ namespace IterateDecks {
                         {
                             if (PROC50)
                             {
+                                // Intercept
+
                                 if (Evade(vi->first, QuestEffectId, chaos))
                                 {
                                     LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
@@ -1512,6 +1517,10 @@ namespace IterateDecks {
                                         vi->first->fsSpecial += effect;
                                     }
                                 }
+                            }
+                            else
+                            {
+                                EnemyDeck.SkillProcs[DEFENSIVE_INTERCEPT] = interceptCount; // undo any intercept proc that may have happened
                             }
                         }
                     } break;
