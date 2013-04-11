@@ -902,7 +902,6 @@ namespace IterateDecks {
             {
                 // immobilize
                 if (attacker.GetAbility(DMGDEPENDANT_IMMOBILIZE)
-                    && attacker.GetAbilityEvent(DMGDEPENDANT_DISEASE) == EVENT_EMPTY
                     && PROC50)
                 {
                     if(!defender.GetEffect(DMGDEPENDANT_IMMOBILIZE)
