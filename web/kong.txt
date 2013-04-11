@@ -1,4 +1,4 @@
-iteratedecks 1.0.4 has released!
+iteratedecks 1.0.5 has released!
 
 ----
 
@@ -12,6 +12,33 @@ Special thanks to hunterhogan for the hosting.
 
 ----
 <h2>Release Notes</h2>
+<h3>1.0.5</h3>
+
+  * -v logging includes more skills
+  * Weaken on Attacked ignores Wait 1
+  * Paybacked Mimicked abilities target the correct unit
+  * Quicksilver does not effect Structures
+  * Poison on Attack should not trigger when unit attacks
+  * On Death from Counter effects correct target
+  * Regenerate can trigger after death by Poison
+  * Supply does not effect a dead unit
+  * Jammed cards are still properly marked as played
+  * Recharge cards go at the bottom of the draw
+  * FriendlyFire replaces Chaos ability with Chaos All
+  * Armor correctly lowers effective Pierce value
+  * Freeze does not prevent On Attacked abilities from triggering
+  * Units stop attacking after Commander dies
+  * Immoblize proc counting ignores Jammed or units with Wait over 1
+  * Mimic proc counting works correctly
+  * Kill counts during achievments no longer count Summoned units
+  * Burst proc counting no longer includes missed units due to Flying
+  * Units no longer take turns after Commander dies
+  * Disease proc counting ignores already Diseased units
+  * Summon proc counting enabled
+  * Blitz proc counting enabled
+  * Payback proc counting adds to the correct player
+  * Mimic no longer Intercepted during Copycat
+
 <h3>1.0.4</h3>
 
   * Now supports Stun
@@ -25,28 +52,6 @@ Special thanks to hunterhogan for the hosting.
   * Crush damage no longer triggers On Attack abilities
   * <pre>-a</pre> now uses achievement id instead of achievement index
   * Now supports more than 256 units at a time
-
-<h3>1.0.2</h3>
-
-  * Enabled battleground flag (-b)
-  * Regenerate now happens after On Death abilities
-  * Infuse only changes faction for helpful abilities
-  * Crush damage now ignores Impenetrable battleground effect
-  * Berzerk no longer procs on walls during Impenetrable battleground effect
-  * Added support for Toxic battleground effect (Decay was already supported)
-  * Friendly Fire battleground effect no longer overrides Commander's chaos
-  * Mimic is no longer evadable during Copycat battleground effect
-  * Split now targets Jammed units
-
-<h3>1.0.1</h3>
-
-  * Windows XP and Windows 7 support
-  * On Death and On Attacked now Rally and Augment Wait 1 units
-
-<h3>1.0.0</h3>
-
-  * Initial public release
-  * Supports Legion
 
 ----
 <h2>FAQ</h2>

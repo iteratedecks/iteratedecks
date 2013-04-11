@@ -53,6 +53,32 @@ There are various flags available to alter how the simulation works. Here are th
 
 ## Release Notes
 
+###1.0.5
+* -v logging includes more skills
+* Weaken on Attacked ignores Wait 1
+* Paybacked Mimicked abilities target the correct unit
+* Quicksilver does not effect Structures
+* Poison on Attack should not trigger when unit attacks
+* On Death from Counter effects correct target
+* Regenerate can trigger after death by Poison
+* Supply does not effect a dead unit
+* Jammed cards are still properly marked as played
+* Recharge cards go at the bottom of the draw
+* FriendlyFire replaces Chaos ability with Chaos All
+* Armor correctly lowers effective Pierce value
+* Freeze does not prevent On Attacked abilities from triggering
+* Units stop attacking after Commander dies
+* Immoblize proc counting ignores Jammed or units with Wait over 1
+* Mimic proc counting works correctly
+* Kill counts during achievments no longer count Summoned units
+* Burst proc counting no longer includes missed units due to Flying
+* Units no longer take turns after Commander dies
+* Disease proc counting ignores already Diseased units
+* Summon proc counting enabled
+* Blitz proc counting enabled
+* Payback proc counting adds to the correct player
+* Mimic no longer Intercepted during Copycat
+
 ###1.0.4
 * Now supports Stun
 * Chaosed Jam now targets units that have already attacked
