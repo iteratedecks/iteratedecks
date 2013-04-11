@@ -344,7 +344,7 @@ namespace IterateDecks {
                 if (bPierce) {
                     LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),COMBAT_PIERCE,pierce);
                 }
-                dmg = target.SufferDmg(QuestEffectId,dmg, pierce,&actualDamageDealt,0,&overkill),
+                dmg = target.SufferDmg(QuestEffectId,dmg, pierce,&actualDamageDealt,0,&overkill,
                     LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),0,dmg),&damageWasDeadly);
                 SRC.fsDmgDealt += actualDamageDealt;
                 SRC.fsOverkill += overkill;
