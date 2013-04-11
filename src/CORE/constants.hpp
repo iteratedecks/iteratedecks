@@ -56,6 +56,7 @@
                 DEFENSIVE_TRIBUTE,
                 DEFENSIVE_WALL,
                 DEFENSIVE_EMULATE,
+                DEFENSIVE_STUN,
 
                 COMBAT_ANTIAIR,
                 COMBAT_BURST,
