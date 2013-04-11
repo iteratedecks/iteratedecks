@@ -372,8 +372,6 @@ namespace IterateDecks {
                                          ,UCHAR * const actualdamagedealt
                                          ,UCHAR * SkillProcBuffer
                                          ,UCHAR * OverkillDamage
-                                         ,bool bCanRegenerate
-                                         ,VLOG *log
                                          ,LOG_RECORD *lr
                                          ,bool * const damageWasDeadly // needed for crush
                                          )
