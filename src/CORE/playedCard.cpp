@@ -316,11 +316,8 @@ namespace IterateDecks {
         }
         bool PlayedCard::Regenerate(BattleGroundEffect QuestEffectId) {
             // regnerate?
-            if(this->IsDiseased()) return false;
-
             EFFECT_ARGUMENT const regenerateAmount = this->OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
-            //bool const hasAbilityRegenerate = (regenerateAmount > 0);
-            if ((regenerateAmount > 0) && (PROC50))
+            if (!this->IsDiseased() && (regenerateAmount > 0) && (PROC50))
             {
                 // This unit regenerates.
                 this->Health = regenerateAmount;
