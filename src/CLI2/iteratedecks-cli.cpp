@@ -149,8 +149,8 @@ int main(int const argc, char * const * const argv)
 {
     CliOptions options = parseCliOptions(argc, argv);
 
-        return mainWithOptions(options);
     try {
+        return mainWithOptions(options);
     } catch(Assert::AssertionError const & e) {
         std::cerr << "Assertion failed:" << std::endl;
         std::cerr << e.what() << std::endl;
