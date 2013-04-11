@@ -2314,10 +2314,16 @@ namespace IterateDecks {
                 iter->DecWait();
             }
 
-            // process poison
+            // processing shield, poison and death events all happen in waves, not unit by unit
             for (LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
                 iter->ResetShield(); // according to wiki, shield doesn't affect poison, it wears off before poison procs I believe
+            }
+
+            for (LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
                 iter->ProcessPoison(QuestEffectId);
+            }
+
+            for (LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
                 CheckDeathEvents(*iter, Def);
             }
 
