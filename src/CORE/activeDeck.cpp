@@ -942,8 +942,7 @@ namespace IterateDecks {
 
                 // leech
                 if (attacker.IsAlive()
-                    && attacker.GetAbility(DMGDEPENDANT_LEECH)
-                    && attacker.GetAbilityEvent(DMGDEPENDANT_DISEASE) == EVENT_EMPTY)
+                    && attacker.GetAbility(DMGDEPENDANT_LEECH))
                 {
                     UCHAR leech = (attacker.GetAbility(DMGDEPENDANT_LEECH) < dmg) ? attacker.GetAbility(DMGDEPENDANT_LEECH) : dmg;
                     if (leech && (!attacker.IsDiseased()))
@@ -960,8 +959,7 @@ namespace IterateDecks {
 
                 // siphon
                 if (attacker.GetAbility(DMGDEPENDANT_SIPHON)
-                    && defender.GetType() == TYPE_ASSAULT
-                    && attacker.GetAbilityEvent(DMGDEPENDANT_DISEASE) == EVENT_EMPTY)
+                    && defender.GetType() == TYPE_ASSAULT)
                 {
                     UCHAR siphon = (attacker.GetAbility(DMGDEPENDANT_SIPHON) < dmg) ? attacker.GetAbility(DMGDEPENDANT_SIPHON) : dmg;
                     if (siphon)
