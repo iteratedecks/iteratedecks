@@ -2327,14 +2327,6 @@ namespace IterateDecks {
                 CheckDeathEvents(*iter, Def);
             }
 
-            //  Moraku: If Heal on Death triggers from poison damage, it will NOT be able to heal another unit
-            // dying from poison damage on the same turn. (All poison damage takes place before On Death skills
-            // trigger)
-            for (LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
-                if (iter->OnDeathEvent())
-                    ApplyEffects(QuestEffectId,EVENT_DIED,*iter,-1,Def);
-            }
-
             // Quest split mark
             if (    (QuestEffectId == BattleGroundEffect::cloneProject)
                  || (    (QuestEffectId == BattleGroundEffect::splitFive)
