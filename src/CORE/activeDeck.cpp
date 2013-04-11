@@ -1858,7 +1858,8 @@ namespace IterateDecks {
                         }
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, DMGDEPENDANT_IMMOBILIZE, DEFENSIVE_STUN, 0};
-                        FilterTargets(targets,skipEffects,NULL,-1,1,1,!chaos);
+                        int const maxWait = EffectType == EVENT_ATTACKED ? 0 : 1;
+                        FilterTargets(targets,skipEffects,NULL,-1,maxWait,1,!chaos);
                         RandomizeTarget(targets,targetCount,EnemyDeck,!chaos);
 
                         if (targets.size() <= 0) {
