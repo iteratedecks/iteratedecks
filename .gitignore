@@ -13,4 +13,7 @@
 bin/*.xml
 bin/debug.txt
 *.vcxproj.user
+bin/fansite_config.txt
+bin/junk.*
+bin/tests.json
 
