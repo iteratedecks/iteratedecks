@@ -203,7 +203,7 @@ namespace IterateDecks {
             if (count > 0 && IsAlive() && (GetAbility(SPECIAL_LEGION))) {
                 int amount = count * GetAbility(SPECIAL_LEGION);
                 this->Rally(amount);
-                this->Heal(amount);
+                this->Heal(amount, QuestEffectId);
             }
         }
         void PlayedCard::ProcessPoison(BattleGroundEffect QuestEffectId)
@@ -316,11 +316,8 @@ namespace IterateDecks {
         }
         bool PlayedCard::Regenerate(BattleGroundEffect QuestEffectId) {
             // regnerate?
-            if(this->IsDiseased()) return false;
-
             EFFECT_ARGUMENT const regenerateAmount = this->OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
-            //bool const hasAbilityRegenerate = (regenerateAmount > 0);
-            if ((regenerateAmount > 0) && (PROC50))
+            if (!this->IsDiseased() && (regenerateAmount > 0) && (PROC50))
             {
                 // This unit regenerates.
                 this->Health = regenerateAmount;
@@ -372,8 +369,6 @@ namespace IterateDecks {
                                          ,UCHAR * const actualdamagedealt
                                          ,UCHAR * SkillProcBuffer
                                          ,UCHAR * OverkillDamage
-                                         ,bool bCanRegenerate
-                                         ,VLOG *log
                                          ,LOG_RECORD *lr
                                          ,bool * const damageWasDeadly // needed for crush
                                          )
@@ -480,6 +475,8 @@ namespace IterateDecks {
                 return false;
             if (bActivated != C.bActivated)
                 return false;
+            if (isSummoned != C.isSummoned)
+                return false;
             if (Faction != C.Faction)
                 return false;
             return (!memcmp(Effects,C.Effects,CARD_ABILITIES_MAX * sizeof(UCHAR)));
@@ -497,6 +494,8 @@ namespace IterateDecks {
             if (bPlayed != C.bPlayed)
                 return true;
             if (bActivated != C.bActivated)
+                return true;
+            if (isSummoned != C.isSummoned)
                 return true;
             if (Faction != C.Faction)
                 return true;
@@ -516,6 +515,8 @@ namespace IterateDecks {
                 return (bPlayed < C.bPlayed);
             if (bActivated != C.bActivated)
                 return (bActivated < C.bActivated);
+            if (isSummoned != C.isSummoned)
+                return (isSummoned < C.isSummoned);
             if (Faction != C.Faction)
                 return (Faction < C.Faction);
             int mr = memcmp(Effects,C.Effects,CARD_ABILITIES_MAX * sizeof(UCHAR)) < 0;
@@ -532,6 +533,7 @@ namespace IterateDecks {
             bQuestSplit = false;
             bPlayed = false;
             bActivated = false;
+            isSummoned = false;
             memset(Effects,0,CARD_ABILITIES_MAX);
             fsDmgDealt = 0;
             fsDmgMitigated = 0;
@@ -558,6 +560,7 @@ namespace IterateDecks {
             bQuestSplit = false;
             bPlayed = false;
             bActivated = false;
+            isSummoned = false;
             memset(Effects,0,sizeof(Effects));
             fsDmgDealt = 0;
             fsDmgMitigated = 0;
@@ -584,6 +587,7 @@ namespace IterateDecks {
                 return 0;
         }
         const UCHAR PlayedCard::GetHealth() const { return Health; }
+        const bool PlayedCard::GetIsSummoned() const { return isSummoned; }
         const UCHAR PlayedCard::GetMaxHealth() const { return OriginalCard->GetHealth(); }
         const UCHAR PlayedCard::GetFaction() const { return Faction; }
         const UCHAR PlayedCard::GetWait() const { return Wait; }
@@ -615,6 +619,7 @@ namespace IterateDecks {
         void PlayedCard::SetAttack(const UCHAR attack) { Attack = attack; }
         void PlayedCard::SetEffect(const UCHAR id, const UCHAR value) { Effects[id] = value; }
         void PlayedCard::SetHealth(const UCHAR health) { Health = health; }
+        void PlayedCard::SetIsSummoned(const bool summoned) { isSummoned = summoned; }
         void PlayedCard::Augment(const EFFECT_ARGUMENT amount)
         {
             Effects[ACTIVATION_AUGMENT] += amount;
@@ -689,6 +694,7 @@ namespace IterateDecks {
             bQuestSplit = false;
             bPlayed = false;
             bActivated = false;
+            isSummoned = false;
             OriginalCard = 0;
             memset(Effects,0,CARD_ABILITIES_MAX);
             fsDmgDealt = 0;
@@ -713,6 +719,7 @@ namespace IterateDecks {
         , Faction(original.Faction)
         , bPlayed(original.bPlayed)
         , bActivated(original.bActivated)
+        , isSummoned(original.isSummoned)
         , bQuestSplit(original.bQuestSplit)
         , DeathEvents(original.DeathEvents)
         , fsDmgDealt(original.fsDmgDealt)
