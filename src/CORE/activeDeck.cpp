@@ -1509,7 +1509,7 @@ namespace IterateDecks {
                                     procCard->fsSpecial += effect;
                                     procDeck->SkillProcs[aid]++;
 
-                                    if (procCard->GetEffect(ACTIVATION_JAM)
+                                    if (procCard->GetEffect(ACTIVATION_JAM) == 0
                                         && Payback(*targetDeck, vi->first, *procCard, EffectType, aid, effect, chaos))  // payback is it 1/2 or 1/4 chance to return jam with payback?
                                     {
                                         procCard->SetEffect(aid,effect);
