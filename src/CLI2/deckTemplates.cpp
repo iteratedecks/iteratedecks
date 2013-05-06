@@ -4,6 +4,7 @@
 #include "../CORE/cardDB.hpp"
 #include "../CORE/cardPool.hpp"
 #include "../CORE/activeDeck.hpp"
+#include <iostream>
 
 namespace IterateDecks {
     namespace CLI {
@@ -11,39 +12,59 @@ namespace IterateDecks {
         std::list<unsigned int> hashToId(std::string const & hash)
         {
             std::list<unsigned int> list;
+            size_t len = hash.size();
 
-            size_t const len = hash.length();
-            if(len % 2 != 0) {
-                throw InvalidDeckHashError(InvalidDeckHashError::notEvenChars);
-            }
-            assertX(!(len & 1)); // bytes should go in pairs
-            size_t const numberOfCards = len / 2;
+            //std::clog << "parsing hash " << hash << std::endl;
 
             unsigned int lastid;
-            for (unsigned int i = 0; i < numberOfCards; i++) {
-                if (hash[i << 1] == '.') break; // delimeter
-                if (isspace(hash[i << 1])) break; // not a hash
-                unsigned int tid = base64ToId((hash[i << 1] << 8) + hash[(i << 1) + 1]);
+            for (UCHAR i = 0; i < len; i+=2) {
+                //std::clog << "current character is '" << hash[i] << "'" << std::endl;
+                if (hash[i] == '.') break; // delimeter
+                if (isspace(hash[i])) {
+                    assertX(false);
+                }
+                unsigned int tid = 0;
+                bool isCardOver4000 = false;
+                if(hash[i] == '-') {
+                    i++;
+                    isCardOver4000 = true;
+                    tid = 4000;
+                }
+                assertX(i + 1u < len); // make sure we have a full hash
+                //std::clog << "reading characters '" << hash[i] << hash[i+1] << "' ";
+                unsigned short cardHash = (hash[i] << 8) + hash[i + 1];
+                tid += base64ToId(cardHash);
+                //std::clog << "tid is " << tid << std::endl;
                 if (i==0) {
                     // first card is commander
                     assertX(tid < CARD_MAX_ID);
                     assertX((tid >= 1000) && (tid < 2000)); // commander Id boundaries
+                    //std::clog << "adding commander " << tid << std::endl;
                     list.push_back(tid);
                 } else {
                     // later cards are not commander
                     assertX(i>0 || (tid < CARD_MAX_ID)); // commander card can't be encoded with RLE
-                    if (tid < CARD_MAX_ID) {
-                        // this is a card
+
+                    if (tid < 4000 || isCardOver4000) {
+                        // this is a (non commander) card
                         list.push_back(tid);
+                        //std::clog << "adding card " << tid << " the first time " << std::endl;
                         lastid = tid;
                     } else {
-                        // this is an encoding for rle
-                        for (unsigned int k = CARD_MAX_ID+1; k < tid; k++) { // decode RLE, +1 because we already added one card
+                        // this is a RLE
+                        for (unsigned int k = 4000+1; k < tid; k++) {
+                            // decode RLE, +1 because we already added one card
                             list.push_back(lastid);
-                        }
+                            //std::clog << "adding card " << lastid << " again " << std::endl;
+                        } // for RLE
                     }
                 }
-            }
+            } // for
+
+            //for(std::list<unsigned int>::const_iterator i = list.begin(); i != list.end(); i++) {
+            //    std::clog << *i << " ";
+            //}
+            //std::clog << std::endl;
             return list;
         }
 
