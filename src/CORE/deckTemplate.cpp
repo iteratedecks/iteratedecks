@@ -22,11 +22,6 @@ namespace IterateDecks {
         {}
 
         DeckTemplate::~DeckTemplate() {}
-
-        BattleGroundEffect DeckTemplate::getBattleGroundEffect() const
-        {
-            return BattleGroundEffect::normal;
-        }
         
     }
 }

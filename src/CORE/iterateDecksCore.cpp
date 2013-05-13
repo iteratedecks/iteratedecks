@@ -81,11 +81,7 @@ namespace IterateDecks {
             // We play one game.
             // 1. What about the battleground ?
             BattleGroundEffect questEffect = task.battleGround;
-            // If we have not specified one, we inherit the one from the
-            // defense deck (which might be a quest)
-            if(questEffect == BattleGroundEffect::normal) {
-                questEffect = task.defender->getBattleGroundEffect();
-            }
+
             // 2. We need the decks
             ActiveDeck attacker = task.attacker->instantiate();
             attacker.SetQuestEffect(questEffect);
