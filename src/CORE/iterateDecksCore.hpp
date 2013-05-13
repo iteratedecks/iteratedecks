@@ -12,7 +12,7 @@
     namespace IterateDecks {
         namespace Core {
 
-            // These ones probably belongs somewhere else
+            // TODO These ones probably belongs somewhere else
             struct Result {
                 unsigned long numberOfGames;
                 unsigned long gamesWon;
