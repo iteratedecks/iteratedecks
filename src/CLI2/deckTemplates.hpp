@@ -47,12 +47,9 @@
             };
 
             class QuestTemplate : public PooledTemplate {
-                private:
-                    BattleGroundEffect battleGroundEffect;
                 public:
-                    QuestTemplate(Card const * commander, VCARDPOOL const & pools, CardDB const & cardDB, BattleGroundEffect const battleGroundEffect);
+                    QuestTemplate(Card const * commander, VCARDPOOL const & pools, CardDB const & cardDB);
 
-                    virtual BattleGroundEffect getBattleGroundEffect() const;
                     static DeckTemplate::Ptr createFromQuestId(unsigned int const questId, CardDB const & cardDB);
             };
         }

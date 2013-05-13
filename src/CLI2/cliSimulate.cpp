@@ -499,7 +499,7 @@ namespace IterateDecks {
             task.minimalNumberOfGames = numberOfIterations;
             task.surge = surge;
             task.delayFirstAttacker = false;
-            task.battleGround = BattleGroundEffect::normal;
+            task.battleGround = battleGroundEffect;
             task.achievementOptions = AchievementOptions();
             task.randomSeed = seed;
             task.attacker = attackDeck;

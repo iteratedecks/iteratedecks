@@ -209,16 +209,9 @@ namespace IterateDecks {
         QuestTemplate::QuestTemplate(Card const * commander
                                     ,VCARDPOOL const & pools
                                     ,CardDB const & cardDB
-                                    ,BattleGroundEffect const battleGroundEffect
                                     )
         : PooledTemplate(commander, pools, cardDB)
-        , battleGroundEffect(battleGroundEffect)
         {
-        }
-
-        BattleGroundEffect QuestTemplate::getBattleGroundEffect() const
-        {
-            return this->battleGroundEffect;
         }
 
         DeckTemplate::Ptr QuestTemplate::createFromQuestId(unsigned int const questId, CardDB const & cardDB)
@@ -228,9 +221,8 @@ namespace IterateDecks {
             assertX(stepInfo.IsValid());
             unsigned int const & commanderId(stepInfo.GetCommander());
             Card const * commander = &cardDB.GetCard(commanderId);
-            BattleGroundEffect battleGroundEffect = cardDB.GetQuestEffectId(questId);
 
-            return DeckTemplate::Ptr(new QuestTemplate(commander, stepInfo.pools, cardDB, battleGroundEffect));
+            return DeckTemplate::Ptr(new QuestTemplate(commander, stepInfo.pools, cardDB));
         }
 
         DeckTemplate::Ptr createDeckTemplate(DeckArgument const & argument, CardDB const & cardDB)

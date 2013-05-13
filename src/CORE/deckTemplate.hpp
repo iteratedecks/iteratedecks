@@ -28,7 +28,6 @@
 
                 public:
                     virtual ~DeckTemplate();
-                    virtual BattleGroundEffect getBattleGroundEffect() const;
                     virtual ActiveDeck instantiate() const = 0;
             };
 
