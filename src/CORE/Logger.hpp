@@ -25,6 +25,8 @@
             static unsigned long const LOG_TURN;
             static unsigned long const LOG_SIMULATION;
             static unsigned long const LOG_SCORE_VERBOSE;
+            static unsigned long const LOG_PLAY;
+            static unsigned long const LOG_DEATH;
             static unsigned long const LOG_ALL;
         private:
             unsigned long flags;
@@ -80,6 +82,9 @@
         
             void ability(EVENT_CONDITION const & eventCondition,PlayedCard const & src, std::string const & message);
             void attack(PlayedCard const & src, std::string const & message);
+
+            void cardPlayed(PlayedCard const & card);
+            void cardDestroyed(PlayedCard const & card);
 
             void abilitySupport(EVENT_CONDITION const & eventCondition,PlayedCard const & src, AbilityId const & aid, PlayedCard const & target, EFFECT_ARGUMENT amount);
             void abilityOffensive(EVENT_CONDITION const & eventCondition,PlayedCard const & src, AbilityId const & aid, PlayedCard const & target, EFFECT_ARGUMENT amount, bool evaded = false);

@@ -19,6 +19,8 @@ unsigned long const Logger::LOG_DEFENSIVE_REFRESH        (1ul<<logInit++);
 unsigned long const Logger::LOG_TURN                     (1ul<<logInit++);
 unsigned long const Logger::LOG_SIMULATION               (1ul<<logInit++);
 unsigned long const Logger::LOG_SCORE_VERBOSE            (1ul<<logInit++);
+unsigned long const Logger::LOG_PLAY                     (1ul<<logInit++);
+unsigned long const Logger::LOG_DEATH                    (1ul<<logInit++);
 unsigned long const Logger::LOG_ALL                      ((1ul<<logInit)-1);
 
 enum Color {
@@ -79,7 +81,7 @@ Logger::Logger(unsigned long const & flags, CardDB const & cDB)
 {
 }
 
-void Logger::setColorMode(ColorMode const & colorMode) 
+void Logger::setColorMode(ColorMode const & colorMode)
 {
     this->colorMode = colorMode;
 }
@@ -237,6 +239,25 @@ std::string DeckLogger::getDeckStr() const
             return "Def Deck ";
         default:
             throw std::invalid_argument("Unknown DeckType");
+    }
+}
+
+void DeckLogger::cardPlayed(PlayedCard const & card)
+{
+    if (this->delegate.isEnabled(Logger::LOG_PLAY)) {
+        std::stringstream ssMessage;
+        ssMessage << "Picks ";
+        ssMessage << colorCard(card);
+        this->delegate.log(Logger::LOG_ABILITY,ssMessage.str());
+    }
+}
+void DeckLogger::cardDestroyed(PlayedCard const & card)
+{
+    if (this->delegate.isEnabled(Logger::LOG_DEATH)) {
+        std::stringstream ssMessage;
+        ssMessage << colorCard(card);
+        ssMessage << " dies ";
+        this->delegate.log(Logger::LOG_ABILITY,ssMessage.str());
     }
 }
 
