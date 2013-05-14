@@ -28,4 +28,4 @@ BOOST_AUTO_TEST_CASE( test_simulator_direct ) { try {
     BOOST_CHECK_EQUAL(result.numberOfGames, 1000);
     BOOST_CHECK_EQUAL(result.gamesWon, 1000);
 
-} catch (Exception &e) { std::cerr << e.what() << std::endl; e.printStacktrace(std::cerr); } }
+} catch (Exception &e) { std::cerr << e.what() << std::endl; e.printStacktrace(std::cerr); throw e; } }
