@@ -1,6 +1,7 @@
 #ifndef ITERATEDECKS_CORE_ITERATEDECKSCORE_HPP
     #define ITERATEDECKS_CORE_ITERATEDECKSCORE_HPP
 
+    #include <memory>
     #include "deckTemplate.hpp"
     #include "logger.forward.hpp"
     #include "cardDB.hpp"
@@ -43,6 +44,9 @@
             };
             
             class SimulatorCore {
+                public:
+                    typedef std::auto_ptr<SimulatorCore> Ptr;
+
                 public:
                     virtual ~SimulatorCore();
                     virtual Result simulate(SimulationTaskClass const &) = 0;
