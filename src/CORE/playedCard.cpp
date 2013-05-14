@@ -368,11 +368,11 @@ namespace IterateDecks {
                                          ,bool * const damageWasDeadly // needed for crush
                                          )
         {
-            assertX(OriginalCard);
+            assertX(this->OriginalCard);
     // Regeneration happens before the additional strikes from Flurry.
     // Regenerating does not prevent Crush damage
             UCHAR dmg = Dmg;
-            UCHAR shield = (UCHAR)GetEffect(ACTIVATION_PROTECT);
+            EFFECT_ARGUMENT shield = (EFFECT_ARGUMENT)GetEffect(ACTIVATION_PROTECT);
             if (Pierce >= shield) {
                 dmg = Dmg;
             } else if (Pierce+Dmg >= shield) {
