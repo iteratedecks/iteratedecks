@@ -21,7 +21,7 @@
                 unsigned long gamesLost;
 
                 // Note: This is (intentionally) different from NETRAT's RESULT class.
-                // Here we store points by player, rather than by winner/loser.                
+                // Here we store points by player, rather than by winner/loser.
                 unsigned long pointsAttacker;
                 unsigned long pointsAttackerAuto;
                 unsigned long pointsDefender;     //< hardly meaningful: the only time we have a manual defender is in live pvp where damage does not matter.
@@ -42,7 +42,7 @@
                     DeckTemplate::Ptr attacker;
                     DeckTemplate::Ptr defender;
             };
-            
+
             class SimulatorCore {
                 public:
                     typedef std::auto_ptr<SimulatorCore> Ptr;
@@ -53,7 +53,7 @@
                     virtual void abort() = 0;
             };
 
-            class IterateDecksCore : public SimulatorCore {                
+            class IterateDecksCore : public SimulatorCore {
                 private:
                     unsigned long loggingFlags;
                     bool aborted;
