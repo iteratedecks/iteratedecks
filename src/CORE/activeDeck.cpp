@@ -2270,7 +2270,7 @@ namespace IterateDecks {
                 src.Regenerate(QuestEffectId);
             }
         }
-        
+
         void ActiveDeck::AttackDeck(ActiveDeck &Def, bool bSkipCardPicks, unsigned int turn)
         {
             // assume for now that timer is decreased first
@@ -2621,7 +2621,7 @@ namespace IterateDecks {
             }
             else
             {
-                for (UCHAR i=0;(i<DEFAULT_DECK_RESERVE_SIZE) && (CardPicks[i]);i++) 
+                for (UCHAR i=0;(i<DEFAULT_DECK_RESERVE_SIZE) && (CardPicks[i]);i++)
                 {
                     ids.push_back(CardPicks[i]); // multiset is disallowed!
                 }
