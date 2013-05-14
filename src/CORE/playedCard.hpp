@@ -28,6 +28,7 @@
                     UCHAR Effects[CARD_ABILITIES_MAX];
                     bool bPlayed;
                     bool bActivated;
+                    bool isSummoned;
                     bool bQuestSplit;
                     UCHAR DeathEvents;
                 public:
@@ -71,9 +72,7 @@
                     const UCHAR GetAbilitiesCount() const;
                     const UCHAR GetAbilityInOrder(const UCHAR order) const;
                     void Infuse(const UCHAR setfaction);
-                    const UCHAR SufferDmg(BattleGroundEffect QuestEffectId
-                                         ,const UCHAR Dmg
-                                         ,const UCHAR Pierce = 0, UCHAR * const actualdamagedealt = 0, UCHAR *SkillProcBuffer = 0, UCHAR *OverkillDamage = 0, bool bCanRegenerate = true, VLOG *log = 0, LOG_RECORD *lr=0, bool * const damageWasDeadly = NULL);
+                    const UCHAR SufferDmg(BattleGroundEffect QuestEffectId, const UCHAR Dmg, const UCHAR Pierce = 0, UCHAR * const actualdamagedealt = 0, UCHAR *SkillProcBuffer = 0, UCHAR *OverkillDamage = 0, LOG_RECORD *lr=0, bool * const damageWasDeadly = NULL);
                     bool HitCommander(BattleGroundEffect QuestEffectId,const UCHAR Dmg,PlayedCard &Src,ActiveDeck & ownDeck, ActiveDeck & otherDeck, bool isCrushDamage = false,UCHAR *overkill = NULL,VLOG *log = NULL,LOG_RECORD *lr = NULL);
                     UCHAR StrikeDmg(BattleGroundEffect const QuestEffectId, const UCHAR Dmg, UCHAR *overkill = 0); // returns dealt dmg
                     const bool IsAlive() const;
@@ -89,6 +88,7 @@
                     const UCHAR GetNativeAttack() const;
                     const UCHAR GetAttack() const;
                     const UCHAR GetHealth() const;
+                    const bool GetIsSummoned() const;
                     const UCHAR GetMaxHealth() const;
                     const UCHAR GetFaction() const;
                     const UCHAR GetWait() const;
@@ -104,6 +104,7 @@
                     void SetAttack(const UCHAR attack);
                     void SetEffect(const UCHAR id, const UCHAR value);
                     void SetHealth(const UCHAR health);
+                    void SetIsSummoned(const bool summoned);
                     void Augment(const EFFECT_ARGUMENT amount);
                     void Rally(const EFFECT_ARGUMENT amount);
                     EFFECT_ARGUMENT Weaken(const EFFECT_ARGUMENT amount);
