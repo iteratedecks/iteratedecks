@@ -705,7 +705,7 @@ namespace IterateDecks {
                     isCardOver4000 = false;
                     tid = 0;
                 }
-                assertX(i + 1 < len); // make sure we have a full hash
+                assertLT(i + 1u,len); // make sure we have a full hash
                 unsigned short cardHash = (DeckHash[i] << 8) + DeckHash[i + 1];
                 tid += BASE64ID(cardHash);
                 if (i==0)
@@ -1051,23 +1051,29 @@ namespace IterateDecks {
 
             if(QuestEffectId == BattleGroundEffect::friendlyFire && EffectType == EVENT_EMPTY) {
                 switch(Src.GetType()) {
-                case TYPE_COMMANDER: {
-                    if(Src.GetAbility(ACTIVATION_CHAOS) <= 0) {
-                        questAbilityId = ACTIVATION_CHAOS;
-                        questAbilityEffect = 1;
-                        questAbilityTargets = TARGETSCOUNT_ALL;
-                        questAbilityCount++;
-                    }
-                                     } break;
-                case TYPE_ASSAULT: {
-                    // if the unit already has strike, don't give it to them again
-                    if(Src.GetAbility(ACTIVATION_STRIKE) == 0) {
-                        questAbilityId = ACTIVATION_STRIKE;
-                        questAbilityEffect = 1;
-                        questAbilityTargets = TARGETSCOUNT_ONE;
-                        questAbilityCount++;
-                    }
-                                   } break;
+                    case TYPE_COMMANDER: {
+                            if(Src.GetAbility(ACTIVATION_CHAOS) <= 0) {
+                                questAbilityId = ACTIVATION_CHAOS;
+                                questAbilityEffect = 1;
+                                questAbilityTargets = TARGETSCOUNT_ALL;
+                                questAbilityCount++;
+                            }
+                        } break;
+                    case TYPE_ASSAULT: {
+                            // if the unit already has strike, don't give it to them again
+                            if(Src.GetAbility(ACTIVATION_STRIKE) == 0) {
+                                questAbilityId = ACTIVATION_STRIKE;
+                                questAbilityEffect = 1;
+                                questAbilityTargets = TARGETSCOUNT_ONE;
+                                questAbilityCount++;
+                            }
+                        } break;
+                    case TYPE_ACTION:
+                    case TYPE_STRUCTURE:
+                        // no action
+                        break;
+                    case TYPE_NONE:
+                        throw LogicError("Illegal card type");
                 }
             }
 
@@ -2187,45 +2193,40 @@ namespace IterateDecks {
             }
             while(vi != Deck.end())
             {
-                if (!indx)
-                {
+                if (!indx) {
                     Card const * const c = vi->GetOriginalCard();
                     if (bNormalPick)
                     {
-                        if (bConsoleOutput)
-                        {
-                            Commander.PrintDesc();
-                            printf(" picks ");
-                            vi->PrintDesc();
-                            printf("\n");
-                        }
-                        if (bDelayFirstCard)
-                        {
+                        if (bDelayFirstCard) {
                             vi->IncWait();
                             bDelayFirstCard = false;
                         }
-                        if (vi->GetType() == TYPE_ASSAULT)
-                        {
-                            PlayedCard newAssaultCard(c);
-                            Units.push_back(newAssaultCard);
-                            Units.back().SetCardSkillProcBuffer(SkillProcs);
+                        PlayedCard newCard(c);
+                        switch (vi->GetType()) {
+                            case TYPE_ASSAULT: {
+                                    Units.push_back(newCard);
+                                } break;
+                            case TYPE_STRUCTURE: {
+                                    Structures.push_back(newCard);
+                                } break;
+                            case TYPE_ACTION: {
+                                    Actions.push_back(newCard);
+                                } break;
+                            case TYPE_NONE:
+                            case TYPE_COMMANDER:
+                                throw LogicError("Card on hand of illegal type");
                         }
-                        if (vi->GetType() == TYPE_STRUCTURE)
-                        {
-                            Structures.push_back(PlayedCard(c));
-                            Structures.back().SetCardSkillProcBuffer(SkillProcs);
-                        }
-                        if (vi->GetType() == TYPE_ACTION)
-                        {
-                            Actions.push_back(PlayedCard(c));
-                            Actions.back().SetCardSkillProcBuffer(SkillProcs);
-                        }
-                        for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++)
+
+                        newCard.SetCardSkillProcBuffer(SkillProcs);
+                        LOG(this->logger,cardPlayed(newCard));
+
+                        for (UCHAR i=0;i<DEFAULT_DECK_RESERVE_SIZE;i++) {
                             if (!CardPicks[i])
                             {
                                 CardPicks[i] = vi->GetId();
                                 break;
                             }
+                        }
                         vi = Deck.erase(vi);
                     }
                     return c;
