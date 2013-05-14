@@ -9,9 +9,17 @@ $(phony LIB): ${RELEASE_LIBRARY} XML
 ${RELEASE_BINARY_CLI}: $(infer_objects CLI2/iteratedecks-cli.o, CLI2/*.o CORE/*.o)
     ${CXX} ${inputs} ${LDFLAGS} ${LDLIBS} ${LIBS} -o ${output}
 
-${RELEASE_LIBRARY}: $(infer_objects CORE/iterateDecksCore.o, CORE/*.o)
+${RELEASE_LIBRARY}: $(wildcard CORE/*.o)
     rm -f ${output}
     ${AR} crvs ${output} ${inputs}
+
+${UNIT_TEST_BINARY}: $(wildcard UNIT_TESTS/*.o) ${RELEASE_LIBRARY}
+    ${CXX} \
+    $(wildcard UNIT_TESTS/*.o) \
+    ${LDFLAGS} \
+    -l${RELEASE_LIBRARY_SHORT} -L. \
+    -lboost_unit_test_framework \
+    -o ${output}
 
 makepp_percent_subdirs=1
 %.o: %.cpp

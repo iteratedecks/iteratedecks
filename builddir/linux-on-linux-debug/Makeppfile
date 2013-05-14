@@ -14,7 +14,9 @@ LDFLAGS+=${COMMON_FLAGS} -ldl -rdynamic
 # Our release
 RELEASE_BINARY_CLI=iteratedecks-cli
 RELEASE_LIBRARY=libIteratedecks.a
+RELEASE_LIBRARY_SHORT=Iteratedecks
+UNIT_TEST_BINARY=unitTests
 
-$(phony ALL): CLI LIB
+$(phony ALL): CLI LIB ${UNIT_TEST_BINARY}
 
 include ../cli.Makeppfile

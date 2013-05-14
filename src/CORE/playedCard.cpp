@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include "exceptions.hpp"
+#include "Logger.hpp"
 
 namespace IterateDecks {
     namespace Core {
@@ -206,10 +207,13 @@ namespace IterateDecks {
                 this->Heal(amount);
             }
         }
-        void PlayedCard::ProcessPoison(BattleGroundEffect QuestEffectId)
+        void PlayedCard::ProcessPoison(BattleGroundEffect QuestEffectId, DeckLogger * const logger)
         {
-            if (IsAlive() && (Effects[DMGDEPENDANT_POISON]))
-                SufferDmg(QuestEffectId,Effects[DMGDEPENDANT_POISON]);
+            EFFECT_ARGUMENT amount = this->Effects[DMGDEPENDANT_POISON];
+            if (this->IsAlive() && (amount > 0)) {
+                LOG(logger, cardDamaged(*this,DMGDEPENDANT_POISON,amount));
+                this->SufferDmg(QuestEffectId, amount);
+            }
         }
         const UCHAR PlayedCard::GetShield() const
         {
@@ -314,14 +318,13 @@ namespace IterateDecks {
 
             return false;
         }
-        bool PlayedCard::Regenerate(BattleGroundEffect QuestEffectId) {
+        bool PlayedCard::Regenerate(BattleGroundEffect QuestEffectId, DeckLogger * const logger) {
             // regnerate?
             if(this->IsDiseased()) return false;
 
             EFFECT_ARGUMENT const regenerateAmount = this->OriginalCard->GetAbility(DEFENSIVE_REGENERATE);
             //bool const hasAbilityRegenerate = (regenerateAmount > 0);
-            if ((regenerateAmount > 0) && (PROC50))
-            {
+            if ((regenerateAmount > 0) && (PROC50)) {
                 // This unit regenerates.
                 this->Health = regenerateAmount;
                 fsHealed += regenerateAmount;
@@ -329,14 +332,7 @@ namespace IterateDecks {
                     this->Attack += regenerateAmount;
                 }
                 CardSkillProc(DEFENSIVE_REGENERATE);
-                //if (lr && log)
-                //    log->push_back(LOG_RECORD(lr->Target,DEFENSIVE_REGENERATE,Health));
-                // TODO Replace by new logging system, but right now PlayedCards do not know the logger
-                if (bConsoleOutput)
-                {
-                    PrintDesc();
-                    printf(" regenerated %d health\n",Health);
-                }
+                LOG(logger,cardRegenerated(*this, regenerateAmount));
                 return true;
             } else {
                 // This unit does not regenerate
@@ -344,15 +340,9 @@ namespace IterateDecks {
                     fsDeaths++;
                 }
                 this->Health = 0;
-                //if (lr && log)
-                //    log->push_back(LOG_RECORD(lr->Target,0,0)); // death
-                if (bConsoleOutput)
-                {
-                    PrintDesc();
-                    printf(" died!\n");
-                }
+                LOG(logger,cardDestroyed(*this));
+                return false;
             }
-            return false;
         }
 
         const UCHAR PlayedCard::GetAbilitiesCount() const { return OriginalCard->GetAbilitiesCount(); }
@@ -424,12 +414,8 @@ namespace IterateDecks {
                 }
 
                 this->Health -= dmg;
-                if (actualdamagedealt)
+                if (actualdamagedealt) {
                     *actualdamagedealt = dmg;
-                if (bConsoleOutput)
-                {
-                    PrintDesc();
-                    printf(" suffered %d damage\n",dmg);
                 }
             }
             fsDmgMitigated += dmg;

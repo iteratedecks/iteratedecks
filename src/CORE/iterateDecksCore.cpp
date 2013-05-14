@@ -83,10 +83,10 @@ namespace IterateDecks {
             BattleGroundEffect questEffect = task.battleGround;
 
             // 2. We need the decks
-            ActiveDeck attacker = task.attacker->instantiate();
+            ActiveDeck attacker = task.attacker->instantiate(this->cardDB);
             attacker.SetQuestEffect(questEffect);
             attacker.logger = attackLogger;
-            ActiveDeck defender = task.defender->instantiate();
+            ActiveDeck defender = task.defender->instantiate(this->cardDB);
             defender.SetQuestEffect(questEffect);
             defender.logger = defenseLogger;
 

@@ -17,32 +17,35 @@
 
             class OrderedDeckTemplate : public DeckTemplate {
                 private:
+                    Card const * commander;
                     std::list<Card const *> cards;
                 public:
                     OrderedDeckTemplate(DeckArgument const & argument, CardDB const & cardDB);
-                    virtual ActiveDeck instantiate() const;
+                    virtual ActiveDeck instantiate(CardDB const & cardDB) const;
 
             };
 
             class UnorderedDeckTemplate : public DeckTemplate {
                 private:
+                    Card const * commander;
                     std::multiset<Card const *> cards;
                 public:
                     UnorderedDeckTemplate(DeckArgument const & argument, CardDB const & cardDB);
-                    virtual ActiveDeck instantiate() const;
+                    virtual ActiveDeck instantiate(CardDB const & cardDB) const;
             };
 
             class PooledTemplate : public DeckTemplate {
                 private:
+                    Card const * commander;
                     std::multiset<Card const *> alwaysInclude;
                     std::multiset<CardPool const *> pools;
-
+                    
                 public:
                     PooledTemplate(Card const * commander, VCARDPOOL const & pools, CardDB const & cardDB);
                     PooledTemplate(Card const * commander, VID const & alwaysInclude, VCARDPOOL const & pools, CardDB const & cardDB);
                     static PooledTemplate::Ptr createFromRaidId(unsigned int const raidId, CardDB const & cardDB);
 
-                    virtual ActiveDeck instantiate() const;
+                    virtual ActiveDeck instantiate(CardDB const & cardDB) const;
 
             };
 

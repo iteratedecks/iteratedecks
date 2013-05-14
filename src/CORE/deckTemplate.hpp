@@ -14,21 +14,16 @@
         namespace Core {
 
             class DeckTemplate {
-                protected:
-                    Card const * commander;
-                    CardDB const & cardDB;
-                    
                 public:
                     typedef std::shared_ptr<DeckTemplate> Ptr;
                     bool allowInvalid;
 
                 protected:
-                    DeckTemplate(CardDB const & cardDB);
-                    DeckTemplate(Card const * commander, CardDB const & cardDB);
+                    DeckTemplate();
 
                 public:
                     virtual ~DeckTemplate();
-                    virtual ActiveDeck instantiate() const = 0;
+                    virtual ActiveDeck instantiate(CardDB const & cardDB) const = 0;
             };
 
         }

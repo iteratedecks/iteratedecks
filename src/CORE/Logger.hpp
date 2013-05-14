@@ -85,6 +85,8 @@
 
             void cardPlayed(PlayedCard const & card);
             void cardDestroyed(PlayedCard const & card);
+            void cardRegenerated(PlayedCard const & card, EFFECT_ARGUMENT amount);
+            void cardDamaged(PlayedCard const & card, AbilityId const & aid, EFFECT_ARGUMENT amount);
 
             void abilitySupport(EVENT_CONDITION const & eventCondition,PlayedCard const & src, AbilityId const & aid, PlayedCard const & target, EFFECT_ARGUMENT amount);
             void abilityOffensive(EVENT_CONDITION const & eventCondition,PlayedCard const & src, AbilityId const & aid, PlayedCard const & target, EFFECT_ARGUMENT amount, bool evaded = false);

@@ -1,6 +1,7 @@
 */CLI2
 */CORE
 */TEST
+*/UNIT_TESTS
 */*.xml
 */release.tar
 */release.tar.gz

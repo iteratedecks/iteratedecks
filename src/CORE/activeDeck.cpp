@@ -351,8 +351,18 @@ namespace IterateDecks {
                 if (bPierce) {
                     LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),COMBAT_PIERCE,pierce);
                 }
-                dmg = target.SufferDmg(QuestEffectId,dmg, pierce,&actualDamageDealt,0,&overkill,(!SRC.GetAbility(DMGDEPENDANT_DISEASE)),
-                    Log,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),0,dmg),&damageWasDeadly);
+                dmg = target.SufferDmg(QuestEffectId
+                                      ,dmg
+                                      ,pierce
+                                      ,&actualDamageDealt
+                                      ,0
+                                      ,&overkill
+                                      ,(!SRC.GetAbility(DMGDEPENDANT_DISEASE))
+                                      ,Log
+                                      ,LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),0,dmg)
+                                      ,&damageWasDeadly
+                                      );
+                LOG(this->logger, cardDamaged(target, SPECIAL_ATTACK, actualDamageDealt));
                 SRC.fsDmgDealt += actualDamageDealt;
                 SRC.fsOverkill += overkill;
             }
@@ -1694,6 +1704,7 @@ namespace IterateDecks {
                     {
                         effect *= FusionMultiplier;
                         assertGT(effect,0u);
+                        LOG(this->logger,cardDamaged(Dest.Commander,ACTIVATION_SHOCK,effect));
                         Src.fsDmgDealt += Dest.Commander.SufferDmg(QuestEffectId,effect);
                         DamageToCommander += effect;
                         FullDamageToCommander += effect;
@@ -1960,6 +1971,7 @@ namespace IterateDecks {
                     } break;
                 case SPECIAL_BACKFIRE:
                     {
+                        LOG(this->logger,cardDamaged(procDeck->Commander,SPECIAL_BACKFIRE,procCard->GetAbility(SPECIAL_BACKFIRE)));
                         procDeck->Commander.SufferDmg(QuestEffectId,procCard->GetAbility(SPECIAL_BACKFIRE));
                         Dest.DamageToCommander += procCard->GetAbility(SPECIAL_BACKFIRE);
                         Dest.FullDamageToCommander += procCard->GetAbility(SPECIAL_BACKFIRE);
@@ -2267,7 +2279,7 @@ namespace IterateDecks {
         {
             if (src.OnDeathEvent()) {
                 ApplyEffects(QuestEffectId,EVENT_DIED,src,-1,Def);
-                src.Regenerate(QuestEffectId);
+                src.Regenerate(QuestEffectId, this->logger);
             }
         }
 
@@ -2284,7 +2296,8 @@ namespace IterateDecks {
             // process poison
             for (LCARDS::iterator iter=Units.begin(); iter != Units.end(); iter++) {
                 iter->ResetShield(); // according to wiki, shield doesn't affect poison, it wears off before poison procs I believe
-                iter->ProcessPoison(QuestEffectId);
+                // FIXME: That should be two individual loops!
+                iter->ProcessPoison(QuestEffectId, this->logger);
             }
 
             //  Moraku: If Heal on Death triggers from poison damage, it will NOT be able to heal another unit
