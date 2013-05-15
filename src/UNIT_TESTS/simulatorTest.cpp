@@ -1,4 +1,4 @@
-#define BOOST_TEST_MODULE cache_test
+#define BOOST_TEST_MODULE simulator test
 #define BOOST_TEST_MAIN
 #define BOOST_TEST_DYN_LINK
 #include <boost/test/unit_test.hpp>
@@ -15,7 +15,7 @@ BOOST_AUTO_TEST_CASE( test_simulator_direct ) { try {
 
     SimulationTaskClass task;
 
-    task.minimalNumberOfGames = 1000;
+    task.minimalNumberOfGames = 1;
     task.surge = false;
     std::list<unsigned int> ids;
     ids.push_back(1000u);
@@ -25,7 +25,12 @@ BOOST_AUTO_TEST_CASE( test_simulator_direct ) { try {
     
     Result result = simulator->simulate(task);
 
-    BOOST_CHECK_EQUAL(result.numberOfGames, 1000);
-    BOOST_CHECK_EQUAL(result.gamesWon, 1000);
+    BOOST_CHECK_EQUAL(result.numberOfGames, 1);
+    BOOST_CHECK_EQUAL(result.gamesWon, 1);
+
+    task.surge = true;
+    Result result2 = simulator->simulate(task);
+    BOOST_CHECK_EQUAL(result2.numberOfGames, 1);
+    BOOST_CHECK_EQUAL(result2.gamesWon, 0);
 
 } catch (Exception &e) { std::cerr << e.what() << std::endl; e.printStacktrace(std::cerr); throw e; } }
