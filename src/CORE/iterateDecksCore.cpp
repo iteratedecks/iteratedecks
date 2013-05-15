@@ -94,7 +94,6 @@ namespace IterateDecks {
             bool const surge = task.surge;
             bool defendersTurn = surge;
 
-
             unsigned int attAutoDamageToCommander = 0;
             unsigned int defAutoDamageToCommander = 0;
             unsigned int lastManualTurn = 1;
@@ -128,6 +127,7 @@ namespace IterateDecks {
                 // At least one should be still alive.
                 // P: I can not think of many situations where you can actually lose in your turn.
                 //    Only thing that comes to mind being backfire.
+                // P: Or a chaosed shock.
                 assertX(attackerAlive || defenderAlive);
                 bool const gameOver = !(attackerAlive && defenderAlive);
 
