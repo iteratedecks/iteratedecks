@@ -118,8 +118,8 @@
                                     );
 
         /**
-            * Conmversion helper functions
-            */
+         * Conmversion helper functions
+         */
         template<typename T>
         std::string xtos(T const & x);
 
