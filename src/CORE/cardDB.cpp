@@ -245,9 +245,11 @@ namespace IterateDecks {
                         if (strEqualIgnoreCase(child.name(),"skill"))
                         {
                             UCHAR Id = GetSkillID(child.attribute("id").value());
-                            assertX(Id); // unknown skill
-                            if (!Id)
-                                continue;
+                            if (Id == 0) {
+                                std::clog << child.attribute("id").value() << std::endl;
+                            }
+                            assertGT(Id, (UCHAR)0); // unknown skill
+
                             EFFECT_ARGUMENT Effect = child.attribute("x").as_uint();
                             if (!Effect) {
                                 Effect = ABILITY_ENABLED; // this value can't be 0, since it will disable the ability
@@ -669,6 +671,7 @@ namespace IterateDecks {
             AddSkill(ACTIVATION_SUPPLY,"Supply");
             AddSkill(ACTIVATION_WEAKEN,"Weaken");
             AddSkill(ACTIVATION_AUGMENT,"Augment");
+            AddSkill(ACTIVATION_SUNDER,"Sunder");
 
             AddSkill(DEFENSIVE_ARMORED,"Armored");
             AddSkill(DEFENSIVE_COUNTER,"Counter");
@@ -753,10 +756,15 @@ namespace IterateDecks {
             strcpy_s(buffer,CARD_NAME_MAX_LENGTH,Name);
             strlwr(buffer);
             MSKILLS::iterator it = SIndex.find(buffer);
-            if (it == SIndex.end())
-                return 0;
-            else
+            if (it == SIndex.end()) {
+                std::stringstream ssMessage;
+                ssMessage << "Trying to look up a skill with name ";
+                ssMessage << Name;
+                ssMessage << " but it does not exist.";
+                throw LogicError(ssMessage.str());
+            } else {
                 return it->second;
+            }
         }
         UCHAR CardDB::GetSkillIDSlow(const char *Name)
         {
