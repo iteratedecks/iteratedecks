@@ -24,7 +24,7 @@ namespace IterateDecks {
                 unsigned int numberOfIterations;
                 std::string attacker, defender;
                 unsigned int battleGroundId;
-                
+
                 po::options_description desc("Allowed options");
                 desc.add_options()
                     ("help,h", "produce help message")
@@ -191,12 +191,12 @@ namespace IterateDecks {
                 return DeckTemplate::Ptr( new SimpleOrderedDeckTemplate(ids) );
             }
         }
-        
+
         DeckTemplate::Ptr parseDeck(std::string const & deckDescription
                                    )
         {
             // valid deck descriptions start with a string part describing what type of deck this is
-            // the format is: IDENTIFIER:DATA        
+            // the format is: IDENTIFIER:DATA
             std::string identifier, data;
             bool splitSuccess = splitOnceAfterChar(':', deckDescription, identifier, data);
             if (!splitSuccess) {
@@ -218,8 +218,22 @@ namespace IterateDecks {
                     || identifier.compare("BASE64RLEMINUS_ORDERED") == 0) {
                 // freaky base64 encoding
                 return parseDeckFromStrangeBase64RLEMinusEncoding(data, true);
+            } else if (identifier.compare("MISSIONID") == 0) {
+                throw Exception("Sorry, not implemented yet!");
+            } else if (identifier.compare("RAIDID") == 0) {
+                throw Exception("Sorry, not implemented yet!");
+            } else if (identifier.compare("QUESTID") == 0) {
+                throw Exception("Sorry, not implemented yet!");
             } else {
-                throw InvalidUserInputError("Identifier '" + identifier + "' not supported, try one of {'IDS', 'ORDERED_IDS', 'BASE64RLEMINUS', 'ORDERED_BASE64RLEMINUS'}");
+                std::stringstream ssMessage;
+                ssMessage << "Identifier '" << identifier << "' not supported." << std::endl;
+                ssMessage << "Try one of the following:" << std::endl;
+                ssMessage << "\t'IDS', 'ORDERED_IDS', 'IDS_ORDERED' for id based input" << std::endl;
+                ssMessage << "\t'BASE64RLEMINUS', 'ORDERED_BASE64RLEMINUS', 'BASE64RLEMINUS_ORDERED', for some strange base64 encoding with an extra minus" << std::endl;
+                ssMessage << "\t'MISSIONID', for missions, use the id, not the name" << std::endl;
+                ssMessage << "\t'RAIDID', for raids, use the id, not the name" << std::endl;
+                ssMessage << "\t'QUESTID', for quest steps, use the id, not the name" << std::endl;
+                throw InvalidUserInputError(ssMessage.str());
             }
         }
 
