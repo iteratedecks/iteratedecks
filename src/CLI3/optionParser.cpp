@@ -8,6 +8,7 @@
 #include "../CORE/autoDeckTemplate.hpp"
 #include "simpleOrderedDeckTemplate.hpp"
 #include "../CORE/simpleTypes.hpp"
+#include "../CORE/assert.hpp"
 
 namespace po = boost::program_options;
 
@@ -91,6 +92,65 @@ namespace IterateDecks {
             }
         }
 
+        std::list<unsigned int> base64RLEMinusEncodingToIdList(std::string const & hash)
+        {
+            std::list<unsigned int> list;
+            size_t len = hash.size();
+
+            //std::clog << "parsing hash " << hash << std::endl;
+
+            unsigned int lastid;
+            for (UCHAR i = 0; i < len; i+=2) {
+                //std::clog << "current character is '" << hash[i] << "'" << std::endl;
+                if (hash[i] == '.') break; // delimeter
+                if (isspace(hash[i])) {
+                    assertX(false);
+                }
+                unsigned int tid = 0;
+                bool isCardOver4000 = false;
+                if(hash[i] == '-') {
+                    i++;
+                    isCardOver4000 = true;
+                    tid = 4000;
+                }
+                assertX(i + 1u < len); // make sure we have a full hash
+                //std::clog << "reading characters '" << hash[i] << hash[i+1] << "' ";
+                unsigned short cardHash = (hash[i] << 8) + hash[i + 1];
+                tid += base64ToId(cardHash);
+                //std::clog << "tid is " << tid << std::endl;
+                if (i==0) {
+                    // first card is commander
+                    assertX(tid < CARD_MAX_ID);
+                    assertX((tid >= 1000) && (tid < 2000)); // commander Id boundaries
+                    //std::clog << "adding commander " << tid << std::endl;
+                    list.push_back(tid);
+                } else {
+                    // later cards are not commander
+                    assertX(i>0 || (tid < CARD_MAX_ID)); // commander card can't be encoded with RLE
+
+                    if (tid < 4000 || isCardOver4000) {
+                        // this is a (non commander) card
+                        list.push_back(tid);
+                        //std::clog << "adding card " << tid << " the first time " << std::endl;
+                        lastid = tid;
+                    } else {
+                        // this is a RLE
+                        for (unsigned int k = 4000+1; k < tid; k++) {
+                            // decode RLE, +1 because we already added one card
+                            list.push_back(lastid);
+                            //std::clog << "adding card " << lastid << " again " << std::endl;
+                        } // for RLE
+                    }
+                }
+            } // for
+
+            //for(std::list<unsigned int>::const_iterator i = list.begin(); i != list.end(); i++) {
+            //    std::clog << *i << " ";
+            //}
+            //std::clog << std::endl;
+            return list;
+        }
+
         DeckTemplate::Ptr parseDeckFromIds(std::string const & data, bool ordered = false) {
             // we expect ids (numbers) seperated by commata
             std::list<unsigned int> ids;
@@ -118,6 +178,19 @@ namespace IterateDecks {
                 return DeckTemplate::Ptr( new SimpleOrderedDeckTemplate(ids) );
             }
         }
+
+        DeckTemplate::Ptr
+        parseDeckFromStrangeBase64RLEMinusEncoding(std::string const & base64RLEMinusEncoding
+                                                  ,bool ordered = false
+                                                  )
+        {
+            std::list<unsigned int> ids = base64RLEMinusEncodingToIdList(base64RLEMinusEncoding);
+            if (!ordered) {
+                return DeckTemplate::Ptr( new AutoDeckTemplate(ids) );
+            } else {
+                return DeckTemplate::Ptr( new SimpleOrderedDeckTemplate(ids) );
+            }
+        }
         
         DeckTemplate::Ptr parseDeck(std::string const & deckDescription
                                    )
@@ -134,11 +207,19 @@ namespace IterateDecks {
             if (identifier.compare("IDS") == 0) {
                 // IDS, thats good
                 return parseDeckFromIds(data);
-            } else if (identifier.compare("ORDERED_IDS") == 0) {
+            } else if (identifier.compare("ORDERED_IDS") == 0
+                    || identifier.compare("IDS_ORDERED") == 0 ) {
                 // ORDERED_IDS, thats ok
                 return parseDeckFromIds(data, true);
+            } else if (identifier.compare("BASE64RLEMINUS") == 0) {
+                // freaky base64 encoding
+                return parseDeckFromStrangeBase64RLEMinusEncoding(data);
+            } else if (identifier.compare("ORDERED_BASE64RLEMINUS") == 0
+                    || identifier.compare("BASE64RLEMINUS_ORDERED") == 0) {
+                // freaky base64 encoding
+                return parseDeckFromStrangeBase64RLEMinusEncoding(data, true);
             } else {
-                throw InvalidUserInputError("Identifier '" + identifier + "' not supported, try one of {'IDS', 'ORDERED_IDS'}");
+                throw InvalidUserInputError("Identifier '" + identifier + "' not supported, try one of {'IDS', 'ORDERED_IDS', 'BASE64RLEMINUS', 'ORDERED_BASE64RLEMINUS'}");
             }
         }
 
