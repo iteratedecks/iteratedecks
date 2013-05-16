@@ -7,11 +7,13 @@
 #include <boost/lexical_cast.hpp>
 #include "../CORE/autoDeckTemplate.hpp"
 #include "simpleOrderedDeckTemplate.hpp"
+#include "../CORE/simpleTypes.hpp"
 
 namespace po = boost::program_options;
 
 namespace IterateDecks {
     namespace CLI3 {
+
 
         Command::Ptr parseArguments(int argc
                                    ,char const * const * argv
@@ -20,6 +22,7 @@ namespace IterateDecks {
             try {
                 unsigned int numberOfIterations;
                 std::string attacker, defender;
+                unsigned int battleGroundId;
                 
                 po::options_description desc("Allowed options");
                 desc.add_options()
@@ -41,6 +44,10 @@ namespace IterateDecks {
                     ("surge"
                     ,"simulate surge (defender goes first)"
                     )
+                    ("battleground-id"
+                    ,po::value<unsigned int>(&battleGroundId)->default_value(static_cast<unsigned int>(BattleGroundEffect::normal))
+                    ,"set the battleground to use"
+                    )
                 ;
 
                 po::variables_map vm;
@@ -58,6 +65,7 @@ namespace IterateDecks {
                 command->task.attacker = parseDeck(vm["attacker"].as<std::string>());
                 command->task.defender = parseDeck(vm["defender"].as<std::string>());
                 command->task.surge = vm.count("surge") > 0;
+                command->task.battleGround = static_cast<BattleGroundEffect>(battleGroundId);
                 return command;
              } catch (boost::program_options::required_option &e) {
                  std::stringstream ssMessage;
