@@ -1,4 +1,5 @@
 #include "runCommand.hpp"
+#include "../CORE/iterateDecksCore.hpp"
 
 namespace IterateDecks {
     namespace CLI3 {
@@ -8,7 +9,13 @@ namespace IterateDecks {
         }
 
         int RunCommand::execute() {
-            throw new Exception("Not implemented!");
+
+            IterateDecksCore simulator;
+
+            Result result = simulator.simulate(this->task);
+
+            std::cout << result.gamesWon << " / " << result.numberOfGames << std::endl;
+            return 0;
         }
         
     }
