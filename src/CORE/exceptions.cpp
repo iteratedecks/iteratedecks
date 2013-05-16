@@ -1,11 +1,14 @@
 #include "exceptions.hpp"
 #include <iomanip>
+#include <sstream>
+#include <string>
 
 #ifdef WITH_BACKTRACE
     #include <execinfo.h>
     #include <dlfcn.h>
     #include <cxxabi.h>
     #include <cstdlib>
+    #include <pstream.h>
 #endif
 
 // class Exception taken from http://markus-mazurczak.de/?p=17 under GPL v3
@@ -45,14 +48,16 @@ void Exception::printStacktrace(std::ostream & os) const throw() {
     #ifdef WITH_BACKTRACE
         unsigned int const wIndex = 2;
         unsigned int const wSharedObject = 40;
+        unsigned int const wFunction = 70;
 
         if(_traced <= 0) {
             os << "Error: No stacktrace available" << std::endl;
         } else {
             os << "Stacktrace available, most recent call on top: " << (_traced-skipFirstSymbols) << " items" << std::endl;
             os << std::setw(wIndex) << std::left << "#" << " ";
-            os << std::setw(wSharedObject) << "shared object" << " -- ";
-            os << "function";
+            os << std::setw(wSharedObject) << "shared object" << " ";
+            os << std::setw(wFunction) << "function" << " ";
+            os << "file:line";
             os << std::internal << std::endl;
             for(unsigned int i = skipFirstSymbols; i < (unsigned int)_traced; i++) {
                 os << std::setw(wIndex) << (i-skipFirstSymbols) << " ";
@@ -70,18 +75,34 @@ void Exception::printStacktrace(std::ostream & os) const throw() {
                     if(status == 0 && demangled) {
                         symName = demangled;
                     }
-                    os << std::setw(wSharedObject) << std::left << sharedObjectName << " -- ";
+                    os << std::setw(wSharedObject) << std::left << sharedObjectName << " ";
+                    os << std::setw(wFunction) << std::left;
                     os << ((symName != NULL) ? symName : "<not applicable>");
-                    os << std::internal <<  std::endl;
+                    os << std::internal << " ";
                     if(demangled) {
                         free(demangled);
                     }
+                    #ifdef BACKTRACE_SECOND_VARIANT
+                        std::vector<std::string> addr2lineArgs;
+                        addr2lineArgs.push_back("addr2line");
+                        std::stringstream ssPtr;
+                        ssPtr << (void *)(_stacktrace[i]);
+                        addr2lineArgs.push_back(ssPtr.str());
+                        addr2lineArgs.push_back("-e");
+                        addr2lineArgs.push_back(sharedObjectName);
+                        redi::ipstream syscom("addr2line", addr2lineArgs);
+                        std::string str;
+                        while(syscom >> str) {
+                            os << str;
+                        }
+                    #endif
+                    os <<  std::endl;
                 }
-            }
+            } // for
         }
     #else
         os << "Stacktrace not available. Not supported on your platform?" << std::endl;
-        os << "Thats YOUR chance to do something for us: Implement it." << std::endl;
+        os << "Thats YOUR chance to do implement it." << std::endl;
     #endif
 }
 

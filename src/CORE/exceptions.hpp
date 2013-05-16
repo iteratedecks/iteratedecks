@@ -6,6 +6,7 @@
 
     #if defined(__GNUC__) && defined(__linux__)
         #define WITH_BACKTRACE
+        #define BACKTRACE_SECOND_VARIANT
     #endif
 
     // class Exception taken from http://markus-mazurczak.de/?p=17 under GPL v3

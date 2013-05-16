@@ -45,7 +45,7 @@
 
             class SimulatorCore {
                 public:
-                    typedef std::auto_ptr<SimulatorCore> Ptr;
+                    typedef std::shared_ptr<SimulatorCore> Ptr;
 
                 public:
                     virtual ~SimulatorCore();
