@@ -130,7 +130,7 @@ namespace IterateDecks {
             if (identifier.compare("IDS") == 0) {
                 // IDS, thats good
                 return parseDeckFromIds(data);
-            } else if (identifier.compare("IDS") == 0) {
+            } else if (identifier.compare("ORDERED_IDS") == 0) {
                 // ORDERED_IDS, thats ok
                 return parseDeckFromIds(data, true);
             } else {
