@@ -97,17 +97,21 @@ namespace IterateDecks {
             std::string remainder = data;
             while (true) {
                 std::string number;
-                bool splitSuccess = splitOnceAfterChar(',', remainder, number, remainder);                
-                if (splitSuccess) {
+                bool splitSuccess = splitOnceAfterChar(',', remainder, number, remainder);
+                if (!splitSuccess) {
+                    // last one
+                    number = remainder;
+                }
+                try {
                     unsigned int id = boost::lexical_cast<unsigned int>(number);
                     ids.push_back(id);
-                } else {
-                    // last one
-                    unsigned int id = boost::lexical_cast<unsigned int>(remainder);
-                    ids.push_back(id);
+                } catch (boost::bad_lexical_cast &e)    {
+                    throw InvalidUserInputError("Bad input format, use positive numbers separated by commata.");
+                }
+                if (!splitSuccess) {
                     break;
                 }
-            }
+            } // while
             if (!ordered) {
                 return DeckTemplate::Ptr( new AutoDeckTemplate(ids) );
             } else {
