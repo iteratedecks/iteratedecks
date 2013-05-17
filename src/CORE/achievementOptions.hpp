@@ -13,6 +13,7 @@
 
                     void enableCheck(unsigned int const & achievementId);
                     void disableCheck();
+                    bool isEnabled() const;
                     operator int() const;
             };
 

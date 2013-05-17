@@ -7,7 +7,7 @@ IDLIB=-L. -l${RELEASE_LIBRARY_SHORT}
 $(phony CLI3): ${RELEASE_BINARY_CLI3}
 $(phony LIB): ${RELEASE_LIBRARY}
 
-LIBS+=-lboost_program_options -lcrypto
+LIBS+=-lboost_program_options -lcrypto -lsqlite3
 
 makepp_percent_subdirs=1
 %.o: %.cpp
@@ -32,9 +32,10 @@ ${RELEASE_LIBRARY}: $(wildcard CORE/*.o)
     rm -f ${output}
     ${AR} crvs ${output} ${inputs}
 
-${UNIT_TEST_BINARY}: $(wildcard UNIT_TESTS/*.o) ${RELEASE_LIBRARY}
+UNIT_TEST_OBJECTS:=$(wildcard UNIT_TESTS/*.o) $(wildcard CACHE/*.o)
+${UNIT_TEST_BINARY}: ${UNIT_TEST_OBJECTS} ${RELEASE_LIBRARY}
     ${CXX} \
-    $(wildcard UNIT_TESTS/*.o) \
+    ${UNIT_TEST_OBJECTS} \
     ${LDFLAGS} \
     ${LDLIBS} ${LIBS} \
     ${IDLIB} \

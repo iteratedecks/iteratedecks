@@ -21,6 +21,11 @@ namespace IterateDecks {
             this->achievementId = 0;
         }
 
+        bool AchievementOptions::isEnabled() const
+        {
+            return this->doAchievementCheck;
+        }
+
         AchievementOptions::operator int() const
         {
             if(this->doAchievementCheck) {

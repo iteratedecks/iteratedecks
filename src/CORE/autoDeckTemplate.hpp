@@ -14,6 +14,7 @@
                 public:
                     AutoDeckTemplate(std::list<unsigned int> const & ids);
                     virtual ActiveDeck instantiate(CardDB const &) const;
+                    virtual std::string toString() const;                    
             };
 
         }

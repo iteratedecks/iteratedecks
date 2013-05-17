@@ -10,10 +10,11 @@
             class SimpleOrderedDeckTemplate : public DeckTemplate {
                 private:
                     unsigned int commander;
-                    std::multiset<unsigned int> cards;
+                    std::list<unsigned int> cards;
                 public:
                     SimpleOrderedDeckTemplate(std::list<unsigned int> const & ids);
                     virtual ActiveDeck instantiate(CardDB const &) const;
+                    virtual std::string toString() const;                    
             };
         }
     }

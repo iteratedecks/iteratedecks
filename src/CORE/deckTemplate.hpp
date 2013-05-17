@@ -1,6 +1,7 @@
 #ifndef ITERATEDECKS_CORE_DECKTEMPLATE_HPP
     #define ITERATEDECKS_CORE_DECKTEMPLATE_HPP
 
+    #include <string>
     #include <memory>
     #include "simpleTypes.hpp"
     #include "activeDeck.forward.hpp"
@@ -24,6 +25,7 @@
                 public:
                     virtual ~DeckTemplate();
                     virtual ActiveDeck instantiate(CardDB const & cardDB) const = 0;
+                    virtual std::string toString() const = 0;
             };
 
         }

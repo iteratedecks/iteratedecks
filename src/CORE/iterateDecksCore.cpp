@@ -13,6 +13,52 @@
 namespace IterateDecks {
     namespace Core {
 
+        Result::Result()
+        : numberOfGames(0)
+        , gamesWon(0)
+        , gamesStalled(0)
+        , gamesLost(0)
+        , pointsAttacker(0)
+        , pointsAttackerAuto(0)
+        , pointsDefender(0)
+        , pointsDefenderAuto(0)
+        {
+        }
+
+        Result &
+        Result::operator+=(Result const & rhs)
+        {
+            this->numberOfGames      += rhs.numberOfGames;
+            this->gamesWon           += rhs.gamesWon;
+            this->gamesStalled       += rhs.gamesStalled;
+            this->gamesLost          += rhs.gamesLost;
+            this->pointsAttacker     += rhs.pointsAttacker;
+            this->pointsAttackerAuto += rhs.pointsAttackerAuto;
+            this->pointsDefender     += rhs.pointsDefender;
+            this->pointsDefenderAuto += rhs.pointsDefenderAuto;
+            return *this;
+        }
+
+        Result const
+        operator+(Result const & lhs
+                 ,Result const & rhs
+                 )
+        {
+            Result tmp(lhs);
+            tmp += rhs;
+            return tmp;
+        }
+
+        SimulationTaskClass::SimulationTaskClass()
+        : minimalNumberOfGames(1000)
+        , surge(false)
+        , delayFirstAttacker(false)
+        , battleGround(BattleGroundEffect::normal)
+        , achievementOptions()
+        , randomSeed(0)
+        {
+        }
+
         SimulatorCore::~SimulatorCore() {}
 
         void

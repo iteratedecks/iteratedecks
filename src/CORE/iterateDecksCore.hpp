@@ -28,7 +28,13 @@
                 unsigned long pointsDefenderAuto;
 
                 // TODO Achievement?
+
+                Result();
+
+                Result & operator+=(Result const & rhs);
             };
+
+            Result const operator+(Result const & lhs, Result const & rhs);
 
             class SimulationTaskClass {
                 public:
@@ -41,6 +47,9 @@
 
                     DeckTemplate::Ptr attacker;
                     DeckTemplate::Ptr defender;
+
+                public:
+                    SimulationTaskClass();
             };
 
             class SimulatorCore {

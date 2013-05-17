@@ -15,7 +15,7 @@ namespace IterateDecks {
             this->commander = commanderId;
             for(iter++ ;iter != ids.end(); iter++) {
                 unsigned int cardId = *iter;
-                this->cards.insert(cardId);
+                this->cards.push_back(cardId);
             }
         }
 
@@ -24,7 +24,7 @@ namespace IterateDecks {
             Card const & commanderCard = cardDB.GetCard(this->commander);
             ActiveDeck activeDeck(&commanderCard, cardDB.GetPointer());
             activeDeck.SetOrderMatters(true);
-            for(std::multiset<unsigned int>::const_iterator iter = cards.begin(); iter != cards.end(); iter++) {
+            for(std::list<unsigned int>::const_iterator iter = cards.begin(); iter != cards.end(); iter++) {
                 Card const & card = cardDB.GetCard(*iter);
                 activeDeck.Add(&card);
             }
@@ -35,6 +35,23 @@ namespace IterateDecks {
             assertX(this->allowInvalid || activeDeck.IsValid());
             assertX(activeDeck.isAlive());
             return activeDeck;
+        }
+
+        std::string
+        SimpleOrderedDeckTemplate::toString() const
+        {
+            std::stringstream ssString;
+            ssString << "ORDERED_IDS:";
+            ssString << this->commander;
+            for(std::list<unsigned int>::const_iterator iter = this->cards.begin()
+               ;iter != this->cards.end()
+               ;iter++
+               )
+            {
+                ssString << ",";
+                ssString << *iter;
+            }
+            return ssString.str();
         }
         
     }

@@ -36,6 +36,22 @@ namespace IterateDecks {
             assertX(activeDeck.isAlive());
             return activeDeck;
         }
-        
+
+        std::string
+        AutoDeckTemplate::toString() const
+        {
+            std::stringstream ssString;
+            ssString << "IDS:";
+            ssString << this->commander;
+            for(std::multiset<unsigned int>::const_iterator iter = this->cards.begin()
+               ;iter != this->cards.end()
+               ;iter++
+               )
+            {
+                ssString << ",";
+                ssString << *iter;
+            }
+            return ssString.str();
+        }
     }
 }
