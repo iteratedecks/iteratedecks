@@ -9,16 +9,8 @@
 namespace IterateDecks {
     namespace Core {
 
-        DeckTemplate::DeckTemplate(CardDB const & cardDB)
-        : commander(0)
-        , cardDB(cardDB)
-        , allowInvalid(false)
-        {}
-
-        DeckTemplate::DeckTemplate(Card const * commander, CardDB const & cardDB)
-        : commander(commander)
-        , cardDB(cardDB)
-        , allowInvalid(false)
+        DeckTemplate::DeckTemplate()
+        : allowInvalid(false)
         {}
 
         DeckTemplate::~DeckTemplate() {}

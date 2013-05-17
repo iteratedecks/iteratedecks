@@ -19,7 +19,6 @@ namespace Assert {
         return ss.str();
     }
 
-
     template<> inline
     std::string xtos(double const & d) {
         std::stringstream ss;
@@ -27,6 +26,12 @@ namespace Assert {
         return ss.str();
     }
 
+    template<> inline
+    std::string xtos(unsigned char const & c) {
+        std::stringstream ss;
+        ss << (unsigned int)c;
+        return ss.str();
+    }
 
     template<typename T> inline
     AssertionError assertGT_(T const & a
@@ -39,7 +44,7 @@ namespace Assert {
                             ,std::string const & msg
                             )
     {
-        return AssertionError(msg + sa + " == " + xtos(a) + " > " + xtos(b) + " == " + sb,file,line,function);
+        return AssertionError(msg + sa + " == " + xtos(a) + " !> " + xtos(b) + " == " + sb,file,line,function);
     }
 
     template<typename T> inline
@@ -53,7 +58,7 @@ namespace Assert {
                             ,std::string const & msg
                             )
     {
-        return AssertionError(msg + "; " + sa + " == " + xtos(a) + " >= " + xtos(b) + " == " + sb,file,line,function);
+        return AssertionError(msg + "; " + sa + " == " + xtos(a) + " !>= " + xtos(b) + " == " + sb,file,line,function);
     }
 
     template<typename T> inline
@@ -67,7 +72,7 @@ namespace Assert {
                             ,std::string const & msg
                             )
     {
-        return AssertionError(msg + "; "  + sa + " == " + xtos(a) + " < " + xtos(b) + " == " + sb,file,line,function);
+        return AssertionError(msg + "; "  + sa + " == " + xtos(a) + " !< " + xtos(b) + " == " + sb,file,line,function);
     }
 
     template<typename T> inline
@@ -81,7 +86,7 @@ namespace Assert {
                             ,std::string const & msg
                             )
     {
-        return AssertionError(msg + "; "  + sa + " == " + xtos(a) + " <= " + xtos(b) + " == " + sb,file,line,function);
+        return AssertionError(msg + "; "  + sa + " == " + xtos(a) + " !<= " + xtos(b) + " == " + sb,file,line,function);
     }
 
     template<typename T> inline
@@ -95,7 +100,7 @@ namespace Assert {
                             ,std::string const & msg
                             )
     {
-        return AssertionError(msg + "; "  + sa + " == " + xtos(a) + " == " + xtos(b) + " == " + sb,file,line,function);
+        return AssertionError(msg + "; "  + sa + " == " + xtos(a) + " !== " + xtos(b) + " == " + sb,file,line,function);
     }
 
 }

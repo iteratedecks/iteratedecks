@@ -1,14 +1,103 @@
 #include "iterateDecksCore.hpp"
 #include "activeDeck.hpp"
 #include "assert.hpp"
+#include "../VERSION.h"
 
 #include <iostream>
 #include <cstdlib>
+#include <openssl/md5.h>
+#include <fstream>
+#include <map>
+#include <string>
 
 namespace IterateDecks {
     namespace Core {
 
+        Result::Result()
+        : numberOfGames(0)
+        , gamesWon(0)
+        , gamesStalled(0)
+        , gamesLost(0)
+        , pointsAttacker(0)
+        , pointsAttackerAuto(0)
+        , pointsDefender(0)
+        , pointsDefenderAuto(0)
+        {
+        }
+
+        Result &
+        Result::operator+=(Result const & rhs)
+        {
+            this->numberOfGames      += rhs.numberOfGames;
+            this->gamesWon           += rhs.gamesWon;
+            this->gamesStalled       += rhs.gamesStalled;
+            this->gamesLost          += rhs.gamesLost;
+            this->pointsAttacker     += rhs.pointsAttacker;
+            this->pointsAttackerAuto += rhs.pointsAttackerAuto;
+            this->pointsDefender     += rhs.pointsDefender;
+            this->pointsDefenderAuto += rhs.pointsDefenderAuto;
+            return *this;
+        }
+
+        Result const
+        operator+(Result const & lhs
+                 ,Result const & rhs
+                 )
+        {
+            Result tmp(lhs);
+            tmp += rhs;
+            return tmp;
+        }
+
+        SimulationTaskClass::SimulationTaskClass()
+        : minimalNumberOfGames(1000)
+        , surge(false)
+        , delayFirstAttacker(false)
+        , battleGround(BattleGroundEffect::normal)
+        , achievementOptions()
+        , randomSeed(0)
+        {
+        }
+
         SimulatorCore::~SimulatorCore() {}
+
+        void
+        hashFile(std::map<std::string,std::string> & hashes
+                ,std::string fileName
+                )
+        {
+            unsigned char digest[MD5_DIGEST_LENGTH];
+            char buffer[1024];
+            MD5_CTX md5Context;
+            MD5_Init(&md5Context);
+
+            std::ifstream file(fileName);
+            assertX(file.is_open());
+            while(!(file.eof())) {
+                //std::streamsize n = file.readsome(buffer, sizeof(buffer));
+                file.read(buffer, sizeof(buffer));
+                std::streamsize n = file.gcount();
+                MD5_Update(&md5Context, buffer, n);
+            }
+            file.close();
+            MD5_Final(digest, &md5Context);
+            std::stringstream ssDigest;
+            for(int i = 0; i < MD5_DIGEST_LENGTH; i++) {
+                ssDigest << std::setw(2) << std::setfill('0') << std::hex << (unsigned int)(digest[i]);
+            }
+            hashes[fileName] = ssDigest.str();
+        }
+
+        std::map<std::string,std::string> SimulatorCore::getXMLVersions() const
+        {
+            std::map<std::string,std::string> hashes;
+            hashFile(hashes, "achievements.xml");
+            hashFile(hashes, "cards.xml");
+            hashFile(hashes, "missions.xml");
+            hashFile(hashes, "raids.xml");
+            hashFile(hashes, "quests.xml");
+            return hashes;
+        }
 
         IterateDecksCore::IterateDecksCore()
         : logger(NULL)
@@ -83,17 +172,16 @@ namespace IterateDecks {
             BattleGroundEffect questEffect = task.battleGround;
 
             // 2. We need the decks
-            ActiveDeck attacker = task.attacker->instantiate();
+            ActiveDeck attacker = task.attacker->instantiate(this->cardDB);
             attacker.SetQuestEffect(questEffect);
             attacker.logger = attackLogger;
-            ActiveDeck defender = task.defender->instantiate();
+            ActiveDeck defender = task.defender->instantiate(this->cardDB);
             defender.SetQuestEffect(questEffect);
             defender.logger = defenseLogger;
 
             // Surge or not?
             bool const surge = task.surge;
             bool defendersTurn = surge;
-
 
             unsigned int attAutoDamageToCommander = 0;
             unsigned int defAutoDamageToCommander = 0;
@@ -128,6 +216,7 @@ namespace IterateDecks {
                 // At least one should be still alive.
                 // P: I can not think of many situations where you can actually lose in your turn.
                 //    Only thing that comes to mind being backfire.
+                // P: Or a chaosed shock.
                 assertX(attackerAlive || defenderAlive);
                 bool const gameOver = !(attackerAlive && defenderAlive);
 
@@ -205,6 +294,21 @@ namespace IterateDecks {
             result.numberOfGames++;
         }
 
+        std::string IterateDecksCore::getCoreName() const
+        {
+            return "IterateDecks";
+        }
+
+        std::string IterateDecksCore::getCoreVersion() const
+        {
+            std::stringstream ssVersion;
+            ssVersion << ITERATEDECKS_VERSION;
+            if(ITERATEDECKS_DIRTY_HEAD_CORE) {
+                ssVersion << "+";
+                ssVersion << ITERATEDECKS_DIRTY_HASH_CORE;
+            }
+            return ssVersion.str();
+        }
 
     }
 }

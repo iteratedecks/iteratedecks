@@ -1,6 +1,9 @@
 */CLI2
+*/CLI3
 */CORE
+*/CACHE
 */TEST
+*/UNIT_TESTS
 */*.xml
 */release.tar
 */release.tar.gz
@@ -11,3 +14,4 @@
 /*_*.zip
 */COPYING.GPL3
 */LICENSE
+*/cache.sqlite

@@ -1,6 +1,7 @@
 #ifndef ITERATEDECKS_CORE_ITERATEDECKSCORE_HPP
     #define ITERATEDECKS_CORE_ITERATEDECKSCORE_HPP
 
+    #include <memory>
     #include "deckTemplate.hpp"
     #include "logger.forward.hpp"
     #include "cardDB.hpp"
@@ -20,14 +21,20 @@
                 unsigned long gamesLost;
 
                 // Note: This is (intentionally) different from NETRAT's RESULT class.
-                // Here we store points by player, rather than by winner/loser.                
+                // Here we store points by player, rather than by winner/loser.
                 unsigned long pointsAttacker;
                 unsigned long pointsAttackerAuto;
                 unsigned long pointsDefender;     //< hardly meaningful: the only time we have a manual defender is in live pvp where damage does not matter.
                 unsigned long pointsDefenderAuto;
 
                 // TODO Achievement?
+
+                Result();
+
+                Result & operator+=(Result const & rhs);
             };
+
+            Result const operator+(Result const & lhs, Result const & rhs);
 
             class SimulationTaskClass {
                 public:
@@ -40,16 +47,26 @@
 
                     DeckTemplate::Ptr attacker;
                     DeckTemplate::Ptr defender;
+
+                public:
+                    SimulationTaskClass();
             };
-            
+
             class SimulatorCore {
+                public:
+                    typedef std::shared_ptr<SimulatorCore> Ptr;
+
                 public:
                     virtual ~SimulatorCore();
                     virtual Result simulate(SimulationTaskClass const &) = 0;
                     virtual void abort() = 0;
+
+                    virtual std::string getCoreName() const = 0;
+                    virtual std::string getCoreVersion() const = 0;
+                    virtual std::map<std::string,std::string> getXMLVersions() const;
             };
 
-            class IterateDecksCore : public SimulatorCore {                
+            class IterateDecksCore : public SimulatorCore {
                 private:
                     unsigned long loggingFlags;
                     bool aborted;
@@ -66,6 +83,8 @@
                     Result simulate(SimulationTaskClass const &);
                     void abort();
 
+                    std::string getCoreName() const;
+                    std::string getCoreVersion() const;
                 private:
                     void simulateOnce(SimulationTaskClass const &, Result &, DeckLogger * attackLogger, DeckLogger * defenseLogger);
             };

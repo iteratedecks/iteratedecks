@@ -1,2 +1,5 @@
-iteratedecks-cli
+iteratedecks-cli2
+iteratedecks-cli3
+VERSION.h
 libIteratedecks.a
+unitTests

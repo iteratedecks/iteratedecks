@@ -4,6 +4,7 @@
     #include "verify.hpp"
     #include "../CORE/Logger.hpp"
     #include "../CORE/exceptions.hpp"
+    #include "../CORE/achievementOptions.hpp"
 
 #ifdef _WIN32
     #define __windows__
@@ -105,18 +106,6 @@ using namespace IterateDecks::Core;
                     void setQuest(int const & questId);
                     void setRaid(int const & raidId);
                     void setOrdered(bool const & ordered);
-            };
-
-            struct AchievementOptions {
-                private:
-                    bool doAchievementCheck;
-                    unsigned int achievementId;
-                public:
-                    AchievementOptions();
-
-                    void enableCheck(unsigned int const & achievementId);
-                    void disableCheck();
-                    operator int() const;
             };
 
             struct CliOptions {

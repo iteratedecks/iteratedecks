@@ -1,40 +1,97 @@
 # Where our sources are
 repository ../../src
 
-CXXFLAGS+= --std=c++11
+CXXFLAGS+= --std=c++11 -I../../libs/pstreams
+IDLIB=-L. -l${RELEASE_LIBRARY_SHORT}
 
-$(phony CLI): ${RELEASE_BINARY_CLI} XML PACKAGE
-$(phony LIB): ${RELEASE_LIBRARY} XML
+$(phony CLI3): ${RELEASE_BINARY_CLI3}
+$(phony LIB): ${RELEASE_LIBRARY}
 
-${RELEASE_BINARY_CLI}: $(infer_objects CLI2/iteratedecks-cli.o, CLI2/*.o CORE/*.o)
-    ${CXX} ${inputs} ${LDFLAGS} ${LDLIBS} ${LIBS} -o ${output}
-
-${RELEASE_LIBRARY}: $(infer_objects CORE/iterateDecksCore.o, CORE/*.o)
-    rm -f ${output}
-    ${AR} crvs ${output} ${inputs}
+LIBS+=-lboost_program_options -lcrypto -lsqlite3
 
 makepp_percent_subdirs=1
 %.o: %.cpp
     $(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $(input) -o $(output)
 
-$(phony PACKAGE): release.tar.gz
+${RELEASE_BINARY_CLI2}: $(infer_objects CLI2/iteratedecks-cli.o, CLI2/*.o CORE/*.o)
+    ${CXX} ${inputs} ${LDFLAGS} ${LDLIBS} ${LIBS} -o ${output}
 
-LICENSE: ../../LICENSE
-    cp $(input) $(output)
-include bin.Makeppfile
+CLI3_OBJECTS=$(wildcard CLI3/*.o) CLI3/simpleOrderedDeckTemplate.o
+#CLI3_OBJECTS=$(infer_objects CLI3/iteratedecks-cli3.o, CLI3/*.o)
 
-COPYING.GPL3: ../../COPYING.GPL3
-    cp $(input) $(output)
+${RELEASE_BINARY_CLI3}: ${CLI3_OBJECTS} ${RELEASE_LIBRARY}
+    ${CXX} \
+    CLI3/iteratedecks-cli3.o CLI3/optionParser.o CLI3/commands.o CLI3/runCommand.o \    
+    ${CLI3_OBJECTS} \
+    ${LDFLAGS} \
+    ${LDLIBS} ${LIBS} \
+    ${IDLIB} \
+    -o ${output}
 
-LICENSE_FILES:=LICENSE COPYING.GPL3
-SRC:=src.tar.gz
+${RELEASE_LIBRARY}: $(wildcard CORE/*.o)
+    rm -f ${output}
+    ${AR} crvs ${output} ${inputs}
 
-release.tar: ${RELEASE_BINARY_CLI} ${LICENSE_FILES}
-    tar --create --dereference --file=$(output) $(inputs)
+UNIT_TEST_OBJECTS:=$(wildcard UNIT_TESTS/*.o) $(wildcard CACHE/*.o)
+${UNIT_TEST_BINARY}: ${UNIT_TEST_OBJECTS} ${RELEASE_LIBRARY}
+    ${CXX} \
+    ${UNIT_TEST_OBJECTS} \
+    ${LDFLAGS} \
+    ${LDLIBS} ${LIBS} \
+    ${IDLIB} \
+    -lboost_unit_test_framework \
+    -o ${output}
 
-release.tar.gz: release.tar
-    gzip --best --no-name --to-stdout $(input) > $(output)
+GIT_HASH;=$(shell git rev-parse HEAD)
 
-release.zip: ${RELEASE_BINARY_CLI} ${LICENSE_FILES}
-    @if [ -e $(output) ]; then echo rm $(output); rm $(output); fi
-    zip -9 $(output) $(inputs)
+VERSION.h: FORCE
+    echo -n "#define ITERATEDECKS_VERSION " > ${output}
+    echo "\"${GIT_HASH}\"" >> ${output}
+    echo -n "#define ITERATEDECKS_VERSION_TAGS \"" >> ${output}
+    git tag --points-at HEAD | tr "\n" " " >> ${output}
+    echo  "\"" >> ${output}
+    #
+    echo -n "#define ITERATEDECKS_DIRTY_HEAD " >> ${output}
+    @if [ `git diff HEAD | wc --chars` -gt 0 ]; then \
+        echo true >> ${output}; \
+    else \
+        echo false >> ${output}; \
+    fi
+    echo -n "#define ITERATEDECKS_DIRTY_HASH \"" >> ${output}
+    git diff HEAD | sha1sum | cut -d " " -f 1 | tr -d "\n" >> ${output}
+    echo  "\"" >> ${output}
+    #
+    echo -n "#define ITERATEDECKS_DIRTY_HEAD_CORE " >> ${output}
+    @if [ `git diff HEAD -- ../../src/CORE | wc --chars` -gt 0 ]; then \
+        echo true >> ${output}; \
+    else \
+        echo false >> ${output}; \
+    fi
+    echo -n "#define ITERATEDECKS_DIRTY_HASH_CORE \"" >> ${output}
+    git diff HEAD -- ../../src/CORE | sha1sum | cut -d " " -f 1 | tr -d "\n" >> ${output}
+    echo  "\"" >> ${output}
+
+$(phony FORCE):
+    @true
+
+#$(phony PACKAGE): release.tar.gz
+#
+#LICENSE: ../../LICENSE
+#    cp $(input) $(output)
+#include bin.Makeppfile
+#
+#COPYING.GPL3: ../../COPYING.GPL3
+#    cp $(input) $(output)
+#
+#LICENSE_FILES:=LICENSE COPYING.GPL3
+#SRC:=src.tar.gz
+#
+#release.tar: ${RELEASE_BINARY_CLI} ${LICENSE_FILES}
+#    tar --create --dereference --file=$(output) $(inputs)
+#
+#release.tar.gz: release.tar
+#    gzip --best --no-name --to-stdout $(input) > $(output)
+#
+#release.zip: ${RELEASE_BINARY_CLI} ${LICENSE_FILES}
+#    @if [ -e $(output) ]; then echo rm $(output); rm $(output); fi
+#    zip -9 $(output) $(inputs)

@@ -12,9 +12,13 @@ CXXFLAGS+=${COMMON_FLAGS} -O0
 LDFLAGS+=${COMMON_FLAGS} -ldl -rdynamic
 
 # Our release
-RELEASE_BINARY_CLI=iteratedecks-cli
+RELEASE_BINARY_CLI2=iteratedecks-cli2
+RELEASE_BINARY_CLI3=iteratedecks-cli3
 RELEASE_LIBRARY=libIteratedecks.a
+RELEASE_LIBRARY_SHORT=Iteratedecks
+UNIT_TEST_BINARY=unitTests
 
-$(phony ALL): CLI LIB
+$(phony ALL): CLI3 LIB ${UNIT_TEST_BINARY}
 
 include ../cli.Makeppfile
+include ../bin.Makeppfile

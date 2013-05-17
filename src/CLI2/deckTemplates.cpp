@@ -69,7 +69,7 @@ namespace IterateDecks {
         }
 
         OrderedDeckTemplate::OrderedDeckTemplate(DeckArgument const & argument, CardDB const & cardDB)
-        : DeckTemplate(cardDB)
+        : DeckTemplate()
         {
             assertX(argument.isOrdered());
             std::list<unsigned int> ids = hashToId(argument.getHash());
@@ -82,9 +82,9 @@ namespace IterateDecks {
             }
         }
 
-        ActiveDeck OrderedDeckTemplate::instantiate() const
+        ActiveDeck OrderedDeckTemplate::instantiate(CardDB const & cardDB) const
         {
-            ActiveDeck activeDeck(this->commander, this->cardDB.GetPointer());
+            ActiveDeck activeDeck(this->commander, cardDB.GetPointer());
             activeDeck.SetOrderMatters(true);
             for(std::list<Card const *>::const_iterator iter = cards.begin(); iter != cards.end(); iter++) {
                 activeDeck.Add(*iter);
@@ -95,7 +95,7 @@ namespace IterateDecks {
         }
 
         UnorderedDeckTemplate::UnorderedDeckTemplate(DeckArgument const & argument, CardDB const & cardDB)
-        : DeckTemplate(cardDB)
+        : DeckTemplate()
         {
             assertX(!argument.isOrdered());
             std::list<unsigned int> ids = hashToId(argument.getHash());
@@ -110,9 +110,9 @@ namespace IterateDecks {
             }
         }
 
-        ActiveDeck UnorderedDeckTemplate::instantiate() const
+        ActiveDeck UnorderedDeckTemplate::instantiate(CardDB const & cardDB) const
         {
-            ActiveDeck activeDeck(this->commander, this->cardDB.GetPointer());
+            ActiveDeck activeDeck(this->commander, cardDB.GetPointer());
             activeDeck.SetOrderMatters(false);
             for(std::multiset<Card const *>::const_iterator iter = cards.begin(); iter != cards.end(); iter++) {
                 activeDeck.Add(*iter);
@@ -132,7 +132,8 @@ namespace IterateDecks {
                                       ,VCARDPOOL const & pools
                                       ,CardDB const & cardDB
                                       )
-        : DeckTemplate(commander, cardDB)
+        : DeckTemplate()
+        , commander(commander)
         {
             for(VCARDPOOL::const_iterator iter = pools.begin()
                ;iter != pools.end()
@@ -147,8 +148,10 @@ namespace IterateDecks {
                                       ,VCARDPOOL const & pools
                                       ,CardDB const & cardDB
                                       )
-        : DeckTemplate(commander, cardDB)
+        : DeckTemplate()
+        , commander(commander)
         {
+            
             for(VID::const_iterator iter = alwaysInclude.begin()
                ;iter != alwaysInclude.end()
                ;iter++)
@@ -177,9 +180,9 @@ namespace IterateDecks {
             return DeckTemplate::Ptr(new PooledTemplate(commander, raidInfo.AlwaysInclude, raidInfo.Pools, cardDB));
         }
 
-        ActiveDeck PooledTemplate::instantiate() const
+        ActiveDeck PooledTemplate::instantiate(CardDB const & cardDB) const
         {
-            ActiveDeck activeDeck(this->commander, this->cardDB.GetPointer());
+            ActiveDeck activeDeck(this->commander, cardDB.GetPointer());
             activeDeck.SetOrderMatters(false);
             //add alwaysinclude
             for(std::multiset<Card const *>::const_iterator iter = alwaysInclude.begin()
@@ -194,7 +197,7 @@ namespace IterateDecks {
                ;iter++)
             {
                 CardPool const * pool = *iter;
-                pool->GetPool(this->cardDB.GetPointer(), activeDeck.Deck);
+                pool->GetPool(cardDB.GetPointer(), activeDeck.Deck);
             }
 
             assertX(activeDeck.IsValid());

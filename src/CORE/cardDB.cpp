@@ -2,7 +2,7 @@
 
 #include <cstring>
 // FIXME remove ancient C io code
-#include <cstdio>
+//#include <cstdio>
 #include "compat.h"
 #include "deckIndex.hpp"
 #include "assert.hpp"
@@ -194,14 +194,9 @@ namespace IterateDecks {
                         if (strEqualIgnoreCase(child.name(),"cardValue"))
                         {
                             MSKILLS::iterator si = SIndex.find(id);
-                            if (si == SIndex.end())
-                            {
-                                if (bConsoleOutput) {
-                                    printf("Skill \"%s\" not found in index!\n",id);
-                                }
-                            }
-                            else
-                            {
+                            if (si == SIndex.end()) {
+                                std::cerr << "Skill \"" << id << "\" not found in index!\n";
+                            } else {
                                 Skills[si->second].IsPassive = child.attribute("passive").as_bool();
                                 Skills[si->second].CardValue = child.attribute("cost").as_float();
                                 //printf("%s : %d %.1f\n",id,child.attribute("passive").as_bool(),child.attribute("cost").as_float());
@@ -250,9 +245,11 @@ namespace IterateDecks {
                         if (strEqualIgnoreCase(child.name(),"skill"))
                         {
                             UCHAR Id = GetSkillID(child.attribute("id").value());
-                            assertX(Id); // unknown skill
-                            if (!Id)
-                                continue;
+                            if (Id == 0) {
+                                std::clog << child.attribute("id").value() << std::endl;
+                            }
+                            assertGT(Id, (UCHAR)0); // unknown skill
+
                             EFFECT_ARGUMENT Effect = child.attribute("x").as_uint();
                             if (!Effect) {
                                 Effect = ABILITY_ENABLED; // this value can't be 0, since it will disable the ability
@@ -368,15 +365,14 @@ namespace IterateDecks {
                                 {
                                     if (!strcmp(di->attribute("skill_id").value(),"0"))
                                     {
-                                        if (bConsoleOutput)
-                                            printf("Skill \"%s\" not found in index!\n",di->attribute("skill_id").value());
+                                        std::cerr <<  "Skill \"" << di->attribute("skill_id").value() << "\" not found in index!" << std::endl;
                                         r.SkillID = SPECIAL_ATTACK;
-                                    }
-                                    else
+                                    } else {
                                         continue;
-                                }
-                                else
+                                    }
+                                } else {
                                     r.SkillID = si->second;
+                                }
                             }
                             // <req num_turns="9" compare="less_equal"/>
                             // <req unit_type="2" num_killed="10" compare="equal"/>
@@ -530,9 +526,7 @@ namespace IterateDecks {
                     {
                         MapBattleGroundEffects::iterator si = QuestEffectIndex.find(it->child("effect").child_value());
                         if (si == QuestEffectIndex.end()) {
-                            if (bConsoleOutput) {
-                                printf("Quest effect \"%s\" not found in index!\n",it->child("effect").child_value());
-                            }
+                            std::cerr << "Quest effect \"" << it->child("effect").child_value() << "\" not found in index!" << std::endl;
                         } else {
                             effect = si->second;
                         }
@@ -677,6 +671,7 @@ namespace IterateDecks {
             AddSkill(ACTIVATION_SUPPLY,"Supply");
             AddSkill(ACTIVATION_WEAKEN,"Weaken");
             AddSkill(ACTIVATION_AUGMENT,"Augment");
+            AddSkill(ACTIVATION_SUNDER,"Sunder");
 
             AddSkill(DEFENSIVE_ARMORED,"Armored");
             AddSkill(DEFENSIVE_COUNTER,"Counter");
@@ -761,10 +756,15 @@ namespace IterateDecks {
             strcpy_s(buffer,CARD_NAME_MAX_LENGTH,Name);
             strlwr(buffer);
             MSKILLS::iterator it = SIndex.find(buffer);
-            if (it == SIndex.end())
-                return 0;
-            else
+            if (it == SIndex.end()) {
+                std::stringstream ssMessage;
+                ssMessage << "Trying to look up a skill with name ";
+                ssMessage << Name;
+                ssMessage << " but it does not exist.";
+                throw LogicError(ssMessage.str());
+            } else {
                 return it->second;
+            }
         }
         UCHAR CardDB::GetSkillIDSlow(const char *Name)
         {
@@ -1311,9 +1311,12 @@ namespace IterateDecks {
         }*/
         const Card &CardDB::GetCard(const UINT Id) const
         {
-            if (Id > CARD_MAX_ID)
+            if (Id > CARD_MAX_ID) {
                 throw 0;
-
+            }
+            if (CDB[Id].GetType() == TYPE_NONE) {
+                throw InvalidState("Data not loaded or card not existing");
+            }
             return CDB[Id];
         }
         const Card *CardDB::GetCardSmart(const char *Name) const
@@ -1547,12 +1550,15 @@ namespace IterateDecks {
         }
         bool CardDB::CheckAchievement(int achievementId, const UINT iTurn, ActiveDeck &Atk, ActiveDeck &Def)
         {
-            if (achievementId < 0) return true;
+            if (achievementId < 0) {
+                return true;
+            }
 
             AchievementInfo achievementInfo;
-            for (int i = 0; i < ACHIEVEMENT_MAX_COUNT; i ++)
+            for (unsigned int i = 0; i < ACHIEVEMENT_MAX_COUNT; i ++)
             {
-                if(ADB[i].GetID() == achievementId) {
+                assertGE(achievementId,0);
+                if(ADB[i].GetID() == (unsigned int)achievementId) {
                     achievementInfo = ADB[i];
                     break;
                 }
