@@ -53,13 +53,14 @@ namespace IterateDecks {
 
                 po::variables_map vm;
                 po::store(po::parse_command_line(argc, argv, desc), vm);
-                po::notify(vm);
 
                 if (vm.count("help")) {
                     return Command::Ptr(new HelpCommand(desc));
                 } else if (vm.count("version")) {
                     return Command::Ptr(new VersionCommand());
                 }
+
+                po::notify(vm);
 
                 RunCommand::Ptr command = RunCommand::Ptr(new RunCommand());
                 command->task.minimalNumberOfGames = numberOfIterations;
