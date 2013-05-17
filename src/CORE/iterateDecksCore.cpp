@@ -1,14 +1,57 @@
 #include "iterateDecksCore.hpp"
 #include "activeDeck.hpp"
 #include "assert.hpp"
+#include "../VERSION.h"
 
 #include <iostream>
 #include <cstdlib>
+#include <openssl/md5.h>
+#include <fstream>
+#include <map>
+#include <string>
 
 namespace IterateDecks {
     namespace Core {
 
         SimulatorCore::~SimulatorCore() {}
+
+        void
+        hashFile(std::map<std::string,std::string> & hashes
+                ,std::string fileName
+                )
+        {
+            unsigned char digest[MD5_DIGEST_LENGTH];
+            char buffer[1024];
+            MD5_CTX md5Context;
+            MD5_Init(&md5Context);
+
+            std::ifstream file(fileName);
+            assertX(file.is_open());
+            while(!(file.eof())) {
+                //std::streamsize n = file.readsome(buffer, sizeof(buffer));
+                file.read(buffer, sizeof(buffer));
+                std::streamsize n = file.gcount();
+                MD5_Update(&md5Context, buffer, n);
+            }
+            file.close();
+            MD5_Final(digest, &md5Context);
+            std::stringstream ssDigest;
+            for(int i = 0; i < MD5_DIGEST_LENGTH; i++) {
+                ssDigest << std::setw(2) << std::setfill('0') << std::hex << (unsigned int)(digest[i]);
+            }
+            hashes[fileName] = ssDigest.str();
+        }
+
+        std::map<std::string,std::string> SimulatorCore::getXMLVersions() const
+        {
+            std::map<std::string,std::string> hashes;
+            hashFile(hashes, "achievements.xml");
+            hashFile(hashes, "cards.xml");
+            hashFile(hashes, "missions.xml");
+            hashFile(hashes, "raids.xml");
+            hashFile(hashes, "quests.xml");
+            return hashes;
+        }
 
         IterateDecksCore::IterateDecksCore()
         : logger(NULL)
@@ -205,6 +248,21 @@ namespace IterateDecks {
             result.numberOfGames++;
         }
 
+        std::string IterateDecksCore::getCoreName() const
+        {
+            return "IterateDecks";
+        }
+
+        std::string IterateDecksCore::getCoreVersion() const
+        {
+            std::stringstream ssVersion;
+            ssVersion << ITERATEDECKS_VERSION;
+            if(ITERATEDECKS_DIRTY_HEAD_CORE) {
+                ssVersion << "+";
+                ssVersion << ITERATEDECKS_DIRTY_HASH_CORE;
+            }
+            return ssVersion.str();
+        }
 
     }
 }
