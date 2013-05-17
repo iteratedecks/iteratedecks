@@ -20,7 +20,7 @@ namespace IterateDecks {
                 std::cout << ITERATEDECKS_DIRTY_HASH;
             }
             std::cout << std::endl;
-            std::cout << "Tags pointing at this version: ";
+            std::cout << "Tags pointing at this version: " << std::endl;
             std::cout << '\t' << ITERATEDECKS_VERSION_TAGS << std::endl;
 
             // TODO Obviously if we want to allow exchangable core we would need a better way here.
