@@ -49,6 +49,12 @@ namespace IterateDecks {
                     ,po::value<unsigned int>(&battleGroundId)->default_value(static_cast<unsigned int>(BattleGroundEffect::normal))
                     ,"set the battleground to use"
                     )
+                    ("optimize-attacker"
+                    ,"optimize the attacker's deck"
+                    )
+                    ("optimize-defender"
+                    ,"optimize the defender's deck"
+                    )
                 ;
 
                 po::variables_map vm;
@@ -68,6 +74,13 @@ namespace IterateDecks {
                 command->task.defender = parseDeck(vm["defender"].as<std::string>());
                 command->task.surge = vm.count("surge") > 0;
                 command->task.battleGround = static_cast<BattleGroundEffect>(battleGroundId);
+                bool optimizeAttacker = vm.count("optimize-attacker") > 0;
+                bool optimizeDefender = vm.count("optimize-defender") > 0;
+                if(optimizeAttacker && optimizeDefender) {
+                    throw InvalidUserInputError("Can not optimize both attacker and defender!");
+                }
+                command->optimizeAttacker = optimizeAttacker;
+                command->optimizeDefender = optimizeDefender;
                 return command;
              } catch (boost::program_options::required_option &e) {
                  std::stringstream ssMessage;

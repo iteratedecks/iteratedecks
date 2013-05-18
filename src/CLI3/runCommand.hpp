@@ -13,6 +13,8 @@
                     typedef std::shared_ptr<RunCommand> Ptr;
                 public:
                     SimulationTaskClass task;
+                    bool optimizeAttacker;
+                    bool optimizeDefender;
                 public:
                     RunCommand();
                 
