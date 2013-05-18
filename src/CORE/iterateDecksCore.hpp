@@ -32,6 +32,8 @@
                 Result();
 
                 Result & operator+=(Result const & rhs);
+
+                double getWinRate() const;
             };
 
             Result const operator+(Result const & lhs, Result const & rhs);

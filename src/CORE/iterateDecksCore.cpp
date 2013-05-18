@@ -49,6 +49,12 @@ namespace IterateDecks {
             return tmp;
         }
 
+        double
+        Result::getWinRate() const
+        {
+            return static_cast<double>(this->gamesWon) / static_cast<double>(this->numberOfGames);
+        }
+
         SimulationTaskClass::SimulationTaskClass()
         : minimalNumberOfGames(1000)
         , surge(false)
