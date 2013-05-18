@@ -188,7 +188,10 @@ namespace IterateDecks {
                 ssMessage << "and no error either.";
                 throw Exception(ssMessage.str());
             }
-            return new PreparedStatement(pStmt);
+            assertX(pStmt != NULL);
+            PreparedStatement * preparedStatement = new PreparedStatement(pStmt);
+            this->statements.insert(preparedStatement);
+            return preparedStatement;
         }
 
         void
