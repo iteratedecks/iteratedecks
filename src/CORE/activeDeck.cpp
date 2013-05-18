@@ -936,6 +936,18 @@ namespace IterateDecks {
                     //LogAdd(LOG_CARD(LogDeckID,TYPE_ASSAULT,index),LOG_CARD(Def.LogDeckID,TYPE_ASSAULT,targetindex),DMGDEPENDANT_DISEASE);
                 }
 
+                // sunder
+                if (attacker.GetAbility(DMGDEPENDANT_SUNDER)
+                    && attacker.GetAbilityEvent(DMGDEPENDANT_SUNDER) == EVENT_EMPTY)
+                {
+                    if(!defender.GetEffect(DMGDEPENDANT_SUNDER)) {
+                        defender.SetEffect(DMGDEPENDANT_SUNDER, attacker.GetAbility(DMGDEPENDANT_DISEASE));
+                        attacker.fsSpecial++; // is it good?
+                        LOG(this->logger,abilityOffensive(EVENT_EMPTY, attacker, DMGDEPENDANT_SUNDER, defender, 1));
+                        SkillProcs[DMGDEPENDANT_SUNDER]++;
+                    }
+                }
+
                 // poison
                 if (attacker.GetAbility(DMGDEPENDANT_POISON)
                     && attacker.GetAbilityEvent(DMGDEPENDANT_POISON) == EVENT_EMPTY)
@@ -2107,6 +2119,12 @@ namespace IterateDecks {
                         src.fsSpecial++;
                         SkillProcs[DMGDEPENDANT_DISEASE]++;
                     } break;
+                case DMGDEPENDANT_SUNDER: {
+                        assertGT(effectArgument,0u);
+                        target.SetEffect(DMGDEPENDANT_SUNDER,effectArgument);
+                        src.fsSpecial++;
+                        SkillProcs[DMGDEPENDANT_SUNDER]++;
+                    } break;                    
                 case DMGDEPENDANT_IMMOBILIZE:
                     throw std::logic_error("\"immobilize on attack\" not implemented because im lazy");
                 case DMGDEPENDANT_LEECH:

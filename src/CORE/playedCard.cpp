@@ -152,16 +152,24 @@ namespace IterateDecks {
                         ss << (UINT)this->Wait;
                     }
                     if(this->GetType()==TYPE_ACTION) {
-                        if (Effects[ACTIVATION_JAM])
+                        if (Effects[ACTIVATION_JAM]) {
                             ss << " Jammed";
-                        if (Effects[ACTIVATION_FREEZE])
+                        }
+                        if (Effects[ACTIVATION_FREEZE]) {
                             ss << " Frozen";
-                        if (Effects[DMGDEPENDANT_IMMOBILIZE])
+                        }
+                        if (Effects[DMGDEPENDANT_IMMOBILIZE]) {
                             ss << " Immobilized";
-                        if (Effects[DMGDEPENDANT_DISEASE])
+                        }
+                        if (Effects[DMGDEPENDANT_DISEASE]) {
                             ss << " Diseased";
-                        if (Effects[ACTIVATION_CHAOS])
+                        }
+                        if (Effects[DMGDEPENDANT_SUNDER]) {
+                            ss << " Sundered";
+                        }
+                        if (Effects[ACTIVATION_CHAOS]) {
                             ss << " Chaosed";
+                        }
                     }
                 }
                 ss << "]";
@@ -281,6 +289,7 @@ namespace IterateDecks {
         {
             Effects[DMGDEPENDANT_POISON] = 0;
             Effects[DMGDEPENDANT_DISEASE] = 0;
+            Effects[DMGDEPENDANT_SUNDER] = 0;
             Effects[ACTIVATION_JAM] = 0;
             if (bActivated)  // this is bullshit!
                 Effects[ACTIVATION_FREEZE] = 0;
@@ -294,6 +303,7 @@ namespace IterateDecks {
             // Poison, Disease, Jam, Immobilize, Enfeeble, Chaos. (Does not remove Weaken.)
             return (Effects[DMGDEPENDANT_POISON] ||
                     Effects[DMGDEPENDANT_DISEASE] ||
+                    Effects[DMGDEPENDANT_SUNDER] ||
                     Effects[ACTIVATION_JAM] ||
                     (Effects[ACTIVATION_FREEZE] && bActivated) ||
                     Effects[DMGDEPENDANT_IMMOBILIZE] ||
@@ -309,7 +319,7 @@ namespace IterateDecks {
                 || effect == ACTIVATION_CLEANSE
                 || (effect == ACTIVATION_HEAL && !IsDiseased())
                 || effect == ACTIVATION_PROTECT
-                || effect == ACTIVATION_RALLY
+                || (effect == ACTIVATION_RALLY && !IsSundered())
                 || effect == ACTIVATION_REPAIR
                 || effect == ACTIVATION_RUSH
                 || (effect == ACTIVATION_SUPPLY && !IsDiseased())) {
@@ -614,8 +624,10 @@ namespace IterateDecks {
         }
         void PlayedCard::Rally(const EFFECT_ARGUMENT amount)
         {
-            Effects[ACTIVATION_RALLY] += amount;
-            //Attack += amount;
+            if (!(this->IsSundered())) {
+                Effects[ACTIVATION_RALLY] += amount;
+                //Attack += amount;
+            }
         }
         EFFECT_ARGUMENT PlayedCard::Weaken(const EFFECT_ARGUMENT amount)
         {
@@ -625,7 +637,9 @@ namespace IterateDecks {
         }
         void PlayedCard::Berserk(const EFFECT_ARGUMENT amount)
         {
-            Attack += amount;
+            if (!(this->IsSundered())) {
+                Attack += amount;
+            }
         }
         void PlayedCard::Protect(const EFFECT_ARGUMENT amount)
         {
@@ -645,7 +659,10 @@ namespace IterateDecks {
             else
                 return false;
         }
+        
         bool PlayedCard::IsDiseased() const	{	return Effects[DMGDEPENDANT_DISEASE] > 0; }
+
+        bool PlayedCard::IsSundered() const	{	return Effects[DMGDEPENDANT_SUNDER] > 0; }
 
         /**
          *
@@ -655,7 +672,10 @@ namespace IterateDecks {
          */
         UCHAR PlayedCard::Heal(EFFECT_ARGUMENT amount,BattleGroundEffect QuestEffectId)
         {
-            assertX(!IsDiseased()); // disallowed
+            if(IsDiseased()) {
+                return 0;
+            }
+            
             if (IsDiseased()) return 0;
             if (Health + amount >  OriginalCard->GetHealth()) {
                 amount = (OriginalCard->GetHealth() - Health);
@@ -664,8 +684,10 @@ namespace IterateDecks {
                 Health += amount;
             }
             // If we healed something and we have invigorate, increase attack
-            if (amount && (QuestEffectId == BattleGroundEffect::invigorate)) {
-                Attack += amount;
+            if (amount > 0 && (QuestEffectId == BattleGroundEffect::invigorate)) {
+                if (!(this->IsSundered())) {
+                    this->Attack += amount;
+                }
             }
             return amount;
         }

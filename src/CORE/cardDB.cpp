@@ -702,6 +702,7 @@ namespace IterateDecks {
             AddSkill(DMGDEPENDANT_LEECH,"Leech");
             AddSkill(DMGDEPENDANT_POISON,"Poison");
             AddSkill(DMGDEPENDANT_SIPHON,"Siphon");
+            AddSkill(DMGDEPENDANT_SUNDER,"Sunder");
 
             AddSkill(SPECIAL_BACKFIRE,"Backfire");
 

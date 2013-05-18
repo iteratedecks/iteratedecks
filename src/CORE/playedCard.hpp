@@ -112,6 +112,7 @@
                     void Protect(const EFFECT_ARGUMENT amount);
                     bool Rush(const EFFECT_ARGUMENT amount);
                     bool IsDiseased() const;
+                    bool IsSundered() const;
                     UCHAR Heal(EFFECT_ARGUMENT amount, BattleGroundEffect QuestEffectId = BattleGroundEffect::normal);
                     const Card *GetOriginalCard() const;
                     PlayedCard();

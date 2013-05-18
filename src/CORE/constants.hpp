@@ -74,6 +74,7 @@
                 DMGDEPENDANT_LEECH,
                 DMGDEPENDANT_POISON,
                 DMGDEPENDANT_SIPHON,
+                DMGDEPENDANT_SUNDER,
 
                 SPECIAL_BACKFIRE,  // Destroyed - When this is destroyed, deal damage to own Commander.
                 SPECIAL_BLITZ,
