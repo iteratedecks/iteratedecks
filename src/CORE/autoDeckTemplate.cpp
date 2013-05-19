@@ -53,5 +53,62 @@ namespace IterateDecks {
             }
             return ssString.str();
         }
+
+        DeckTemplate::Ptr
+        AutoDeckTemplate::withCommander(unsigned int commanderId) const
+        {
+            AutoDeckTemplate::Ptr copy(new AutoDeckTemplate(*this));
+            copy->commander = commanderId;
+            return copy;
+        }
+
+        size_t
+        AutoDeckTemplate::getNumberOfNonCommanderCards() const
+        {
+            return this->cards.size();
+        }
+
+        unsigned int
+        AutoDeckTemplate::getCardAtIndex(size_t index) const
+        {
+            std::multiset<unsigned int>::const_iterator iter = this->cards.begin();
+            for(size_t i = 0u; i < index; i++) {
+                iter++;
+            }
+            return *iter;
+        }
+
+        DeckTemplate::Ptr
+        AutoDeckTemplate::withCardAtIndex(unsigned int cardId, size_t index) const
+        {
+            AutoDeckTemplate::Ptr copy(new AutoDeckTemplate(*this));
+            copy->cards.insert(cardId);
+            return copy;
+        }
+
+        DeckTemplate::Ptr
+        AutoDeckTemplate::withoutCardAtIndex(size_t index) const
+        {
+            AutoDeckTemplate::Ptr copy(new AutoDeckTemplate(*this));
+            std::multiset<unsigned int>::iterator iter = copy->cards.begin();
+            for(size_t i = 0u; i < index; i++) {
+                iter++;
+            }
+            copy->cards.erase(iter);
+            return copy;
+        }
+
+        unsigned int
+        AutoDeckTemplate::getCommander() const
+        {
+            return this->commander;
+        }
+
+        DeckTemplate::Ptr
+        AutoDeckTemplate::swapCards(size_t i, size_t j) const
+        {
+            return DeckTemplate::Ptr(new AutoDeckTemplate(*this));
+        }
+
     }
 }

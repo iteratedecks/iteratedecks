@@ -7,6 +7,10 @@
     namespace IterateDecks {
         namespace Opt {
 
+            typedef std::set<DeckTemplate::Ptr> DeckSet;
+            typedef std::set<unsigned int> CardSet;
+            typedef std::multiset<unsigned int> CardMSet;
+
             class PraetorianMutator : public Mutator {
                 private:
                     bool addCards;
@@ -16,13 +20,28 @@
                     bool fullOrder;
                     bool unorder;
                     bool changeCommander;
-                    std::multiset<unsigned int> allowedCards;
+                    CardMSet allowedCards;
+                    CardSet allowedCommanders;
+                    CardSet allowedNonCommanderCards;
+
+                    CardDB const & cardDB;
 
                 public:
                     typedef std::shared_ptr<PraetorianMutator> Ptr;
-                
+
+                private:
+                    bool isValid(DeckTemplate::Ptr deck) const;
+                    void addChangeCommanderMutations(DeckTemplate::Ptr const & original, DeckSet & mutations) const;
+                    void addRemoveMutations         (DeckTemplate::Ptr const & original, DeckSet & mutations) const;
+                    void addAddMutations            (DeckTemplate::Ptr const & original, DeckSet & mutations) const;
+                    void addReplaceMutations        (DeckTemplate::Ptr const & original, DeckSet & mutations) const;
+                    void addSwapMutations           (DeckTemplate::Ptr const & original, DeckSet & mutations) const;
+                    void addOrderMutations          (DeckTemplate::Ptr const & original, DeckSet & mutations) const;
+                    void addUnorderMutations        (DeckTemplate::Ptr const & original, DeckSet & mutations) const;
+
+
                 public:
-                    PraetorianMutator();
+                    PraetorianMutator(CardDB const & cardDB);
                     virtual std::set<DeckTemplate::Ptr> mutate(DeckTemplate::Ptr const & initial);
             };
         }

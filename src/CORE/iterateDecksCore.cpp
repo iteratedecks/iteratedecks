@@ -316,5 +316,12 @@ namespace IterateDecks {
             return ssVersion.str();
         }
 
+        CardDB const &
+        IterateDecksCore::getCardDB() const
+        {
+            return this->cardDB;
+        }
+
+
     }
 }

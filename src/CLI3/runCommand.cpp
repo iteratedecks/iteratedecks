@@ -21,11 +21,15 @@ namespace IterateDecks {
 
             IterateDecksCore::Ptr simulator = IterateDecksCore::Ptr(new IterateDecksCore());
 
-            DiskBackedCache::Ptr cache = DiskBackedCache::Ptr(new DiskBackedCache(simulator));
+            SimulatorCore::Ptr simulator2 = simulator;
+            DiskBackedCache::Ptr cache = DiskBackedCache::Ptr(
+                new DiskBackedCache(simulator2)
+            );
 
             assertX(!(this->optimizeAttacker && this->optimizeDefender));
             if(this->optimizeAttacker || this->optimizeDefender) {
-                PraetorianMutator::Ptr mutator = PraetorianMutator::Ptr(new PraetorianMutator());
+                CardDB const & cardDB = simulator->getCardDB();
+                PraetorianMutator::Ptr mutator = PraetorianMutator::Ptr(new PraetorianMutator(cardDB));
                 PraetorianOptimizer::Ptr optimizer = PraetorianOptimizer::Ptr(new PraetorianOptimizer(cache, mutator));
 
                 DeckTemplate::Ptr optimizedDeck;

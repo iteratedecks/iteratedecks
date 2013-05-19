@@ -14,6 +14,20 @@ namespace IterateDecks {
         {}
 
         DeckTemplate::~DeckTemplate() {}
+
+        DeckTemplate::Ptr
+        DeckTemplate::withCard(unsigned int cardId) const
+        {
+            return this->withCardAtIndex(cardId, 0u);
+        }
+
+        DeckTemplate::Ptr
+        DeckTemplate::replaceCardAtIndex(unsigned int cardId
+                                        ,size_t index
+                                        ) const
+        {
+            return this->withoutCardAtIndex(index)->withCardAtIndex(cardId, index);
+        }
         
     }
 }

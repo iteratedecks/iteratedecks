@@ -13,7 +13,10 @@ using namespace IterateDecks::Cache;
 BOOST_AUTO_TEST_CASE( test_simulator_cache ) { try {
 
     IterateDecksCore::Ptr core = IterateDecksCore::Ptr(new IterateDecksCore());
-    DiskBackedCache::Ptr cache = DiskBackedCache::Ptr(new DiskBackedCache(core));
+    SimulatorCore::Ptr core2 = core;
+    DiskBackedCache::Ptr cache = DiskBackedCache::Ptr(
+        new DiskBackedCache(core2)
+    );
     
     SimulationTaskClass task;
 

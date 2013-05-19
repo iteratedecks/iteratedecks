@@ -79,6 +79,9 @@
                     SimulationLogger * logger;
 
                 public:
+                    typedef std::shared_ptr<IterateDecksCore> Ptr;
+
+                public:
                     IterateDecksCore();
                     virtual ~IterateDecksCore();
                     void setLogger(Logger * loggerDelegate);
@@ -87,6 +90,8 @@
 
                     std::string getCoreName() const;
                     std::string getCoreVersion() const;
+
+                    CardDB const & getCardDB() const;
                 private:
                     void simulateOnce(SimulationTaskClass const &, Result &, DeckLogger * attackLogger, DeckLogger * defenseLogger);
             };
