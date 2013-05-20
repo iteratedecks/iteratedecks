@@ -7,7 +7,7 @@ namespace Assert {
                                   ,unsigned int const line
                                   ,std::string const & function
                                   )
-    : LogicError(message + " in file " + file + ":" + xtos(line) + "(" + function + ")", 3)
+    : LogicError(message + " in file " + file + ":" + xtos(line) + "(" + function + ")", 1)
     {
     }
 

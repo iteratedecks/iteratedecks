@@ -2,6 +2,7 @@
     #define ITERATEDECKS_CLI3_RUNCOMMAND_HPP
 
     #include "../CORE/iterateDecksCore.hpp"
+    #include "../OPT/optimizer.hpp"
     #include "commands.hpp"
     #include <memory>
 
@@ -15,10 +16,14 @@
                     SimulationTaskClass task;
                     bool optimizeAttacker;
                     bool optimizeDefender;
+                private:
+                    IterateDecks::Core::SimulatorCore::Ptr simulator;
+                    IterateDecks::Opt::Optimizer::Ptr optimizer;                    
                 public:
                     RunCommand();
                 
                     int execute();
+                    void abort();
             };
         }
     }

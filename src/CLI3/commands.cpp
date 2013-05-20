@@ -9,7 +9,19 @@
 namespace IterateDecks {
     namespace CLI3 {
 
-        Command::~Command() {}
+        Command::Command() 
+        : aborted(false)
+        {}
+
+        Command::~Command() 
+        {}
+
+        void
+        Command::abort()
+        {
+            this->aborted = true;
+        }
+        
 
         int VersionCommand::execute()
         {

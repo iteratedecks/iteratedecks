@@ -15,38 +15,49 @@ namespace IterateDecks {
         : optimizeAttacker(false)
         , optimizeDefender(false)
         {
+            IterateDecksCore::Ptr idSim = IterateDecksCore::Ptr (new IterateDecksCore());
+            SimulatorCore::Ptr sim = idSim;
+            DiskBackedCache::Ptr cache = DiskBackedCache::Ptr(
+                new DiskBackedCache(sim)
+            );
+            this->simulator = cache;
+            CardDB const & cardDB = idSim->getCardDB();
+            PraetorianMutator::Ptr mutator = PraetorianMutator::Ptr(new PraetorianMutator(cardDB));
+            this->optimizer = Optimizer::Ptr(new PraetorianOptimizer(cache, mutator));
         }
 
         int RunCommand::execute() {
 
-            IterateDecksCore::Ptr simulator = IterateDecksCore::Ptr(new IterateDecksCore());
+            
 
-            SimulatorCore::Ptr simulator2 = simulator;
-            DiskBackedCache::Ptr cache = DiskBackedCache::Ptr(
-                new DiskBackedCache(simulator2)
-            );
+            
+
 
             assertX(!(this->optimizeAttacker && this->optimizeDefender));
             if(this->optimizeAttacker || this->optimizeDefender) {
-                CardDB const & cardDB = simulator->getCardDB();
-                PraetorianMutator::Ptr mutator = PraetorianMutator::Ptr(new PraetorianMutator(cardDB));
-                PraetorianOptimizer::Ptr optimizer = PraetorianOptimizer::Ptr(new PraetorianOptimizer(cache, mutator));
 
                 DeckTemplate::Ptr optimizedDeck;
                 if (this->optimizeAttacker) {
-                    optimizedDeck = optimizer->optimizeMany(this->task, true);
+                    optimizedDeck = this->optimizer->optimizeMany(this->task, true);
                 } else {
-                    optimizedDeck = optimizer->optimizeMany(this->task, false);
+                    optimizedDeck = this->optimizer->optimizeMany(this->task, false);
                 }
                 std::cout << "Optimization finished, found:" << std::endl;
                 std::cout << optimizedDeck->toString() << std::endl;
                 return 0;
             } else {            
-                Result result = cache->simulate(this->task);
+                Result result = this->simulator->simulate(this->task);
                 std::cout << result.gamesWon << " / " << result.numberOfGames << std::endl;
                 return 0;
             }
 
+        }
+
+        void
+        RunCommand::abort()
+        {
+            this->simulator->abort();
+            this->optimizer->abort();
         }
         
     }

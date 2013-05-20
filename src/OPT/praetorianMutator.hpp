@@ -10,6 +10,7 @@
             typedef std::set<DeckTemplate::Ptr> DeckSet;
             typedef std::set<unsigned int> CardSet;
             typedef std::multiset<unsigned int> CardMSet;
+            typedef std::list<unsigned int> CardList;
 
             class PraetorianMutator : public Mutator {
                 private:
@@ -20,6 +21,8 @@
                     bool fullOrder;
                     bool unorder;
                     bool changeCommander;
+
+                    bool noCardLimit;
                     CardMSet allowedCards;
                     CardSet allowedCommanders;
                     CardSet allowedNonCommanderCards;
@@ -38,7 +41,7 @@
                     void addSwapMutations           (DeckTemplate::Ptr const & original, DeckSet & mutations) const;
                     void addOrderMutations          (DeckTemplate::Ptr const & original, DeckSet & mutations) const;
                     void addUnorderMutations        (DeckTemplate::Ptr const & original, DeckSet & mutations) const;
-
+                    bool canCompose(DeckTemplate::Ptr const & sub) const;
 
                 public:
                     PraetorianMutator(CardDB const & cardDB);

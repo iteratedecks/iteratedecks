@@ -8,11 +8,18 @@
         namespace CLI3 {
 
             class Command {
+                private:
+                    bool aborted;
+                protected:
+                    bool isAborted();
+                
                 public:
                     typedef std::shared_ptr<Command> Ptr;
                 public:
+                    Command();
                     virtual ~Command();
                     virtual int execute() = 0;
+                    virtual void abort();
             };
 
             class VersionCommand : public Command {

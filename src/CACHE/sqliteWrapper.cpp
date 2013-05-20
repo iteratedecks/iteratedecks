@@ -134,7 +134,7 @@ namespace IterateDecks {
                     ssMessage << sqlite3_sql(this->statement);
                     throw Exception(ssMessage.str());
                 }
-                std::clog << "Got a chunk from database!" << std::endl;
+                //std::clog << "Got a chunk from database!" << std::endl;
                 SQLResult sqlResult;
                 for(unsigned int i = 0; i < columnCount; i++) {
                     std::string data = reinterpret_cast<char const *>(sqlite3_column_text(this->statement, i));

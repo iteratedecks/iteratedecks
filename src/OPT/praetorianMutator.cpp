@@ -4,6 +4,7 @@
 #include "../CORE/autoDeckTemplate.hpp"
 #include "../CLI3/simpleOrderedDeckTemplate.hpp"
 #include "../CORE/assert.hpp"
+#include "../CORE/cardDB.hpp"
 
 namespace IterateDecks {
     namespace Opt {
@@ -16,9 +17,19 @@ namespace IterateDecks {
         , fullOrder(true)
         , unorder(true)
         , changeCommander(true)
+        , noCardLimit(true)
         , cardDB(cardDB)
         {
-            throw Exception("Not implemented!");
+            for(size_t cardId = 0; cardId < CARD_MAX_ID; cardId++) {
+                Card const & card = cardDB.GetPointer()[cardId];
+                if (card.GetType() != TYPE_NONE) {
+                    if(card.GetType() == TYPE_COMMANDER) {
+                        this->allowedCommanders.insert(cardId);
+                    } else {
+                        this->allowedNonCommanderCards.insert(cardId);
+                    }
+                }
+            }
         }
 
         bool
@@ -43,7 +54,12 @@ namespace IterateDecks {
         DeckTemplate::Ptr
         asOrdered(DeckTemplate::Ptr orig)
         {
-            throw Exception("Not implemented!");
+            CardList cards;
+            cards.push_back(orig->getCommander());
+            for(size_t i = 0; i < orig->getNumberOfNonCommanderCards(); i++) {
+                cards.push_back(orig->getCardAtIndex(i));
+            }
+            return DeckTemplate::Ptr(new IterateDecks::CLI3::SimpleOrderedDeckTemplate(cards));
         }
 
         DeckTemplate::Ptr
@@ -112,17 +128,21 @@ namespace IterateDecks {
             return true;
         }
 
-        bool isSubSet(DeckTemplate::Ptr const & sub
-                     ,CardMSet const & super
-                     )
+        bool
+        PraetorianMutator::canCompose(DeckTemplate::Ptr const & sub
+                                   ) const
         {
-            CardMSet sub2;
-            sub2.insert(sub->getCommander());
-            size_t l = sub->getNumberOfNonCommanderCards();
-            for(size_t i = 0; i < l; i++) {
-                sub2.insert(sub->getCardAtIndex(i));
+            if (this->noCardLimit) {
+                return true;
+            } else {
+                CardMSet sub2;
+                sub2.insert(sub->getCommander());
+                size_t l = sub->getNumberOfNonCommanderCards();
+                for(size_t i = 0; i < l; i++) {
+                    sub2.insert(sub->getCardAtIndex(i));
+                }
+                return isSubSet(sub2, this->allowedCards);
             }
-            return isSubSet(sub2, super);
         }
 
         void
@@ -141,13 +161,13 @@ namespace IterateDecks {
                     if(!isOrdered(*original)) {
                         DeckTemplate::Ptr mutation = original->withCard(cardId);
                         // check for validity and can compose
-                        if(isValid(mutation) && isSubSet(mutation, this->allowedCards)) {
+                        if(this->isValid(mutation) && this->canCompose(mutation)) {
                             mutations.insert(mutation);
                         }
                     } else {
                         for(unsigned int i = 0; i <= numberOfCards; i++) {
                             DeckTemplate::Ptr mutation = original->withCardAtIndex(cardId, i);
-                            if(isValid(mutation) && isSubSet(mutation, this->allowedCards)) {
+                            if(this->isValid(mutation) && this->canCompose(mutation)) {
                                 mutations.insert(mutation);
                             }
                         }
@@ -183,7 +203,7 @@ namespace IterateDecks {
                         continue;
                     }
                     // can compose?
-                    if(!isSubSet(mutation, this->allowedCards)) {
+                    if(!this->canCompose(mutation)) {
                         //std::clog << "Can not compose" << std::endl;
                         //std::clog << mutation << std::endl;
                         //std::clog << "-------" << std::endl;

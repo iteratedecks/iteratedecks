@@ -131,9 +131,9 @@ namespace IterateDecks {
                 currentResult.pointsDefender     = sqlResult.getULong("pointsDefender");
                 currentResult.pointsDefenderAuto = sqlResult.getULong("pointsDefenderAuto");
                 result += currentResult;
-                std::clog << "loaded entry with " << currentResult.numberOfGames << " elements" << std::endl;
+                //std::clog << "loaded entry with " << currentResult.numberOfGames << " elements" << std::endl;
             }
-            std::clog << "loaded cache with " << result.numberOfGames << " elements" << std::endl;
+            //std::clog << "loaded cache with " << result.numberOfGames << " elements" << std::endl;
             return result;
         }
 
@@ -204,7 +204,7 @@ namespace IterateDecks {
         void
         DiskBackedCache::abort()
         {
-            throw Exception("Not implemented!");
+            this->delegate->abort();
         }
         
 

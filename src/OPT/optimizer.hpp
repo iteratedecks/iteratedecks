@@ -15,6 +15,7 @@
                     
                 public:
                     virtual DeckTemplate::Ptr optimizeMany(SimulationTaskClass const & task, bool attacker = true) = 0;
+                    virtual void abort() = 0;
             };
 
         }

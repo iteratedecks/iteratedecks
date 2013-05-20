@@ -15,7 +15,7 @@
 Exception::Exception(std::string const & msg)
 : _msg(msg)
 #ifdef WITH_BACKTRACE
-, skipFirstSymbols(0)
+, skipFirstSymbols(1)
 #endif
 {
     #ifdef WITH_BACKTRACE
@@ -23,10 +23,10 @@ Exception::Exception(std::string const & msg)
     #endif
 }
 
-Exception::Exception(std::string const & msg, unsigned int const skipFirstSymbols)
+Exception::Exception(std::string const & msg, unsigned int const skipSymbols)
 : _msg(msg)
 #ifdef WITH_BACKTRACE
-, skipFirstSymbols(skipFirstSymbols)
+, skipFirstSymbols(1+skipSymbols)
 #endif
 {
 	#ifdef WITH_BACKTRACE
@@ -112,9 +112,9 @@ LogicError::LogicError(std::string const & what)
 {
 }
 
-LogicError::LogicError(std::string const & what, unsigned int const skipFirstSymbols)
+LogicError::LogicError(std::string const & what, unsigned int const skipSymbols)
 : std::logic_error(what)
-, Exception(what, skipFirstSymbols)
+, Exception(what, 1 + skipSymbols)
 {
 }
 
@@ -124,9 +124,14 @@ RuntimeError::RuntimeError(std::string const & what)
 {
 }
 
+RuntimeError::RuntimeError(std::string const & what, unsigned int const skipSymbols)
+: std::runtime_error(what)
+, Exception(what,1+skipSymbols)
+{
+}
 
 InvalidUserInputError::InvalidUserInputError(std::string const & what)
-: RuntimeError(what)
+: RuntimeError(what,1)
 {
 }
 
