@@ -361,7 +361,9 @@ namespace IterateDecks {
             SetEffect(ACTIVATION_INFUSE, FACTION_BLOODTHIRSTY);
             //OriginalCard.Infuse(setfaction);
             Faction = setfaction;
-            SkillProcBuffer[ACTIVATION_INFUSE]++;
+            if(this->SkillProcBuffer) {
+                SkillProcBuffer[ACTIVATION_INFUSE]++;
+            }
         }
 
         const UCHAR PlayedCard::SufferDmg(BattleGroundEffect QuestEffectId

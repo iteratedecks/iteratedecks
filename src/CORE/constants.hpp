@@ -18,7 +18,7 @@
 
             #define CARD_NAME_MAX_LENGTH	50 // must sync it with CARD_NAME_MAX_LENGTH in interface
             #define FILENAME_MAX_LENGTH		50 //
-            #define CARD_ABILITIES_MAX		70u // must sync it with CARD_ABILITIES_MAX in interface
+            #define CARD_ABILITIES_MAX		100u // must sync it with CARD_ABILITIES_MAX in interface
 
             enum Abilities {
                 SPECIAL_ATTACK = 0,

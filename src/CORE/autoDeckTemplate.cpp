@@ -32,7 +32,7 @@ namespace IterateDecks {
             assertEQ(activeDeck.Commander.GetOriginalCard()->GetType(), TYPE_COMMANDER);
             assertEQ(activeDeck.Commander.GetType(),TYPE_COMMANDER);
             assertX(activeDeck.Commander.IsDefined());
-            assertX(this->allowInvalid || activeDeck.IsValid());
+            //assertX(this->allowInvalid || activeDeck.IsValid());
             assertX(activeDeck.isAlive());
             return activeDeck;
         }

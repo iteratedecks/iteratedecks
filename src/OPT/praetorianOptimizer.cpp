@@ -2,6 +2,7 @@
 #include "../CORE/assert.hpp"
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 
 namespace IterateDecks {
     namespace Opt {
@@ -46,6 +47,19 @@ namespace IterateDecks {
             return task;
         }
 
+        struct Compare {
+            std::map<DeckTemplate::Ptr, Result> const & results;
+
+            Compare(std::map<DeckTemplate::Ptr, Result> const & results)
+            :results(results)
+            {
+            }
+            
+            bool operator() (DeckTemplate::Ptr const &a, DeckTemplate::Ptr const & b) {
+                return results.at(a).getWinRate() > results.at(b).getWinRate();
+            }
+        };
+
         void
         PraetorianOptimizer::simpleCrop(SimulationTaskClass const & originalTask
                                        ,std::vector<DeckTemplate::Ptr> & decks
@@ -54,39 +68,45 @@ namespace IterateDecks {
                                        ,bool optimizeAttacker
                                        )
        {
-           size_t const initialCount = decks.size();
-           assertGT(initialCount,1u);
-           assertGE(factor,0.0);
-           assertLE(factor,1.0);
-           double const targetCountDouble = initialCount * factor;
-           size_t const targetCountUnclamped = static_cast<size_t>(std::round(targetCountDouble));
-           // we need this as an integer, also we want to get at least one less, but keep at least one
-           size_t const targetCount = std::max(std::min(targetCountUnclamped,initialCount-1u),1u);
-           assertGE(targetCount,1u);
-           assertLT(targetCount,initialCount);
+            size_t const initialCount = decks.size();
+            assertGT(initialCount,1u);
+            assertGE(factor,0.0);
+            assertLE(factor,1.0);
+            double const targetCountDouble = initialCount * factor;
+            size_t const targetCountUnclamped = static_cast<size_t>(std::round(targetCountDouble));
+            // we need this as an integer, also we want to get at least one less, but keep at least one
+            size_t const targetCount = std::max(std::min(targetCountUnclamped,initialCount-1u),1u);
+            assertGE(targetCount,1u);
+            assertLT(targetCount,initialCount);
 
-           // we want to divide the number of iterations among each of the initial decks
-           double const numberOfIterationsDouble = totalNumberOfIterations / factor;
-           unsigned long const numberOfIterations = static_cast<unsigned long>(std::round(numberOfIterationsDouble));
-           assertGE(numberOfIterations,1ul);
-           unsigned long const realTotalNumberOfIterations = numberOfIterations * initialCount;
-           unsigned long done = 0;
-           unsigned long lastDone = 0;
-           unsigned long const dotEverySteps = realTotalNumberOfIterations / 50;
-           
-           // first we need to simulate them all
-           std::clog << "\t\tBeginning simulations of " << std::setw(4) << initialCount << " decks with " << std::setw(10) << numberOfIterations << " iterations each." << std::endl;
-           std::clog << "\t\t";
-           for(DeckVector::const_iterator iter = decks.begin()
-              ;iter != decks.end()
-              ;iter++)
+            // we want to divide the number of iterations among each of the initial decks
+            double const numberOfIterationsDouble = static_cast<double>(totalNumberOfIterations) / static_cast<double>(initialCount);
+            //std::clog << totalNumberOfIterations << "/" << initialCount << "=" << numberOfIterationsDouble;
+            unsigned long const numberOfIterationsUnclamped = static_cast<unsigned long>(std::round(numberOfIterationsDouble));
+            unsigned long const numberOfIterations = std::max(numberOfIterationsUnclamped, 1ul);
+            assertGE(numberOfIterations,1ul);
+            unsigned long const realTotalNumberOfIterations = numberOfIterations * initialCount;
+            unsigned long done = 0;
+            unsigned long lastDone = 0;
+            unsigned long const dotEverySteps = realTotalNumberOfIterations / 50;
+
+            // first we need to simulate them all
+            std::map<DeckTemplate::Ptr, Result> results;            
+            std::clog << "\t\tBeginning simulations of ";
+            std::clog << std::setw(4) << initialCount << " decks with ";
+            std::clog << std::setw(10) << numberOfIterations << " iterations each." << std::endl;
+            std::clog << "\t\t";
+            for(DeckVector::const_iterator iter = decks.begin()
+               ;iter != decks.end()
+               ;iter++)
             {
                 SimulationTaskClass task = withIterationsAndDeck(originalTask
                                                                ,optimizeAttacker
-                                                               , *iter
-                                                               , numberOfIterations
+                                                               ,*iter
+                                                               ,numberOfIterations
                                                                );
-                this->core->simulate(task);
+                Result result = this->core->simulate(task);
+                results[*iter] = result;
                 
                 if (this->aborted) {
                     std::cerr << "\tAborted in simpleCrop during simulation stage." << std::endl;
@@ -97,9 +117,22 @@ namespace IterateDecks {
                     std::clog << ".";
                     lastDone += dotEverySteps;
                 }
-           }
-           std::clog << "done" << std::endl;
-           throw Exception("Not implemented!");
+            }
+            std::clog << "done" << std::endl;
+
+            // next we need to sort them
+            std::sort(decks.begin(), decks.end(), Compare(results));
+
+
+            /*DeckVector::const_iterator iter = decks.begin();
+            for(size_t i = 0; i < targetCount; i++) {
+                iter++;
+            }
+            decks.erase(iter, decks.end());
+            */
+            decks.resize(targetCount);
+
+            assertEQ(decks.size(), targetCount);
        }
 
                                                 
@@ -108,7 +141,7 @@ namespace IterateDecks {
                                          ,bool optimizeAttacker
                                          )
         {
-            double const factor = 0.9;
+            double const factor = 0.5;
             unsigned long totalNumberOfIterations = initialTask.minimalNumberOfGames;
 
             std::clog << "Generating mutations... ";
@@ -153,6 +186,11 @@ namespace IterateDecks {
                 SimulationTaskClass optimizationTask = withDeck(task, optimizeAttacker, oldDeckTemplate);
                 DeckTemplate::Ptr newDeckTemplate = this->optimizeOnce(optimizationTask, optimizeAttacker);
 
+                if (this->aborted) {
+                    std::cerr << "Aborted in optimizeMany during first stage." << std::endl;
+                    break;
+                }
+
                 std::clog << "Found a (new) deck " << newDeckTemplate->toString() << std::endl;
 
                 // P: Okay, thats a bit hacky, but in practice these will only be IDS or ORDERED_IDS,
@@ -165,16 +203,20 @@ namespace IterateDecks {
                 Result oldResult = this->core->simulate(withDeck(task, optimizeAttacker, oldDeckTemplate));
                 Result newResult = this->core->simulate(withDeck(task, optimizeAttacker, newDeckTemplate));
 
+                if (this->aborted) {
+                    std::cerr << "Aborted in optimizeMany during second stage." << std::endl;
+                    break;
+                }
+
+                std::clog << "old deck " << oldDeckTemplate->toString() << " with winrate " << oldResult.getWinRate() << std::endl;
+                std::clog << "new deck " << newDeckTemplate->toString() << " with winrate " << newResult.getWinRate() << std::endl;
+
                 if (oldResult.getWinRate() > newResult.getWinRate()) {
                     // new deck is not better :(
                 } else {
                     oldDeckTemplate = newDeckTemplate;
                 }
 
-                if (this->aborted) {
-                    std::cerr << "\tAborted in optimizeMany" << std::endl;
-                    break;
-                }
                 round++;
             }
             return oldDeckTemplate;
