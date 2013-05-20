@@ -16,11 +16,14 @@
                     SimulationTaskClass task;
                     bool optimizeAttacker;
                     bool optimizeDefender;
+                    int verbosity;
+                    Logger* logger;
                 private:
                     IterateDecks::Core::SimulatorCore::Ptr simulator;
                     IterateDecks::Opt::Optimizer::Ptr optimizer;                    
                 public:
-                    RunCommand();
+                    RunCommand(int verbosity, bool noCacheRead);
+                    ~RunCommand();
                 
                     int execute();
                     void abort();

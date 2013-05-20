@@ -96,7 +96,7 @@ std::string Logger::colorCard(PlayedCard const & playedCard) const
             // ansi escape sequences do look like arcane magic, but don't be afraid
             return ansiColor(LIGHT_BLUE) + playedCard.toString() + ansiNoColor();
         default:
-            throw std::logic_error("switch fail, not implemented?");
+            throw LogicError("switch fail, not implemented?");
     }
 }
 
@@ -109,7 +109,7 @@ std::string Logger::colorTurn(std::string const & str) const
             // ansi escape sequences do look like arcane magic, but don't be afraid
             return ansiColor(GREEN) + str + ansiNoColor();
         default:
-            throw std::logic_error("switch fail, not implemented?");
+            throw LogicError("switch fail, not implemented?");
     }
 }
 
@@ -122,7 +122,7 @@ std::string Logger::colorSimulation(std::string const & str) const
             // ansi escape sequences do look like arcane magic, but don't be afraid
             return ansiColor(LIGHT_GREEN) + str + ansiNoColor();
         default:
-            throw std::logic_error("switch fail, not implemented?");
+            throw LogicError("switch fail, not implemented?");
     }
 }
 

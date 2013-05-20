@@ -7,6 +7,7 @@
 #include <boost/lexical_cast.hpp>
 #include "../CORE/autoDeckTemplate.hpp"
 #include "simpleOrderedDeckTemplate.hpp"
+#include "missionIdDeckTemplate.hpp"
 #include "../CORE/simpleTypes.hpp"
 #include "../CORE/assert.hpp"
 
@@ -55,6 +56,9 @@ namespace IterateDecks {
                     ("optimize-defender"
                     ,"optimize the defender's deck"
                     )
+                    ("no-cache-read"
+                    ,"do not read from the cache"
+                    )
                 ;
 
                 po::variables_map vm;
@@ -68,8 +72,9 @@ namespace IterateDecks {
 
                 po::notify(vm);
 
-                RunCommand::Ptr command = RunCommand::Ptr(new RunCommand());
-                command->task.minimalNumberOfGames = numberOfIterations;
+                RunCommand::Ptr command = RunCommand::Ptr(new RunCommand(vm.count("verbose"), vm.count("no-cache-read") > 0));
+                std::clog << "running with " << numberOfIterations << " iterations" << std::endl;
+                command->task.minimalNumberOfGames = numberOfIterations;                
                 command->task.attacker = parseDeck(vm["attacker"].as<std::string>());
                 command->task.defender = parseDeck(vm["defender"].as<std::string>());
                 command->task.surge = vm.count("surge") > 0;
@@ -165,6 +170,9 @@ namespace IterateDecks {
             return list;
         }
 
+        /**
+         * Parse a deck from a string representation.
+         */
         DeckTemplate::Ptr parseDeckFromIds(std::string const & data, bool ordered = false) {
             // we expect ids (numbers) seperated by commata
             std::list<unsigned int> ids;
@@ -233,7 +241,8 @@ namespace IterateDecks {
                 // freaky base64 encoding
                 return parseDeckFromStrangeBase64RLEMinusEncoding(data, true);
             } else if (identifier.compare("MISSIONID") == 0) {
-                throw Exception("Sorry, not implemented yet!");
+                unsigned int missionId = boost::lexical_cast<unsigned int>(data);
+                return DeckTemplate::Ptr(new MissionIdDeckTemplate(missionId));
             } else if (identifier.compare("RAIDID") == 0) {
                 throw Exception("Sorry, not implemented yet!");
             } else if (identifier.compare("QUESTID") == 0) {

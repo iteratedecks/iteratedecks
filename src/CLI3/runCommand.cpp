@@ -4,6 +4,7 @@
 #include "../OPT/praetorianMutator.hpp"
 #include "../OPT/praetorianOptimizer.hpp"
 #include "../CORE/assert.hpp"
+#include "../CORE/Logger.hpp"
 
 using namespace IterateDecks::Cache;
 using namespace IterateDecks::Opt;
@@ -11,7 +12,9 @@ using namespace IterateDecks::Opt;
 namespace IterateDecks {
     namespace CLI3 {
 
-        RunCommand::RunCommand()
+        RunCommand::RunCommand(int verbosity
+                              ,bool dontReadCache
+                              )
         : optimizeAttacker(false)
         , optimizeDefender(false)
         {
@@ -20,19 +23,28 @@ namespace IterateDecks {
             DiskBackedCache::Ptr cache = DiskBackedCache::Ptr(
                 new DiskBackedCache(sim)
             );
+            cache->setDontReadCache(dontReadCache);
             this->simulator = cache;
             CardDB const & cardDB = idSim->getCardDB();
             PraetorianMutator::Ptr mutator = PraetorianMutator::Ptr(new PraetorianMutator(cardDB));
             this->optimizer = Optimizer::Ptr(new PraetorianOptimizer(cache, mutator));
+
+            // logging stuff
+            unsigned long const loggingFlags ((verbosity) > 0 ? Logger::LOG_ALL : Logger::LOG_NONE);
+            if (loggingFlags != Logger::LOG_NONE) {
+                std::clog << "Enabling logging." << std::endl;
+                this->logger = new Logger(loggingFlags, cardDB);
+                this->logger->setColorMode(Logger::COLOR_NONE);
+                idSim->setLogger(this->logger);
+            }
+        }
+
+        RunCommand::~RunCommand()
+        {
+            delete this->logger;
         }
 
         int RunCommand::execute() {
-
-            
-
-            
-
-
             assertX(!(this->optimizeAttacker && this->optimizeDefender));
             if(this->optimizeAttacker || this->optimizeDefender) {
 
@@ -50,7 +62,6 @@ namespace IterateDecks {
                 std::cout << result.gamesWon << " / " << result.numberOfGames << std::endl;
                 return 0;
             }
-
         }
 
         void

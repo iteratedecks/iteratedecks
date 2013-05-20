@@ -9,6 +9,7 @@ namespace IterateDecks {
         : SimulatorCache(delegate)
         , ignoreCoreVersion(true)
         , ignoreXMLVersion(true)
+        , dontReadFromCache(false)
         , database("cache.sqlite")
         {
             std::stringstream ssCreateTable;
@@ -101,7 +102,9 @@ namespace IterateDecks {
         DiskBackedCache::loadCache(SimulationTaskClass const & task
                                   )
         {
-
+            if(this->dontReadFromCache) {
+                return Result();
+            }
             this->selectStatement->bindText(4, task.attacker->toString());
             this->selectStatement->bindText(5, task.defender->toString());
             this->selectStatement->bindInt(6, task.surge);
@@ -206,7 +209,12 @@ namespace IterateDecks {
         {
             this->delegate->abort();
         }
-        
+
+        void
+        DiskBackedCache::setDontReadCache(bool dontReadCache)
+        {
+            this->dontReadFromCache = dontReadCache;
+        }
 
     }
 }
