@@ -56,7 +56,16 @@ namespace IterateDecks {
             }
             
             bool operator() (DeckTemplate::Ptr const &a, DeckTemplate::Ptr const & b) {
-                return results.at(a).getWinRate() > results.at(b).getWinRate();
+                try {
+                    Result resultA = results.at(a);
+                    Result resultB = results.at(b);
+                    return resultA.getWinRate() > resultB.getWinRate();
+                } catch (std::out_of_range &e) {
+                    std::stringstream ssMessage;
+                    ssMessage << "caught a std::out_of_range: " << e.what();
+                    ssMessage << " that means that one of the decks is not there";
+                    throw LogicError(ssMessage.str(), 1);
+                }
             }
         };
 
@@ -65,6 +74,7 @@ namespace IterateDecks {
                                        ,std::vector<DeckTemplate::Ptr> & decks
                                        ,double factor
                                        ,unsigned long totalNumberOfIterations
+                                       ,unsigned long minimalNumberOfIterationsEach
                                        ,bool optimizeAttacker
                                        )
        {
@@ -83,7 +93,7 @@ namespace IterateDecks {
             double const numberOfIterationsDouble = static_cast<double>(totalNumberOfIterations) / static_cast<double>(initialCount);
             //std::clog << totalNumberOfIterations << "/" << initialCount << "=" << numberOfIterationsDouble;
             unsigned long const numberOfIterationsUnclamped = static_cast<unsigned long>(std::round(numberOfIterationsDouble));
-            unsigned long const numberOfIterations = std::max(numberOfIterationsUnclamped, 1ul);
+            unsigned long const numberOfIterations = std::max(numberOfIterationsUnclamped, minimalNumberOfIterationsEach);
             assertGE(numberOfIterations,1ul);
             unsigned long const realTotalNumberOfIterations = numberOfIterations * initialCount;
             unsigned long done = 0;
@@ -120,16 +130,40 @@ namespace IterateDecks {
             }
             std::clog << "done" << std::endl;
 
-            // next we need to sort them
-            std::sort(decks.begin(), decks.end(), Compare(results));
-
-
-            /*DeckVector::const_iterator iter = decks.begin();
-            for(size_t i = 0; i < targetCount; i++) {
-                iter++;
+            // try to track a strange error
+            try {
+                for(DeckVector::const_iterator iter = decks.begin()
+                   ;iter != decks.end()
+                   ;iter++)
+                {
+                    results.at(*iter);
+                }
+            } catch (std::out_of_range &e) {
+                assertX(false);
             }
-            decks.erase(iter, decks.end());
-            */
+
+            // next we need to sort them
+
+            // that somehow failes, unclear why.
+            //std::sort(decks.begin(), decks.end(), Compare(results));
+
+            std::clog << "\t\tBeginning sorting." << std::endl;
+            for(size_t n = initialCount ; n > 1; ) {
+                size_t newN = 1;
+                for(size_t i = 0; i< n-1; i++) {
+                    DeckTemplate::Ptr const & a = decks[i];
+                    DeckTemplate::Ptr const & b = decks[i+1];
+                    Result const & ra = results.at(a);
+                    Result const & rb = results.at(b);
+                    if (ra.getWinRate() < rb.getWinRate()) {
+                        decks[i] = b;
+                        decks[i+1] = a;
+                        newN = i+1;
+                    }
+                }
+                n = newN;
+            }
+
             decks.resize(targetCount);
 
             assertEQ(decks.size(), targetCount);
@@ -144,13 +178,13 @@ namespace IterateDecks {
             double const factor = 0.5;
             unsigned long totalNumberOfIterations = initialTask.minimalNumberOfGames;
 
-            std::clog << "Generating mutations... ";
+            std::clog << "\tGenerating mutations... " << std::endl;
             
             DeckTemplate::Ptr initialDeck = optimizeAttacker ? initialTask.attacker : initialTask.defender;
-            std::set<DeckTemplate::Ptr> candidateSet = this->mutator->mutate(initialDeck);
+            DeckSet candidateSet = this->mutator->mutate(initialDeck);
             std::vector<DeckTemplate::Ptr> candidateVector(candidateSet.begin(), candidateSet.end());
 
-            std::clog << "got " << candidateVector.size() << " mutations" << std::endl;
+            std::clog << "\tgot " << candidateVector.size() << " mutations" << std::endl;
 
             unsigned int cropRound = 0;
             while (candidateVector.size() > 1) {
@@ -159,6 +193,7 @@ namespace IterateDecks {
                                 ,candidateVector
                                 ,factor
                                 ,totalNumberOfIterations
+                                ,cropRound+1
                                 ,optimizeAttacker
                                 );                
                 

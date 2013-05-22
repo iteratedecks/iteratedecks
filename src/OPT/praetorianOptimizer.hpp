@@ -22,6 +22,7 @@
                                    ,std::vector<DeckTemplate::Ptr> & decks
                                    ,double factor
                                    ,unsigned long totalNumberOfIterations
+                                   ,unsigned long minimalNumberOfIterationsEach
                                    ,bool optimizeAttacker
                                    );
 

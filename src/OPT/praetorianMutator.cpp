@@ -5,6 +5,8 @@
 #include "../CLI3/simpleOrderedDeckTemplate.hpp"
 #include "../CORE/assert.hpp"
 #include "../CORE/cardDB.hpp"
+#include <iostream>
+#include <iomanip>
 
 namespace IterateDecks {
     namespace Opt {
@@ -35,7 +37,8 @@ namespace IterateDecks {
         bool
         PraetorianMutator::isValid(DeckTemplate::Ptr deck) const
         {
-            return deck->instantiate(this->cardDB).IsValid();
+            return deck->isValid(this->cardDB);
+            //return deck->instantiate(this->cardDB).IsValid();
         }
 
         bool isOrdered(DeckTemplate const & deck)
@@ -66,42 +69,6 @@ namespace IterateDecks {
         asUnordered(DeckTemplate::Ptr orig)
         {
             throw Exception("Not implemented!");
-        }
-
-        void
-        PraetorianMutator::addChangeCommanderMutations(DeckTemplate::Ptr const & original
-                                                      ,DeckSet & mutations
-                                                      ) const
-        {
-            for(CardMSet::const_iterator iter = this->allowedCommanders.begin()
-               ;iter != this->allowedCommanders.end()
-               ;iter++)
-            {
-                unsigned int cardId = *iter;
-                DeckTemplate::Ptr mutation = original->withCommander(cardId);
-                if(isValid(mutation)) {
-                    mutations.insert(mutation);
-                }
-            }
-        }
-
-        /**
-         * Mutate the given deck by removing one card. Adds all possible
-         * variations (i.e, one deck for each card in the original):
-         *
-         * @param original the original deck
-         * @param mutations the set to add the mutations to
-         */
-        void
-        PraetorianMutator::addRemoveMutations(DeckTemplate::Ptr const & original
-                                             ,DeckSet & mutations
-                                             ) const
-        {
-            size_t const numberOfCards = original->getNumberOfNonCommanderCards();
-            for(size_t i = 0; i < numberOfCards; i++) {
-                DeckTemplate::Ptr mutation = original->withoutCardAtIndex(i);
-                mutations.insert(mutation);
-            }
         }
 
         template <class T>
@@ -146,10 +113,53 @@ namespace IterateDecks {
         }
 
         void
+        PraetorianMutator::addChangeCommanderMutations(DeckTemplate::Ptr const & original
+                                                      ,DeckSet & mutations
+                                                      ) const
+        {
+            unsigned int count = 0;
+            for(CardMSet::const_iterator iter = this->allowedCommanders.begin()
+               ;iter != this->allowedCommanders.end()
+               ;iter++)
+            {
+                unsigned int cardId = *iter;
+                DeckTemplate::Ptr mutation = original->withCommander(cardId);
+                if(isValid(mutation) && canCompose(mutation)) {
+                    mutations.insert(mutation);
+                    count++;
+                }
+            }
+            std::clog << "\tfound " << std::setw(5) << count << " change commander mutations." << std::endl;
+        }
+
+        /**
+         * Mutate the given deck by removing one card. Adds all possible
+         * variations (i.e, one deck for each card in the original):
+         *
+         * @param original the original deck
+         * @param mutations the set to add the mutations to
+         */
+        void
+        PraetorianMutator::addRemoveMutations(DeckTemplate::Ptr const & original
+                                             ,DeckSet & mutations
+                                             ) const
+        {
+            unsigned int count = 0;
+            size_t const numberOfCards = original->getNumberOfNonCommanderCards();
+            for(size_t i = 0; i < numberOfCards; i++) {
+                DeckTemplate::Ptr mutation = original->withoutCardAtIndex(i);
+                mutations.insert(mutation);
+                count++;
+            }
+            std::clog << "\tfound " << std::setw(5) << count << " remove card mutations." << std::endl;
+        }
+
+        void
         PraetorianMutator::addAddMutations(DeckTemplate::Ptr const & original
                                           ,DeckSet & mutations
                                           ) const
         {
+            unsigned int count = 0;
             size_t const numberOfCards = original->getNumberOfNonCommanderCards();
             if (numberOfCards < DEFAULT_DECK_SIZE) {
                 // consider all possible cards
@@ -163,17 +173,20 @@ namespace IterateDecks {
                         // check for validity and can compose
                         if(this->isValid(mutation) && this->canCompose(mutation)) {
                             mutations.insert(mutation);
+                            count++;
                         }
                     } else {
                         for(unsigned int i = 0; i <= numberOfCards; i++) {
                             DeckTemplate::Ptr mutation = original->withCardAtIndex(cardId, i);
                             if(this->isValid(mutation) && this->canCompose(mutation)) {
                                 mutations.insert(mutation);
+                                count++;
                             }
                         }
                     } // (un)ordered
                 }
             }
+            std::clog << "\tfound " << std::setw(5) << count << " add card mutations." << std::endl;
         }
 
         /**
@@ -184,6 +197,7 @@ namespace IterateDecks {
                                               ,DeckSet & mutations
                                               ) const
         {
+            unsigned int count = 0;
             size_t const numberOfCards = original->getNumberOfNonCommanderCards();
             for(size_t i = 0; i < numberOfCards; i++) {
                  // consider all possible cards
@@ -196,7 +210,7 @@ namespace IterateDecks {
                     DeckTemplate::Ptr mutation = original->replaceCardAtIndex(cardId,i);
 
                     // check for validity
-                    if(isValid(mutation)) {
+                    if(!isValid(mutation)) {
                         //std::clog << "Invalid" << std::endl;
                         //std::clog << mutation << std::endl;
                         //std::clog << "-------" << std::endl;
@@ -212,8 +226,10 @@ namespace IterateDecks {
 
                     //std::clog << mutation << std::endl;
                     mutations.insert(mutation);
+                    count++;
                 } // for
             }
+            std::clog << "\tfound " << std::setw(5) << count << " replace card mutations." << std::endl;
         }
 
         void
@@ -232,14 +248,17 @@ namespace IterateDecks {
                                            ,DeckSet & mutations
                                            ) const
         {
+            unsigned int count = 0;
             if (isOrdered(*original)) {
                 size_t const numberOfCards = original->getNumberOfNonCommanderCards();
                 for(unsigned int i = 0; i+1 < numberOfCards; i++) {
                     for(unsigned int j = i+1; j < numberOfCards; j++) {
                          addSwapMutation(original, mutations, i, j);
+                         count++;
                     } // for j
                 } // for i
             }
+            std::clog << "\tfound " << std::setw(5) << count << " swap cards mutations." << std::endl;
         }
 
         #if 0
@@ -280,6 +299,7 @@ namespace IterateDecks {
                                             ,DeckSet & mutations
                                             ) const
         {
+            unsigned int count = 0;
             if(!isOrdered(*original)) {
                 #if 0
                     //std::clog << "ordering..." << std::endl;
@@ -296,12 +316,15 @@ namespace IterateDecks {
                         Deck mutation(original.getCommander(), permutation, true);
                         //std::clog << mutation << std::endl;
                         mutations.insert(mutation);
+                        count++;
                     }
                 #else
                     DeckTemplate::Ptr mutation = asOrdered(original);
                     mutations.insert(mutation);
+                    count++;
                 #endif
             }
+            std::clog << "\tfound " << std::setw(5) << count << " order deck mutations." << std::endl;
         }
 
         void
@@ -309,16 +332,20 @@ namespace IterateDecks {
                                               ,DeckSet & mutations
                                               ) const
         {
+            unsigned int count = 0;
             if(isOrdered(*original)) {
                 DeckTemplate::Ptr mutation = asUnordered(original);
                 mutations.insert(mutation);
+                count++;
             }
+            std::clog << "\tfound " << std::setw(5) << count << " unorder deck mutations." << std::endl;
         }
 
         DeckSet
         PraetorianMutator::mutate(DeckTemplate::Ptr const & initial)
         {
-            DeckSet mutations;
+            DeckSet mutations = DeckSet(DerefCompareLT());
+            mutations.insert(initial);
             this->addChangeCommanderMutations(initial, mutations);
             this->addRemoveMutations         (initial, mutations);
             this->addAddMutations            (initial, mutations);

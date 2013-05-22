@@ -110,5 +110,20 @@ namespace IterateDecks {
             return DeckTemplate::Ptr(new AutoDeckTemplate(*this));
         }
 
+        bool
+        operator< (AutoDeckTemplate const & a
+                  ,AutoDeckTemplate const & b
+                  )
+        {
+            if (a.commander < b.commander) {
+                return true;
+            } else if (a.commander > b.commander) {
+                return false;
+            } else {
+                return a.cards < b.cards;
+            }
+        }
+
+
     }
 }

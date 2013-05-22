@@ -26,7 +26,11 @@
                     virtual DeckTemplate::Ptr withoutCardAtIndex(size_t index) const;
                     virtual unsigned int getCommander() const;
                     virtual DeckTemplate::Ptr swapCards(size_t i, size_t j) const;
+
+                friend bool operator< (SimpleOrderedDeckTemplate const & a, SimpleOrderedDeckTemplate const & b);                    
             };
+
+            bool operator< (SimpleOrderedDeckTemplate const & a, SimpleOrderedDeckTemplate const & b);
         }
     }
 

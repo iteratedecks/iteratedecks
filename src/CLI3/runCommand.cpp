@@ -36,12 +36,17 @@ namespace IterateDecks {
                 this->logger = new Logger(loggingFlags, cardDB);
                 this->logger->setColorMode(Logger::COLOR_NONE);
                 idSim->setLogger(this->logger);
+            } else {
+                this->logger = NULL;
             }
         }
 
         RunCommand::~RunCommand()
         {
-            delete this->logger;
+            if (this->logger != NULL) {
+                delete this->logger;
+                this->logger = NULL;
+            }
         }
 
         int RunCommand::execute() {

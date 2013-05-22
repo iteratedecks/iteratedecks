@@ -129,6 +129,19 @@ namespace IterateDecks {
             return copy;
         }
 
+        bool
+        operator< (SimpleOrderedDeckTemplate const & a
+                  ,SimpleOrderedDeckTemplate const & b
+                  )
+        {
+            if (a.commander < b.commander) {
+                return true;
+            } else if (a.commander > b.commander) {
+                return false;
+            } else {
+                return a.cards < b.cards;
+            }
+        }
 
     }
 }

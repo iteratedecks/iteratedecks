@@ -4,10 +4,14 @@
     #include <set>
     #include "mutator.hpp"
 
+    #include "../CORE/autoDeckTemplate.hpp"
+    #include "../CLI3/simpleOrderedDeckTemplate.hpp"
+
+    #include "derefCompareLT.hpp"
+
     namespace IterateDecks {
         namespace Opt {
 
-            typedef std::set<DeckTemplate::Ptr> DeckSet;
             typedef std::set<unsigned int> CardSet;
             typedef std::multiset<unsigned int> CardMSet;
             typedef std::list<unsigned int> CardList;
@@ -45,7 +49,7 @@
 
                 public:
                     PraetorianMutator(CardDB const & cardDB);
-                    virtual std::set<DeckTemplate::Ptr> mutate(DeckTemplate::Ptr const & initial);
+                    virtual DeckSet mutate(DeckTemplate::Ptr const & initial);
             };
         }
     }

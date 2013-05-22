@@ -25,6 +25,7 @@
                 public:
                     virtual ~DeckTemplate();
                     virtual ActiveDeck instantiate(CardDB const & cardDB) const = 0;
+                    virtual bool isValid(CardDB const & cardDB) const;
                     virtual std::string toString() const = 0;
 
                     virtual DeckTemplate::Ptr withCommander(unsigned int commanderId) const = 0;
