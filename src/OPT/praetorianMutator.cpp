@@ -68,7 +68,12 @@ namespace IterateDecks {
         DeckTemplate::Ptr
         asUnordered(DeckTemplate::Ptr orig)
         {
-            throw Exception("Not implemented!");
+            CardList cards;
+            cards.push_back(orig->getCommander());
+            for(size_t i = 0; i < orig->getNumberOfNonCommanderCards(); i++) {
+                cards.push_back(orig->getCardAtIndex(i));
+            }
+            return DeckTemplate::Ptr(new IterateDecks::Core::AutoDeckTemplate(cards));
         }
 
         template <class T>
