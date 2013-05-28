@@ -44,7 +44,6 @@
                 ACTIVATION_SUPPLY,
                 ACTIVATION_WEAKEN,
                 ACTIVATION_AUGMENT,
-                ACTIVATION_SUNDER,
 
                 DEFENSIVE_ARMORED,
                 DEFENSIVE_COUNTER,

@@ -2113,22 +2113,17 @@ namespace IterateDecks {
                     } break;
                 case DMGDEPENDANT_CRUSH:
                     throw std::logic_error("crush on attack ... that was not expected");
-                case DMGDEPENDANT_DISEASE: {
-                        assertGT(effectArgument,0u);
-                        target.SetEffect(DMGDEPENDANT_DISEASE,effectArgument);
-                        src.fsSpecial++;
-                        SkillProcs[DMGDEPENDANT_DISEASE]++;
-                    } break;
+                case DMGDEPENDANT_DISEASE:
                 case DMGDEPENDANT_SUNDER: {
                         assertGT(effectArgument,0u);
-                        target.SetEffect(DMGDEPENDANT_SUNDER,effectArgument);
+                        target.SetEffect(abilityId,effectArgument);
                         src.fsSpecial++;
-                        SkillProcs[DMGDEPENDANT_SUNDER]++;
-                    } break;                    
+                        SkillProcs[abilityId]++;
+                    } break;
                 case DMGDEPENDANT_IMMOBILIZE:
-                    throw std::logic_error("\"immobilize on attack\" not implemented because im lazy");
+                    throw LogicError("\"immobilize on attack\" not implemented because im lazy");
                 case DMGDEPENDANT_LEECH:
-                    throw std::logic_error("crush on attack ... that was not expected");
+                    throw LogicError("leech on attack ... that was not expected");
                 case DMGDEPENDANT_POISON:
                     if (target.GetEffect(DMGDEPENDANT_POISON) < effectArgument) { // more than before
                         target.SetEffect(DMGDEPENDANT_POISON,effectArgument);
@@ -2137,7 +2132,7 @@ namespace IterateDecks {
                     } break;
                 default:
                     std::cerr << (UINT)abilityId << std::endl;
-                    throw std::logic_error("not implemented because im lazy");
+                    throw LogicError("something on attack. not implemented because im lazy");
             }
         }
 

@@ -671,7 +671,6 @@ namespace IterateDecks {
             AddSkill(ACTIVATION_SUPPLY,"Supply");
             AddSkill(ACTIVATION_WEAKEN,"Weaken");
             AddSkill(ACTIVATION_AUGMENT,"Augment");
-            AddSkill(ACTIVATION_SUNDER,"Sunder");
 
             AddSkill(DEFENSIVE_ARMORED,"Armored");
             AddSkill(DEFENSIVE_COUNTER,"Counter");
