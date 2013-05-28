@@ -1,3 +1,4 @@
+makepp_no_builtin = 1
 XML_FILES=achievements.xml cards.xml missions.xml quests.xml raids.xml
 $(phony XML): ${XML_FILES} 
 

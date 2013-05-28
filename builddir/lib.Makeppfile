@@ -1,0 +1,34 @@
+#
+# These file should contain all the rules required to build  both the
+# static and the dynamic variant of libIterateDecks.
+#
+# To use this file, create (or edit) your Makeppfile in the sub-
+# directory for your platform and target (e.g, linux-on-linux) and add
+# | LIB_ID_STATIC_NAME=libIterateDecks.a
+# | LIB_ID_DYNAMIC_NAME=libIterateDecks.so.1.0.1
+# | include "../lib.Makeppfile
+#
+makepp_no_builtin = 1
+
+LIBRARY_NAME_SHORT=IterateDecks
+
+$(phony LIB): ${LIB_ID_STATIC_NAME} ${LIB_ID_DYNAMIC_NAME}
+
+# Where our sources are
+repository CORE=../../src/CORE
+
+# Rule to compile sources.
+CORE/%.o: CORE/%.cpp
+    $(CXX) $(CXXFLAGS) $(CPPFLAGS) ${CXXDYNAMICFLAGS} -c $(input) -o $(output)
+
+# Rule for the static library.
+${LIB_ID_STATIC_NAME}: $(wildcard CORE/*.o)
+    rm -f ${output}
+    ${AR} crvs ${output} ${inputs}
+
+# Rule for the dynamic library
+${LIB_ID_DYNAMIC_NAME}: $(wildcard CORE/*.o)
+    rm -f ${output}
+    ${CXX} -shared -Wl,-soname,${LIB_ID_DYNAMIC_NAME} -o ${output} ${inputs}
+
+CXXFLAGS+= --std=c++11

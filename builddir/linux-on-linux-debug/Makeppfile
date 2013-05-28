@@ -1,5 +1,5 @@
 # Built file for linux releases compiled on linux.
-#makepp_no_builtin = 1
+makepp_no_builtin = 1
 
 # For normal compilation default toolchain should work.
 #TOOLCHAIN_PREFIX=
@@ -10,15 +10,18 @@
 COMMON_FLAGS= -g -ggdb
 CXXFLAGS+=${COMMON_FLAGS} -O0
 LDFLAGS+=${COMMON_FLAGS} -ldl -rdynamic
+CXXDYNAMICFLAGS=-fPIC
 
 # Our release
 RELEASE_BINARY_CLI2=iteratedecks-cli2
 RELEASE_BINARY_CLI3=iteratedecks-cli3
-RELEASE_LIBRARY=libIteratedecks.a
-RELEASE_LIBRARY_SHORT=Iteratedecks
+LIB_ID_STATIC_NAME=libIterateDecks.a
+LIB_ID_DYNAMIC_NAME=libIterateDecks.so.1.0.1
 UNIT_TEST_BINARY=unitTests
+
 
 $(phony ALL): CLI3 LIB ${UNIT_TEST_BINARY}
 
+include ../lib.Makeppfile
 include ../cli.Makeppfile
 include ../bin.Makeppfile
