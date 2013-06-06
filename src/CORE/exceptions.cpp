@@ -135,15 +135,12 @@ InvalidUserInputError::InvalidUserInputError(std::string const & what)
 {
 }
 
-InvalidDeckHashError::InvalidDeckHashError(std::string const & what)
-: InvalidUserInputError(what)
+InvalidState::InvalidState(std::string const & what)
+: LogicError(what,1)
 {
 }
 
-std::string const InvalidDeckHashError::notEvenChars("Deck hashes should have even length.");
-
-
-InvalidState::InvalidState(std::string const & what)
-: LogicError(what)
+AbortionException::AbortionException(std::string const & what)
+: RuntimeError(what,1)
 {
 }

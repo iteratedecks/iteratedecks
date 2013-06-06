@@ -12,6 +12,8 @@ makepp_no_builtin = 1
 
 LIBRARY_NAME_SHORT=IterateDecks
 
+CXXFLAGS+= --std=c++11
+
 $(phony LIB): ${LIB_ID_STATIC_NAME} ${LIB_ID_DYNAMIC_NAME}
 
 # Where our sources are
@@ -30,5 +32,3 @@ ${LIB_ID_STATIC_NAME}: $(wildcard CORE/*.o)
 ${LIB_ID_DYNAMIC_NAME}: $(wildcard CORE/*.o)
     rm -f ${output}
     ${CXX} -shared -Wl,-soname,${LIB_ID_DYNAMIC_NAME} -o ${output} ${inputs}
-
-CXXFLAGS+= --std=c++11

@@ -161,8 +161,9 @@ namespace IterateDecks {
                 else
                     return RARITY_LEGENDARY; // that was only for Fenrir ??????
             }
-            if (XmlID == 10)
+            if (XmlID == 10) {
                 return RARITY_STORYCOMMANDER;
+            }
             // rarity UNKNOWN
             return RARITY_COMMON;
         }

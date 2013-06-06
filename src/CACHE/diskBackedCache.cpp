@@ -1,6 +1,7 @@
 #include "diskBackedCache.hpp"
 #include <sstream>
 #include <iostream>
+#include <ctime>
 
 namespace IterateDecks {
     namespace Cache {
@@ -15,7 +16,7 @@ namespace IterateDecks {
             std::stringstream ssCreateTable;
             ssCreateTable << "CREATE TABLE IF NOT EXISTS ";
             ssCreateTable << "IDCache";
-            ssCreateTable << "(" << "coreName string NOT NULL";
+            ssCreateTable << " (" << "coreName string NOT NULL";
             ssCreateTable << ", " << "coreVersion string NOT NULL";
             ssCreateTable << ", " << "xmlVersions string NOT NULL";
             ssCreateTable << ", " << "attacker string NOT NULL";
@@ -34,6 +35,20 @@ namespace IterateDecks {
             ssCreateTable << ", " << "pointsDefenderAuto int NOT NULL";
             ssCreateTable << ")";
             database.execute(ssCreateTable.str());
+
+            std::stringstream ssCreateIndex;
+            ssCreateIndex << "CREATE INDEX IF NOT EXISTS ";
+            ssCreateIndex << "task";
+            ssCreateIndex << " ON ";
+            ssCreateIndex << "IDCache";
+            ssCreateIndex << " (" << "attacker";
+            ssCreateIndex << " ," << "defender";
+            ssCreateIndex << " ," << "surge";
+            ssCreateIndex << " ," << "delayFirstCard";
+            ssCreateIndex << " ," << "battleGroundId";
+            ssCreateIndex << " ," << "achievementId";
+            ssCreateIndex << ")";
+            database.execute(ssCreateIndex.str());
 
             std::stringstream ssInsert;
             ssInsert << "INSERT INTO " << "IDCache ";
@@ -92,6 +107,8 @@ namespace IterateDecks {
             this->selectStatement->bindText(1, this->delegate->getCoreName());
             this->selectStatement->bindText(2, this->delegate->getCoreVersion());
             this->selectStatement->bindText(3, xmlVersion.str());
+
+            this->randomData = static_cast<unsigned int>(time(0));
         }
         
         DiskBackedCache::~DiskBackedCache()
@@ -137,6 +154,9 @@ namespace IterateDecks {
                 //std::clog << "loaded entry with " << currentResult.numberOfGames << " elements" << std::endl;
             }
             //std::clog << "loaded cache with " << result.numberOfGames << " elements" << std::endl;
+            //if(result.gamesWon < result.numberOfGames) {
+            //    throw Exception("Non perfect result (this is expected and only a debugging exception.)");
+            //}
             return result;
         }
 
@@ -176,6 +196,7 @@ namespace IterateDecks {
                 unsigned long missingGames = task.minimalNumberOfGames - cached.numberOfGames;
                 SimulationTaskClass remainderTask(task);
                 remainderTask.minimalNumberOfGames = missingGames;
+                remainderTask.randomSeed = rand_r(&(this->randomData));
                 Result fresh = this->delegate->simulate(remainderTask);
                 this->addToCache(remainderTask, fresh);
                 return cached + fresh;

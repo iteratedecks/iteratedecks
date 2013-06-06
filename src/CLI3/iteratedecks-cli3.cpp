@@ -34,7 +34,7 @@ int main(int const argc, char * const * const argv)
             action.sa_flags = 0;
             sigaction(SIGINT, &action, &oldIntAction);
             sigaction(SIGTERM, &action, &oldTermAction);
-            std::clog << "Signal handlers installed." << std::endl;
+            //std::clog << "Signal handlers installed." << std::endl;
         #endif        
 
         command->execute();
@@ -42,7 +42,7 @@ int main(int const argc, char * const * const argv)
         #ifdef _POSIX_SOURCE
             sigaction(SIGINT, &oldIntAction, 0);
             sigaction(SIGTERM, &oldTermAction, 0);
-            std::clog << "Signal handlers removed." << std::endl;
+            //std::clog << "Signal handlers removed." << std::endl;
         #endif
         ::theCommand = NULL;
         

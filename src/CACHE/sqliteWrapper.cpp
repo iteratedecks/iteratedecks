@@ -202,7 +202,7 @@ namespace IterateDecks {
             if (rc != SQLITE_OK) {
                 std::string errorMessage(cErrorMessage);
                 sqlite3_free(cErrorMessage);
-                throw new Exception("SQLite3 Error: " + errorMessage);
+                throw Exception("SQLite3 Error: " + errorMessage);
             }
         }
         

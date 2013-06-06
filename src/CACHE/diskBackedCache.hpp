@@ -4,6 +4,7 @@
     #include "simulatorCache.hpp"
     #include "../CORE/iterateDecksCore.hpp"
     #include "sqliteWrapper.hpp"
+    #include <cstdlib>
 
     namespace IterateDecks {
         namespace Cache {    
@@ -17,7 +18,8 @@
                     
                     PreparedStatement * insertStatement;
                     PreparedStatement * selectStatement;
-                    
+
+                    unsigned int randomData;
                 
                     Result loadCache(SimulationTaskClass const & task);
                     void addToCache(SimulationTaskClass const & task, Result const & result);

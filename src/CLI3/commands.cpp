@@ -58,6 +58,15 @@ namespace IterateDecks {
             return 0;
         }
 
+        int CoreVersionCommand::execute()
+        {
+            // TODO Obviously if we want to allow exchangable core we would need a better way here.
+            SimulatorCore::Ptr core = SimulatorCore::Ptr( new IterateDecksCore() );
+
+            std::cout << core->getCoreVersion() << std::endl;
+            return 0;
+        }
+
         HelpCommand::HelpCommand(boost::program_options::options_description const & desc)
         : desc(desc)
         {

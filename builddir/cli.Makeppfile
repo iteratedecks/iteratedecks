@@ -24,7 +24,7 @@ UNIT_TESTS/%.o: UNIT_TESTS/%.cpp
 ${RELEASE_BINARY_CLI2}: $(infer_objects CLI2/iteratedecks-cli.o, CLI2/*.o CORE/*.o)
     ${CXX} ${inputs} ${LDFLAGS} ${LDLIBS} ${LIBS} -o ${output}
 
-CLI3_OBJECTS=$(wildcard CLI3/*.o) CLI3/simpleOrderedDeckTemplate.o CLI3/missionIdDeckTemplate.o $(wildcard CACHE/*.o OPT/*.o)
+CLI3_OBJECTS=$(wildcard CLI3/*.o) CLI3/simpleOrderedDeckTemplate.o CLI3/missionIdDeckTemplate.o $(wildcard CACHE/*.o OPT/*.o) CLI3/ownedCardsParser.o
 #CLI3_OBJECTS=$(infer_objects CLI3/iteratedecks-cli3.o, CLI3/*.o)
 
 ${RELEASE_BINARY_CLI3}: ${CLI3_OBJECTS} ${RELEASE_LIBRARY}

@@ -25,11 +25,14 @@ namespace IterateDecks {
                 unsigned int numberOfIterations;
                 std::string attacker, defender;
                 unsigned int battleGroundId;
+                int achievementId;
+                bool allowInvalidDecks;
 
                 po::options_description desc("Allowed options");
                 desc.add_options()
                     ("help,h", "produce help message")
                     ("version,V", "version information")
+                    ("core-version", "version of the core")
                     ("verbose,v", "increase verbosity")
                     ("number-of-iterations,n"
                     ,po::value<unsigned int>(&numberOfIterations)->default_value(1000)
@@ -50,6 +53,10 @@ namespace IterateDecks {
                     ,po::value<unsigned int>(&battleGroundId)->default_value(static_cast<unsigned int>(BattleGroundEffect::normal))
                     ,"set the battleground to use"
                     )
+                    ("achievement-id"
+                    ,po::value<int>(&achievementId)->default_value(-1)
+                    ,"id of the achievement to check"
+                    )
                     ("optimize-attacker"
                     ,"optimize the attacker's deck"
                     )
@@ -59,6 +66,13 @@ namespace IterateDecks {
                     ("no-cache-read"
                     ,"do not read from the cache"
                     )
+                    ("mutator-allow-extra"
+                    ,po::value<unsigned int>()->default_value(0)
+                    ,"allow up to this many cards not already owned"
+                    )
+                    ("allow-invalid-decks"
+                    ,"allows invalid decks for the simulator. These are usually pointless but allow special test cases."
+                    )
                 ;
 
                 po::variables_map vm;
@@ -66,19 +80,29 @@ namespace IterateDecks {
 
                 if (vm.count("help")) {
                     return Command::Ptr(new HelpCommand(desc));
+                } else if (vm.count("core-version")) {
+                    return Command::Ptr(new CoreVersionCommand());                    
                 } else if (vm.count("version")) {
                     return Command::Ptr(new VersionCommand());
                 }
 
                 po::notify(vm);
 
-                RunCommand::Ptr command = RunCommand::Ptr(new RunCommand(vm.count("verbose"), vm.count("no-cache-read") > 0));
+                RunCommand::Ptr command = RunCommand::Ptr(
+                    new RunCommand(vm.count("verbose"), vm.count("no-cache-read") > 0, vm["mutator-allow-extra"].as<unsigned int>())
+                );
                 std::clog << "running with " << numberOfIterations << " iterations" << std::endl;
+                allowInvalidDecks = vm.count("allow-invalid-decks") > 0;
                 command->task.minimalNumberOfGames = numberOfIterations;                
                 command->task.attacker = parseDeck(vm["attacker"].as<std::string>());
+                command->task.attacker->allowInvalid = allowInvalidDecks;
                 command->task.defender = parseDeck(vm["defender"].as<std::string>());
+                command->task.defender->allowInvalid = allowInvalidDecks;
                 command->task.surge = vm.count("surge") > 0;
                 command->task.battleGround = static_cast<BattleGroundEffect>(battleGroundId);
+                if (vm.count("achievement-id") > 0) {
+                    command->task.achievementOptions.enableCheck(achievementId);
+                }
                 bool optimizeAttacker = vm.count("optimize-attacker") > 0;
                 bool optimizeDefender = vm.count("optimize-defender") > 0;
                 if(optimizeAttacker && optimizeDefender) {

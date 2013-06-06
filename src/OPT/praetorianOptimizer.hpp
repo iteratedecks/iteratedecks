@@ -32,7 +32,7 @@
                 public:
                     PraetorianOptimizer(SimulatorCore::Ptr const & simulator, Mutator::Ptr const & mutator);
                 
-                    virtual DeckTemplate::Ptr optimizeOnce(SimulationTaskClass const & initial, bool optimizeAttacker = true);
+                    virtual DeckTemplate::Ptr optimizeOnce(SimulationTaskClass const & initial, bool optimizeAttacker = true, double const cropFactor = 0.5);
                     virtual DeckTemplate::Ptr optimizeMany(SimulationTaskClass const & task, bool optimizeAttacker = true);
                     virtual void abort();
             };

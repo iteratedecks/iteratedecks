@@ -25,14 +25,17 @@
                     bool fullOrder;
                     bool unorder;
                     bool changeCommander;
+                    bool onlyAutoDecks;
 
-                    bool noCardLimit;
+                    unsigned int ignoreCardLimitUpTo;
                     CardMSet allowedCards;
                     CardSet allowedCommanders;
                     CardSet allowedNonCommanderCards;
 
                     CardDB const & cardDB;
 
+                    bool aborted = false;
+                    
                 public:
                     typedef std::shared_ptr<PraetorianMutator> Ptr;
 
@@ -46,13 +49,21 @@
                     void addOrderMutations          (DeckTemplate::Ptr const & original, DeckSet & mutations) const;
                     void addUnorderMutations        (DeckTemplate::Ptr const & original, DeckSet & mutations) const;
                     bool canCompose(DeckTemplate::Ptr const & sub) const;
+                    template <class InputIterator> void initAllowedCardsFromCollection(InputIterator begin, InputIterator const & end);
+                    void initAllowedCardsFromCardDB();
+                    bool isExcluded(unsigned int cardId) const;
 
                 public:
                     PraetorianMutator(CardDB const & cardDB);
+                    PraetorianMutator(CardDB const & cardDB, CardMSet const & ownedCards, unsigned int ignoreCardLimitUpTo);
                     virtual DeckSet mutate(DeckTemplate::Ptr const & initial);
+                    virtual void abort();                    
             };
+
         }
     }
+
+    #include "praetorianMutator.tpl.hpp"
 
 #endif
 

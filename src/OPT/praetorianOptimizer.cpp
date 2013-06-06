@@ -48,10 +48,10 @@ namespace IterateDecks {
         }
 
         struct Compare {
-            std::map<DeckTemplate::Ptr, Result> const & results;
+            std::map<DeckTemplate::Ptr, Result> const results;
 
             Compare(std::map<DeckTemplate::Ptr, Result> const & results)
-            :results(results)
+            : results(results)
             {
             }
             
@@ -96,9 +96,6 @@ namespace IterateDecks {
             unsigned long const numberOfIterations = std::max(numberOfIterationsUnclamped, minimalNumberOfIterationsEach);
             assertGE(numberOfIterations,1ul);
             unsigned long const realTotalNumberOfIterations = numberOfIterations * initialCount;
-            unsigned long done = 0;
-            unsigned long lastDone = 0;
-            unsigned long const dotEverySteps = realTotalNumberOfIterations / 50;
 
             // first we need to simulate them all
             std::map<DeckTemplate::Ptr, Result> results;            
@@ -106,65 +103,80 @@ namespace IterateDecks {
             std::clog << std::setw(4) << initialCount << " decks with ";
             std::clog << std::setw(10) << numberOfIterations << " iterations each." << std::endl;
             std::clog << "\t\t";
-            for(DeckVector::const_iterator iter = decks.begin()
-               ;iter != decks.end()
-               ;iter++)
             {
-                SimulationTaskClass task = withIterationsAndDeck(originalTask
-                                                               ,optimizeAttacker
-                                                               ,*iter
-                                                               ,numberOfIterations
-                                                               );
-                Result result = this->core->simulate(task);
-                results[*iter] = result;
-                
-                if (this->aborted) {
-                    std::cerr << "\tAborted in simpleCrop during simulation stage." << std::endl;
-                    return;
-                }
-                done += numberOfIterations;
-                while (done - lastDone > dotEverySteps) {
-                    std::clog << ".";
-                    lastDone += dotEverySteps;
-                }
-            }
-            std::clog << "done" << std::endl;
-
-            // try to track a strange error
-            try {
+                unsigned long done = 0;
+                unsigned long lastDone = 0;
+                unsigned long const dotEverySteps = std::max(realTotalNumberOfIterations / 50, 1ul);
                 for(DeckVector::const_iterator iter = decks.begin()
                    ;iter != decks.end()
                    ;iter++)
                 {
-                    results.at(*iter);
+                    SimulationTaskClass task = withIterationsAndDeck(originalTask
+                                                                    ,optimizeAttacker
+                                                                    ,*iter
+                                                                    ,numberOfIterations
+                                                                    );
+                    Result result = this->core->simulate(task);
+                    assertGE(result.numberOfGames,numberOfIterations);
+                    results[*iter] = result;
+
+                    if (this->aborted) {
+                        std::cerr << "\tAborted in simpleCrop during simulation stage." << std::endl;
+                        return;
+                    }
+                    done += numberOfIterations;
+                    while (done - lastDone > dotEverySteps) {
+                        std::clog << ".";
+                        lastDone += dotEverySteps;
+                    }
                 }
-            } catch (std::out_of_range &e) {
-                assertX(false);
             }
+            std::clog << "done" << std::endl;
 
             // next we need to sort them
 
             // that somehow failes, unclear why.
-            //std::sort(decks.begin(), decks.end(), Compare(results));
-
-            std::clog << "\t\tBeginning sorting." << std::endl;
-            for(size_t n = initialCount ; n > 1; ) {
-                size_t newN = 1;
-                for(size_t i = 0; i< n-1; i++) {
-                    DeckTemplate::Ptr const & a = decks[i];
-                    DeckTemplate::Ptr const & b = decks[i+1];
-                    Result const & ra = results.at(a);
-                    Result const & rb = results.at(b);
-                    if (ra.getWinRate() < rb.getWinRate()) {
-                        decks[i] = b;
-                        decks[i+1] = a;
-                        newN = i+1;
+            //Compare comparator(results);
+            //std::sort(decks.begin(), decks.end(), comparator);
+            
+            {
+                unsigned int done = 0;
+                unsigned int lastDone = 0;
+                unsigned int dotEverySteps = std::max(initialCount / 50, 1u);
+                std::clog << "\t\tBeginning sorting" << std::endl << "\t\t";
+                for(size_t n = initialCount ; n > 1; ) {
+                    size_t newN = 1;
+                    for(size_t i = 0; i< n-1; i++) {
+                        DeckTemplate::Ptr const a = decks[i];
+                        DeckTemplate::Ptr const b = decks[i+1];
+                        Result const & ra = results.at(a);
+                        Result const & rb = results.at(b);
+                        if (ra.getWinRate() < rb.getWinRate()) {
+                            decks[i] = b;
+                            decks[i+1] = a;
+                            newN = i+1;
+                        }
                     }
+                    done += n-newN;
+                    while (done - lastDone > dotEverySteps) {
+                        std::clog << ".";
+                        lastDone += dotEverySteps;
+                    }
+                    n = newN;
                 }
-                n = newN;
             }
+            std::clog << "done ";
 
+            double oldMin = results.at(decks[initialCount-1]).getWinRate();
+            double max = results.at(decks[0]).getWinRate();
+            
             decks.resize(targetCount);
+
+            double newMin = results.at(decks[targetCount-1]).getWinRate();
+            std::clog << "from [" << oldMin << ";" << max << "] to ";
+            std::clog << "[" << newMin << ";" << max << "]";
+            std::clog << std::endl;
+
 
             assertEQ(decks.size(), targetCount);
        }
@@ -173,9 +185,9 @@ namespace IterateDecks {
         DeckTemplate::Ptr
         PraetorianOptimizer::optimizeOnce(SimulationTaskClass const & initialTask
                                          ,bool optimizeAttacker
+                                         ,double const factor
                                          )
         {
-            double const factor = 0.5;
             unsigned long totalNumberOfIterations = initialTask.minimalNumberOfGames;
 
             std::clog << "\tGenerating mutations... " << std::endl;
@@ -188,7 +200,9 @@ namespace IterateDecks {
 
             unsigned int cropRound = 0;
             while (candidateVector.size() > 1) {
-                std::clog << "\tstarting crop round " << std::setw(6) << cropRound << " with " << std::setw(6) << candidateVector.size() << " decks" << std::endl;
+                std::clog << "\tstarting crop round " << std::setw(6) << cropRound;
+                std::clog << " with " << std::setw(6) << candidateVector.size() << " decks";
+                std::clog << " and crop factor of " << std::setw(10) << factor << std::endl;
                 this->simpleCrop(initialTask
                                 ,candidateVector
                                 ,factor
@@ -209,17 +223,24 @@ namespace IterateDecks {
 
         DeckTemplate::Ptr
         PraetorianOptimizer::optimizeMany(SimulationTaskClass const & task, bool optimizeAttacker)
-        {            
+        {
+            double const factor = 0.5;
             // remember old deck
             DeckTemplate::Ptr oldDeckTemplate = optimizeAttacker ? task.attacker : task.defender;
             std::clog << "Beginning optimization of " << oldDeckTemplate->toString() << std::endl;
             unsigned int round = 0;
+            unsigned int sameRound = 0;
 
             while (true) {
                 std::clog << "Beginning round " << std::setw(4) << round << " with deck " << oldDeckTemplate->toString() << std::endl;
                 // optimize once
-                SimulationTaskClass optimizationTask = withDeck(task, optimizeAttacker, oldDeckTemplate);
-                DeckTemplate::Ptr newDeckTemplate = this->optimizeOnce(optimizationTask, optimizeAttacker);
+                unsigned long minimalNumberOfGames = task.minimalNumberOfGames * (1 + sameRound);
+                SimulationTaskClass optimizationTask = withIterationsAndDeck(task, optimizeAttacker, oldDeckTemplate, minimalNumberOfGames);
+                DeckTemplate::Ptr newDeckTemplate = this->optimizeOnce(
+                    optimizationTask
+                   ,optimizeAttacker
+                   ,std::pow(factor,1.0 / (1+sameRound))
+                );
 
                 if (this->aborted) {
                     std::cerr << "Aborted in optimizeMany during first stage." << std::endl;
@@ -248,8 +269,10 @@ namespace IterateDecks {
 
                 if (oldResult.getWinRate() > newResult.getWinRate()) {
                     // new deck is not better :(
+                    sameRound++;
                 } else {
                     oldDeckTemplate = newDeckTemplate;
+                    sameRound = 0;
                 }
 
                 round++;
@@ -259,6 +282,7 @@ namespace IterateDecks {
 
         void
         PraetorianOptimizer::abort() {
+            this->mutator->abort();
             this->aborted = true;
         }
 

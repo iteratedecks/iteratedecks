@@ -5,6 +5,8 @@
 #include "../OPT/praetorianOptimizer.hpp"
 #include "../CORE/assert.hpp"
 #include "../CORE/Logger.hpp"
+#include <fstream>
+#include "ownedCardsParser.hpp"
 
 using namespace IterateDecks::Cache;
 using namespace IterateDecks::Opt;
@@ -14,6 +16,7 @@ namespace IterateDecks {
 
         RunCommand::RunCommand(int verbosity
                               ,bool dontReadCache
+                              ,unsigned int extraCards
                               )
         : optimizeAttacker(false)
         , optimizeDefender(false)
@@ -26,7 +29,21 @@ namespace IterateDecks {
             cache->setDontReadCache(dontReadCache);
             this->simulator = cache;
             CardDB const & cardDB = idSim->getCardDB();
-            PraetorianMutator::Ptr mutator = PraetorianMutator::Ptr(new PraetorianMutator(cardDB));
+
+            PraetorianMutator::Ptr mutator;
+            // owned cards?
+            std::ifstream ownedCardsStream("cards.txt");
+            if (ownedCardsStream.is_open()) {
+                std::multiset<unsigned int> ownedCards = parseSimpleSeparatedString(
+                     ownedCardsStream
+                    ,"\n"
+                    ,":"
+                    );
+            
+                mutator = PraetorianMutator::Ptr(new PraetorianMutator(cardDB, ownedCards, extraCards));
+            } else {
+                mutator = PraetorianMutator::Ptr(new PraetorianMutator(cardDB));
+            }
             this->optimizer = Optimizer::Ptr(new PraetorianOptimizer(cache, mutator));
 
             // logging stuff
@@ -63,8 +80,13 @@ namespace IterateDecks {
                 std::cout << optimizedDeck->toString() << std::endl;
                 return 0;
             } else {            
-                Result result = this->simulator->simulate(this->task);
-                std::cout << result.gamesWon << " / " << result.numberOfGames << std::endl;
+                Result r = this->simulator->simulate(this->task);
+                std::cout << "Games won:     " << std::setw(11) << r.gamesWon
+                          << " /" << std::setw(11) << r.numberOfGames << " " << std::endl;
+                std::cout << "Games lost:    " << std::setw(11) << r.gamesLost
+                          << " /" << std::setw(11) << r.numberOfGames << " " << std::endl;
+                std::cout << "Games stalled: " << std::setw(11) << r.gamesStalled
+                          << " /" << std::setw(11) << r.numberOfGames << " " << std::endl;
                 return 0;
             }
         }

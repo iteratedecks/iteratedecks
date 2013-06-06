@@ -22,7 +22,7 @@
                     IterateDecks::Core::SimulatorCore::Ptr simulator;
                     IterateDecks::Opt::Optimizer::Ptr optimizer;                    
                 public:
-                    RunCommand(int verbosity, bool noCacheRead);
+                    RunCommand(int verbosity, bool noCacheRead, unsigned int extraCards);
                     ~RunCommand();
                 
                     int execute();

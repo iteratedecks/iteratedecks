@@ -77,16 +77,14 @@
             explicit InvalidUserInputError(std::string const & what);
     };
 
-    class InvalidDeckHashError : public InvalidUserInputError {
-        public:
-            explicit InvalidDeckHashError(std::string const & what);
-
-            static std::string const notEvenChars;
-    };
-
     class InvalidState : public LogicError {
         public:
             explicit InvalidState(std::string const & what);
+    };
+
+    class AbortionException : public RuntimeError {
+        public:
+            explicit AbortionException(std::string const & what);
     };
 
 #endif

@@ -27,6 +27,11 @@
                     int execute();
             };
 
+            class CoreVersionCommand : public Command {
+                public:
+                    int execute();
+            };
+
             class HelpCommand : public Command {
                 private:
                     boost::program_options::options_description desc;

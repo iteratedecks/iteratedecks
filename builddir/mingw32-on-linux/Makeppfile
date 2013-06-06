@@ -1,4 +1,5 @@
-# Built file for windows releases compiled on linux.
+# Build file for windows releases compiled on linux.
+makepp_no_builtin = 1
 
 # For cross compilation we need a different toolchain
 TOOLCHAIN_PREFIX:=i686-pc-mingw32-
@@ -6,17 +7,25 @@ CC:=${TOOLCHAIN_PREFIX}gcc
 CXX:=${TOOLCHAIN_PREFIX}g++
 LD:=${TOOLCHAIN_PREFIX}ld
 
-LIBS:=$(subst -lboost_system,-lboost_system-mt,${LIBS})
-LIBS:=$(subst -lboost_filesystem,-lboost_filesystem-mt,${LIBS})
 
-# Make it a static application, don't want to ship libraries to windows.
-COMMON_FLAGS=
-CXXFLAGS+=${COMMON_FLAGS}
+# Some flags
+COMMON_FLAGS= -g -ggdb -fpermissive
+CXXFLAGS+=${COMMON_FLAGS} -O0
 LDFLAGS+=${COMMON_FLAGS} -static
+CXXDYNAMICFLAGS=-fPIC
 
 # Our release
-RELEASE_BINARY_CLI=iteratedecks-cli.exe
+RELEASE_BINARY_CLI2=iteratedecks-cli2.exe
+RELEASE_BINARY_CLI3=iteratedecks-cli3.exe
+LIB_ID_STATIC_NAME=libIterateDecks.a
+LIB_ID_DYNAMIC_NAME=libIterateDecks.so.1.0.1
+UNIT_TEST_BINARY=unitTests
 
-$(phony ALL): CLI
+#LIBS:=$(subst -lboost_system,-lboost_system-mt,${LIBS})
+#LIBS:=$(subst -lboost_filesystem,-lboost_filesystem-mt,${LIBS})
 
+$(phony ALL): CLI3 LIB ${UNIT_TEST_BINARY}
+
+include ../lib.Makeppfile
 include ../cli.Makeppfile
+include ../bin.Makeppfile

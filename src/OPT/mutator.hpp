@@ -16,6 +16,7 @@
                     typedef std::shared_ptr<Mutator> Ptr;
                 public:
                     virtual DeckSet mutate(DeckTemplate::Ptr const & initial) = 0;
+                    virtual void abort() = 0;                    
             };
 
         }

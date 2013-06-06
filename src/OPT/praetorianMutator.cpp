@@ -19,18 +19,79 @@ namespace IterateDecks {
         , fullOrder(true)
         , unorder(true)
         , changeCommander(true)
-        , noCardLimit(true)
+        , ignoreCardLimitUpTo(10)
         , cardDB(cardDB)
+        , onlyAutoDecks(false)
         {
+            this->initAllowedCardsFromCardDB();
+        }
+
+        PraetorianMutator::PraetorianMutator(CardDB const & cardDB
+                                            ,CardMSet const & ownedCards
+                                            ,unsigned int ignoreCardLimitUpTo
+                                            )
+        : addCards(true)
+        , replaceCards(true)
+        , removeCards(true)
+        , order(true)
+        , fullOrder(true)
+        , unorder(true)
+        , changeCommander(true)
+        , ignoreCardLimitUpTo(ignoreCardLimitUpTo)
+        , allowedCards(ownedCards)
+        , cardDB(cardDB)
+        , onlyAutoDecks(false)        
+        {
+            if(ignoreCardLimitUpTo == 0) {
+                this->initAllowedCardsFromCollection(ownedCards.begin(), ownedCards.end());
+            } else {
+                this->initAllowedCardsFromCardDB();
+            }
+        }
+
+        void PraetorianMutator::initAllowedCardsFromCardDB() {
             for(size_t cardId = 0; cardId < CARD_MAX_ID; cardId++) {
-                Card const & card = cardDB.GetPointer()[cardId];
+                Card const & card = this->cardDB.GetPointer()[cardId];
                 if (card.GetType() != TYPE_NONE) {
-                    if(card.GetType() == TYPE_COMMANDER) {
-                        this->allowedCommanders.insert(cardId);
-                    } else {
-                        this->allowedNonCommanderCards.insert(cardId);
+                    if (!isExcluded(cardId)) {
+                        if(card.GetType() == TYPE_COMMANDER) {
+                            this->allowedCommanders.insert(cardId);
+                        } else {
+                            this->allowedNonCommanderCards.insert(cardId);
+                        }
                     }
                 }
+            }
+        }
+
+        bool
+        PraetorianMutator::isExcluded(unsigned int cardId
+                                     ) const
+        {
+            Card const & card = this->cardDB.GetPointer()[cardId];
+            
+            switch(cardId) {
+                case 999:
+                    return true;
+                case 1008:
+                case 1092:
+                case 1069:
+                case 1073:
+                case 1140:
+                case 1161:
+                case 1166:
+                case 1174:
+                case 1175:
+                case 1176:
+                case 1209:
+                case 1212:
+                case 1218:
+                case 1219:
+                case 1232:
+                    //assertEQ(card.GetRarity(), RARITY_STORYCOMMANDER);
+                    return true;
+                default:
+                    return false;
             }
         }
 
@@ -78,13 +139,13 @@ namespace IterateDecks {
 
         template <class T>
         bool isSubSet(std::multiset<T> const & sub
-                     ,std::multiset<T> const & super
+                     ,std::multiset<T> copyOfSuper
+                     ,unsigned int allowUpToExtra
                      )
         {
             typedef typename std::multiset<T> SetType;
             typedef typename SetType::const_iterator ConstIteratorType;
             typedef typename SetType::iterator IteratorType;
-            SetType copyOfSuper(super);
             for(ConstIteratorType iter = sub.begin()
                ;iter != sub.end()
                ;iter++)
@@ -92,7 +153,11 @@ namespace IterateDecks {
                 IteratorType superIter =
                     copyOfSuper.find(*iter);
                 if(superIter == copyOfSuper.end()) {
-                    return false;
+                    if(allowUpToExtra > 0) {
+                        allowUpToExtra--;
+                    } else {
+                        return false;
+                    }
                 } else {
                     copyOfSuper.erase(superIter);
                 }
@@ -102,19 +167,15 @@ namespace IterateDecks {
 
         bool
         PraetorianMutator::canCompose(DeckTemplate::Ptr const & sub
-                                   ) const
+                                     ) const
         {
-            if (this->noCardLimit) {
-                return true;
-            } else {
-                CardMSet sub2;
-                sub2.insert(sub->getCommander());
-                size_t l = sub->getNumberOfNonCommanderCards();
-                for(size_t i = 0; i < l; i++) {
-                    sub2.insert(sub->getCardAtIndex(i));
-                }
-                return isSubSet(sub2, this->allowedCards);
+            CardMSet sub2;
+            sub2.insert(sub->getCommander());
+            size_t l = sub->getNumberOfNonCommanderCards();
+            for(size_t i = 0; i < l; i++) {
+                sub2.insert(sub->getCardAtIndex(i));
             }
+            return isSubSet(sub2, this->allowedCards, this->ignoreCardLimitUpTo);
         }
 
         void
@@ -232,6 +293,10 @@ namespace IterateDecks {
                     //std::clog << mutation << std::endl;
                     mutations.insert(mutation);
                     count++;
+
+                    if (this->aborted) {
+                        throw AbortionException("During replace mutations.");
+                    }
                 } // for
             }
             std::clog << "\tfound " << std::setw(5) << count << " replace card mutations." << std::endl;
@@ -254,7 +319,7 @@ namespace IterateDecks {
                                            ) const
         {
             unsigned int count = 0;
-            if (isOrdered(*original)) {
+            if (isOrdered(*original) && !this->onlyAutoDecks) {
                 size_t const numberOfCards = original->getNumberOfNonCommanderCards();
                 for(unsigned int i = 0; i+1 < numberOfCards; i++) {
                     for(unsigned int j = i+1; j < numberOfCards; j++) {
@@ -305,7 +370,7 @@ namespace IterateDecks {
                                             ) const
         {
             unsigned int count = 0;
-            if(!isOrdered(*original)) {
+            if(!isOrdered(*original) && !this->onlyAutoDecks) {
                 #if 0
                     //std::clog << "ordering..." << std::endl;
                     // compute all orders... thats gonna be a lot
@@ -349,6 +414,7 @@ namespace IterateDecks {
         DeckSet
         PraetorianMutator::mutate(DeckTemplate::Ptr const & initial)
         {
+            std::clog << "\tignoreCardLimitUpTo = " << this->ignoreCardLimitUpTo << std::endl;        
             DeckSet mutations = DeckSet(DerefCompareLT());
             mutations.insert(initial);
             this->addChangeCommanderMutations(initial, mutations);
@@ -359,6 +425,11 @@ namespace IterateDecks {
             this->addOrderMutations          (initial, mutations);
             this->addUnorderMutations        (initial, mutations);
             return mutations;
+        }
+
+        void
+        PraetorianMutator::abort() {
+            this->aborted = true;
         }
 
     }
