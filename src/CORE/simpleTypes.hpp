@@ -112,6 +112,8 @@
                 commanderFreeze = 15,
                 splitFive = 16,
                 poisonAll = 17,
+                haunt = 18,
+                legionAll = 19,
             };
             typedef std::map<std::string, BattleGroundEffect> MapBattleGroundEffects;
             typedef std::pair<std::string, BattleGroundEffect> PairBattleGroundEffects;

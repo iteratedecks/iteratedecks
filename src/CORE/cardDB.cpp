@@ -342,7 +342,7 @@ namespace IterateDecks {
                     if (!it->child("type").attribute("tournament_id").empty()) continue; // skip <type tournament_id='*' />
 
                     UINT index = (UINT)AIIndex.size();
-                    assertX(index < ACHIEVEMENT_MAX_COUNT);
+                    assertLT(index, ACHIEVEMENT_MAX_COUNT);
 
 
                     AchievementInfo ai(Id,Name,Desc,Number);
@@ -362,11 +362,11 @@ namespace IterateDecks {
                             if (!di->attribute("skill_id").empty())
                             {
                                 MSKILLS::iterator si = SIndex.find(di->attribute("skill_id").value());
-                                if (si == SIndex.end())
-                                {
-                                    if (!strcmp(di->attribute("skill_id").value(),"0"))
-                                    {
-                                        std::cerr <<  "Skill \"" << di->attribute("skill_id").value() << "\" not found in index!" << std::endl;
+                                if (si == SIndex.end()) {
+                                    if (!strcmp(di->attribute("skill_id").value(),"0")) {
+                                        //std::cerr <<  "Skill \"" << di->attribute("skill_id").value() << "\" not found in index!" << std::endl;
+                                        //throw Exception("Some skill not found, that can't be good.");
+                                        // P: This is a bit fuzzy, no clue what the semantics actually are. Sorry.
                                         r.SkillID = SPECIAL_ATTACK;
                                     } else {
                                         continue;
@@ -528,6 +528,7 @@ namespace IterateDecks {
                         MapBattleGroundEffects::iterator si = QuestEffectIndex.find(it->child("effect").child_value());
                         if (si == QuestEffectIndex.end()) {
                             std::cerr << "Quest effect \"" << it->child("effect").child_value() << "\" not found in index!" << std::endl;
+                            throw Exception("Some quest effect not found, that can't be good.");
                         } else {
                             effect = si->second;
                         }
@@ -731,6 +732,8 @@ namespace IterateDecks {
             AddQuestEffect(BattleGroundEffect::commanderFreeze,"commander_freeze");
             AddQuestEffect(BattleGroundEffect::splitFive,"split_five");
             AddQuestEffect(BattleGroundEffect::poisonAll,"poison_all");
+            AddQuestEffect(BattleGroundEffect::haunt, "haunt");
+            AddQuestEffect(BattleGroundEffect::legionAll, "legion_all");
         }
         void CardDB::AddSkill(UCHAR Id, const char *Name)
         {

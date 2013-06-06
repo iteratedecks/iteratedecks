@@ -91,7 +91,7 @@ namespace IterateDecks {
                 RunCommand::Ptr command = RunCommand::Ptr(
                     new RunCommand(vm.count("verbose"), vm.count("no-cache-read") > 0, vm["mutator-allow-extra"].as<unsigned int>())
                 );
-                std::clog << "running with " << numberOfIterations << " iterations" << std::endl;
+                //std::clog << "running with " << numberOfIterations << " iterations" << std::endl;
                 allowInvalidDecks = vm.count("allow-invalid-decks") > 0;
                 command->task.minimalNumberOfGames = numberOfIterations;                
                 command->task.attacker = parseDeck(vm["attacker"].as<std::string>());
