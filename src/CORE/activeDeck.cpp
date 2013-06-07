@@ -2488,7 +2488,10 @@ namespace IterateDecks {
                     ApplyEffects(QuestEffectId,EVENT_EMPTY,*iter,i,Def);
                 }
 
-                iter->Played();
+                // P: I am moving setting the played flag (which is miss-named, better would be 'hasActed')
+                //    because there seems to be no reason to do this BEFORE the actual action happens.
+                //    If there is a reason for this unintuitive placement it needs to be documented.
+                //iter->Played();
 
                 if(doTurn) {
                     // tis funny but I need to check Jam for second time in case it was just paybacked
@@ -2502,6 +2505,9 @@ namespace IterateDecks {
                         }
                     }
                 }
+
+                // P: Moving it here
+                iter->Played();
             }}
             // refresh commander
             if (Commander.IsDefined() && Commander.IsAlive() && Commander.GetAbility(DEFENSIVE_REFRESH)) { // Bench told refresh procs at the end of player's turn
