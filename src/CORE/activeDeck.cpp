@@ -1938,6 +1938,7 @@ namespace IterateDecks {
                         if (chaos) {
                             GetTargets(this->Units, faction, targets);
                         } else {
+                            // P: does chaosed chaos respect faction modified? Code says yes.
                             GetTargets(EnemyDeck.Units, faction, targets);
                         }
 
