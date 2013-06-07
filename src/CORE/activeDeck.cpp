@@ -1031,7 +1031,18 @@ namespace IterateDecks {
             }
         }
 
-        void ActiveDeck::ApplyEffects(BattleGroundEffect QuestEffectId,EVENT_CONDITION EffectType, PlayedCard &Src,int Position,ActiveDeck &EnemyDeck,bool IsMimiced,bool IsFusioned,PlayedCard *Mimicer,UCHAR StructureIndex, PlayedCard * target)
+        void
+        ActiveDeck::ApplyEffects(BattleGroundEffect QuestEffectId
+                                ,EVENT_CONDITION EffectType
+                                ,PlayedCard & Src
+                                ,int Position
+                                ,ActiveDeck & EnemyDeck
+                                ,bool IsMimiced
+                                ,bool IsFusioned
+                                ,PlayedCard * Mimicer
+                                ,UCHAR StructureIndex
+                                ,PlayedCard * target
+                                )
         {
             UCHAR aid,faction,infusedFaction,targetCount;
             PPCIV targets;
@@ -1039,8 +1050,9 @@ namespace IterateDecks {
             PPCARDINDEX tmp;
             EFFECT_ARGUMENT effect;
             UCHAR FusionMultiplier = 1;
-            if (IsFusioned)
+            if (IsFusioned) {
                 FusionMultiplier = 2;
+            }
 
             UCHAR SrcPos = StructureIndex;
             if (Position > 0)
@@ -1059,6 +1071,7 @@ namespace IterateDecks {
 
             //ActiveDeck *procDeck = ((!IsMimiced) || bIsSelfMimic) ? this : &Dest;
             ActiveDeck *procDeck = this;
+            // The card acting currently, that is not necessary the card having the skills (e.g, mimic)
             PlayedCard *procCard = (IsMimiced) ? Mimicer : &Src;
 
             // here is a good question - can paybacked skill be paybacked? - nope
@@ -1921,14 +1934,16 @@ namespace IterateDecks {
                 case ACTIVATION_CHAOS:
                     {
                         assertGT(effect,0u);
+                        // is the acting card chaosed
                         if (chaos) {
-                            GetTargets(Units,faction,targets);
+                            GetTargets(this->Units, faction, targets);
                         } else {
-                            GetTargets(EnemyDeck.Units,faction,targets);
+                            GetTargets(EnemyDeck.Units, faction, targets);
                         }
 
+                        // targets with one of these are not valid
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, ACTIVATION_CHAOS, 0};
-                        FilterTargets(targets,skipEffects,NULL,-1,1,-1,!chaos);
+                        FilterTargets(targets, skipEffects, NULL, -1, 1, -1, !chaos);
                         RandomizeTarget(targets,targetCount,EnemyDeck,!chaos);
 
                         if (targets.size() <= 0) {
@@ -1938,6 +1953,7 @@ namespace IterateDecks {
 
                         procDeck->SkillProcs[aid]++;
 
+                        // for each target
                         for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
                             if (Evade(vi->first, QuestEffectId, chaos))
                             {
@@ -2757,7 +2773,13 @@ namespace IterateDecks {
             while (si != ids.end());
             return deckHash;
         }
-        void ActiveDeck::GetTargets(LCARDS &From, UCHAR TargetFaction, PPCIV &GetTo, bool invertFactionCheck)
+
+        void
+        ActiveDeck::GetTargets(LCARDS &From
+                              ,UCHAR TargetFaction
+                              ,PPCIV &GetTo
+                              ,bool invertFactionCheck
+                              )
         {
             if (!invertFactionCheck) {
                 GetTo.clear();
