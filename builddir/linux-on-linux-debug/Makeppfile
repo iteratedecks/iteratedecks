@@ -1,4 +1,4 @@
-# Built file for linux releases compiled on linux.
+# Build file for linux releases compiled on linux.
 makepp_no_builtin = 1
 
 # For normal compilation default toolchain should work.
