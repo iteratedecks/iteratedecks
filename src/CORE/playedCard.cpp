@@ -355,12 +355,14 @@ namespace IterateDecks {
 
         const UCHAR PlayedCard::GetAbilitiesCount() const { return OriginalCard->GetAbilitiesCount(); }
         const UCHAR PlayedCard::GetAbilityInOrder(const UCHAR order) const { return OriginalCard->GetAbilityInOrder(order); }
-        void PlayedCard::Infuse(const UCHAR setfaction)
+
+        void
+        PlayedCard::Infuse(Faction setfaction)
         {
             // this is kind of a kludge...
             SetEffect(ACTIVATION_INFUSE, FACTION_BLOODTHIRSTY);
             //OriginalCard.Infuse(setfaction);
-            Faction = setfaction;
+            this->faction = setfaction;
             if(this->SkillProcBuffer) {
                 SkillProcBuffer[ACTIVATION_INFUSE]++;
             }
@@ -476,7 +478,7 @@ namespace IterateDecks {
                 return false;
             if (isSummoned != C.isSummoned)
                 return false;
-            if (Faction != C.Faction)
+            if (faction != C.faction)
                 return false;
             return (!memcmp(Effects,C.Effects,CARD_ABILITIES_MAX * sizeof(UCHAR)));
         }
@@ -496,7 +498,7 @@ namespace IterateDecks {
                 return true;
             if (isSummoned != C.isSummoned)
                 return true;
-            if (Faction != C.Faction)
+            if (faction != C.faction)
                 return true;
             return (memcmp(Effects,C.Effects,CARD_ABILITIES_MAX * sizeof(UCHAR)) != 0);
         }
@@ -516,8 +518,8 @@ namespace IterateDecks {
                 return (bActivated < C.bActivated);
             if (isSummoned != C.isSummoned)
                 return (isSummoned < C.isSummoned);
-            if (Faction != C.Faction)
-                return (Faction < C.Faction);
+            if (faction != C.faction)
+                return (faction < C.faction);
             int mr = memcmp(Effects,C.Effects,CARD_ABILITIES_MAX * sizeof(UCHAR)) < 0;
             return (mr < 0) && (mr != 0);
         }
@@ -528,7 +530,7 @@ namespace IterateDecks {
             Attack = card->GetAttack();
             Health = card->GetHealth();
             Wait = card->GetWait();
-            Faction = card->GetFaction();
+            faction = card->GetFaction();
             bQuestSplit = false;
             bPlayed = false;
             bActivated = false;
@@ -555,7 +557,7 @@ namespace IterateDecks {
             Attack = card->GetAttack();
             Health = card->GetHealth();
             Wait = card->GetWait();
-            Faction = card->GetFaction();
+            faction = card->GetFaction();
             bQuestSplit = false;
             bPlayed = false;
             bActivated = false;
@@ -588,7 +590,7 @@ namespace IterateDecks {
         const UCHAR PlayedCard::GetHealth() const { return Health; }
         const bool PlayedCard::GetIsSummoned() const { return isSummoned; }
         const UCHAR PlayedCard::GetMaxHealth() const { return OriginalCard->GetHealth(); }
-        const UCHAR PlayedCard::GetFaction() const { return Faction; }
+        const Faction PlayedCard::GetFaction() const { return this->faction; }
         const UCHAR PlayedCard::GetWait() const { return Wait; }
         const CardType PlayedCard::GetType() const
         {
@@ -701,7 +703,7 @@ namespace IterateDecks {
             Attack = 0;
             Health = 0;
             Wait = 0;
-            Faction = 0;
+            faction = FACTION_NONE;
             bQuestSplit = false;
             bPlayed = false;
             bActivated = false;
@@ -727,7 +729,7 @@ namespace IterateDecks {
         , Attack(original.Attack)
         , Health(original.Health)
         , Wait(original.Wait)
-        , Faction(original.Faction)
+        , faction(original.faction)
         , bPlayed(original.bPlayed)
         , bActivated(original.bActivated)
         , isSummoned(original.isSummoned)

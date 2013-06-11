@@ -9,6 +9,7 @@
 
     #include "log.h"
     #include "logger.forward.hpp"
+    #include "simpleTypes.hpp"
 
     namespace IterateDecks {
         namespace Core {
@@ -24,7 +25,7 @@
                     UCHAR Attack;
                     UCHAR Health;
                     UCHAR Wait;
-                    UCHAR Faction; // this is for Infuse
+                    Faction faction; // this is for Infuse
                     UCHAR Effects[CARD_ABILITIES_MAX];
                     bool bPlayed;
                     bool bActivated;
@@ -71,7 +72,7 @@
                     bool Regenerate(BattleGroundEffect QuestEffectId, DeckLogger * const);
                     const UCHAR GetAbilitiesCount() const;
                     const UCHAR GetAbilityInOrder(const UCHAR order) const;
-                    void Infuse(const UCHAR setfaction);
+                    void Infuse(Faction setfaction);
                     const UCHAR SufferDmg(BattleGroundEffect QuestEffectId, const UCHAR Dmg, const UCHAR Pierce = 0, UCHAR * const actualdamagedealt = 0, UCHAR *SkillProcBuffer = 0, UCHAR *OverkillDamage = 0, LOG_RECORD *lr=0, bool * const damageWasDeadly = NULL);
                     bool HitCommander(BattleGroundEffect QuestEffectId,const UCHAR Dmg,PlayedCard &Src,ActiveDeck & ownDeck, ActiveDeck & otherDeck, bool isCrushDamage = false,UCHAR *overkill = NULL,VLOG *log = NULL,LOG_RECORD *lr = NULL);
                     UCHAR StrikeDmg(BattleGroundEffect const QuestEffectId, const UCHAR Dmg, UCHAR *overkill = 0); // returns dealt dmg
@@ -90,7 +91,7 @@
                     const UCHAR GetHealth() const;
                     const bool GetIsSummoned() const;
                     const UCHAR GetMaxHealth() const;
-                    const UCHAR GetFaction() const;
+                    const Faction GetFaction() const;
                     const UCHAR GetWait() const;
                     const CardType GetType() const;
                     const UCHAR GetEffect(const UCHAR id) const;
