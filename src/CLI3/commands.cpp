@@ -6,6 +6,7 @@
 #include <iomanip>
 #include "../CORE/assert.hpp"
 
+using namespace IterateDecks::Core;
 namespace IterateDecks {
     namespace CLI3 {
 

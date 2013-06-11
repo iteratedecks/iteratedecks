@@ -6,6 +6,7 @@
     #include "sqliteWrapper.hpp"
     #include <cstdlib>
 
+    namespace C = IterateDecks::Core;
     namespace IterateDecks {
         namespace Cache {    
 
@@ -21,8 +22,8 @@
 
                     unsigned int randomData;
                 
-                    Result loadCache(SimulationTaskClass const & task);
-                    void addToCache(SimulationTaskClass const & task, Result const & result);
+                    C::Result loadCache(C::SimulationTaskClass const & task);
+                    void addToCache(C::SimulationTaskClass const & task, C::Result const & result);
                 public:
                     typedef std::shared_ptr<DiskBackedCache> Ptr;
                 
@@ -31,8 +32,8 @@
                     virtual ~DiskBackedCache();
                     void setDontReadCache(bool);
 
-                    virtual Result simulate(SimulationTaskClass const &);
-                    virtual Result simulate(SimulationTaskClass const &, unsigned long numberOfNewSamples);
+                    virtual C::Result simulate(C::SimulationTaskClass const &);
+                    virtual C::Result simulate(C::SimulationTaskClass const &, unsigned long numberOfNewSamples);
                     virtual void abort();                    
             };
         }

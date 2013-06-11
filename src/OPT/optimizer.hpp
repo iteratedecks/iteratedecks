@@ -14,7 +14,7 @@
                     typedef std::shared_ptr<Optimizer> Ptr;
                     
                 public:
-                    virtual DeckTemplate::Ptr optimizeMany(SimulationTaskClass const & task, bool attacker = true) = 0;
+                    virtual IterateDecks::Core::DeckTemplate::Ptr optimizeMany(IterateDecks::Core::SimulationTaskClass const & task, bool attacker = true) = 0;
                     virtual void abort() = 0;
             };
 

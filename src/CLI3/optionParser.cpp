@@ -12,7 +12,7 @@
 #include "../CORE/assert.hpp"
 
 namespace po = boost::program_options;
-
+using namespace IterateDecks::Core;
 namespace IterateDecks {
     namespace CLI3 {
 
@@ -50,7 +50,7 @@ namespace IterateDecks {
                     ,"simulate surge (defender goes first)"
                     )
                     ("battleground-id"
-                    ,po::value<unsigned int>(&battleGroundId)->default_value(static_cast<unsigned int>(BattleGroundEffect::normal))
+                    ,po::value<unsigned int>(&battleGroundId)->default_value(static_cast<unsigned int>(IterateDecks::Core::BattleGroundEffect::normal))
                     ,"set the battleground to use"
                     )
                     ("achievement-id"

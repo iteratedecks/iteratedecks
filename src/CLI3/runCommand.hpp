@@ -13,11 +13,11 @@
                 public:
                     typedef std::shared_ptr<RunCommand> Ptr;
                 public:
-                    SimulationTaskClass task;
+                    IterateDecks::Core::SimulationTaskClass task;
                     bool optimizeAttacker;
                     bool optimizeDefender;
                     int verbosity;
-                    Logger* logger;
+                    IterateDecks::Core::Logger* logger;
                 private:
                     IterateDecks::Core::SimulatorCore::Ptr simulator;
                     IterateDecks::Opt::Optimizer::Ptr optimizer;                    

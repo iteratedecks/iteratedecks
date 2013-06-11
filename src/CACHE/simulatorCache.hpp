@@ -3,24 +3,25 @@
 
     #include "../CORE/iterateDecksCore.hpp"
 
+    namespace C = IterateDecks::Core;
     namespace IterateDecks {
         namespace Cache {
     
 
-            class SimulatorCache : public SimulatorCore {
+            class SimulatorCache : public C::SimulatorCore {
 
                 protected:
-                    SimulatorCore::Ptr delegate;
+                    C::SimulatorCore::Ptr delegate;
 
                 public:
                     SimulatorCache(SimulatorCore::Ptr & delegate);
                     virtual ~SimulatorCache();
                     
-                    SimulatorCore::Ptr getDelegate() const;
+                    C::SimulatorCore::Ptr getDelegate() const;
                     std::string getCoreName() const;
                     std::string getCoreVersion() const;
-                    virtual IterateDecks::Core::Result simulate(SimulationTaskClass const &) = 0;
-                    virtual IterateDecks::Core::Result simulate(SimulationTaskClass const &, unsigned long numberOfNewSamples) = 0;
+                    virtual C::Result simulate(C::SimulationTaskClass const &) = 0;
+                    virtual C::Result simulate(C::SimulationTaskClass const &, unsigned long numberOfNewSamples) = 0;
                     virtual void abort() = 0;
             };
         }

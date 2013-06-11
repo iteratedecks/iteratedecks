@@ -3,6 +3,7 @@
 #include <iostream>
 #include <ctime>
 
+using namespace IterateDecks::Core;
 namespace IterateDecks {
     namespace Cache {
 

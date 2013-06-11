@@ -12,7 +12,7 @@ namespace IterateDecks {
         {
         }
 
-        SimulatorCore::Ptr
+        IterateDecks::Core::SimulatorCore::Ptr
         SimulatorCache::getDelegate() const {
             return this->delegate;
         }

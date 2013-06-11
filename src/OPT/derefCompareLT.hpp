@@ -3,14 +3,15 @@
 
     #include "../CORE/deckTemplate.hpp"
 
+    namespace C = IterateDecks::Core;
     namespace IterateDecks {
         namespace Opt {
 
             class DerefCompareLT {
                 public:
-                    bool operator() (DeckTemplate::Ptr const & a, DeckTemplate::Ptr const & b) const;
+                    bool operator() (C::DeckTemplate::Ptr const & a, C::DeckTemplate::Ptr const & b) const;
                 
-                    bool operator() (DeckTemplate const & a, DeckTemplate const &b) const;
+                    bool operator() (C::DeckTemplate const & a, C::DeckTemplate const &b) const;
             };
         }
     }

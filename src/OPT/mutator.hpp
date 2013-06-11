@@ -9,13 +9,13 @@
     namespace IterateDecks {
         namespace Opt {            
 
-            typedef std::set<DeckTemplate::Ptr, DerefCompareLT> DeckSet;
+            typedef std::set<IterateDecks::Core::DeckTemplate::Ptr, DerefCompareLT> DeckSet;
 
             class Mutator {
                 public:
                     typedef std::shared_ptr<Mutator> Ptr;
                 public:
-                    virtual DeckSet mutate(DeckTemplate::Ptr const & initial) = 0;
+                    virtual DeckSet mutate(IterateDecks::Core::DeckTemplate::Ptr const & initial) = 0;
                     virtual void abort() = 0;                    
             };
 

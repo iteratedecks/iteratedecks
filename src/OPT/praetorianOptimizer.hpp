@@ -9,17 +9,17 @@
     namespace IterateDecks {
         namespace Opt {
 
-            typedef std::vector<DeckTemplate::Ptr> DeckVector;
+            typedef std::vector<IterateDecks::Core::DeckTemplate::Ptr> DeckVector;
 
             class PraetorianOptimizer : public Optimizer {
                 private:
-                    SimulatorCore::Ptr core;
+                    IterateDecks::Core::SimulatorCore::Ptr core;
                     Mutator::Ptr mutator;
                     bool aborted;
                     
                 private:
-                    void simpleCrop(SimulationTaskClass const & originalTask
-                                   ,std::vector<DeckTemplate::Ptr> & decks
+                    void simpleCrop(IterateDecks::Core::SimulationTaskClass const & originalTask
+                                   ,std::vector<IterateDecks::Core::DeckTemplate::Ptr> & decks
                                    ,double factor
                                    ,unsigned long totalNumberOfIterations
                                    ,unsigned long minimalNumberOfIterationsEach
@@ -30,10 +30,10 @@
                     typedef std::shared_ptr<PraetorianOptimizer> Ptr;
 
                 public:
-                    PraetorianOptimizer(SimulatorCore::Ptr const & simulator, Mutator::Ptr const & mutator);
+                    PraetorianOptimizer(IterateDecks::Core::SimulatorCore::Ptr const & simulator, Mutator::Ptr const & mutator);
                 
-                    virtual DeckTemplate::Ptr optimizeOnce(SimulationTaskClass const & initial, bool optimizeAttacker = true, double const cropFactor = 0.5);
-                    virtual DeckTemplate::Ptr optimizeMany(SimulationTaskClass const & task, bool optimizeAttacker = true);
+                    virtual IterateDecks::Core::DeckTemplate::Ptr optimizeOnce(IterateDecks::Core::SimulationTaskClass const & initial, bool optimizeAttacker = true, double const cropFactor = 0.5);
+                    virtual IterateDecks::Core::DeckTemplate::Ptr optimizeMany(IterateDecks::Core::SimulationTaskClass const & task, bool optimizeAttacker = true);
                     virtual void abort();
             };
         }

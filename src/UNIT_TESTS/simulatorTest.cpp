@@ -7,6 +7,8 @@
 #include "../CORE/autoDeckTemplate.hpp"
 #include "../CORE/exceptions.hpp"
 
+using namespace IterateDecks::Core;
+
 BOOST_AUTO_TEST_CASE( test_simulator_direct ) { try {
 
     IterateDecksCore::Ptr simulator = IterateDecksCore::Ptr(new IterateDecksCore());

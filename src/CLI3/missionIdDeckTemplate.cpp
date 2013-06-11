@@ -3,6 +3,7 @@
 #include "../CORE/cardDB.hpp"
 #include <boost/lexical_cast.hpp>
 
+using namespace IterateDecks::Core;
 namespace IterateDecks {
     namespace CLI3 {
 

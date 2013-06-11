@@ -8,8 +8,8 @@
     #include "cardDB.forward.hpp"
 
     // TODO remove that
-    #include "../CLI2/cliOptions.hpp"
-    using namespace IterateDecks::CLI;
+    //#include "../CLI2/cliOptions.hpp"
+    //using namespace IterateDecks::CLI;
 
     namespace IterateDecks {
         namespace Core {

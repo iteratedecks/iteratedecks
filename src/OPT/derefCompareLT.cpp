@@ -2,6 +2,7 @@
 #include "../CORE/autoDeckTemplate.hpp"
 #include "../CLI3/simpleOrderedDeckTemplate.hpp"
 
+using namespace IterateDecks::Core;
 namespace IterateDecks {
     namespace Opt {
 

@@ -12,6 +12,8 @@
     namespace IterateDecks {
         namespace Opt {
 
+            namespace C = IterateDecks::Core;
+
             typedef std::set<unsigned int> CardSet;
             typedef std::multiset<unsigned int> CardMSet;
             typedef std::list<unsigned int> CardList;
@@ -32,7 +34,7 @@
                     CardSet allowedCommanders;
                     CardSet allowedNonCommanderCards;
 
-                    CardDB const & cardDB;
+                    IterateDecks::Core::CardDB const & cardDB;
 
                     bool aborted = false;
                     
@@ -40,23 +42,23 @@
                     typedef std::shared_ptr<PraetorianMutator> Ptr;
 
                 private:
-                    bool isValid(DeckTemplate::Ptr deck) const;
-                    void addChangeCommanderMutations(DeckTemplate::Ptr const & original, DeckSet & mutations) const;
-                    void addRemoveMutations         (DeckTemplate::Ptr const & original, DeckSet & mutations) const;
-                    void addAddMutations            (DeckTemplate::Ptr const & original, DeckSet & mutations) const;
-                    void addReplaceMutations        (DeckTemplate::Ptr const & original, DeckSet & mutations) const;
-                    void addSwapMutations           (DeckTemplate::Ptr const & original, DeckSet & mutations) const;
-                    void addOrderMutations          (DeckTemplate::Ptr const & original, DeckSet & mutations) const;
-                    void addUnorderMutations        (DeckTemplate::Ptr const & original, DeckSet & mutations) const;
-                    bool canCompose(DeckTemplate::Ptr const & sub) const;
+                    bool isValid(C::DeckTemplate::Ptr deck) const;
+                    void addChangeCommanderMutations(C::DeckTemplate::Ptr const & original, DeckSet & mutations) const;
+                    void addRemoveMutations         (C::DeckTemplate::Ptr const & original, DeckSet & mutations) const;
+                    void addAddMutations            (C::DeckTemplate::Ptr const & original, DeckSet & mutations) const;
+                    void addReplaceMutations        (C::DeckTemplate::Ptr const & original, DeckSet & mutations) const;
+                    void addSwapMutations           (C::DeckTemplate::Ptr const & original, DeckSet & mutations) const;
+                    void addOrderMutations          (C::DeckTemplate::Ptr const & original, DeckSet & mutations) const;
+                    void addUnorderMutations        (C::DeckTemplate::Ptr const & original, DeckSet & mutations) const;
+                    bool canCompose(C::DeckTemplate::Ptr const & sub) const;
                     template <class InputIterator> void initAllowedCardsFromCollection(InputIterator begin, InputIterator const & end);
                     void initAllowedCardsFromCardDB();
                     bool isExcluded(unsigned int cardId) const;
 
                 public:
-                    PraetorianMutator(CardDB const & cardDB);
-                    PraetorianMutator(CardDB const & cardDB, CardMSet const & ownedCards, unsigned int ignoreCardLimitUpTo);
-                    virtual DeckSet mutate(DeckTemplate::Ptr const & initial);
+                    PraetorianMutator(C::CardDB const & cardDB);
+                    PraetorianMutator(C::CardDB const & cardDB, CardMSet const & ownedCards, unsigned int ignoreCardLimitUpTo);
+                    virtual DeckSet mutate(C::DeckTemplate::Ptr const & initial);
                     virtual void abort();                    
             };
 

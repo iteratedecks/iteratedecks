@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <algorithm>
 
+using namespace IterateDecks::Core;
 namespace IterateDecks {
     namespace Opt {
 

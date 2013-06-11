@@ -4,6 +4,7 @@
 #include "../CORE/activeDeck.hpp"
 #include <iostream>
 
+using namespace IterateDecks::Core;
 namespace IterateDecks {
     namespace CLI3 {
 

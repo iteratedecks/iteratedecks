@@ -9,6 +9,7 @@
 #include <fstream>
 #include <map>
 #include <string>
+#include "Logger.hpp"
 
 namespace IterateDecks {
     namespace Core {

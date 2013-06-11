@@ -8,10 +8,11 @@
 #include <iostream>
 #include <iomanip>
 
+using namespace IterateDecks::Core;
 namespace IterateDecks {
     namespace Opt {
 
-        PraetorianMutator::PraetorianMutator(CardDB const & cardDB)
+        PraetorianMutator::PraetorianMutator(IterateDecks::Core::CardDB const & cardDB)
         : addCards(true)
         , replaceCards(true)
         , removeCards(true)
@@ -26,7 +27,7 @@ namespace IterateDecks {
             this->initAllowedCardsFromCardDB();
         }
 
-        PraetorianMutator::PraetorianMutator(CardDB const & cardDB
+        PraetorianMutator::PraetorianMutator(IterateDecks::Core::CardDB const & cardDB
                                             ,CardMSet const & ownedCards
                                             ,unsigned int ignoreCardLimitUpTo
                                             )
@@ -51,7 +52,7 @@ namespace IterateDecks {
 
         void PraetorianMutator::initAllowedCardsFromCardDB() {
             for(size_t cardId = 0; cardId < CARD_MAX_ID; cardId++) {
-                Card const & card = this->cardDB.GetPointer()[cardId];
+                IterateDecks::Core::Card const & card = this->cardDB.GetPointer()[cardId];
                 if (card.GetType() != TYPE_NONE) {
                     if (!isExcluded(cardId)) {
                         if(card.GetType() == TYPE_COMMANDER) {

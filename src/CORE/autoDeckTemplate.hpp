@@ -3,6 +3,7 @@
 
     #include <memory>
     #include <set>
+    #include <list>
     #include "deckTemplate.hpp"
 
     namespace IterateDecks {

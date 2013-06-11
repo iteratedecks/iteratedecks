@@ -26,9 +26,9 @@ namespace IterateDecks {
             ){
                 unsigned int const cardId = *iter;
                 if(!this->isExcluded(cardId)) {
-                    Card const & card = cardDB.GetPointer()[cardId];
-                    assertX(card.GetType() != TYPE_NONE);
-                    if(card.GetType() == TYPE_COMMANDER) {
+                    IterateDecks::Core::Card const & card = cardDB.GetPointer()[cardId];
+                    assertX(card.GetType() != IterateDecks::Core::TYPE_NONE);
+                    if(card.GetType() == IterateDecks::Core::TYPE_COMMANDER) {
                         this->allowedCommanders.insert(cardId);
                     } else {
                         this->allowedNonCommanderCards.insert(cardId);

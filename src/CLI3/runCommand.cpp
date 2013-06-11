@@ -10,6 +10,7 @@
 
 using namespace IterateDecks::Cache;
 using namespace IterateDecks::Opt;
+using namespace IterateDecks::Core;
 
 namespace IterateDecks {
     namespace CLI3 {

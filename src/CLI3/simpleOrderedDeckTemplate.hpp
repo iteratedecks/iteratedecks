@@ -5,10 +5,11 @@
     #include <list>
     #include "../CORE/deckTemplate.hpp"
 
+    namespace C = IterateDecks::Core;
     namespace IterateDecks {
         namespace CLI3 {
 
-            class SimpleOrderedDeckTemplate : public DeckTemplate {
+            class SimpleOrderedDeckTemplate : public IterateDecks::Core::DeckTemplate {
                 public:
                     typedef std::shared_ptr<SimpleOrderedDeckTemplate> Ptr;
                 private:
@@ -16,16 +17,16 @@
                     std::list<unsigned int> cards;
                 public:
                     SimpleOrderedDeckTemplate(std::list<unsigned int> const & ids);
-                    virtual ActiveDeck instantiate(CardDB const &) const;
+                    virtual C::ActiveDeck instantiate(C::CardDB const &) const;
                     virtual std::string toString() const;
 
-                    virtual DeckTemplate::Ptr withCommander(unsigned int commanderId) const;
+                    virtual C::DeckTemplate::Ptr withCommander(unsigned int commanderId) const;
                     virtual size_t getNumberOfNonCommanderCards() const;
                     virtual unsigned int getCardAtIndex(size_t index) const;
-                    virtual DeckTemplate::Ptr withCardAtIndex(unsigned int cardId, size_t index) const;
-                    virtual DeckTemplate::Ptr withoutCardAtIndex(size_t index) const;
+                    virtual C::DeckTemplate::Ptr withCardAtIndex(unsigned int cardId, size_t index) const;
+                    virtual C::DeckTemplate::Ptr withoutCardAtIndex(size_t index) const;
                     virtual unsigned int getCommander() const;
-                    virtual DeckTemplate::Ptr swapCards(size_t i, size_t j) const;
+                    virtual C::DeckTemplate::Ptr swapCards(size_t i, size_t j) const;
 
                 friend bool operator< (SimpleOrderedDeckTemplate const & a, SimpleOrderedDeckTemplate const & b);                    
             };

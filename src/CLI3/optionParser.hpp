@@ -9,7 +9,7 @@
 
             Command::Ptr parseArguments(int argc, char const * const * argv);
 
-            DeckTemplate::Ptr parseDeck(std::string const & deckDescription);
+            IterateDecks::Core::DeckTemplate::Ptr parseDeck(std::string const & deckDescription);
 
         }
     }    
