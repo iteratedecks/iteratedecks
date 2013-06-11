@@ -2370,6 +2370,9 @@ namespace IterateDecks {
                 CheckDeathEvents(*iter, Def);
             }
 
+            // P: The death events may have triggered "on death" abilities,
+            //    these may kill another unit.
+
             // Quest split mark
             if (    (QuestEffectId == BattleGroundEffect::cloneProject)
                  || (    (QuestEffectId == BattleGroundEffect::splitFive)
@@ -2395,15 +2398,15 @@ namespace IterateDecks {
                 }
             }
 
-            if (!bSkipCardPicks)
-            {
-                const Card *c = PickNextCard();
-                if (c)
-                {
-                    PlayCard(c, Def);
+            if (!bSkipCardPicks) {
+                Card const * const c = this->PickNextCard();
+                if (c != NULL) {
+                    this->PlayCard(c, Def);
                 }
             }
 
+            // P: I have no idea how this fusion code works, let's just
+            //    hope it is correct.
             PlayedCard Empty;
             UCHAR iFusionCount = 0;
             for (LCARDS::const_iterator iter = Structures.begin(); iter != Structures.end(); iter++) {
@@ -2412,10 +2415,14 @@ namespace IterateDecks {
                     iFusionCount++;
                 }
             }
-            // action cards
+            
+            // process action cards first
+            // P: Actually I cannot imagine a situation with more than
+            //    one action card. The only thing would be some
+            //    "summon action card" which does not exist.
             for (LCARDS::iterator iter = Actions.begin(); iter != Actions.end(); iter++) {
                 // apply actions somehow ...
-                ApplyEffects(QuestEffectId,EVENT_EMPTY,*iter,-1,Def);
+                ApplyEffects(QuestEffectId, EVENT_EMPTY, *iter, -1, Def);
             }
             for (LCARDS::iterator vi = Actions.begin();vi != Actions.end();vi++) {
                 SweepFancyStats(*vi);
