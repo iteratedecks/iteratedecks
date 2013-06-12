@@ -31,18 +31,18 @@ ${RELEASE_BINARY_CLI3}: ${CLI3_OBJECTS} ${RELEASE_LIBRARY}
     ${CXX} \
     CLI3/iteratedecks-cli3.o CLI3/optionParser.o CLI3/commands.o CLI3/runCommand.o \    
     ${CLI3_OBJECTS} \
+    ${IDLIB} \
     ${LDFLAGS} \
     ${LDLIBS} ${LIBS} \
-    ${IDLIB} \
     -o ${output}
 
 UNIT_TEST_OBJECTS:=$(wildcard UNIT_TESTS/*.o) $(wildcard CACHE/*.o)
 ${UNIT_TEST_BINARY}: ${UNIT_TEST_OBJECTS} ${RELEASE_LIBRARY}
     ${CXX} \
     ${UNIT_TEST_OBJECTS} \
+    ${IDLIB} \
     ${LDFLAGS} \
     ${LDLIBS} ${LIBS} \
-    ${IDLIB} \
     -lboost_unit_test_framework \
     -o ${output}
 
