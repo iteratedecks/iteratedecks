@@ -255,12 +255,14 @@ namespace IterateDecks {
                             if (!Effect) {
                                 Effect = ABILITY_ENABLED; // this value can't be 0, since it will disable the ability
                             }
-                            UCHAR TC = child.attribute("all").as_uint();
-                            if (!TC)
+                            UCHAR TCuint = child.attribute("all").as_uint();
+                            TargetsCount TC;
+                            if (!TCuint) {
                                 TC = TARGETSCOUNT_ONE;
-                            else
+                            } else {
                                 TC = TARGETSCOUNT_ALL;
-                            UCHAR TF = RemapFaction(child.attribute("y").as_uint());
+                            }
+                            Faction TF = RemapFaction(child.attribute("y").as_uint());
                             UCHAR skillevent = EVENT_EMPTY;
                             if (child.attribute("died").as_uint() > 0) {
                                 skillevent += EVENT_DIED;

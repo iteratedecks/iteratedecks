@@ -123,7 +123,7 @@ namespace IterateDecks {
                     AbilitiesOrdered.push_back(card.AbilitiesOrdered[i]);
             return *this;
         }
-        void Card::AddAbility(const UCHAR id, const EFFECT_ARGUMENT effect, const UCHAR targetcount, const UCHAR targetfaction, const UCHAR skillevent)
+        void Card::AddAbility(const UCHAR id, const EFFECT_ARGUMENT effect, const TargetsCount targetcount, const Faction targetfaction, const UCHAR skillevent)
         {
             Effects[id] = effect;
             TargetCounts[id] = targetcount;
@@ -131,7 +131,7 @@ namespace IterateDecks {
             AbilityEvent[id] = skillevent;
             AbilitiesOrdered.push_back(id);
         }
-        void Card::AddAbility(const UCHAR id, const UCHAR targetcount, const UCHAR targetfaction)
+        void Card::AddAbility(const UCHAR id, const TargetsCount targetcount, const Faction targetfaction)
         {
             Effects[id] = ABILITY_ENABLED;
             TargetCounts[id] = targetcount;
@@ -205,8 +205,8 @@ namespace IterateDecks {
             else
                 return AbilitiesOrdered[order];
         }
-        const UCHAR Card::GetTargetCount(const UCHAR id) const { return TargetCounts[id]; }
-        const UCHAR Card::GetTargetFaction(const UCHAR id) const { return TargetFactions[id]; }
+        const TargetsCount Card::GetTargetCount(const UCHAR id) const { return TargetCounts[id]; }
+        const Faction Card::GetTargetFaction(const UCHAR id) const { return TargetFactions[id]; }
         const UCHAR Card::GetAbilityEvent(const UCHAR id) const { return AbilityEvent[id]; }
         const char * Card::GetName() const { return Name; }
         const char * Card::GetPicture() const { return Picture; }

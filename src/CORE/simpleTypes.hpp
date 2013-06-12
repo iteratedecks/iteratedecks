@@ -6,6 +6,7 @@
     #include <string>
     #include <set>
     #include <utility> // pair
+    #include <sstream>
     #include "exceptions.hpp"
 
     namespace IterateDecks {
@@ -17,8 +18,9 @@
 
             // that is usally the amount (i.e, the 3 in weaken 3), but also the card to summon in summon
             typedef UINT EFFECT_ARGUMENT;
-            typedef UCHAR AbilityId;
-            typedef UCHAR FactionId;
+            typedef UCHAR AbilityId; //< deprecated
+            typedef UCHAR FactionId; //< deprecated
+            typedef UCHAR DelayType;
 
             // FIXME: Name scheme is inconsistent
             typedef std::vector<UINT> VID;              //< FIXME: The name seems stupid.
@@ -31,6 +33,8 @@
             typedef std::pair<std::string, UCHAR> PAIRMSKILLS;
             typedef std::pair<UINT, UINT> PAIRMUUINT;
             typedef std::multiset<UINT> MSID;
+
+            typedef UINT CardPosition;
 
 
             /**
@@ -92,6 +96,10 @@
                 FACTION_XENO = 4,
                 FACTION_RIGHTEOUS = 5,
             };
+            inline Faction idToFaction(unsigned int id)
+            {
+                return static_cast<Faction>(id);
+            }
 
             enum class BattleGroundEffect {
                 normal = 0,
@@ -118,6 +126,38 @@
             typedef std::map<std::string, BattleGroundEffect> MapBattleGroundEffects;
             typedef std::pair<std::string, BattleGroundEffect> PairBattleGroundEffects;
 
+            enum class CardActionStages {
+                before,
+                abilitiesDone,
+                attackStarted,
+                attackDone,
+                cleanupDone,
+            };
+            inline std::ostream & operator<< (std::ostream & os, CardActionStages const & stage) {
+                switch (stage) {
+                    case CardActionStages::before:
+                        os << "before";
+                        break;
+                    case CardActionStages::abilitiesDone:
+                        os << "ablities done";
+                        break;
+                    case CardActionStages::attackStarted:
+                        os << "attack started";
+                        break;                        
+                    case CardActionStages::attackDone:
+                        os << "attack done";
+                        break;
+                    case CardActionStages::cleanupDone:
+                        os << "cleanup done";
+                        break;
+                    default:
+                        std::stringstream ssMessage;
+                        ssMessage << "enum switch fail for constant ";
+                        ssMessage << static_cast<unsigned int>(stage);
+                        throw Exception(ssMessage.str());
+                };
+                return os;
+            }
         }
     }
 

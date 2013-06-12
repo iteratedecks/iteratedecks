@@ -20,9 +20,9 @@
                     UCHAR Health;
                     Rarity rarity;
                     EFFECT_ARGUMENT Effects[CARD_ABILITIES_MAX];
-                    UCHAR TargetCounts[CARD_ABILITIES_MAX];
-                    UCHAR TargetFactions[CARD_ABILITIES_MAX]; // reserved negative values for faction
-                    UCHAR AbilityEvent[CARD_ABILITIES_MAX];
+                    TargetsCount TargetCounts[CARD_ABILITIES_MAX];
+                    Faction TargetFactions[CARD_ABILITIES_MAX]; // reserved negative values for faction
+                    EVENT_CONDITION AbilityEvent[CARD_ABILITIES_MAX];
                 #define RESERVE_ABILITIES_COUNT	3
                     std::vector<UCHAR> AbilitiesOrdered;
                 protected:
@@ -33,8 +33,8 @@
                     Card(const UINT id, const char* name, const char* pic, Rarity const rarity, CardType const type, Faction const faction, const UCHAR attack, const UCHAR health, const UCHAR wait, const UINT set);
                     Card(const Card &card);
                     Card& operator=(const Card &card);
-                    void AddAbility(const UCHAR id, const EFFECT_ARGUMENT effect, const UCHAR targetcount, const UCHAR targetfaction, const UCHAR skillevent = EVENT_EMPTY);
-                    void AddAbility(const UCHAR id, const UCHAR targetcount, const UCHAR targetfaction);
+                    void AddAbility(const UCHAR id, const EFFECT_ARGUMENT effect, const TargetsCount targetcount, const Faction targetfaction, const EVENT_CONDITION skillevent = EVENT_EMPTY);
+                    void AddAbility(const UCHAR id, const TargetsCount targetcount, const Faction targetfaction);
                     void AddAbility(const UCHAR id, const EFFECT_ARGUMENT effect);
                     void AddAbility(const UCHAR id);
                     void PrintAbilities();
@@ -55,8 +55,8 @@
                     const EFFECT_ARGUMENT GetAbility(const UCHAR id) const;
                     const UCHAR GetAbilitiesCount() const;
                     const UCHAR GetAbilityInOrder(const UCHAR order) const;
-                    const UCHAR GetTargetCount(const UCHAR id) const;
-                    const UCHAR GetTargetFaction(const UCHAR id) const;
+                    const TargetsCount GetTargetCount(const UCHAR id) const;
+                    const Faction GetTargetFaction(const UCHAR id) const;
                     const UCHAR GetAbilityEvent(const UCHAR id) const;
                     const char *GetName() const;
                     const char *GetPicture() const;

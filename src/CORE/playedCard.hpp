@@ -27,8 +27,9 @@
                     UCHAR Wait;
                     Faction faction; // this is for Infuse
                     UCHAR Effects[CARD_ABILITIES_MAX];
-                    bool bPlayed;
-                    bool bActivated;
+                    bool bPlayed; // deprecated
+                    bool bActivated; // deprecated
+                    CardActionStages stage = CardActionStages::before;
                     bool isSummoned;
                     bool bQuestSplit;
                     UCHAR DeathEvents;
@@ -92,16 +93,16 @@
                     const bool GetIsSummoned() const;
                     const UCHAR GetMaxHealth() const;
                     const Faction GetFaction() const;
-                    const UCHAR GetWait() const;
+                    const DelayType GetWait() const;
                     const CardType GetType() const;
                     const UCHAR GetEffect(const UCHAR id) const;
                     const EFFECT_ARGUMENT GetAbility(const UCHAR id) const;
-                    const UCHAR GetTargetCount(const UCHAR id) const;
-                    const UCHAR GetTargetFaction(const UCHAR id) const;
+                    const TargetsCount GetTargetCount(const UCHAR id) const;
+                    const Faction GetTargetFaction(const UCHAR id) const;
                     const UCHAR GetAbilityEvent(const UCHAR id) const;
-                    const bool GetPlayed() const;
-                    void Played();
-                    void ResetPlayedFlag();
+                    //const bool GetPlayed() const;
+                    //void Played();
+                    //void ResetPlayedFlag();
                     void SetAttack(const UCHAR attack);
                     void SetEffect(const UCHAR id, const UCHAR value);
                     void SetHealth(const UCHAR health);
@@ -125,6 +126,9 @@
 
                     bool canAttack() const;
                     unsigned int getUniqueId() const;
+
+                    void setStage(CardActionStages stage);
+                    CardActionStages getStage() const;
             };
         }
     }

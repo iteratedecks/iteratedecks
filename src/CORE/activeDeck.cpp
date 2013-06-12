@@ -1,17 +1,23 @@
 #include "activeDeck.hpp"
-#include <iostream>
+
 #include "Logger.hpp"
-#include <cstdlib>
 #include "card.hpp"
 #include "assert.hpp"
-#include <cstring>
-#include <sstream>
+#include "targetManagement.hpp"
+
+#include <iostream>
 #include <iomanip>
+#include <sstream>
+
+#include <cstdlib>
+#include <cstring>
 
 // FIXME remove ancient first generation logging code
 #include <cstdio>
 
 #include "compat.h"
+
+#include <boost/foreach.hpp>
 
 namespace IterateDecks {
     namespace Core {
@@ -1044,9 +1050,11 @@ namespace IterateDecks {
                                 ,PlayedCard * target
                                 )
         {
-            UCHAR aid,faction,infusedFaction,targetCount;
-            PPCIV targets;
-            targets.reserve(DEFAULT_DECK_RESERVE_SIZE);
+            UCHAR aid;
+            TargetsCount targetCount;
+            Faction faction, infusedFaction = FACTION_NONE;
+            //PPCIV targets;
+            //targets.reserve(DEFAULT_DECK_RESERVE_SIZE);
             PPCARDINDEX tmp;
             EFFECT_ARGUMENT effect;
             UCHAR FusionMultiplier = 1;
@@ -1094,7 +1102,7 @@ namespace IterateDecks {
             UCHAR questAbilityCount = 0;
             UCHAR questAbilityId = SPECIAL_ATTACK; // TODO need better placeholder
             EFFECT_ARGUMENT questAbilityEffect = 0;
-            UCHAR questAbilityTargets = 0;
+            TargetsCount questAbilityTargets = TARGETSCOUNT_ONE;
 
             if(QuestEffectId == BattleGroundEffect::friendlyFire && EffectType == EVENT_EMPTY) {
                 switch(Src.GetType()) {
@@ -1132,7 +1140,7 @@ namespace IterateDecks {
                     } while(questAbilityEffect == 0
                         || ((Card const * const)&pCDB[questAbilityEffect])->GetType() != TYPE_ASSAULT
                         || ((Card const * const)&pCDB[questAbilityEffect])->GetSet() == 0);
-                    questAbilityTargets = 0;
+                    questAbilityTargets = TARGETSCOUNT_ONE;
                     questAbilityCount++;
                 }
             }
@@ -1207,7 +1215,7 @@ namespace IterateDecks {
 
                     effect = Src.GetAbility(aid); // fusion is applied in the SWTITCH below
                     faction = IsMimiced ? FACTION_NONE : Src.GetTargetFaction(aid);
-                    infusedFaction = Src.GetEffect(ACTIVATION_INFUSE) ? Src.GetEffect(ACTIVATION_INFUSE) : faction;
+                    infusedFaction = Src.GetEffect(ACTIVATION_INFUSE) ? idToFaction(Src.GetEffect(ACTIVATION_INFUSE)) : faction;
                     targetCount = Src.GetTargetCount(aid);
                 } else {
                     aid = questAbilityId;
@@ -1223,47 +1231,47 @@ namespace IterateDecks {
                             break;
                         }
 
+                        // P: I still have no idea what that fusion thing is...
                         effect *= FusionMultiplier;
+                        
                         assertGT(effect,0u);
-                        GetTargets(Units,infusedFaction,targets);
-                        LOG_CARD lc(LogDeckID,TYPE_ASSAULT,100);
 
-                        PPCIV::iterator vi = targets.begin();
-                        while (vi != targets.end())
-                        {
-                            if (!vi->first->IsCleanseTarget())
-                                vi = targets.erase(vi);
-                            else vi++;
-                        }
+                        TargetSet targets;
+                        getTargets(targets, this->Units);
+                        filterTargetsByFaction(targets, infusedFaction);
+                        
+                        //LOG_CARD lc(LogDeckID,TYPE_ASSAULT,100);
 
-                        bool bTributable = IsInTargets(procCard,&targets);
+                        removeTargetsThatCannotBeCleansed(targets);
 
-                        RandomizeTarget(targets,targetCount,EnemyDeck,false);
+                        bool isTributable = isInTargets(targets, *procCard);
 
-                        if (targets.size() <= 0) {
+                        pickRandomTargetsWithoutIntercept(targets,targetCount);
+
+                        if (targets.empty()) {
                             LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
                             break;
                         }
 
                         procDeck->SkillProcs[aid]++;
 
-                        for (vi = targets.begin();vi != targets.end();vi++)
-                        {
-                            LOG(this->logger,abilitySupport(EffectType,Src,aid,*(vi->first),effect));
+                        BOOST_FOREACH(Target & target, targets) {
+                            PlayedCard & targetCard = *(target.card);
+                            LOG(this->logger,abilitySupport(EffectType,Src,aid,target,effect));
 
-                            vi->first->Cleanse();
+                            target.Cleanse();
                             procCard->fsSpecial += effect;
 
-                            lc.CardID = vi->second;
+                            //lc.CardID = vi->second;
                             //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
 
-                            if(bTributable && Tribute(vi->first, procCard, procDeck, EffectType, aid, effect))
+                            if(isTributable && Tribute(*targetCard, procCard, procDeck, EffectType, aid, effect))
                             {
                                 procCard->Cleanse();
-                                vi->first->fsSpecial += effect;
+                                targetCard.fsSpecial += effect;
                             }
 
-                            UCHAR pos = vi->second;
+                            CardPosition pos = target.position;
                             PlayedCard *oppositeCard = NULL;
                             if(pos < EnemyDeck.Units.size()) {
                                 oppositeCard = &EnemyDeck.getUnitAt(pos);
@@ -1647,38 +1655,48 @@ namespace IterateDecks {
                         effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                         assertGT(effect,0u);
 
-                        GetTargets(Units,infusedFaction,targets);
+                        TargetSet friendlyTargets;
+                        getTargets(friendlyTargets, this->Units);
+                        filterTargetsByFaction(friendlyTargets, infusedFaction);
+                        removeTargetsThatCannotAttack(friendlyTargets);
+                        removeTargetsThatStartedAttacking(friendlyTargets);
+                        removeTargetsWithDelayOutsideOf(friendlyTargets, -1, activeNextTurnWait);
+                        
+                        bool const isTributable = isInTargets(friendlyTargets, *procCard);
 
-                        EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, DMGDEPENDANT_IMMOBILIZE, DEFENSIVE_STUN, 0};
-                        FilterTargets(targets,skipEffects,NULL,-1,activeNextTurnWait,-1,true);
+                        pickRandomTargetsWithoutIntercept(friendlyTargets,targetCount);
 
-                        bool bTributable = IsInTargets(procCard,&targets);
+                        
 
-                        RandomizeTarget(targets,targetCount,EnemyDeck,false);
-
-                        if (targets.size() <= 0) {
+                        if (friendlyTargets.size() <= 0) {
                             LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
                             break;
                         }
-
+                        
                         procDeck->SkillProcs[aid]++;
 
-                        for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                        for (TargetSet::iterator iter = friendlyTargets.begin()
+                            ;iter != friendlyTargets.end()
+                            ;iter++
+                            )
                         {
-                            LOG(this->logger,abilitySupport(EffectType,Src,aid,*(vi->first),effect));
-                            vi->first->Rally(effect);
+                            Target const & target = *iter;
+                            PlayedCard & targetCard = *(target.card);
+                            LOG(this->logger,abilitySupport(EffectType,Src,aid,targetCard,effect));                            
+                            targetCard.Rally(effect);
                             procCard->fsSpecial += effect;
                             //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
 
-                            if(bTributable && Tribute(vi->first, procCard, procDeck, EffectType, aid, effect))
+                            if(isTributable && Tribute(&targetCard, procCard, procDeck, EffectType, aid, effect))
                             {
                                 procCard->Rally(effect);
-                                vi->first->fsSpecial += effect;
+                                targetCard.fsSpecial += effect;
                             }
 
-                            UCHAR pos = vi->second;
-                            PlayedCard *oppositeCard = NULL;
+                            CardPosition pos = target.position;
+                            PlayedCard * oppositeCard = NULL;
                             if(pos < EnemyDeck.Units.size()) {
+                                // FIXME that may be incorrect
                                 oppositeCard = &EnemyDeck.getUnitAt(pos);
                             }
                             if(oppositeCard != NULL && oppositeCard->CanEmulate(aid)) {
@@ -1934,6 +1952,8 @@ namespace IterateDecks {
                 case ACTIVATION_CHAOS:
                     {
                         assertGT(effect,0u);
+
+                        TargetSet targets;
                         // is the acting card chaosed
                         if (chaos) {
                             GetTargets(this->Units, faction, targets);
@@ -1979,7 +1999,8 @@ namespace IterateDecks {
                 case ACTIVATION_RUSH:
                     {
                         assertGT(effect,0u);
-                        GetTargets(Units,infusedFaction,targets);
+                        TargetSet targets;
+                        getTargets(Units,infusedFaction,targets);
 
                         FilterTargets(targets,NULL,NULL,1,-1,-1,false);
 
@@ -2430,29 +2451,31 @@ namespace IterateDecks {
             Actions.clear();
 
             // LEGION; exact order of when this should happen during turn begin is undetermined for now
-            LCARDS::iterator prev = Units.end();
-            LCARDS::iterator target = Units.begin();
-            LCARDS::iterator next = Units.begin();
-            while (next != Units.end()) {
-                next++;
 
-                if(target->GetAbility(SPECIAL_LEGION) > 0) {
-                    UCHAR faction = target->GetFaction();
-                    UCHAR count = 0;
-                    if(prev != Units.end() && prev->GetFaction() == faction) {
-                        count++;
+            for(LCARDS::iterator current = this->Units.begin()
+               ;current != this->Units.end()
+               ;current++
+               )
+            {                
+                if(current->GetAbility(SPECIAL_LEGION) > 0) {
+                    Faction const faction = current->GetFaction();
+                    EFFECT_ARGUMENT count = 0;
+                    if(current != Units.begin()) {
+                        LCARDS::const_iterator prev = current; prev--;
+                        if (prev->GetFaction() == faction) {
+                            count++;
+                        }
                     }
 
+                    LCARDS::const_iterator next = current; next++;
                     if(next != Units.end() && next->GetFaction() == faction) {
                         count++;
                     }
-                    target->ProcessLegion(count, QuestEffectId);
+                    assertGE(count,0u);
+                    assertLE(count,2u);
+                    current->ProcessLegion(count, QuestEffectId);
                 }
-
-                prev = target;
-                target = next;
             }
-
 
 
             // commander card
@@ -2500,7 +2523,9 @@ namespace IterateDecks {
                 if (iter->BeginTurn()) {
                     ApplyEffects(QuestEffectId,EVENT_EMPTY,*iter,-1,Def,false,(iFusionCount >= 3),0,i);
                 }
-                iter->Played();
+                //iter->setStage(CardActionStages::abilitiesDone);
+                iter->setStage(CardActionStages::attackDone);
+                //iter->Played();
             }}
             // assault cards
             { UINT i = 0;
@@ -2508,14 +2533,18 @@ namespace IterateDecks {
                 if(!Def.Commander.IsAlive()) break;
 
                 const bool doTurn = iter->BeginTurn();
+                assertEQ(iter->getStage(), CardActionStages::before);
                 if (doTurn) {
                     ApplyEffects(QuestEffectId,EVENT_EMPTY,*iter,i,Def);
                 }
+                iter->setStage(CardActionStages::abilitiesDone);
+
+                assertEQ(iter->getStage(), CardActionStages::abilitiesDone);
 
                 // P: I am moving setting the played flag (which is miss-named, better would be 'hasActed')
                 //    because there seems to be no reason to do this BEFORE the actual action happens.
                 //    If there is a reason for this unintuitive placement it needs to be documented.
-                //iter->Played();
+                // P: I am redesigning this as it was too coarse. We now use stages.
 
                 if(doTurn) {
                     // tis funny but I need to check Jam for second time in case it was just paybacked
@@ -2529,18 +2558,15 @@ namespace IterateDecks {
                         }
                     }
                 }
-
-                // P: Moving it here
-                iter->Played();
+                iter->setStage(CardActionStages::attackDone);
             }}
             // refresh commander
             if (Commander.IsDefined() && Commander.IsAlive() && Commander.GetAbility(DEFENSIVE_REFRESH)) { // Bench told refresh procs at the end of player's turn
                 EFFECT_ARGUMENT const amountRefreshed = Commander.Refresh(QuestEffectId);
                 LOG(this->logger,defensiveRefresh(EVENT_EMPTY,Commander,amountRefreshed));
             }
-            // clear dead units here yours and enemy
-            if (!Units.empty())
-            {
+            // clear dead units here. yours and enemy
+            if (!Units.empty()) {
                 LCARDS::iterator vi = Units.begin();
                 while (vi != Units.end())
                     if (!vi->IsAlive())
@@ -2556,7 +2582,9 @@ namespace IterateDecks {
                     }
                     else
                     {
-                        vi->ResetPlayedFlag();
+                        //vi->ResetPlayedFlag();
+                        vi->setStage(CardActionStages::cleanupDone);
+                        // P: Why do we reset played flag before clearing enfeeble?
                         vi->ClearEnfeeble(); // this is important for chaosed skills
                         if ((!vi->IsDiseased()) && (vi->GetAbility(DEFENSIVE_REFRESH))) { // Bench told refresh procs at the end of player's turn
                             EFFECT_ARGUMENT const amountRefreshed = vi->Refresh(QuestEffectId);
@@ -2583,7 +2611,8 @@ namespace IterateDecks {
                     }
                     else
                     {
-                        if ((!vi->IsDiseased()) && (vi->GetAbility(DEFENSIVE_REFRESH)) && (QuestEffectId != BattleGroundEffect::impenetrable)) {// Bench told refresh procs at the end of player's turn
+                        // P: I'm pretty sure structures cannot be diseased.
+                        if (/*(!vi->IsDiseased()) &&*/ (vi->GetAbility(DEFENSIVE_REFRESH)) && (QuestEffectId != BattleGroundEffect::impenetrable)) {
                             EFFECT_ARGUMENT const amountRefreshed = vi->Refresh(QuestEffectId);
                             LOG(this->logger,defensiveRefresh(EVENT_EMPTY,*vi,amountRefreshed));
                         }
@@ -2632,7 +2661,10 @@ namespace IterateDecks {
             }
             // check if delete record from vector via iterator and then browse forward REALLY WORKS????
             // shift cards
+
+            // P: I get the feeling that card deaths are ignored here, where do they happen?
         }
+        
         void ActiveDeck::PrintShort()
         {
             std::cout << Commander.GetName() << " [";
@@ -2833,8 +2865,10 @@ namespace IterateDecks {
                     erase = true;
                 } else if(attackLimit >= 0 && vi->first->GetAttack() < attackLimit) {
                     erase = true;
-                } else if(skipPlayed && vi->first->GetPlayed()) {
-                    erase = true;
+                //} else if(skipPlayed && vi->first->GetPlayed()) {                    
+                //    erase = true;
+                } else if (skipPlayed) {
+                    throw Exception("Deprecated code, rewrite using new targetManagement!");
                 } else {
                     if(skipEffects != NULL) {
                         for (effect = skipEffects; *effect != 0; ++effect) {

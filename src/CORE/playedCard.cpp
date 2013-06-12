@@ -102,11 +102,13 @@ namespace IterateDecks {
             return ssLine.str();
         }
 
-        void PlayedCard::DecWait()
+        void
+        PlayedCard::DecWait()
         {
             if ((Wait > 0) && (Effects[ACTIVATION_FREEZE] == 0)) {
                 Wait--;
             }
+            this->stage = CardActionStages::before;
         }
 
         void PlayedCard::IncWait() { if (Wait) Wait++; }  // this is only for tournaments
@@ -200,6 +202,7 @@ namespace IterateDecks {
                 && (!Effects[ACTIVATION_JAM])
                 && (!Effects[ACTIVATION_FREEZE])
                 && ((Wait <= 0) || (Effects[SPECIAL_BLITZ] > 0));
+            // P: Wait, that seems wrong. Blitz should only trigger if the opposite card is active...
 
             // Assume all cards Blitzing are treated exactly as if they were active;
             // we need to reset this to False after we remove Blitz
@@ -611,12 +614,12 @@ namespace IterateDecks {
             }
             return this->OriginalCard->GetAbility(id);
         }
-        const UCHAR PlayedCard::GetTargetCount(const UCHAR id) const { return OriginalCard->GetTargetCount(id); }
-        const UCHAR PlayedCard::GetTargetFaction(const UCHAR id) const { return OriginalCard->GetTargetFaction(id); }
+        const TargetsCount PlayedCard::GetTargetCount(const UCHAR id) const { return OriginalCard->GetTargetCount(id); }
+        const Faction PlayedCard::GetTargetFaction(const UCHAR id) const { return OriginalCard->GetTargetFaction(id); }
         const UCHAR PlayedCard::GetAbilityEvent(const UCHAR id) const { return OriginalCard->GetAbilityEvent(id); }
-        const bool PlayedCard::GetPlayed() const { return bPlayed; }
-        void PlayedCard::Played() { bPlayed = true; }
-        void PlayedCard::ResetPlayedFlag() { bPlayed = false; }
+        //const bool PlayedCard::GetPlayed() const { return bPlayed; }
+        //void PlayedCard::Played() { bPlayed = true; }
+        //void PlayedCard::ResetPlayedFlag() { bPlayed = false; }
         void PlayedCard::SetAttack(const UCHAR attack) { Attack = attack; }
         void PlayedCard::SetEffect(const UCHAR id, const UCHAR value) { Effects[id] = value; }
         void PlayedCard::SetHealth(const UCHAR health) { Health = health; }
@@ -749,6 +752,17 @@ namespace IterateDecks {
         }
 
         unsigned int PlayedCard::nextUniqueId(0);
+
+        void
+        PlayedCard::setStage(CardActionStages stage)
+        {
+            this->stage = stage;
+        }
+        CardActionStages
+        PlayedCard::getStage() const
+        {
+            return this->stage;
+        }
 
     }
 }
