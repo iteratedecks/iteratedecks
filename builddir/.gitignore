@@ -16,3 +16,11 @@
 */COPYING.GPL3
 */LICENSE
 */cache.sqlite
+*/*.exe
+*/*.o
+*/iteratedecks-cli*
+*/VERSION.h
+*/VERSION.h.auto
+*/unitTests
+*/libIterateDecks.a
+*/libIterateDecks.so.1.0.1
