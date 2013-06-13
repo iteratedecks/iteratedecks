@@ -61,12 +61,11 @@ namespace IterateDecks {
         }
 
         void
-        removeTargetsThatCannotUseAbilities(TargetSet & targets
+        removeTargetsThatCannotAct(TargetSet & targets
                                      )
         {
             removeTargetsWithEffect(targets, ACTIVATION_JAM);
             removeTargetsWithEffect(targets, ACTIVATION_FREEZE);
-            removeTargetsWithEffect(targets, DEFENSIVE_STUN);
         }
 
     
@@ -166,6 +165,21 @@ namespace IterateDecks {
             TargetSet::iterator iter = targets.begin();
             while (iter != targets.end()) {
                 if (!iter->card.IsCleanseTarget()) {
+                    iter = targets.erase(iter);
+                } else {
+                    iter++;
+                }
+            }
+        }
+
+        void
+        removeTargetsLeftOfOrAtSamePosition(TargetSet & targets
+                                           ,CardPosition position
+                                           )
+        {
+            TargetSet::iterator iter = targets.begin();
+            while (iter != targets.end()) {
+                if (!iter->position <= position) {
                     iter = targets.erase(iter);
                 } else {
                     iter++;

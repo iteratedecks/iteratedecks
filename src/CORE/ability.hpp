@@ -56,14 +56,16 @@
                         ,BattleGroundEffect battleGroundEffect
                         ,bool isChaosed
                         ,bool isFusioned
-                        ) const;
+                        ) const = 0;
 
                     virtual
                     TargetSet findTargets
-                        (ActiveDeck & actingDeck
+                        (EventCondition eventCondition
+                        ,ActiveDeck & actingDeck
+                        ,CardPosition position
                         ,ActiveDeck & oppositeDeck
                         ,bool isChaosed
-                        ) const;
+                        ) const = 0;
             };
 
         }

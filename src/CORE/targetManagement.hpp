@@ -26,9 +26,7 @@
             getTargets
                 (TargetSet & targets //< the set the targets will be added to
                 ,std::list<PlayedCard> & cards
-                )
-            ;
-                
+                );
 
             /**
              * Filters targets with an effect from a set.
@@ -40,20 +38,17 @@
             removeTargetsWithEffect
                 (TargetSet & targets //< the set to filter
                 ,AbilityEnum const & effect //< targets with this effect are removed
-                )
-            ;
+                );
 
             void
-            removeTargetsThatCannotUseAbilities
+            removeTargetsThatCannotAct
                 (TargetSet & targets
-                )
-            ;
+                );
 
             void
             removeTargetsThatCannotAttack
                 (TargetSet & targets
-                )
-            ;
+                );
 
             /**
              * Filters targets without a faction from a set.
@@ -62,8 +57,7 @@
             filterTargetsByFaction
                 (TargetSet & targets //< the set to filter
                 ,Faction const & faction //<  required faction, maybe none to allow all
-                )
-            ;
+                );
 
             /**
              * Removes targets that started attacking.
@@ -71,8 +65,7 @@
             void
             removeTargetsThatStartedAttacking
                 (TargetSet & targets //< the set to filter
-                )
-            ;
+                );
 
             /**
              * Filters targets by delay.
@@ -82,28 +75,30 @@
                 (TargetSet & targets //< the set to filter
                 ,unsigned char minDelay
                 ,unsigned char maxDelay
-                )
-            ;
+                );
 
             bool
             isInTargets
                 (TargetSet const & targets
                 ,PlayedCard const & card
-                )
-            ;
+                );
 
             void
             pickRandomTargetsWithoutIntercept
                 (TargetSet & targets
                 ,TargetsCount const & targetCount
-                )
-            ;
+                );
 
             void
             removeTargetsThatCannotBeCleansed
                 (TargetSet & targets
-                )
-            ;
+                );
+
+            void
+            removeTargetsLeftOfOrAtSamePosition
+                (TargetSet & targets
+                ,CardPosition position
+                );
 
         }
     }

@@ -33,6 +33,37 @@ namespace IterateDecks {
                     ssMessage << this->ability;
                     throw LogicError(ssMessage.str());
                 }
+
+                void
+                executeAbility(EventCondition condition
+                              ,PlayedCard & actingCard
+                              ,ActiveDeck & actingDeck
+                              ,CardPosition position
+                              ,ActiveDeck & oppositeDeck
+                              ,BattleGroundEffect battleGroundEffect
+                              ,bool isChaosed
+                              ,bool isFusioned
+                              ) const
+                {
+                    std::stringstream ssMessage;
+                    ssMessage << "Not implemented ability: ";
+                    ssMessage << this->ability;
+                    throw LogicError(ssMessage.str());
+                }
+
+                TargetSet
+                findTargets(EventCondition eventCondition
+                           ,ActiveDeck & actingDeck
+                           ,CardPosition position
+                           ,ActiveDeck & oppositeDeck
+                           ,bool isChaosed
+                           ) const
+                {
+                    std::stringstream ssMessage;
+                    ssMessage << "Not implemented ability: ";
+                    ssMessage << this->ability;
+                    throw LogicError(ssMessage.str());
+                }
         };
 
         Ability::Ability(AbilityEnum abilityType
@@ -60,29 +91,6 @@ namespace IterateDecks {
                                               ,bool isChaosed
                                               ,bool isFusioned
                                               ) const
-        {
-            throw LogicError("Not implemented.");
-        }
-
-        void
-        Ability::executeAbility(EventCondition condition
-                               ,PlayedCard & actingCard
-                               ,ActiveDeck & actingDeck
-                               ,CardPosition position
-                               ,ActiveDeck & oppositeDeck
-                               ,BattleGroundEffect battleGroundEffect
-                               ,bool isChaosed
-                               ,bool isFusioned
-                               ) const
-        {
-            throw LogicError("Not implemented.");
-        }
-
-        TargetSet
-        Ability::findTargets(ActiveDeck & actingDeck
-                            ,ActiveDeck & oppositeDeck
-                            ,bool isChaosed
-                            ) const
         {
             throw LogicError("Not implemented.");
         }

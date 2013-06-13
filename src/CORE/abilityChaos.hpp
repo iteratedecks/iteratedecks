@@ -2,7 +2,7 @@
     #define ITERATEDECKS_CORE_ABILITYCHAOS_HPP
 
     #include "ability.hpp"
-    
+
     namespace IterateDecks {
         namespace Core {
 
@@ -25,7 +25,16 @@
                                   ,bool isChaosed
                                   ,bool isFusioned
                                   ) const;
-                
+
+                    TargetSet
+                    findTargets
+                        (EventCondition eventCondition
+                        ,ActiveDeck & actingDeck
+                        ,CardPosition position
+                        ,ActiveDeck & oppositeDeck
+                        ,bool isChaosed
+                        ) const;
+
             };
         }
     }
