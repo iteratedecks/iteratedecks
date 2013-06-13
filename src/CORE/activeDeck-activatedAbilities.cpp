@@ -1,6 +1,14 @@
 // this is an additional source file for activeDeck.hpp
 // it contains code related to the activated abilities as the main file gets way to large.
 
+#include "activeDeck.hpp"
+#include "Logger.hpp"
+#include "assert.hpp"
+#include "targetManagement.hpp"
+#include "card.hpp"
+#include <boost/foreach.hpp>
+#include <iostream>
+
 namespace IterateDecks {
     namespace Core {
         void
@@ -19,8 +27,8 @@ namespace IterateDecks {
             UCHAR aid;
             TargetsCount targetCount;
             Faction faction, infusedFaction = FACTION_NONE;
-            //PPCIV targets;
-            //targets.reserve(DEFAULT_DECK_RESERVE_SIZE);
+            PPCIV targetsOld;
+            targetsOld.reserve(DEFAULT_DECK_RESERVE_SIZE);
             PPCARDINDEX tmp;
             EFFECT_ARGUMENT effect;
             UCHAR FusionMultiplier = 1;
@@ -66,7 +74,7 @@ namespace IterateDecks {
             // Also, this could probably be another switch.
 
             UCHAR questAbilityCount = 0;
-            UCHAR questAbilityId = SPECIAL_ATTACK; // TODO need better placeholder
+            AbilityEnum questAbilityId = SPECIAL_ATTACK; // TODO need better placeholder
             EFFECT_ARGUMENT questAbilityEffect = 0;
             TargetsCount questAbilityTargets = TARGETSCOUNT_ONE;
 
@@ -133,6 +141,17 @@ namespace IterateDecks {
                 questAbilityEffect = 1;
                 questAbilityTargets = TARGETSCOUNT_ONE;
                 questAbilityCount++;
+            }
+
+            Ability::ConstPtr questAbility;
+            if (questAbilityCount > 0) {
+                questAbility = Ability::createAbility(questAbilityId
+                                                     ,questAbilityTargets
+                                                     ,FACTION_NONE
+                                                     ,questAbilityEffect
+                                                     ,EVENT_EMPTY
+                                                     );
+                assertLE(questAbilityCount,(UCHAR)1u);
             }
 
             for (UCHAR aindex=0;aindex<(ac+questAbilityCount);aindex++)
@@ -205,9 +224,6 @@ namespace IterateDecks {
                         TargetSet targets;
                         getTargets(targets, this->Units);
                         filterTargetsByFaction(targets, infusedFaction);
-                        
-                        //LOG_CARD lc(LogDeckID,TYPE_ASSAULT,100);
-
                         removeTargetsThatCannotBeCleansed(targets);
 
                         bool isTributable = isInTargets(targets, *procCard);
@@ -221,17 +237,14 @@ namespace IterateDecks {
 
                         procDeck->SkillProcs[aid]++;
 
-                        BOOST_FOREACH(Target & target, targets) {
-                            PlayedCard & targetCard = *(target.card);
-                            LOG(this->logger,abilitySupport(EffectType,Src,aid,target,effect));
+                        BOOST_FOREACH(Target const & target, targets) {
+                            PlayedCard & targetCard = target.card;
+                            LOG(this->logger,abilitySupport(EffectType,Src,aid,targetCard,effect));
 
-                            target.Cleanse();
+                            targetCard.Cleanse();
                             procCard->fsSpecial += effect;
 
-                            //lc.CardID = vi->second;
-                            //LogAdd(LOG_CARD(LogDeckID,procCard->GetType(),SrcPos),lc,aid);
-
-                            if(isTributable && Tribute(*targetCard, procCard, procDeck, EffectType, aid, effect))
+                            if(isTributable && Tribute(&targetCard, procCard, procDeck, EffectType, aid, effect))
                             {
                                 procCard->Cleanse();
                                 targetCard.fsSpecial += effect;
@@ -259,25 +272,25 @@ namespace IterateDecks {
                         LOG_CARD lc(LogDeckID,TYPE_ASSAULT,100);
                         if (chaos)
                         {
-                            GetTargets(Units,faction,targets);
+                            GetTargets(Units,faction,targetsOld);
                             lc.DeckID = LogDeckID;
                         }
                         else
                         {
-                            GetTargets(EnemyDeck.Units,faction,targets);
+                            GetTargets(EnemyDeck.Units,faction,targetsOld);
                             lc.DeckID = EnemyDeck.LogDeckID;
                         }
 
-                        RandomizeTarget(targets,targetCount,EnemyDeck,!chaos);
+                        RandomizeTarget(targetsOld,targetCount,EnemyDeck,!chaos);
 
-                        if (targets.size() <= 0) {
+                        if (targetsOld.size() <= 0) {
                             LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
                             break;
                         }
 
                         procDeck->SkillProcs[aid]++;
 
-                        for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                        for (PPCIV::iterator vi = targetsOld.begin();vi != targetsOld.end();vi++)
                             if (Evade(vi->first, QuestEffectId, chaos))
                             {
                                 LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
@@ -305,29 +318,29 @@ namespace IterateDecks {
                         effect *= FusionMultiplier;
                         effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                         assertGT(effect,0u);
-                        GetTargets(Units,infusedFaction,targets);
+                        GetTargets(Units,infusedFaction,targetsOld);
 
-                        PPCIV::iterator vi = targets.begin();
-                        while (vi != targets.end())
+                        PPCIV::iterator vi = targetsOld.begin();
+                        while (vi != targetsOld.end())
                         {
                             if ((vi->first->GetHealth() == vi->first->GetMaxHealth()) || (vi->first->IsDiseased()))
-                                vi = targets.erase(vi);
+                                vi = targetsOld.erase(vi);
                             else vi++;
                         }
 
                         // if something tributes this, are we a valid target?
-                        bool bTributable = IsInTargets(procCard,&targets);
+                        bool bTributable = IsInTargets(procCard,&targetsOld);
 
-                        RandomizeTarget(targets,targetCount,EnemyDeck,false);
+                        RandomizeTarget(targetsOld,targetCount,EnemyDeck,false);
 
-                        if (targets.size() <= 0) {
+                        if (targetsOld.size() <= 0) {
                             LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
                             break;
                         }
 
                         procDeck->SkillProcs[aid]++;
 
-                        for (vi = targets.begin();vi != targets.end();vi++)
+                        for (vi = targetsOld.begin();vi != targetsOld.end();vi++)
                         {
                             LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect));
 
@@ -362,33 +375,33 @@ namespace IterateDecks {
                                 )
                             )
                         {
-                            targets.clear();
+                            targetsOld.clear();
                             // If we are not left most, add unit left of us a target
                             if (Position > 0) {
-                                targets.push_back(PPCARDINDEX(&(this->getUnitAt(Position-1)),Position-1));
+                                targetsOld.push_back(PPCARDINDEX(&(this->getUnitAt(Position-1)),Position-1));
                             }
                             // we are a target
-                            targets.push_back(PPCARDINDEX(&(this->getUnitAt(Position)),Position));
+                            targetsOld.push_back(PPCARDINDEX(&(this->getUnitAt(Position)),Position));
                             // if there is a unit right of us, add it as a target
                             if ((DWORD)Position+1 < Units.size()) {
-                                targets.push_back(PPCARDINDEX(&(this->getUnitAt(Position+1)),Position+1));
+                                targetsOld.push_back(PPCARDINDEX(&(this->getUnitAt(Position+1)),Position+1));
                             }
 
                             // there should always be a target for supply: self
-                            assertX(targets.size() > 0);
+                            assertGT(targetsOld.size(),0u);
 
-                            PPCIV::iterator vi = targets.begin();
-                            if (targets.size() > 0)	{
+                            PPCIV::iterator vi = targetsOld.begin();
+                            if (targetsOld.size() > 0)	{
                                 // check each target for disease or full health
-                                while (vi != targets.end())	{
+                                while (vi != targetsOld.end())	{
                                     if ((vi->first->GetHealth() == vi->first->GetMaxHealth())) {
-                                        vi = targets.erase(vi);
+                                        vi = targetsOld.erase(vi);
                                     } else if (!vi->first->IsAlive()) {
-                                        vi = targets.erase(vi);
+                                        vi = targetsOld.erase(vi);
                                     } else if (vi->first->IsDiseased()) {
                                         // remove diseased targets
                                         LOG(this->logger,abilityFailDisease(EffectType,aid,Src,*(vi->first),IsMimiced,FACTION_NONE,effect));
-                                        vi = targets.erase(vi);
+                                        vi = targetsOld.erase(vi);
                                     } else {
                                         vi++;
                                     }
@@ -396,7 +409,7 @@ namespace IterateDecks {
                             }
 
                             // do we still have targets?
-                            if (!targets.empty()) {
+                            if (!targetsOld.empty()) {
                                 procDeck->SkillProcs[aid]++;
                             } else {
                                 // no targets
@@ -405,10 +418,10 @@ namespace IterateDecks {
                             }
 
                             //FIXME: That variable is unused, yet has a large right hand side...
-                            bool bTributable = IsInTargets(procCard,&targets);
+                            bool bTributable = IsInTargets(procCard,&targetsOld);
 
                             // now comes the actual healing
-                            for (vi = targets.begin(); vi != targets.end(); vi++) {
+                            for (vi = targetsOld.begin(); vi != targetsOld.end(); vi++) {
                                 PlayedCard & target = *(vi->first);
                                 assertX(target.IsDefined());
                                 LOG(this->logger,abilitySupport(EffectType,Src,aid,target,effect));
@@ -439,21 +452,21 @@ namespace IterateDecks {
                         effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                         assertGT(effect,0u);
 
-                        GetTargets(Units,infusedFaction,targets);
+                        GetTargets(Units,infusedFaction,targetsOld);
 
-                        RandomizeTarget(targets,targetCount,EnemyDeck,false);
+                        RandomizeTarget(targetsOld,targetCount,EnemyDeck,false);
 
-                        if (targets.size() <= 0) {
+                        if (targetsOld.size() <= 0) {
                             LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
                             break;
                         }
 
-                        bool bTributable = IsInTargets(procCard,&targets);
+                        bool bTributable = IsInTargets(procCard,&targetsOld);
 
                         procDeck->SkillProcs[aid]++;
 
-                        PPCIV::iterator vi = targets.begin();
-                        for (vi = targets.begin();vi != targets.end();vi++)
+                        PPCIV::iterator vi = targetsOld.begin();
+                        for (vi = targetsOld.begin();vi != targetsOld.end();vi++)
                         {
                             LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect));
                             vi->first->Protect(effect);
@@ -486,23 +499,23 @@ namespace IterateDecks {
                         assertGT(effect,0u);
 
                         if (chaos)
-                            GetTargets(Units,faction,targets);
+                            GetTargets(Units,faction,targetsOld);
                         else
-                            GetTargets(EnemyDeck.Units,faction,targets);
+                            GetTargets(EnemyDeck.Units,faction,targetsOld);
 
                         // HACK: Eventually need to check for intercept *after* the PROC50 below
                         int interceptCount = EnemyDeck.SkillProcs[DEFENSIVE_INTERCEPT];
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, 0};
-                        FilterTargets(targets,skipEffects,NULL,-1,1,-1,!chaos);
-                        RandomizeTarget(targets,targetCount,EnemyDeck,!chaos);
+                        FilterTargets(targetsOld,skipEffects,NULL,-1,1,-1,!chaos);
+                        RandomizeTarget(targetsOld,targetCount,EnemyDeck,!chaos);
 
-                        if (targets.size() <= 0) {
+                        if (targetsOld.size() <= 0) {
                             LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,(chaos),faction,effect));
                             break;
                         }
 
-                        for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                        for (PPCIV::iterator vi = targetsOld.begin();vi != targetsOld.end();vi++)
                         {
                             if (PROC50)
                             {
@@ -541,22 +554,22 @@ namespace IterateDecks {
                         assertGT(effect,0u);
 
                         if (chaos)
-                            GetTargets(Units,faction,targets);
+                            GetTargets(Units,faction,targetsOld);
                         else
-                            GetTargets(EnemyDeck.Units,faction,targets);
+                            GetTargets(EnemyDeck.Units,faction,targetsOld);
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_FREEZE, 0};
-                        FilterTargets(targets,skipEffects,NULL,-1,-1,-1,false);
-                        RandomizeTarget(targets,targetCount,EnemyDeck,!chaos);
+                        FilterTargets(targetsOld,skipEffects,NULL,-1,-1,-1,false);
+                        RandomizeTarget(targetsOld,targetCount,EnemyDeck,!chaos);
 
-                        if (targets.size() <= 0) {
+                        if (targetsOld.size() <= 0) {
                             LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
                             break;
                         }
 
                         procDeck->SkillProcs[aid]++;
 
-                        for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                        for (PPCIV::iterator vi = targetsOld.begin();vi != targetsOld.end();vi++)
                             if (Evade(vi->first, QuestEffectId, chaos))
                             {
                                 LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
@@ -586,20 +599,20 @@ namespace IterateDecks {
                         assertGT(effect,0u);
 
                         if (chaos || (QuestEffectId == BattleGroundEffect::copyCat))
-                            GetTargets(Units,faction,targets);
+                            GetTargets(Units,faction,targetsOld);
                         else
-                            GetTargets(EnemyDeck.Units,faction,targets);
+                            GetTargets(EnemyDeck.Units,faction,targetsOld);
 
-                        RandomizeTarget(targets,targetCount,EnemyDeck,!chaos && (QuestEffectId != BattleGroundEffect::copyCat));
+                        RandomizeTarget(targetsOld,targetCount,EnemyDeck,!chaos && (QuestEffectId != BattleGroundEffect::copyCat));
 
-                        if (targets.size() <= 0) {
+                        if (targetsOld.size() <= 0) {
                             LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
                             break;
                         }
 
                         SkillProcs[aid]++;
 
-                        for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                        for (PPCIV::iterator vi = targetsOld.begin();vi != targetsOld.end();vi++)
                             if (QuestEffectId != BattleGroundEffect::copyCat && Evade(vi->first, QuestEffectId, chaos))
                             {
                                 LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
@@ -647,7 +660,7 @@ namespace IterateDecks {
                             )
                         {
                             Target const & target = *iter;
-                            PlayedCard & targetCard = *(target.card);
+                            PlayedCard & targetCard = target.card;
                             LOG(this->logger,abilitySupport(EffectType,Src,aid,targetCard,effect));                            
                             targetCard.Rally(effect);
                             procCard->fsSpecial += effect;
@@ -689,26 +702,26 @@ namespace IterateDecks {
                         effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                         assertGT(effect,0u);
 
-                        GetTargets(Structures,infusedFaction,targets);
+                        GetTargets(Structures,infusedFaction,targetsOld);
 
-                        PPCIV::iterator vi = targets.begin();
-                        while (vi != targets.end())
+                        PPCIV::iterator vi = targetsOld.begin();
+                        while (vi != targetsOld.end())
                         {
                             if (vi->first->GetHealth() == vi->first->GetMaxHealth())
-                                vi = targets.erase(vi);
+                                vi = targetsOld.erase(vi);
                             else vi++;
                         }
 
-                        RandomizeTarget(targets,targetCount,EnemyDeck,false);
+                        RandomizeTarget(targetsOld,targetCount,EnemyDeck,false);
 
-                        if (targets.size() <= 0) {
+                        if (targetsOld.size() <= 0) {
                             LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
                             break;
                         }
 
                         procDeck->SkillProcs[aid]++;
 
-                        for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                        for (PPCIV::iterator vi = targetsOld.begin();vi != targetsOld.end();vi++)
                         {
                             vi->first->Heal(effect,QuestEffectId);
                             procCard->fsHealed += effect;
@@ -732,20 +745,20 @@ namespace IterateDecks {
                         effect += procCard->GetEffect(ACTIVATION_AUGMENT);
                         assertGT(effect,0u);
                         if (chaos)
-                            GetTargets(Structures,faction,targets);
+                            GetTargets(Structures,faction,targetsOld);
                         else
-                            GetTargets(EnemyDeck.Structures,faction,targets);
+                            GetTargets(EnemyDeck.Structures,faction,targetsOld);
 
-                        RandomizeTarget(targets,targetCount,EnemyDeck,false);
+                        RandomizeTarget(targetsOld,targetCount,EnemyDeck,false);
 
-                        if (targets.size() <= 0) {
+                        if (targetsOld.size() <= 0) {
                             LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
                             break;
                         }
 
                         procDeck->SkillProcs[aid]++;
 
-                        for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                        for (PPCIV::iterator vi = targetsOld.begin();vi != targetsOld.end();vi++)
 
                             if (Evade(vi->first,QuestEffectId,chaos))
                             {
@@ -790,23 +803,23 @@ namespace IterateDecks {
                         assertGT(effect,0u);
 
                         if (chaos) {
-                            GetTargets(Units,faction,targets);
+                            GetTargets(Units,faction,targetsOld);
                         } else {
-                            GetTargets(EnemyDeck.Units,faction,targets);
+                            GetTargets(EnemyDeck.Units,faction,targetsOld);
                         }
 
-                        RandomizeTarget(targets,targetCount,EnemyDeck,!chaos);
+                        RandomizeTarget(targetsOld,targetCount,EnemyDeck,!chaos);
 
-                        if (targets.size() <= 0) {
+                        if (targetsOld.size() <= 0) {
                             LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
                             break;
                         }
 
-                        assertX(!targets.empty()); // Targets should never be empty at this point
+                        assertX(!targetsOld.empty()); // Targets should never be empty at this point
 
                         procDeck->SkillProcs[aid]++;
 
-                        for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++) {
+                        for (PPCIV::iterator vi = targetsOld.begin();vi != targetsOld.end();vi++) {
                             if (Evade(vi->first, QuestEffectId, chaos))
                             {
                                 // evaded
@@ -877,24 +890,24 @@ namespace IterateDecks {
                         effect += procCard->GetEffect(ACTIVATION_AUGMENT);
 
                         if (chaos) {
-                            GetTargets(Units,faction,targets);
+                            GetTargets(Units,faction,targetsOld);
                         } else {
-                            GetTargets(EnemyDeck.Units,faction,targets);
+                            GetTargets(EnemyDeck.Units,faction,targetsOld);
                         }
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, DMGDEPENDANT_IMMOBILIZE, DEFENSIVE_STUN, 0};
                         int const maxWait = EffectType == EVENT_ATTACKED ? 0 : 1;
-                        FilterTargets(targets,skipEffects,NULL,-1,maxWait,1,!chaos);
-                        RandomizeTarget(targets,targetCount,EnemyDeck,!chaos);
+                        FilterTargets(targetsOld,skipEffects,NULL,-1,maxWait,1,!chaos);
+                        RandomizeTarget(targetsOld,targetCount,EnemyDeck,!chaos);
 
-                        if (targets.size() <= 0) {
+                        if (targetsOld.size() <= 0) {
                             LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
                             break;
                         }
 
                         procDeck->SkillProcs[aid]++;
 
-                        for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                        for (PPCIV::iterator vi = targetsOld.begin();vi != targetsOld.end();vi++)
                             if (Evade(vi->first, QuestEffectId, chaos))
                             {
                                 LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
@@ -917,23 +930,39 @@ namespace IterateDecks {
 
                 case ACTIVATION_CHAOS:
                     {
+                        Ability::ConstPtr ability;
+                        if (aindex < ac) {
+                            ability = Src.getAbility(aindex);
+                        } else {
+                            ability = questAbility;
+                        }
+                        ability->executeAbility(EffectType                        
+                                               ,*procCard
+                                               ,*procDeck
+                                               ,Position
+                                               ,EnemyDeck
+                                               ,QuestEffectId
+                                               ,chaos
+                                               ,IsFusioned
+                                               );
+                        #if 0
                         assertGT(effect,0u);
 
                         TargetSet targets;
                         // is the acting card chaosed
                         if (chaos) {
-                            GetTargets(this->Units, faction, targets);
+                            GetTargets(this->Units, faction, targetsOld);
                         } else {
                             // P: does chaosed chaos respect faction modified? Code says yes.
-                            GetTargets(EnemyDeck.Units, faction, targets);
+                            GetTargets(EnemyDeck.Units, faction, targetsOld);
                         }
 
                         // targets with one of these are not valid
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, ACTIVATION_CHAOS, 0};
-                        FilterTargets(targets, skipEffects, NULL, -1, 1, -1, !chaos);
-                        RandomizeTarget(targets,targetCount,EnemyDeck,!chaos);
+                        FilterTargets(targetsOld, skipEffects, NULL, -1, 1, -1, !chaos);
+                        RandomizeTarget(targetsOld,targetCount,EnemyDeck,!chaos);
 
-                        if (targets.size() <= 0) {
+                        if (targetsOld.size() <= 0) {
                             LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
                             break;
                         }
@@ -941,7 +970,7 @@ namespace IterateDecks {
                         procDeck->SkillProcs[aid]++;
 
                         // for each target
-                        for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                        for (PPCIV::iterator vi = targetsOld.begin();vi != targetsOld.end();vi++)
                             if (Evade(vi->first, QuestEffectId, chaos))
                             {
                                 LOG(this->logger,abilityOffensive(EffectType,Src,aid,*(vi->first),effect, true));
@@ -961,16 +990,33 @@ namespace IterateDecks {
                                     vi->first->fsSpecial += effect;
                                 }
                             }
+                        #endif
                     } break;
                 case ACTIVATION_RUSH:
                     {
+                        Ability::ConstPtr ability;
+                        if (aindex < ac) {
+                            ability = Src.getAbility(aindex);
+                        } else {
+                            ability = questAbility;
+                        }
+                        ability->executeAbility(EffectType
+                                               ,*procCard
+                                               ,*procDeck
+                                               ,Position
+                                               ,EnemyDeck
+                                               ,QuestEffectId
+                                               ,chaos
+                                               ,IsFusioned
+                                               );
+                        #if 0
                         assertGT(effect,0u);
                         TargetSet targets;
-                        getTargets(Units,infusedFaction,targets);
+                        GetTargets(Units,infusedFaction,targetsOld);
+                        #error reimplement me
+                        FilterTargets(targetsOld,NULL,NULL,1,-1,-1,false);
 
-                        FilterTargets(targets,NULL,NULL,1,-1,-1,false);
-
-                        RandomizeTarget(targets,targetCount,EnemyDeck,false);
+                        RandomizeTarget(targetsOld,targetCount,EnemyDeck,false);
 
                         if (targets.size() <= 0) {
                             LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
@@ -979,7 +1025,7 @@ namespace IterateDecks {
 
                         SkillProcs[aid]++;
 
-                        for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                        for (PPCIV::iterator vi = targetsOld.begin();vi != targetsOld.end();vi++)
                         {
                             LOG(this->logger,abilityOffensive(EffectType,Src,ACTIVATION_RUSH,*(vi->first),effect));
                             vi->first->Rush(effect);
@@ -996,6 +1042,7 @@ namespace IterateDecks {
                                 EnemyDeck.SkillProcs[DEFENSIVE_EMULATE]++;
                             }
                         }
+                        #endif
                     } break;
                 case SPECIAL_BACKFIRE:
                     {
@@ -1036,30 +1083,30 @@ namespace IterateDecks {
                         effect *= FusionMultiplier;
                         assertGT(effect,0u);
 
-                        GetTargets(Units,infusedFaction,targets);
+                        GetTargets(Units,infusedFaction,targetsOld);
 
                         EFFECT_ARGUMENT skipEffects[] = {ACTIVATION_JAM, ACTIVATION_FREEZE, 0};
                         EFFECT_ARGUMENT targetSkills[] = {ACTIVATION_ENFEEBLE, ACTIVATION_HEAL, ACTIVATION_PROTECT, ACTIVATION_RALLY, ACTIVATION_REPAIR, ACTIVATION_SIEGE, ACTIVATION_STRIKE, ACTIVATION_SUPPLY, ACTIVATION_WEAKEN, 0};
 
                         // friendly fire "gives" all units Strike 1
                         if(QuestEffectId == BattleGroundEffect::friendlyFire) {
-                            FilterTargets(targets,skipEffects,NULL,-1,activeNextTurnWait,-1,true);
+                            FilterTargets(targetsOld,skipEffects,NULL,-1,activeNextTurnWait,-1,true);
                         } else {
-                            FilterTargets(targets,skipEffects,targetSkills,-1,activeNextTurnWait,-1,true);
+                            FilterTargets(targetsOld,skipEffects,targetSkills,-1,activeNextTurnWait,-1,true);
                         }
 
-                        bool bTributable = IsInTargets(procCard,&targets);
+                        bool bTributable = IsInTargets(procCard,&targetsOld);
 
-                        RandomizeTarget(targets,targetCount,EnemyDeck,false);
+                        RandomizeTarget(targetsOld,targetCount,EnemyDeck,false);
 
-                        if (targets.size() <= 0) {
+                        if (targetsOld.size() <= 0) {
                             LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
                             break;
                         }
 
                         procDeck->SkillProcs[aid]++;
 
-                        for (PPCIV::iterator vi = targets.begin();vi != targets.end();vi++)
+                        for (PPCIV::iterator vi = targetsOld.begin();vi != targetsOld.end();vi++)
                         {
                             LOG(this->logger,abilitySupport(EffectType,Src,aid,*(vi->first),effect));
                             vi->first->Augment(effect);
@@ -1097,11 +1144,17 @@ namespace IterateDecks {
                     }
                 } // end switch
 
-                targets.clear();
+                targetsOld.clear();
 
             } // end for(aindex:ac)
 
 
         }
+
+
+
+        
+
+        
     }
 }

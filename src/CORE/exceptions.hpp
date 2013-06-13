@@ -58,8 +58,8 @@
         public:
             using Exception::what;
 
-            LogicError(std::string const & what);
-            LogicError(std::string const & what, unsigned int const skipFirstSymbols);
+            explicit LogicError(std::string const & what);
+            explicit LogicError(std::string const & what, unsigned int const skipFirstSymbols);
             virtual ~LogicError() throw() {};
     };
 
@@ -67,8 +67,8 @@
         public:
             using Exception::what;
 
-            RuntimeError(std::string const & what);
-            RuntimeError(std::string const & what, unsigned int const skipFirstSymbols);
+            explicit RuntimeError(std::string const & what);
+            explicit RuntimeError(std::string const & what, unsigned int const skipFirstSymbols);
             virtual ~RuntimeError() throw() {};
     };
 

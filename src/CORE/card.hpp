@@ -3,6 +3,7 @@
 
     #include "simpleTypes.hpp"
     #include "constants.hpp"
+    #include "ability.hpp"
 
     namespace IterateDecks {
         namespace Core {
@@ -19,6 +20,7 @@
                     UCHAR Attack;
                     UCHAR Health;
                     Rarity rarity;
+                    std::vector<Ability::Ptr> abilities;
                     EFFECT_ARGUMENT Effects[CARD_ABILITIES_MAX];
                     TargetsCount TargetCounts[CARD_ABILITIES_MAX];
                     Faction TargetFactions[CARD_ABILITIES_MAX]; // reserved negative values for faction
@@ -33,10 +35,10 @@
                     Card(const UINT id, const char* name, const char* pic, Rarity const rarity, CardType const type, Faction const faction, const UCHAR attack, const UCHAR health, const UCHAR wait, const UINT set);
                     Card(const Card &card);
                     Card& operator=(const Card &card);
-                    void AddAbility(const UCHAR id, const EFFECT_ARGUMENT effect, const TargetsCount targetcount, const Faction targetfaction, const EVENT_CONDITION skillevent = EVENT_EMPTY);
-                    void AddAbility(const UCHAR id, const TargetsCount targetcount, const Faction targetfaction);
-                    void AddAbility(const UCHAR id, const EFFECT_ARGUMENT effect);
-                    void AddAbility(const UCHAR id);
+                    void AddAbility(AbilityEnum const id, AbilityArgument const effect, TargetCount const targetCount, Faction const targetFaction, EventCondition const skillEvent = EVENT_EMPTY);
+                    void AddAbility(AbilityEnum const id, TargetCount const targetCount, Faction const targetFaction);
+                    void AddAbility(AbilityEnum const id, AbilityArgument const effect);
+                    void AddAbility(AbilityEnum const id);
                     void PrintAbilities();
                     void Destroy();
                     ~Card();
@@ -60,6 +62,9 @@
                     const UCHAR GetAbilityEvent(const UCHAR id) const;
                     const char *GetName() const;
                     const char *GetPicture() const;
+                    
+                    Ability::Ptr getAbility(size_t index);
+                    Ability::ConstPtr getAbility(size_t index) const;        
             };
 
         }

@@ -1,0 +1,116 @@
+#include "ability.hpp"
+#include "exceptions.hpp"
+#include <sstream>
+
+#include "abilityChaos.hpp"
+
+namespace IterateDecks {
+    namespace Core {
+
+        class NotImplementedAbility : public Ability {
+            public:
+                NotImplementedAbility(AbilityEnum abilityType
+                                     ,TargetCount targetCount
+                                     ,Faction targetFaction
+                                     ,AbilityArgument argument
+                                     ,EventCondition condition
+                                     )
+                : Ability(abilityType, targetCount, targetFaction, argument, condition)
+                {}
+
+                void
+                executeAbility(PlayedCard & actingCard
+                              ,ActiveDeck & actingDeck
+                              ,CardPosition position
+                              ,ActiveDeck & oppositeDeck
+                              ,BattleGroundEffect battleGroundEffect
+                              ,bool isChaosed
+                              ,bool isFusioned
+                              ) const
+                {
+                    std::stringstream ssMessage;
+                    ssMessage << "Not implemented ability: ";
+                    ssMessage << this->ability;
+                    throw LogicError(ssMessage.str());
+                }
+        };
+
+        Ability::Ability(AbilityEnum abilityType
+                        ,TargetCount targetCount
+                        ,Faction targetFaction
+                        ,AbilityArgument argument
+                        ,EventCondition condition
+                        )
+        : ability(abilityType)
+        , targetCount(targetCount)
+        , targetFaction(targetFaction)
+        , argument(argument)
+        , eventConditions(condition)
+        {}
+
+        Ability::~Ability() {}
+
+        void
+        Ability::executeAbilityCheckConditions(EventCondition eventCondition
+                                              ,PlayedCard & actingCard
+                                              ,ActiveDeck & actingDeck
+                                              ,CardPosition position
+                                              ,ActiveDeck & oppositeDeck
+                                              ,BattleGroundEffect battleGroundEffect
+                                              ,bool isChaosed
+                                              ,bool isFusioned
+                                              ) const
+        {
+            throw LogicError("Not implemented.");
+        }
+
+        void
+        Ability::executeAbility(EventCondition condition
+                               ,PlayedCard & actingCard
+                               ,ActiveDeck & actingDeck
+                               ,CardPosition position
+                               ,ActiveDeck & oppositeDeck
+                               ,BattleGroundEffect battleGroundEffect
+                               ,bool isChaosed
+                               ,bool isFusioned
+                               ) const
+        {
+            throw LogicError("Not implemented.");
+        }
+
+        TargetSet
+        Ability::findTargets(ActiveDeck & actingDeck
+                            ,ActiveDeck & oppositeDeck
+                            ,bool isChaosed
+                            ) const
+        {
+            throw LogicError("Not implemented.");
+        }
+
+        Ability::Ptr
+        Ability::createAbility(AbilityEnum abilityType
+                              ,TargetCount targetCount
+                              ,Faction targetFaction
+                              ,AbilityArgument argument
+                              ,EventCondition condition
+                              )
+        {
+            switch(abilityType) {
+                case ACTIVATION_CHAOS:
+                    return Ability::Ptr(
+                        new AbilityChaos(abilityType,targetCount,targetFaction,argument,condition)
+                    );                    
+                default: {
+                        return Ability::Ptr(
+                            new NotImplementedAbility(abilityType
+                                                     ,targetCount
+                                                     ,targetFaction
+                                                     ,argument
+                                                     ,condition)
+                        );
+                    }
+            }
+        }
+
+    }
+}

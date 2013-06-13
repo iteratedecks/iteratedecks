@@ -17,7 +17,8 @@
             typedef unsigned long DWORD;
 
             // that is usally the amount (i.e, the 3 in weaken 3), but also the card to summon in summon
-            typedef UINT EFFECT_ARGUMENT;
+            typedef UINT AbilityArgument;
+            typedef AbilityArgument EFFECT_ARGUMENT; //< deprecated
             typedef UCHAR AbilityId; //< deprecated
             typedef UCHAR FactionId; //< deprecated
             typedef UCHAR DelayType;
@@ -40,7 +41,8 @@
             /**
              * Conditions for an event, pseudo bit feld, value 0 is special.
              */
-            typedef unsigned char EVENT_CONDITION;
+            typedef unsigned char EventCondition;
+            typedef EventCondition EVENT_CONDITION; //< deprecated
             /**
              * Event conditions.
              * This is a bit field, new elements should be powers of two.

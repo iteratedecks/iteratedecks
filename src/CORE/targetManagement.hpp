@@ -1,14 +1,20 @@
 #ifndef ITERATEDECKS_CORE_TARGETMANAGEMENT_HPP
     #define ITERATEDECKS_CORE_TARGETMANAGEMENT_HPP
 
-    #include "playedCard.hpp"
+    #include "playedCard.forward.hpp"
+    #include "constants.hpp"
+    #include "simpleTypes.hpp"
 
     namespace IterateDecks {
         namespace Core {
 
-            struct Target {
-                PlayedCard * card;
-                CardPosition position;
+            class Target {
+                public:
+                    PlayedCard & card;
+                    CardPosition position;
+
+                public:
+                    Target(PlayedCard & card, CardPosition position);
             };
 
             typedef std::set<Target> TargetSet;
@@ -33,7 +39,7 @@
             void
             removeTargetsWithEffect
                 (TargetSet & targets //< the set to filter
-                ,Abilities const & effect //< targets with this effect are removed
+                ,AbilityEnum const & effect //< targets with this effect are removed
                 )
             ;
 

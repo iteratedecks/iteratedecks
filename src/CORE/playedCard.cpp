@@ -764,5 +764,12 @@ namespace IterateDecks {
             return this->stage;
         }
 
+        Ability::ConstPtr
+        PlayedCard::getAbility(size_t index
+                              ) const
+        {
+            return this->OriginalCard->getAbility(index);
+        }
+
     }
 }

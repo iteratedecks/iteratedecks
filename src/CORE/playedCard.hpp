@@ -10,6 +10,7 @@
     #include "log.h"
     #include "logger.forward.hpp"
     #include "simpleTypes.hpp"
+    #include "ability.hpp"
 
     namespace IterateDecks {
         namespace Core {
@@ -20,7 +21,7 @@
             class PlayedCard {
                 private:
                     // constant
-                    const Card *OriginalCard;
+                    Card const * OriginalCard;
                     // temporary
                     UCHAR Attack;
                     UCHAR Health;
@@ -129,6 +130,7 @@
 
                     void setStage(CardActionStages stage);
                     CardActionStages getStage() const;
+                    Ability::ConstPtr getAbility(size_t index) const;
             };
         }
     }

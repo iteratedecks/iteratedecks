@@ -1,8 +1,17 @@
 #include "targetManagement.hpp"
 #include "simpleTypes.hpp"
+#include "playedCard.hpp"
 
 namespace IterateDecks {
     namespace Core {
+
+        Target::Target(PlayedCard & card
+                      ,CardPosition position
+                      )
+        : card(card)
+        , position(position)
+        {
+        }
 
         bool operator< (Target const & a, Target const b) {
             return a.position < b.position;
@@ -19,10 +28,9 @@ namespace IterateDecks {
                ;iter++, i++
                )
             {
-                Target target;
-                target.card = &(*iter);
-                // FIXME that feels ugly
-                target.position = i;
+                // FIXME that feels ugly with the position
+                Target target(*iter,i);
+                
                 targets.insert(target);
             }
         }
@@ -34,7 +42,7 @@ namespace IterateDecks {
         {
             TargetSet::iterator iter = targets.begin();
             while(iter != targets.end()) {
-                if (iter->card->GetEffect(effect) > 0) {
+                if (iter->card.GetEffect(effect) > 0) {
                     iter = targets.erase(iter);
                 } else {
                     iter++;
@@ -70,7 +78,7 @@ namespace IterateDecks {
             if(faction != FACTION_NONE) {
                 TargetSet::iterator iter = targets.begin();
                 while(iter != targets.end()) {
-                    if (iter->card->GetFaction() != faction) {
+                    if (iter->card.GetFaction() != faction) {
                         iter = targets.erase(iter);
                     } else {
                         iter++;
@@ -85,7 +93,7 @@ namespace IterateDecks {
         {
             TargetSet::iterator iter = targets.begin();
             while(iter != targets.end()) {
-                if (iter->card->getStage() >= CardActionStages::attackStarted) {
+                if (iter->card.getStage() >= CardActionStages::attackStarted) {
                     iter = targets.erase(iter);
                 } else {
                     iter++;
@@ -101,7 +109,7 @@ namespace IterateDecks {
         {
             TargetSet::iterator iter = targets.begin();
             while(iter != targets.end()) {
-                DelayType delay = iter->card->GetWait();
+                DelayType delay = iter->card.GetWait();
                 if (delay < minDelay || maxDelay < delay) {
                     iter = targets.erase(iter);
                 } else {
@@ -120,7 +128,7 @@ namespace IterateDecks {
                ;iter != targets.end()
                ;iter++)
             {
-                if(iter->card == &card) {
+                if(&(iter->card) == &card) {
                     return true;
                 }
             }
@@ -157,10 +165,10 @@ namespace IterateDecks {
         {
             TargetSet::iterator iter = targets.begin();
             while (iter != targets.end()) {
-                if (!iter->card->IsCleanseTarget()) {
-                    vi = targets.erase(vi);
+                if (!iter->card.IsCleanseTarget()) {
+                    iter = targets.erase(iter);
                 } else {
-                    vi++;
+                    iter++;
                 }
             }
         }

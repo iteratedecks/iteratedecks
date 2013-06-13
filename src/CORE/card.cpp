@@ -84,6 +84,7 @@ namespace IterateDecks {
         : type(card.type)
         , faction(card.faction)
         , rarity(card.rarity)
+        , abilities(abilities)
         {
             Id = card.Id;
             memcpy(Name,card.Name,CARD_NAME_MAX_LENGTH);
@@ -97,9 +98,7 @@ namespace IterateDecks {
             memcpy(TargetFactions,card.TargetFactions,CARD_ABILITIES_MAX);
             memcpy(AbilityEvent,card.AbilityEvent,CARD_ABILITIES_MAX);
             AbilitiesOrdered.reserve(RESERVE_ABILITIES_COUNT);
-            if (!card.AbilitiesOrdered.empty())
-                for (UCHAR i=0;i<card.AbilitiesOrdered.size();i++)
-                    AbilitiesOrdered.push_back(card.AbilitiesOrdered[i]);
+            AbilitiesOrdered = card.AbilitiesOrdered;            
         }
         Card& Card::operator=(Card const &card)
         {
@@ -118,39 +117,40 @@ namespace IterateDecks {
             memcpy(TargetFactions,card.TargetFactions,CARD_ABILITIES_MAX);
             memcpy(AbilityEvent,card.AbilityEvent,CARD_ABILITIES_MAX);
             AbilitiesOrdered.reserve(RESERVE_ABILITIES_COUNT);
-            if (!card.AbilitiesOrdered.empty())
-                for (UCHAR i=0;i<card.AbilitiesOrdered.size();i++)
-                    AbilitiesOrdered.push_back(card.AbilitiesOrdered[i]);
+            AbilitiesOrdered = card.AbilitiesOrdered;
+            this->abilities = card.abilities;
             return *this;
         }
-        void Card::AddAbility(const UCHAR id, const EFFECT_ARGUMENT effect, const TargetsCount targetcount, const Faction targetfaction, const UCHAR skillevent)
+        
+        void
+        Card::AddAbility(AbilityEnum const abilityType
+                        ,AbilityArgument const effect
+                        ,TargetCount const targetCount
+                        ,Faction const targetFaction
+                        ,EventCondition const condition)
         {
-            Effects[id] = effect;
-            TargetCounts[id] = targetcount;
-            TargetFactions[id] = targetfaction;
-            AbilityEvent[id] = skillevent;
-            AbilitiesOrdered.push_back(id);
+            Effects[abilityType] = effect;
+            TargetCounts[abilityType] = targetCount;
+            TargetFactions[abilityType] = targetFaction;
+            AbilityEvent[abilityType] = condition;
+            AbilitiesOrdered.push_back(abilityType);
+            this->abilities.push_back(
+                Ability::createAbility(abilityType, targetCount, targetFaction, effect, condition)
+            );
         }
-        void Card::AddAbility(const UCHAR id, const TargetsCount targetcount, const Faction targetfaction)
+        void Card::AddAbility(const AbilityEnum id, const TargetsCount targetcount, const Faction targetfaction)
         {
-            Effects[id] = ABILITY_ENABLED;
-            TargetCounts[id] = targetcount;
-            TargetFactions[id] = targetfaction;
-            AbilityEvent[id] = EVENT_EMPTY;
-            AbilitiesOrdered.push_back(id);
+            this->AddAbility(id, ABILITY_ENABLED, targetcount, targetfaction, EVENT_EMPTY);
         }
-        void Card::AddAbility(const UCHAR id, const EFFECT_ARGUMENT effect)
+        void Card::AddAbility(const AbilityEnum id, const EFFECT_ARGUMENT effect)
         {
-            Effects[id] = effect;
-            AbilityEvent[id] = EVENT_EMPTY;
-            AbilitiesOrdered.push_back(id);
+            this->AddAbility(id, effect, TARGETSCOUNT_ONE, FACTION_NONE, EVENT_EMPTY);
         }
-        void Card::AddAbility(const UCHAR id)
+        void Card::AddAbility(const AbilityEnum id)
         {
-            Effects[id] = ABILITY_ENABLED;
-            AbilityEvent[id] = EVENT_EMPTY;
-            AbilitiesOrdered.push_back(id);
+            this->AddAbility(id, ABILITY_ENABLED);
         }
+        
         void Card::PrintAbilities()
         {
             for (UCHAR i=0;i<CARD_ABILITIES_MAX;i++)
@@ -210,6 +210,31 @@ namespace IterateDecks {
         const UCHAR Card::GetAbilityEvent(const UCHAR id) const { return AbilityEvent[id]; }
         const char * Card::GetName() const { return Name; }
         const char * Card::GetPicture() const { return Picture; }
+
+        Ability::Ptr
+        Card::getAbility(size_t index)
+        {
+            if(index < this->abilities.size()) {
+                return this->abilities[index];
+            } else {
+                std::stringstream ssMessage;
+                ssMessage << "Index out of bounds: ";
+                ssMessage << index << " !< " << this->abilities.size();
+                throw LogicError(ssMessage.str());
+            }
+        }
+        Ability::ConstPtr
+        Card::getAbility(size_t index) const
+        {
+            if(index < this->abilities.size()) {
+                return this->abilities[index];
+            } else {
+                std::stringstream ssMessage;
+                ssMessage << "Index out of bounds: ";
+                ssMessage << index << " !< " << this->abilities.size();
+                throw LogicError(ssMessage.str());
+            }
+        }
 
     }
 }

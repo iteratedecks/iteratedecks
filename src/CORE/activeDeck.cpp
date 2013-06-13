@@ -17,8 +17,6 @@
 
 #include "compat.h"
 
-#include <boost/foreach.hpp>
-
 namespace IterateDecks {
     namespace Core {
 
@@ -1768,7 +1766,7 @@ namespace IterateDecks {
                 //} else if(skipPlayed && vi->first->GetPlayed()) {                    
                 //    erase = true;
                 } else if (skipPlayed) {
-                    throw Exception("Deprecated code, rewrite using new targetManagement!");
+                    throw Exception("Deprecated code, rewrite using new Ability class and targetManagement!");
                 } else {
                     if(skipEffects != NULL) {
                         for (effect = skipEffects; *effect != 0; ++effect) {

@@ -20,7 +20,7 @@
             #define FILENAME_MAX_LENGTH		50 //
             #define CARD_ABILITIES_MAX		100u // must sync it with CARD_ABILITIES_MAX in interface
 
-            enum Abilities {
+            enum AbilityEnum {
                 SPECIAL_ATTACK = 0,
                 ABILITY_ENABLED = 1,
                 ACTIVATION_CHAOS = 10,
@@ -84,11 +84,19 @@
                 SPECIAL_MIST, // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
                 SPECIAL_BLIZZARD, // this skill doesn't change anything in autoplay // max number refers to CARD_ABILITIES_MAX
             };
+            typedef AbilityEnum Abilities; //< deprecated
+            inline
+            AbilityEnum
+            abilityEnumFromId(unsigned int id)
+            {
+                return static_cast<AbilityEnum>(id);
+            }
 
-            enum TargetsCount {
+            enum TargetCount {
                 TARGETSCOUNT_ONE = 0,
                 TARGETSCOUNT_ALL = 10,
             };
+            typedef TargetCount TargetsCount; //< deprecated
 
             char const * const FACTIONS[6] = {0,"Imperial","Raider","Bloodthirsty","Xeno","Righteous"};
 
