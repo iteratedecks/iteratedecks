@@ -107,8 +107,8 @@ namespace IterateDecks {
         }
 
         IterateDecksCore::IterateDecksCore()
-        : logger(NULL)
-        , loggerDelegate(NULL)
+        : loggerDelegate(NULL)
+        , logger(NULL)
         {
             this->cardDB.LoadAchievementXML("achievements.xml");
             this->cardDB.LoadCardXML("cards.xml");
