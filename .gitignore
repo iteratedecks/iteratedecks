@@ -20,3 +20,4 @@ bin/tests.json
 /.externalToolBuilders
 /.settings
 /.cproject
+/Debug
