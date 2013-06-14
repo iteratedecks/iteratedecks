@@ -6,54 +6,54 @@
     #include <set>
     #include "../CORE/deckTemplate.hpp"
     #include "../CORE/cardPool.forward.hpp"
+    #include "cliOptions.hpp"
 
     namespace IterateDecks {
         namespace CLI {
 
             std::list<unsigned int> hashToId(std::string const & hash);
             
-            DeckTemplate::Ptr createDeckTemplate(DeckArgument const & argument, CardDB const & cardDB);
+            Core::DeckTemplate::Ptr createDeckTemplate(DeckArgument const & argument, Core::CardDB const & cardDB);
 
-
-            class OrderedDeckTemplate : public DeckTemplate {
+            class OrderedDeckTemplate : public Core::DeckTemplate {
                 private:
-                    Card const * commander;
-                    std::list<Card const *> cards;
+                    Core::Card const * commander;
+                    std::list<Core::Card const *> cards;
                 public:
-                    OrderedDeckTemplate(DeckArgument const & argument, CardDB const & cardDB);
-                    virtual ActiveDeck instantiate(CardDB const & cardDB) const;
+                    OrderedDeckTemplate(DeckArgument const & argument, Core::CardDB const & cardDB);
+                    virtual Core::ActiveDeck instantiate(Core::CardDB const & cardDB) const;
 
             };
 
-            class UnorderedDeckTemplate : public DeckTemplate {
+            class UnorderedDeckTemplate : public Core::DeckTemplate {
                 private:
-                    Card const * commander;
-                    std::multiset<Card const *> cards;
+                    Core::Card const * commander;
+                    std::multiset<Core::Card const *> cards;
                 public:
-                    UnorderedDeckTemplate(DeckArgument const & argument, CardDB const & cardDB);
-                    virtual ActiveDeck instantiate(CardDB const & cardDB) const;
+                    UnorderedDeckTemplate(DeckArgument const & argument, Core::CardDB const & cardDB);
+                    virtual Core::ActiveDeck instantiate(Core::CardDB const & cardDB) const;
             };
 
-            class PooledTemplate : public DeckTemplate {
+            class PooledTemplate : public Core::DeckTemplate {
                 private:
-                    Card const * commander;
-                    std::multiset<Card const *> alwaysInclude;
-                    std::multiset<CardPool const *> pools;
+                    Core::Card const * commander;
+                    std::multiset<Core::Card const *> alwaysInclude;
+                    std::multiset<Core::CardPool const *> pools;
                     
                 public:
-                    PooledTemplate(Card const * commander, VCARDPOOL const & pools, CardDB const & cardDB);
-                    PooledTemplate(Card const * commander, VID const & alwaysInclude, VCARDPOOL const & pools, CardDB const & cardDB);
-                    static PooledTemplate::Ptr createFromRaidId(unsigned int const raidId, CardDB const & cardDB);
+                    PooledTemplate(Core::Card const * commander, Core::VCARDPOOL const & pools, Core::CardDB const & cardDB);
+                    PooledTemplate(Core::Card const * commander, Core::VID const & alwaysInclude, Core::VCARDPOOL const & pools, Core::CardDB const & cardDB);
+                    static PooledTemplate::Ptr createFromRaidId(unsigned int const raidId, Core::CardDB const & cardDB);
 
-                    virtual ActiveDeck instantiate(CardDB const & cardDB) const;
+                    virtual Core::ActiveDeck instantiate(Core::CardDB const & cardDB) const;
 
             };
 
             class QuestTemplate : public PooledTemplate {
                 public:
-                    QuestTemplate(Card const * commander, VCARDPOOL const & pools, CardDB const & cardDB);
+                    QuestTemplate(Core::Card const * commander, Core::VCARDPOOL const & pools, Core::CardDB const & cardDB);
 
-                    static DeckTemplate::Ptr createFromQuestId(unsigned int const questId, CardDB const & cardDB);
+                    static Core::DeckTemplate::Ptr createFromQuestId(unsigned int const questId, Core::CardDB const & cardDB);
             };
         }
     }

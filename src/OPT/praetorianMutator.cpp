@@ -20,9 +20,9 @@ namespace IterateDecks {
         , fullOrder(true)
         , unorder(true)
         , changeCommander(true)
+        , onlyAutoDecks(false)
         , ignoreCardLimitUpTo(10)
         , cardDB(cardDB)
-        , onlyAutoDecks(false)
         {
             this->initAllowedCardsFromCardDB();
         }
@@ -38,10 +38,10 @@ namespace IterateDecks {
         , fullOrder(true)
         , unorder(true)
         , changeCommander(true)
+        , onlyAutoDecks(false)
         , ignoreCardLimitUpTo(ignoreCardLimitUpTo)
         , allowedCards(ownedCards)
         , cardDB(cardDB)
-        , onlyAutoDecks(false)        
         {
             if(ignoreCardLimitUpTo == 0) {
                 this->initAllowedCardsFromCollection(ownedCards.begin(), ownedCards.end());
