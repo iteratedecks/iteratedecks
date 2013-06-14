@@ -3,6 +3,7 @@
 #include <sstream>
 
 #include "abilityChaos.hpp"
+#include "abilityWeaken.hpp"
 
 namespace IterateDecks {
     namespace Core {
@@ -107,7 +108,11 @@ namespace IterateDecks {
                 case ACTIVATION_CHAOS:
                     return Ability::Ptr(
                         new AbilityChaos(abilityType,targetCount,targetFaction,argument,condition)
-                    );                    
+                    );
+                case ACTIVATION_WEAKEN:
+                    return Ability::Ptr(
+                        new AbilityWeaken(abilityType,targetCount,targetFaction,argument,condition)
+                    );
                 default: {
                         return Ability::Ptr(
                             new NotImplementedAbility(abilityType
