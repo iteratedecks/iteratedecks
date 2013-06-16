@@ -393,7 +393,7 @@ void DeckLogger::abilityOffensive(EVENT_CONDITION const & eventCondition
 void DeckLogger::abilityFailNoTarget(EVENT_CONDITION const & eventCondition
                                     ,AbilityId const & aid
                                     ,PlayedCard const & src
-                                    ,bool const & isMimiced
+                                    //,bool const & isMimiced
                                     ,bool const & isChaosed
                                     ,FactionId const & factionId
                                     ,EFFECT_ARGUMENT const & effectArgument
@@ -401,9 +401,9 @@ void DeckLogger::abilityFailNoTarget(EVENT_CONDITION const & eventCondition
 {
     if (this->delegate.isEnabled(Logger::LOG_ABILITY_FAILED_NOTARGET)) {
         std::stringstream ssFailMessage;
-        if(isMimiced) {
-            ssFailMessage << "mimiced ";
-        }
+        //if(isMimiced) {
+        //    ssFailMessage << "mimiced ";
+        //}
         if(isChaosed) {
             ssFailMessage << "chaosed ";
         }

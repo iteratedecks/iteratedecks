@@ -231,7 +231,7 @@ namespace IterateDecks {
                         pickRandomTargetsWithoutIntercept(targets,targetCount);
 
                         if (targets.empty()) {
-                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src/*,IsMimiced*/,chaos,faction,effect));
                             break;
                         }
 
@@ -284,7 +284,7 @@ namespace IterateDecks {
                         RandomizeTarget(targetsOld,targetCount,EnemyDeck,!chaos);
 
                         if (targetsOld.size() <= 0) {
-                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src/*,IsMimiced*/,chaos,faction,effect));
                             break;
                         }
 
@@ -334,7 +334,7 @@ namespace IterateDecks {
                         RandomizeTarget(targetsOld,targetCount,EnemyDeck,false);
 
                         if (targetsOld.size() <= 0) {
-                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src/*,IsMimiced*/,chaos,faction,effect));
                             break;
                         }
 
@@ -413,7 +413,7 @@ namespace IterateDecks {
                                 procDeck->SkillProcs[aid]++;
                             } else {
                                 // no targets
-                                LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,false,FACTION_NONE,effect));
+                                LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src/*,IsMimiced*/,false,FACTION_NONE,effect));
                                 break;
                             }
 
@@ -457,7 +457,7 @@ namespace IterateDecks {
                         RandomizeTarget(targetsOld,targetCount,EnemyDeck,false);
 
                         if (targetsOld.size() <= 0) {
-                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src/*,IsMimiced*/,chaos,faction,effect));
                             break;
                         }
 
@@ -511,7 +511,7 @@ namespace IterateDecks {
                         RandomizeTarget(targetsOld,targetCount,EnemyDeck,!chaos);
 
                         if (targetsOld.size() <= 0) {
-                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,(chaos),faction,effect));
+                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src/*,IsMimiced*/,(chaos),faction,effect));
                             break;
                         }
 
@@ -563,7 +563,7 @@ namespace IterateDecks {
                         RandomizeTarget(targetsOld,targetCount,EnemyDeck,!chaos);
 
                         if (targetsOld.size() <= 0) {
-                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src/*,IsMimiced*/,chaos,faction,effect));
                             break;
                         }
 
@@ -606,7 +606,7 @@ namespace IterateDecks {
                         RandomizeTarget(targetsOld,targetCount,EnemyDeck,!chaos && (QuestEffectId != BattleGroundEffect::copyCat));
 
                         if (targetsOld.size() <= 0) {
-                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src/*,IsMimiced*/,chaos,faction,effect));
                             break;
                         }
 
@@ -648,7 +648,7 @@ namespace IterateDecks {
                         
 
                         if (friendlyTargets.size() <= 0) {
-                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src/*,IsMimiced*/,chaos,faction,effect));
                             break;
                         }
                         
@@ -715,7 +715,7 @@ namespace IterateDecks {
                         RandomizeTarget(targetsOld,targetCount,EnemyDeck,false);
 
                         if (targetsOld.size() <= 0) {
-                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src/*,IsMimiced*/,chaos,faction,effect));
                             break;
                         }
 
@@ -752,7 +752,7 @@ namespace IterateDecks {
                         RandomizeTarget(targetsOld,targetCount,EnemyDeck,false);
 
                         if (targetsOld.size() <= 0) {
-                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src/*,IsMimiced*/,chaos,faction,effect));
                             break;
                         }
 
@@ -811,7 +811,7 @@ namespace IterateDecks {
                         RandomizeTarget(targetsOld,targetCount,EnemyDeck,!chaos);
 
                         if (targetsOld.size() <= 0) {
-                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src/*,IsMimiced*/,chaos,faction,effect));
                             break;
                         }
 
@@ -901,7 +901,7 @@ namespace IterateDecks {
                         RandomizeTarget(targetsOld,targetCount,EnemyDeck,!chaos);
 
                         if (targetsOld.size() <= 0) {
-                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src/*,IsMimiced*/,chaos,faction,effect));
                             break;
                         }
 
@@ -963,7 +963,7 @@ namespace IterateDecks {
                         RandomizeTarget(targetsOld,targetCount,EnemyDeck,!chaos);
 
                         if (targetsOld.size() <= 0) {
-                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src/*,IsMimiced*/,chaos,faction,effect));
                             break;
                         }
 
@@ -1019,7 +1019,7 @@ namespace IterateDecks {
                         RandomizeTarget(targetsOld,targetCount,EnemyDeck,false);
 
                         if (targets.size() <= 0) {
-                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src/*,IsMimiced*/,chaos,faction,effect));
                             break;
                         }
 
@@ -1070,11 +1070,11 @@ namespace IterateDecks {
                                 LOG(this->logger,abilitySupport(EffectType,Src,aid,Src,effect));
                             } else {
                                 // TODO probably want a more appropriate fail message
-                                LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                                LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src/*,IsMimiced*/,chaos,faction,effect));
                             }
                         } else {
                             // TODO probably want a more appropriate fail message
-                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src/*,IsMimiced*/,chaos,faction,effect));
                         }
 
                     } break;
@@ -1100,7 +1100,7 @@ namespace IterateDecks {
                         RandomizeTarget(targetsOld,targetCount,EnemyDeck,false);
 
                         if (targetsOld.size() <= 0) {
-                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src,IsMimiced,chaos,faction,effect));
+                            LOG(this->logger,abilityFailNoTarget(EffectType,aid,Src/*,IsMimiced*/,chaos,faction,effect));
                             break;
                         }
 
