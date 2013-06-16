@@ -15,15 +15,17 @@
                                  ,EventCondition condition
                                  );
 
-                    void
-                    executeAbility(EventCondition condition
-                                  ,PlayedCard & actingCard
-                                  ,ActiveDeck & actingDeck
-                                  ,CardPosition position
-                                  ,ActiveDeck & oppositeDeck
-                                  ,BattleGroundEffect battleGroundEffect
-                                  ,bool isChaosed
-                                  ,bool isFusioned
+                    void executeAbilityForOneTarget
+                        (EventCondition condition
+                        ,PlayedCard & actingCard
+                        ,ActiveDeck & actingDeck
+                        ,CardPosition actingPosition
+                        ,PlayedCard & targetCard
+                        ,ActiveDeck & oppositeDeck
+                        ,CardPosition targetPosition
+                        ,BattleGroundEffect battleGroundEffect
+                        ,bool isChaosed
+                        ,bool isFusioned
                                   ) const;
 
                     TargetSet

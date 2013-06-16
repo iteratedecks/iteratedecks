@@ -20,38 +20,36 @@ namespace IterateDecks {
             assertEQ(argument,1u);
         }
 
-        
+
         void
-        AbilityChaos::executeAbility(EventCondition condition
-                               ,PlayedCard & actingCard
-                               ,ActiveDeck & actingDeck
-                               ,CardPosition position
-                               ,ActiveDeck & oppositeDeck
-                               ,BattleGroundEffect battleGroundEffect
-                               ,bool isChaosed
-                               ,bool isFusioned
+        AbilityChaos::executeAbilityForOneTarget(EventCondition condition
+                        ,PlayedCard & actingCard
+                        ,ActiveDeck & actingDeck
+                        ,CardPosition actingPosition
+                        ,PlayedCard & targetCard
+                        ,ActiveDeck & oppositeDeck
+                        ,CardPosition targetPosition
+                        ,BattleGroundEffect battleGroundEffect
+                        ,bool isChaosed
+                        ,bool isFusioned
                                ) const
         {
-            TargetSet targets = this->findTargets(condition, actingDeck, position, oppositeDeck, isChaosed);
-            BOOST_FOREACH(Target target, targets) {
-                PlayedCard & targetCard = target.card;
-                if (ActiveDeck::Evade(&targetCard, battleGroundEffect, isChaosed)) {
-                    LOG(actingDeck.logger,abilityOffensive(condition,actingCard,this->ability,targetCard,this->argument, true));
-                    oppositeDeck.SkillProcs[DEFENSIVE_EVADE]++;
-                } else {
-                    LOG(actingDeck.logger,abilityOffensive(condition,actingCard,this->ability,targetCard,this->argument));
-                    targetCard.SetEffect(this->ability,this->argument);
-                    actingCard.fsSpecial += this->argument;
+            if (ActiveDeck::Evade(&targetCard, battleGroundEffect, isChaosed)) {
+                LOG(actingDeck.logger,abilityOffensive(condition,actingCard,this->ability,targetCard,this->argument, true));
+                oppositeDeck.SkillProcs[DEFENSIVE_EVADE]++;
+            } else {
+                LOG(actingDeck.logger,abilityOffensive(condition,actingCard,this->ability,targetCard,this->argument));
+                targetCard.SetEffect(this->ability,this->argument);
+                actingCard.fsSpecial += this->argument;
 
-                    if (    !isChaosed
-                         && ActiveDeck::Payback(oppositeDeck, &targetCard, actingCard, condition, this->ability, this->argument, isChaosed)
-                       )  // payback
-                    {
-                        actingCard.SetEffect(this->ability, this->argument);
-                        targetCard.fsSpecial += this->argument;
-                    }
+                if (    !isChaosed
+                     && ActiveDeck::Payback(oppositeDeck, &targetCard, actingCard, condition, this->ability, this->argument, isChaosed)
+                   )  // payback
+                {
+                    actingCard.SetEffect(this->ability, this->argument);
+                    targetCard.fsSpecial += this->argument;
                 }
-            }            
+            }
         }
 
         TargetSet
@@ -70,10 +68,10 @@ namespace IterateDecks {
             }
             filterTargetsByFaction(targets, this->targetFaction);
             removeTargetsThatCannotAct(targets);
-            
+
             // Don't apply this to units which are already affected.
             removeTargetsWithEffect(targets, this->ability);
-            
+
             if (eventCondition == EVENT_EMPTY || eventCondition == EVENT_PLAYED) {
                 removeTargetsWithDelayOutsideOf(targets,0,1);
             } else if (eventCondition == EVENT_DIED) {
@@ -82,7 +80,7 @@ namespace IterateDecks {
                 removeTargetsWithDelayOutsideOf(targets,0,0);
                 // only targets units that have not yet attacked
                 // P: this somehow applies to opposite side aswell, expect this to be a bug in tyrant.
-                //    Reason not relevant though.
+                //    The reason is not relevant, though.
                 removeTargetsLeftOfOrAtSamePosition(targets, position);
             } else if (eventCondition == EVENT_KILL) {
                 // Moraku's guide claims on kill can only target with delay 0, not with 1.

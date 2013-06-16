@@ -7,7 +7,7 @@
     #include "playedCard.forward.hpp"
     #include "activeDeck.forward.hpp"
     #include "targetManagement.hpp"
-    
+
     namespace IterateDecks {
         namespace Core {
 
@@ -22,7 +22,7 @@
                 public:
                     typedef std::shared_ptr<Ability> Ptr;
                     typedef std::shared_ptr<Ability const> ConstPtr;
-                  
+
                 protected:
                     Ability(AbilityEnum abilityType, TargetCount targetCount, Faction targetFaction, AbilityArgument argument, EventCondition condition);
                 public:
@@ -34,7 +34,7 @@
                                                      );
                     ~Ability();
 
-                public:                
+                public:
                     void executeAbilityCheckConditions
                         (EventCondition eventCondition
                         ,PlayedCard & actingCard
@@ -45,7 +45,7 @@
                         ,bool isChaosed
                         ,bool isFusioned
                         ) const;
-                
+
                     virtual
                     void executeAbility
                         (EventCondition condition
@@ -56,7 +56,22 @@
                         ,BattleGroundEffect battleGroundEffect
                         ,bool isChaosed
                         ,bool isFusioned
+                        ) const;
+
+                    virtual
+                    void executeAbilityForOneTarget
+                        (EventCondition condition
+                        ,PlayedCard & actingCard
+                        ,ActiveDeck & actingDeck
+                        ,CardPosition actingPosition
+                        ,PlayedCard & targetCard
+                        ,ActiveDeck & oppositeDeck
+                        ,CardPosition targetPosition
+                        ,BattleGroundEffect battleGroundEffect
+                        ,bool isChaosed
+                        ,bool isFusioned
                         ) const = 0;
+
 
                     virtual
                     TargetSet findTargets

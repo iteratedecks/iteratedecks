@@ -5,6 +5,10 @@
 #include "abilityChaos.hpp"
 #include "abilityWeaken.hpp"
 
+#include "activeDeck.hpp"
+#include "Logger.hpp"
+#include <boost/foreach.hpp>
+
 namespace IterateDecks {
     namespace Core {
 
@@ -20,7 +24,7 @@ namespace IterateDecks {
                 {}
 
                 void
-                executeAbility(PlayedCard & actingCard
+                executeAbilityCheckCondition(PlayedCard & actingCard
                               ,ActiveDeck & actingDeck
                               ,CardPosition position
                               ,ActiveDeck & oppositeDeck
@@ -45,6 +49,24 @@ namespace IterateDecks {
                               ,bool isChaosed
                               ,bool isFusioned
                               ) const
+                {
+                    std::stringstream ssMessage;
+                    ssMessage << "Not implemented ability: ";
+                    ssMessage << this->ability;
+                    throw LogicError(ssMessage.str());
+                }
+
+                void executeAbilityForOneTarget(EventCondition condition
+                        ,PlayedCard & actingCard
+                        ,ActiveDeck & actingDeck
+                        ,CardPosition actingPosition
+                        ,PlayedCard & targetCard
+                        ,ActiveDeck & oppositeDeck
+                        ,CardPosition targetPosition
+                        ,BattleGroundEffect battleGroundEffect
+                        ,bool isChaosed
+                        ,bool isFusioned
+                        ) const
                 {
                     std::stringstream ssMessage;
                     ssMessage << "Not implemented ability: ";
@@ -94,6 +116,32 @@ namespace IterateDecks {
                                               ) const
         {
             throw LogicError("Not implemented.");
+        }
+
+        void
+        Ability::executeAbility(EventCondition condition
+                               ,PlayedCard & actingCard
+                               ,ActiveDeck & actingDeck
+                               ,CardPosition position
+                               ,ActiveDeck & oppositeDeck
+                               ,BattleGroundEffect battleGroundEffect
+                               ,bool isChaosed
+                               ,bool isFusioned
+                               ) const
+        {
+            TargetSet targets = this->findTargets(condition, actingDeck, position, oppositeDeck, isChaosed);
+            if (targets.size() <= 0) {
+                LOG(actingDeck.logger,abilityFailNoTarget(condition,this->ability,actingCard,isChaosed,this->targetFaction,this->argument));
+                return;
+            } else {
+                actingDeck.SkillProcs[this->ability]++;
+                BOOST_FOREACH(Target target, targets) {
+                    this->executeAbilityForOneTarget(condition, actingCard, actingDeck, position
+                                                    ,target.card, oppositeDeck, target.position
+                                                    ,battleGroundEffect, isChaosed, isFusioned
+                                                    );
+                }
+            }
         }
 
         Ability::Ptr
