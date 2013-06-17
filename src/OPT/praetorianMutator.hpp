@@ -59,7 +59,8 @@
                     PraetorianMutator(C::CardDB const & cardDB);
                     PraetorianMutator(C::CardDB const & cardDB, CardMSet const & ownedCards, unsigned int ignoreCardLimitUpTo);
                     virtual DeckSet mutate(C::DeckTemplate::Ptr const & initial);
-                    virtual void abort();                    
+                    virtual void abort();
+                    virtual ~PraetorianMutator() {};
             };
 
         }

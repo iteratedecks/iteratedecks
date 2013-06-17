@@ -35,6 +35,7 @@
                     virtual IterateDecks::Core::DeckTemplate::Ptr optimizeOnce(IterateDecks::Core::SimulationTaskClass const & initial, bool optimizeAttacker = true, double const cropFactor = 0.5);
                     virtual IterateDecks::Core::DeckTemplate::Ptr optimizeMany(IterateDecks::Core::SimulationTaskClass const & task, bool optimizeAttacker = true);
                     virtual void abort();
+                    virtual ~PraetorianOptimizer() {};
             };
         }
     }

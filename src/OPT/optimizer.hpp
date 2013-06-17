@@ -16,6 +16,7 @@
                 public:
                     virtual IterateDecks::Core::DeckTemplate::Ptr optimizeMany(IterateDecks::Core::SimulationTaskClass const & task, bool attacker = true) = 0;
                     virtual void abort() = 0;
+                    virtual ~Optimizer() {};
             };
 
         }
