@@ -17,7 +17,7 @@ namespace IterateDecks {
     namespace Core {
 
         // FIXME remove ancient first generation logging code
-        extern bool bConsoleOutput;
+        // extern bool bConsoleOutput;
 
         #define BASE64ID	base64ToId // alias
         UINT base64ToId(const unsigned short base64)
@@ -535,7 +535,8 @@ namespace IterateDecks {
     // #############################################################################
 
         ActiveDeck::ActiveDeck()
-        : logger(NULL)
+        : LogDeckID()
+        , logger(NULL)
         {
             QuestEffectId = BattleGroundEffect::normal;
             Log = 0;
@@ -592,7 +593,8 @@ namespace IterateDecks {
         }
         // please note, contructors don't clean up storages, must do it manually and beforehand, even copy constructor
         ActiveDeck::ActiveDeck(const char *DeckHash, const Card *pCDB)
-        : pCDB(pCDB)
+        : LogDeckID()
+        , pCDB(pCDB)
         , logger(NULL)
         {
             assertX(pCDB);
@@ -667,7 +669,8 @@ namespace IterateDecks {
             }
         }
         ActiveDeck::ActiveDeck(const Card *Cmd, Card const * const pCDB)
-        : pCDB(pCDB)
+        : LogDeckID()
+        , pCDB(pCDB)
         , logger(NULL)
         {
             QuestEffectId = BattleGroundEffect::normal;
@@ -687,7 +690,8 @@ namespace IterateDecks {
             memset(CardDeaths,0,DEFAULT_DECK_RESERVE_SIZE*sizeof(UINT));
         };
         ActiveDeck::ActiveDeck(const ActiveDeck &D) // need copy constructor
-        : pCDB(D.pCDB)
+        : LogDeckID()
+        , pCDB(D.pCDB)
         , logger(D.logger)
         {
             QuestEffectId = D.QuestEffectId;

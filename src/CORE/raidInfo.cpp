@@ -7,7 +7,9 @@
 namespace IterateDecks {
     namespace Core {
 
-        RaidInfo::RaidInfo() {}
+        RaidInfo::RaidInfo()
+        : Commander()
+        {}
 
         RaidInfo::RaidInfo(UINT commander, char const *name)
         : Commander(commander)

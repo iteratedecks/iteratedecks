@@ -21,6 +21,7 @@ namespace IterateDecks {
                               )
         : optimizeAttacker(false)
         , optimizeDefender(false)
+        , verbosity(verbosity)
         {
             IterateDecksCore::Ptr idSim = IterateDecksCore::Ptr (new IterateDecksCore());
             SimulatorCore::Ptr sim = idSim;
@@ -48,7 +49,7 @@ namespace IterateDecks {
             this->optimizer = Optimizer::Ptr(new PraetorianOptimizer(cache, mutator));
 
             // logging stuff
-            unsigned long const loggingFlags ((verbosity) > 0 ? Logger::LOG_ALL : Logger::LOG_NONE);
+            unsigned long const loggingFlags ((this->verbosity) > 0 ? Logger::LOG_ALL : Logger::LOG_NONE);
             if (loggingFlags != Logger::LOG_NONE) {
                 std::clog << "Enabling logging." << std::endl;
                 this->logger = new Logger(loggingFlags, cardDB);

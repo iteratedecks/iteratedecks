@@ -143,6 +143,8 @@ namespace IterateDecks {
                 }
                 sqlResults.push_back(sqlResult);
             } while (true);
+
+            throw Exception("This shouldn't run. It fixes a compiler warning.");
         }
 
 

@@ -13,8 +13,9 @@ struct LOG_CARD
 
 	// FIXME: Is it intentional that DeckID is uninitialized?
 	LOG_CARD()
-	: RowID(INVALID_ROWID),
-	  CardID(100)
+	: DeckID()
+	, RowID(INVALID_ROWID)
+	, CardID(100)
 	{};
 
 	LOG_CARD(const UCHAR deckID, const UCHAR rowID, const UCHAR cardID) 

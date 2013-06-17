@@ -23,6 +23,7 @@ namespace IterateDecks {
         , onlyAutoDecks(false)
         , ignoreCardLimitUpTo(10)
         , cardDB(cardDB)
+        , aborted()
         {
             this->initAllowedCardsFromCardDB();
         }
@@ -42,6 +43,7 @@ namespace IterateDecks {
         , ignoreCardLimitUpTo(ignoreCardLimitUpTo)
         , allowedCards(ownedCards)
         , cardDB(cardDB)
+        , aborted()
         {
             if(ignoreCardLimitUpTo == 0) {
                 this->initAllowedCardsFromCollection(ownedCards.begin(), ownedCards.end());
@@ -69,7 +71,7 @@ namespace IterateDecks {
         PraetorianMutator::isExcluded(unsigned int cardId
                                      ) const
         {
-            Card const & card = this->cardDB.GetPointer()[cardId];
+            //Card const & card = this->cardDB.GetPointer()[cardId];
             
             switch(cardId) {
                 case 999:

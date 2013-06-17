@@ -2,7 +2,10 @@
 
 namespace IterateDecks {
     namespace Core {
-        BgInfo::BgInfo() {};
+        BgInfo::BgInfo()
+        : id()
+        , effectId()
+        {}
 
         BgInfo::BgInfo(UINT const id
                       ,char const * const name

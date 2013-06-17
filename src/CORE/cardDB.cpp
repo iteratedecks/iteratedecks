@@ -33,7 +33,7 @@ namespace IterateDecks {
         }
 
         // FIXME: Remove global variable
-        extern bool bConsoleOutput;
+        // extern bool bConsoleOutput;
 
         #define CARD_NAME_SYNTAX_EXCLUSION	"Kapak, the Deceiver"
 

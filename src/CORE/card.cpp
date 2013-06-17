@@ -44,6 +44,13 @@ namespace IterateDecks {
 
         Card::Card()
         : Id(0)
+        , type()
+        , Wait()
+        , Set()
+        , faction()
+        , Attack()
+        , Health()
+        , rarity()
         {
             memset(Name,0,CARD_NAME_MAX_LENGTH);
             memset(Effects,0,CARD_ABILITIES_MAX * sizeof(EFFECT_ARGUMENT));

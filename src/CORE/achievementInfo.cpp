@@ -14,6 +14,7 @@ namespace IterateDecks {
         , SkillID(-1)
         , NumUsed(-1)
         , NumKilledWith(-1)
+        , Status()
         , Damage(-1)
         , ComTotal(-1)
         , Compare(UNDEFINED)
@@ -21,6 +22,7 @@ namespace IterateDecks {
 
 
         AchievementInfo::AchievementType::AchievementType()
+        : EnemyID()
         {
             MissionID = 0;
             Winner = 0;
@@ -58,6 +60,7 @@ namespace IterateDecks {
 
         AchievementInfo::AchievementInfo()
         : Id(0)
+        , Number()
         {}
 
         AchievementInfo::AchievementInfo(UINT const id, char const * const name, char const * const desc, UINT const number)

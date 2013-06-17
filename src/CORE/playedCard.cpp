@@ -14,7 +14,7 @@ namespace IterateDecks {
     namespace Core {
 
         // FIXME: remove that first generation debugging stuff:
-        extern bool bConsoleOutput;
+        // extern bool bConsoleOutput;
 
         #define PROC50	Proc()
         bool PROC50

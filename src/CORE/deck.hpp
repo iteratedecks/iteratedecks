@@ -11,7 +11,9 @@
     struct REQUIREMENT {
         UCHAR SkillID;
         UCHAR Procs;
-        REQUIREMENT() { SkillID = 0; };
+        REQUIREMENT()
+        : Procs()
+        { SkillID = 0; };
     };
 
     }}

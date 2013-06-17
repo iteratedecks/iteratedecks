@@ -16,7 +16,9 @@
                 UCHAR amount;
                 VID pool;
             public:
-                CardPool() {};
+                CardPool()
+                : amount()
+                {};
 
                 CardPool(UCHAR amount)
                 : amount(amount)

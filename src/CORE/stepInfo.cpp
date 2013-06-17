@@ -4,7 +4,11 @@
 namespace IterateDecks {
     namespace Core {
 
-        StepInfo::StepInfo() {}
+        StepInfo::StepInfo()
+        : id()
+        , bgId()
+        , commander()
+        {}
 
         StepInfo::StepInfo(UINT id, UINT bgid, UINT commander)
         : id(id)

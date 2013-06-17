@@ -223,7 +223,7 @@ namespace IterateDecks {
                 return cached + fresh;
             } else {
                 return cached;
-            };
+            }
         }
 
         void

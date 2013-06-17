@@ -18,7 +18,9 @@
                     {
                     }
 
-                    DeckIndex() {}
+                    DeckIndex()
+                    : tag()
+                    {}
 
                     DeckIndex(std::string const & name, Tag const tag)
                     : name(name)
