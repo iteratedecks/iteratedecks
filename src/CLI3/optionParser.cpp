@@ -1,6 +1,7 @@
 #include "optionParser.hpp"
 #include "commands.hpp"
 #include "runCommand.hpp"
+#include "../CORE/cardDB.hpp"
 
 #include "../CORE/exceptions.hpp"
 #include <boost/program_options.hpp>
@@ -238,8 +239,7 @@ namespace IterateDecks {
             }
         }
 
-        DeckTemplate::Ptr parseDeck(std::string const & deckDescription
-                                   )
+        DeckTemplate::Ptr parseDeck(std::string const & deckDescription)
         {
             // valid deck descriptions start with a string part describing what type of deck this is
             // the format is: IDENTIFIER:DATA
@@ -268,7 +268,8 @@ namespace IterateDecks {
                 unsigned int missionId = boost::lexical_cast<unsigned int>(data);
                 return DeckTemplate::Ptr(new MissionIdDeckTemplate(missionId));
             } else if (identifier.compare("RAIDID") == 0) {
-                throw Exception("Sorry, not implemented yet!");
+                unsigned int raidId = boost::lexical_cast<unsigned int>(data);
+                return DeckTemplate::Ptr(new RaidDeck(raidId));
             } else if (identifier.compare("QUESTID") == 0) {
                 throw Exception("Sorry, not implemented yet!");
             } else {
