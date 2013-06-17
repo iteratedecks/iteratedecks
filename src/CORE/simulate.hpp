@@ -1,3 +1,5 @@
+#include <stddef.h>
+
 namespace IterateDecks { namespace Core {
 
 void Simulate(ActiveDeck &tAtk
