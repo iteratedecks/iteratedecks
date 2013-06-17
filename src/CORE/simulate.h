@@ -23,8 +23,8 @@ CardDB DB; // just to make all easier ...
 UINT MaxTurn = MAX_TURN;
 
 // Block
-typedef map<string, PICK_STATS> MSPS;
-typedef pair<string, PICK_STATS> PAIRSPS;
+typedef std::map<std::string, PICK_STATS> MSPS;
+typedef std::pair<std::string, PICK_STATS> PAIRSPS;
 MSPS StatsByOrder;
 }}
 #if defined(__windows__)
@@ -52,7 +52,7 @@ namespace IterateDecks { namespace Core {
 
 int OrderLength = 0;// 0 to disable //DEFAULT_DECK_SIZE;
 UINT MaxOrderHeapSize = 700;
-void InsertOrder(string Order, int State)
+void InsertOrder(std::string Order, int State)
 {
 	if (OrderLength <= 0)
 		return;
@@ -62,7 +62,7 @@ void InsertOrder(string Order, int State)
     #endif
 	if (OrderLength > 0)
 		Order = Order.substr(0,(OrderLength + 1)*2); // 2 extra chars for commander
-	pair <MSPS::iterator, bool> pi = StatsByOrder.insert(PAIRSPS(Order,PICK_STATS()));
+	std::pair <MSPS::iterator, bool> pi = StatsByOrder.insert(PAIRSPS(Order,PICK_STATS()));
 
 	if (pi.first == StatsByOrder.end())
 		return;
@@ -133,8 +133,8 @@ http://www.kongregate.com/forums/65-tyrant/topics/201617-tyrant-war-scores-formu
 but Fonzoland explained it so that I could understand:
 All modes.
 1. Winning gives a base score of 10 on fight/defense, 30 on surge. Surrender/stall count as a win for the defender.
-2. There is a “damage bonus” (all damage dealt to enemy commander, including overkill, in a certain range of turns), which is always capped at 10.
-3. There is a “speed bonus” for killing the enemy commander before a certain turn, which is always 5.
+2. There is a ï¿½damage bonusï¿½ (all damage dealt to enemy commander, including overkill, in a certain range of turns), which is always capped at 10.
+3. There is a ï¿½speed bonusï¿½ for killing the enemy commander before a certain turn, which is always 5.
 Auto mode.
 All turns:
 Winner damage bonus accumulates from the start.
