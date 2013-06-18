@@ -18,6 +18,10 @@
         	struct CardPool;
 
         	class PooledTemplate : public DeckTemplate {
+
+                public:
+                    typedef std::shared_ptr<PooledTemplate> Ptr;
+
         		protected:
         			PooledTemplate();
         			Card const * commander;
@@ -27,12 +31,9 @@
         		public:
         			PooledTemplate(Card const * commander, VCARDPOOL const & pools, CardDB const & cardDB);
         			PooledTemplate(Card const * commander, VID const & alwaysInclude, VCARDPOOL const & pools, CardDB const & cardDB);
-        			static PooledTemplate::Ptr createFromRaidId(unsigned int const raidId, CardDB const & cardDB);
-        			static PooledTemplate::Ptr createFromQuestId(unsigned int const questId, CardDB const & cardDB);
 
         			ActiveDeck instantiate(CardDB const & cardDB) const;
 
-        			std::string toString() const;
         			DeckTemplate::Ptr withCommander(UINT commanderId) const;
         			size_t getNumberOfNonCommanderCards() const;
         			UINT getCardAtIndex(size_t index) const;

@@ -16,8 +16,9 @@ namespace IterateDecks {
             unsigned int raidId;
 
         public:
-            RaidDeck(unsigned int missionId, CardDB const & cardDB);
+            RaidDeck(unsigned int raidId);
             ActiveDeck instantiate(IterateDecks::Core::CardDB const &) const;
+            std::string toString() const;
         };
     }
 }

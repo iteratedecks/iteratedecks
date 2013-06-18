@@ -11,6 +11,7 @@
 #include "missionIdDeckTemplate.hpp"
 #include "../CORE/simpleTypes.hpp"
 #include "../CORE/assert.hpp"
+#include "../CORE/raidDeck.hpp"
 
 namespace po = boost::program_options;
 using namespace IterateDecks::Core;
@@ -82,7 +83,7 @@ namespace IterateDecks {
                 if (vm.count("help")) {
                     return Command::Ptr(new HelpCommand(desc));
                 } else if (vm.count("core-version")) {
-                    return Command::Ptr(new CoreVersionCommand());                    
+                    return Command::Ptr(new CoreVersionCommand());
                 } else if (vm.count("version")) {
                     return Command::Ptr(new VersionCommand());
                 }
@@ -94,7 +95,7 @@ namespace IterateDecks {
                 );
                 //std::clog << "running with " << numberOfIterations << " iterations" << std::endl;
                 allowInvalidDecks = vm.count("allow-invalid-decks") > 0;
-                command->task.minimalNumberOfGames = numberOfIterations;                
+                command->task.minimalNumberOfGames = numberOfIterations;
                 command->task.attacker = parseDeck(vm["attacker"].as<std::string>());
                 command->task.attacker->allowInvalid = allowInvalidDecks;
                 command->task.defender = parseDeck(vm["defender"].as<std::string>());

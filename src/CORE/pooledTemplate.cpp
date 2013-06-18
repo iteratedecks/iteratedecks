@@ -1,8 +1,11 @@
 #include "pooledTemplate.hpp"
 
-#include <bits/shared_ptr.h>
+#include <boost/lexical_cast.hpp>
+#include <cstddef>
 #include <iterator>
+#include <memory>
 #include <set>
+#include <string>
 #include <vector>
 
 #include "activeDeck.hpp"
@@ -12,8 +15,12 @@
 #include "cardPool.hpp"
 #include "constants.hpp"
 #include "deckTemplate.hpp"
+#include "exceptions.hpp"
 #include "raidInfo.hpp"
 #include "simpleTypes.hpp"
+#include "stepInfo.hpp"
+
+namespace IterateDecks { namespace Core { class Card; } }
 
 namespace IterateDecks {
     namespace Core {
@@ -64,28 +71,6 @@ namespace IterateDecks {
 			}
 		}
 
-		DeckTemplate::Ptr PooledTemplate::createFromRaidId(unsigned int const raidId, CardDB const & cardDB)
-		{
-			assertLT(raidId,RAID_MAX_ID);
-			RaidInfo const & raidInfo = cardDB.getRaidInfo(raidId);
-			assertX(raidInfo.IsValid());
-			unsigned int const & commanderId(raidInfo.GetCommander());
-			Card const * commander = &cardDB.GetCard(commanderId);
-
-			return DeckTemplate::Ptr(new PooledTemplate(commander, raidInfo.AlwaysInclude, raidInfo.Pools, cardDB));
-		}
-
-        DeckTemplate::Ptr PooledTemplate::createFromQuestId(unsigned int const questId, CardDB const & cardDB)
-        {
-            assertLT(questId,STEP_MAX_ID);
-            StepInfo const & stepInfo = cardDB.getQuestInfo(questId);
-            assertX(stepInfo.IsValid());
-            unsigned int const & commanderId(stepInfo.GetCommander());
-            Card const * commander = &cardDB.GetCard(commanderId);
-
-            return Core::DeckTemplate::Ptr(new PooledTemplate(commander, stepInfo.pools, cardDB));
-        }
-
 		ActiveDeck PooledTemplate::instantiate(CardDB const & cardDB) const
 		{
 			ActiveDeck activeDeck(this->commander, cardDB.GetPointer());
@@ -111,11 +96,6 @@ namespace IterateDecks {
 			//activeDeck.PrintShort();
 			return activeDeck;
 
-		}
-
-		std::string PooledTemplate::toString() const
-		{
-			throw Exception("Not Implemented.");
 		}
 
 		DeckTemplate::Ptr PooledTemplate::withCommander(UINT commanderId) const

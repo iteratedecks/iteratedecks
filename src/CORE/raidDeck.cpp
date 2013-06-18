@@ -1,32 +1,38 @@
-#include <iterator>
-#include <map>
-#include <vector>
-
-#include "cardPool.forward.hpp"
-#include "simpleTypes.hpp"
-
 #include "raidDeck.hpp"
 
+#include <boost/lexical_cast.hpp>
+#include <iterator>
+#include <map>
+#include <memory>
 #include <set>
+#include <string>
+#include <vector>
 
 #include "activeDeck.hpp"
+#include "card.hpp"
 #include "cardDB.hpp"
+#include "cardPool.forward.hpp"
 #include "cardPool.hpp"
 #include "pooledTemplate.hpp"
 #include "raidInfo.hpp"
+#include "simpleTypes.hpp"
 
-namespace IterateDecks { namespace Core { class Card; } }
 
 namespace IterateDecks {
     namespace Core {
 
-        RaidDeck::RaidDeck(unsigned int raidId, CardDB const & cardDB)
+        RaidDeck::RaidDeck(unsigned int raidId)
         : raidId(raidId)
         {
+        	CardDB cardDB;
+
+        	cardDB.LoadCardXML("cards.xml");
+        	cardDB.LoadRaidXML("raids.xml");
+
             RaidInfo const & raidInfo = cardDB.getRaidInfo(raidId);
 
             unsigned int const & commanderId(raidInfo.GetCommander());
-            Card const * commander = &cardDB.GetCard(commanderId);
+            this->commander = &cardDB.GetCard(commanderId);
 
             for(VID::const_iterator iter = raidInfo.AlwaysInclude.begin()
                ;iter != raidInfo.AlwaysInclude.end()
@@ -70,6 +76,11 @@ namespace IterateDecks {
             //activeDeck.PrintShort();
             return activeDeck;
 
+        }
+
+        std::string RaidDeck::toString() const
+        {
+            return "RAIDID:" + boost::lexical_cast<std::string>(this->raidId);
         }
     }
 }
