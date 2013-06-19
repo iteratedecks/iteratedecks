@@ -18,19 +18,19 @@ namespace IterateDecks {
         RunCommand::RunCommand(int verbosity
                               ,bool dontReadCache
                               ,unsigned int extraCards
+                              ,Core::CardDB const & cardDB
                               )
         : optimizeAttacker(false)
         , optimizeDefender(false)
         , verbosity(verbosity)
         {
-            IterateDecksCore::Ptr idSim = IterateDecksCore::Ptr (new IterateDecksCore());
+            IterateDecksCore::Ptr idSim = IterateDecksCore::Ptr (new IterateDecksCore(cardDB));
             SimulatorCore::Ptr sim = idSim;
             DiskBackedCache::Ptr cache = DiskBackedCache::Ptr(
                 new DiskBackedCache(sim)
             );
             cache->setDontReadCache(dontReadCache);
             this->simulator = cache;
-            CardDB const & cardDB = idSim->getCardDB();
 
             PraetorianMutator::Ptr mutator;
             // owned cards?
@@ -41,7 +41,7 @@ namespace IterateDecks {
                     ,"\n"
                     ,":"
                     );
-            
+
                 mutator = PraetorianMutator::Ptr(new PraetorianMutator(cardDB, ownedCards, extraCards));
             } else {
                 mutator = PraetorianMutator::Ptr(new PraetorianMutator(cardDB));
@@ -68,7 +68,7 @@ namespace IterateDecks {
             }
         }
 
-        int RunCommand::execute() {
+        int RunCommand::execute(Core::CardDB const & cardDB) {
             assertX(!(this->optimizeAttacker && this->optimizeDefender));
             if(this->optimizeAttacker || this->optimizeDefender) {
 
@@ -81,7 +81,7 @@ namespace IterateDecks {
                 std::cout << "Optimization finished, found:" << std::endl;
                 std::cout << optimizedDeck->toString() << std::endl;
                 return 0;
-            } else {            
+            } else {
                 Result r = this->simulator->simulate(this->task);
                 std::cout << "Games won:     " << std::setw(11) << r.gamesWon
                           << " /" << std::setw(11) << r.numberOfGames << " " << std::endl;
@@ -99,6 +99,6 @@ namespace IterateDecks {
             this->simulator->abort();
             this->optimizer->abort();
         }
-        
+
     }
 }

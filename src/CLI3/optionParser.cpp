@@ -19,7 +19,8 @@ namespace IterateDecks {
     namespace CLI3 {
 
 
-        Command::Ptr parseArguments(int argc
+        Command::Ptr parseArguments(Core::CardDB const & cardDB
+                                   ,int argc
                                    ,char const * const * argv
                                    )
         {
@@ -91,14 +92,14 @@ namespace IterateDecks {
                 po::notify(vm);
 
                 RunCommand::Ptr command = RunCommand::Ptr(
-                    new RunCommand(vm.count("verbose"), vm.count("no-cache-read") > 0, vm["mutator-allow-extra"].as<unsigned int>())
+                    new RunCommand(vm.count("verbose"), vm.count("no-cache-read") > 0, vm["mutator-allow-extra"].as<unsigned int>(), cardDB)
                 );
                 //std::clog << "running with " << numberOfIterations << " iterations" << std::endl;
                 allowInvalidDecks = vm.count("allow-invalid-decks") > 0;
                 command->task.minimalNumberOfGames = numberOfIterations;
-                command->task.attacker = parseDeck(vm["attacker"].as<std::string>());
+                command->task.attacker = parseDeck(vm["attacker"].as<std::string>(), cardDB);
                 command->task.attacker->allowInvalid = allowInvalidDecks;
-                command->task.defender = parseDeck(vm["defender"].as<std::string>());
+                command->task.defender = parseDeck(vm["defender"].as<std::string>(), cardDB);
                 command->task.defender->allowInvalid = allowInvalidDecks;
                 command->task.surge = vm.count("surge") > 0;
                 command->task.battleGround = static_cast<BattleGroundEffect>(battleGroundId);
@@ -240,7 +241,8 @@ namespace IterateDecks {
             }
         }
 
-        DeckTemplate::Ptr parseDeck(std::string const & deckDescription)
+        DeckTemplate::Ptr parseDeck(std::string const & deckDescription
+                                   ,Core::CardDB const & cardDB)
         {
             // valid deck descriptions start with a string part describing what type of deck this is
             // the format is: IDENTIFIER:DATA
@@ -270,7 +272,7 @@ namespace IterateDecks {
                 return DeckTemplate::Ptr(new MissionIdDeckTemplate(missionId));
             } else if (identifier.compare("RAIDID") == 0) {
                 unsigned int raidId = boost::lexical_cast<unsigned int>(data);
-                return DeckTemplate::Ptr(new RaidDeck(raidId));
+                return DeckTemplate::Ptr(new RaidDeck(raidId, cardDB));
             } else if (identifier.compare("QUESTID") == 0) {
                 throw Exception("Sorry, not implemented yet!");
             } else {

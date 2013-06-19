@@ -10,11 +10,11 @@ using namespace IterateDecks::Core;
 namespace IterateDecks {
     namespace CLI3 {
 
-        Command::Command() 
+        Command::Command()
         : aborted(false)
         {}
 
-        Command::~Command() 
+        Command::~Command()
         {}
 
         void
@@ -22,9 +22,9 @@ namespace IterateDecks {
         {
             this->aborted = true;
         }
-        
 
-        int VersionCommand::execute()
+
+        int VersionCommand::execute(Core::CardDB const & cardDB)
         {
             std::cout << "iteratedecks-cli3 version hash:" << std::endl;
             std::cout << '\t' << ITERATEDECKS_VERSION;
@@ -37,7 +37,7 @@ namespace IterateDecks {
             std::cout << '\t' << ITERATEDECKS_VERSION_TAGS << std::endl;
 
             // TODO Obviously if we want to allow exchangable core we would need a better way here.
-            SimulatorCore::Ptr core = SimulatorCore::Ptr( new IterateDecksCore() );
+            SimulatorCore::Ptr core = SimulatorCore::Ptr( new IterateDecksCore(cardDB) );
 
             std::cout << "Simulator core name: "    << std::endl;
             std::cout << '\t' << core->getCoreName()        << std::endl;
@@ -59,10 +59,10 @@ namespace IterateDecks {
             return 0;
         }
 
-        int CoreVersionCommand::execute()
+        int CoreVersionCommand::execute(Core::CardDB const & cardDB)
         {
             // TODO Obviously if we want to allow exchangable core we would need a better way here.
-            SimulatorCore::Ptr core = SimulatorCore::Ptr( new IterateDecksCore() );
+            SimulatorCore::Ptr core = SimulatorCore::Ptr( new IterateDecksCore(cardDB) );
 
             std::cout << core->getCoreVersion() << std::endl;
             return 0;
@@ -73,7 +73,7 @@ namespace IterateDecks {
         {
         }
 
-        int HelpCommand::execute()
+        int HelpCommand::execute(Core::CardDB const & cardDB)
         {
             std::cout << this->desc << std::endl;
             return 0;

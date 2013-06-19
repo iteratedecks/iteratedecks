@@ -83,7 +83,7 @@
                     typedef std::shared_ptr<IterateDecksCore> Ptr;
 
                 public:
-                    IterateDecksCore();
+                    IterateDecksCore(Core::CardDB const & cardDB);
                     virtual ~IterateDecksCore();
                     void setLogger(Logger * loggerDelegate);
                     Result simulate(SimulationTaskClass const &);

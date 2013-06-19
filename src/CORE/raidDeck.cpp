@@ -21,14 +21,9 @@
 namespace IterateDecks {
     namespace Core {
 
-        RaidDeck::RaidDeck(unsigned int raidId)
+        RaidDeck::RaidDeck(unsigned int raidId, Core::CardDB const & cardDB)
         : raidId(raidId)
         {
-        	CardDB cardDB;
-
-        	cardDB.LoadCardXML("cards.xml");
-        	cardDB.LoadRaidXML("raids.xml");
-
             RaidInfo const & raidInfo = cardDB.getRaidInfo(raidId);
 
             unsigned int const & commanderId(raidInfo.GetCommander());

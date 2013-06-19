@@ -106,17 +106,13 @@ namespace IterateDecks {
             return hashes;
         }
 
-        IterateDecksCore::IterateDecksCore()
+        IterateDecksCore::IterateDecksCore(Core::CardDB const & cardDB)
         : loggingFlags()
         , aborted()
+        , cardDB(cardDB)
         , loggerDelegate(NULL)
         , logger(NULL)
         {
-            this->cardDB.LoadAchievementXML("achievements.xml");
-            this->cardDB.LoadCardXML("cards.xml");
-            this->cardDB.LoadMissionXML("missions.xml");
-            this->cardDB.LoadRaidXML("raids.xml");
-            this->cardDB.LoadQuestXML("quests.xml");
         }
 
         void IterateDecksCore::setLogger(Logger * loggerDelegate) {
