@@ -186,6 +186,21 @@ namespace IterateDecks {
                 }
             }
         }
+
+        void
+        removeTargetsWithZeroOrLessAttack
+            (TargetSet & targets
+            )
+        {
+            TargetSet::iterator iter = targets.begin();
+            while (iter != targets.end()) {
+                if (!iter->card.GetAttack() <= 0) {
+                    iter = targets.erase(iter);
+                } else {
+                    iter++;
+                }
+            }
+        }
         
     }
 }

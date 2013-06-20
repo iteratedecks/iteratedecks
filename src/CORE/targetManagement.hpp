@@ -100,6 +100,11 @@
                 ,CardPosition position
                 );
 
+            void
+            removeTargetsWithZeroOrLessAttack
+                (TargetSet & targets
+                );
+
         }
     }
 #endif

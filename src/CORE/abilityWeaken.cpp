@@ -40,6 +40,7 @@ namespace IterateDecks {
                 actingCard.fsSpecial += this->argument;
 
                 if (    !isChaosed
+                     && actingCard.GetAttack() > 0
                      && ActiveDeck::Payback(oppositeDeck, &targetCard, actingCard, condition, this->ability, this->argument, isChaosed)
                    )  // payback
                 {
@@ -48,6 +49,48 @@ namespace IterateDecks {
                     targetCard.fsSpecial += this->argument;
                 }
             }
+        }
+
+        TargetSet
+        AbilityWeaken::findTargets(EventCondition eventCondition
+                                 ,ActiveDeck & actingDeck
+                                 ,CardPosition position
+                                 ,ActiveDeck & oppositeDeck
+                                 ,bool isChaosed
+                                 ) const
+        {
+            TargetSet targets;
+            if (isChaosed) {
+                IterateDecks::Core::getTargets(targets, actingDeck.Units);
+            } else {
+                IterateDecks::Core::getTargets(targets, oppositeDeck.Units);
+            }
+            filterTargetsByFaction(targets, this->targetFaction);
+            removeTargetsThatCannotAttack(targets);
+            removeTargetsWithZeroOrLessAttack(targets);
+
+            // TODO: Needs testing
+            throw LogicError("Not implemented.");
+            if (eventCondition == EVENT_EMPTY || eventCondition == EVENT_PLAYED) {
+                removeTargetsWithDelayOutsideOf(targets,0,1);
+            } else if (eventCondition == EVENT_DIED) {
+                removeTargetsWithDelayOutsideOf(targets,0,0);
+            } else if (eventCondition == EVENT_ATTACKED ) {
+                removeTargetsWithDelayOutsideOf(targets,0,0);
+                // only targets units that have not yet attacked
+                // P: this somehow applies to opposite side aswell, expect this to be a bug in tyrant.
+                //    The reason is not relevant, though.
+                removeTargetsLeftOfOrAtSamePosition(targets, position);
+            } else if (eventCondition == EVENT_KILL) {
+                // Moraku's guide claims on kill can only target with delay 0, not with 1.
+                // P: That does not make any sense, so lets look into this.
+                // P: Yep, thats wrong again.
+                // P: Basically on kill tagets the same as normal.
+                removeTargetsWithDelayOutsideOf(targets,0,1);
+            } else {
+                throw LogicError("Switch case failed.");
+            }
+            return targets;
         }
 
     }

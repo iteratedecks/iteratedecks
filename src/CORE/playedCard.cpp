@@ -666,7 +666,7 @@ namespace IterateDecks {
             else
                 return false;
         }
-        
+
         bool PlayedCard::IsDiseased() const	{	return Effects[DMGDEPENDANT_DISEASE] > 0; }
 
         bool PlayedCard::IsSundered() const	{	return Effects[DMGDEPENDANT_SUNDER] > 0; }
@@ -682,7 +682,7 @@ namespace IterateDecks {
             if(IsDiseased()) {
                 return 0;
             }
-            
+
             if (IsDiseased()) return 0;
             if (Health + amount >  OriginalCard->GetHealth()) {
                 amount = (OriginalCard->GetHealth() - Health);
@@ -769,6 +769,13 @@ namespace IterateDecks {
                               ) const
         {
             return this->OriginalCard->getAbility(index);
+        }
+
+        AbilityArgument
+        PlayedCard::addEffect(AbilityEnum effect, AbilityArgument amount)
+        {
+            this->Effects[effect] += amount;
+            return amount;
         }
 
     }

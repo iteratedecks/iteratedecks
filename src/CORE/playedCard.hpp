@@ -131,6 +131,8 @@
                     void setStage(CardActionStages stage);
                     CardActionStages getStage() const;
                     Ability::ConstPtr getAbility(size_t index) const;
+
+                    AbilityArgument addEffect(AbilityEnum effect, AbilityArgument amount);
             };
         }
     }
