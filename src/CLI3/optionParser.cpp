@@ -1,23 +1,43 @@
 #include "optionParser.hpp"
-#include "commands.hpp"
-#include "runCommand.hpp"
-#include "../CORE/cardDB.hpp"
 
-#include "../CORE/exceptions.hpp"
-#include <boost/program_options.hpp>
 #include <boost/lexical_cast.hpp>
-#include "../CORE/autoDeckTemplate.hpp"
-#include "simpleOrderedDeckTemplate.hpp"
-#include "missionIdDeckTemplate.hpp"
-#include "../CORE/simpleTypes.hpp"
+#include <boost/program_options/errors.hpp>
+#include <boost/program_options/options_description.hpp>
+#include <boost/program_options/parsers.hpp>
+#include <boost/program_options/value_semantic.hpp>
+#include <boost/program_options/variables_map.hpp>
+#include <cctype>
+#include <cstddef>
+#include <list>
+#include <map>
+#include <memory>
+#include <new>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <utility>
+
+#include "../CORE/achievementOptions.hpp"
+#include "../CORE/activeDeck.forward.hpp"
 #include "../CORE/assert.hpp"
+#include "../CORE/autoDeckTemplate.hpp"
+#include "../CORE/cardDB.hpp"
+#include "../CORE/constants.hpp"
+#include "../CORE/deckTemplate.hpp"
+#include "../CORE/exceptions.hpp"
+#include "../CORE/iterateDecksCore.hpp"
+#include "../CORE/questDeck.hpp"
 #include "../CORE/raidDeck.hpp"
+#include "../CORE/simpleTypes.hpp"
+#include "commands.hpp"
+#include "missionIdDeckTemplate.hpp"
+#include "runCommand.hpp"
+#include "simpleOrderedDeckTemplate.hpp"
 
 namespace po = boost::program_options;
 using namespace IterateDecks::Core;
 namespace IterateDecks {
     namespace CLI3 {
-
 
         Command::Ptr parseArguments(Core::CardDB const & cardDB
                                    ,int argc
@@ -274,7 +294,8 @@ namespace IterateDecks {
                 unsigned int raidId = boost::lexical_cast<unsigned int>(data);
                 return DeckTemplate::Ptr(new RaidDeck(raidId, cardDB));
             } else if (identifier.compare("QUESTID") == 0) {
-                throw Exception("Sorry, not implemented yet!");
+                unsigned int questId = boost::lexical_cast<unsigned int>(data);
+                return DeckTemplate::Ptr(new QuestDeck(questId, cardDB));
             } else {
                 std::stringstream ssMessage;
                 ssMessage << "Identifier '" << identifier << "' not supported." << std::endl;

@@ -17,7 +17,6 @@
 #include "raidInfo.hpp"
 #include "simpleTypes.hpp"
 
-
 namespace IterateDecks {
     namespace Core {
 
