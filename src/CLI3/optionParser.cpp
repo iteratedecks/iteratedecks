@@ -1,23 +1,46 @@
 #include "optionParser.hpp"
-#include "commands.hpp"
-#include "runCommand.hpp"
 
-#include "../CORE/exceptions.hpp"
-#include <boost/program_options.hpp>
 #include <boost/lexical_cast.hpp>
-#include "../CORE/autoDeckTemplate.hpp"
-#include "simpleOrderedDeckTemplate.hpp"
-#include "missionIdDeckTemplate.hpp"
-#include "../CORE/simpleTypes.hpp"
+#include <boost/program_options/errors.hpp>
+#include <boost/program_options/options_description.hpp>
+#include <boost/program_options/parsers.hpp>
+#include <boost/program_options/value_semantic.hpp>
+#include <boost/program_options/variables_map.hpp>
+#include <cctype>
+#include <cstddef>
+#include <list>
+#include <map>
+#include <memory>
+#include <new>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <utility>
+
+#include "../CORE/achievementOptions.hpp"
+#include "../CORE/activeDeck.forward.hpp"
 #include "../CORE/assert.hpp"
+#include "../CORE/autoDeckTemplate.hpp"
+#include "../CORE/cardDB.hpp"
+#include "../CORE/constants.hpp"
+#include "../CORE/deckTemplate.hpp"
+#include "../CORE/exceptions.hpp"
+#include "../CORE/iterateDecksCore.hpp"
+#include "../CORE/questDeck.hpp"
+#include "../CORE/raidDeck.hpp"
+#include "../CORE/simpleTypes.hpp"
+#include "commands.hpp"
+#include "missionIdDeckTemplate.hpp"
+#include "runCommand.hpp"
+#include "simpleOrderedDeckTemplate.hpp"
 
 namespace po = boost::program_options;
 using namespace IterateDecks::Core;
 namespace IterateDecks {
     namespace CLI3 {
 
-
-        Command::Ptr parseArguments(int argc
+        Command::Ptr parseArguments(Core::CardDB const & cardDB
+                                   ,int argc
                                    ,char const * const * argv
                                    )
         {
@@ -81,7 +104,7 @@ namespace IterateDecks {
                 if (vm.count("help")) {
                     return Command::Ptr(new HelpCommand(desc));
                 } else if (vm.count("core-version")) {
-                    return Command::Ptr(new CoreVersionCommand());                    
+                    return Command::Ptr(new CoreVersionCommand());
                 } else if (vm.count("version")) {
                     return Command::Ptr(new VersionCommand());
                 }
@@ -89,14 +112,14 @@ namespace IterateDecks {
                 po::notify(vm);
 
                 RunCommand::Ptr command = RunCommand::Ptr(
-                    new RunCommand(vm.count("verbose"), vm.count("no-cache-read") > 0, vm["mutator-allow-extra"].as<unsigned int>())
+                    new RunCommand(vm.count("verbose"), vm.count("no-cache-read") > 0, vm["mutator-allow-extra"].as<unsigned int>(), cardDB)
                 );
                 //std::clog << "running with " << numberOfIterations << " iterations" << std::endl;
                 allowInvalidDecks = vm.count("allow-invalid-decks") > 0;
-                command->task.minimalNumberOfGames = numberOfIterations;                
-                command->task.attacker = parseDeck(vm["attacker"].as<std::string>());
+                command->task.minimalNumberOfGames = numberOfIterations;
+                command->task.attacker = parseDeck(vm["attacker"].as<std::string>(), cardDB);
                 command->task.attacker->allowInvalid = allowInvalidDecks;
-                command->task.defender = parseDeck(vm["defender"].as<std::string>());
+                command->task.defender = parseDeck(vm["defender"].as<std::string>(), cardDB);
                 command->task.defender->allowInvalid = allowInvalidDecks;
                 command->task.surge = vm.count("surge") > 0;
                 command->task.battleGround = static_cast<BattleGroundEffect>(battleGroundId);
@@ -239,7 +262,7 @@ namespace IterateDecks {
         }
 
         DeckTemplate::Ptr parseDeck(std::string const & deckDescription
-                                   )
+                                   ,Core::CardDB const & cardDB)
         {
             // valid deck descriptions start with a string part describing what type of deck this is
             // the format is: IDENTIFIER:DATA
@@ -268,9 +291,11 @@ namespace IterateDecks {
                 unsigned int missionId = boost::lexical_cast<unsigned int>(data);
                 return DeckTemplate::Ptr(new MissionIdDeckTemplate(missionId));
             } else if (identifier.compare("RAIDID") == 0) {
-                throw Exception("Sorry, not implemented yet!");
+                unsigned int raidId = boost::lexical_cast<unsigned int>(data);
+                return DeckTemplate::Ptr(new RaidDeck(raidId, cardDB));
             } else if (identifier.compare("QUESTID") == 0) {
-                throw Exception("Sorry, not implemented yet!");
+                unsigned int questId = boost::lexical_cast<unsigned int>(data);
+                return DeckTemplate::Ptr(new QuestDeck(questId, cardDB));
             } else {
                 std::stringstream ssMessage;
                 ssMessage << "Identifier '" << identifier << "' not supported." << std::endl;

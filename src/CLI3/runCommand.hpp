@@ -20,15 +20,15 @@
                     IterateDecks::Core::Logger* logger;
                 private:
                     IterateDecks::Core::SimulatorCore::Ptr simulator;
-                    IterateDecks::Opt::Optimizer::Ptr optimizer;                    
+                    IterateDecks::Opt::Optimizer::Ptr optimizer;
                 public:
-                    RunCommand(int verbosity, bool noCacheRead, unsigned int extraCards);
+                    RunCommand(int verbosity, bool noCacheRead, unsigned int extraCards, Core::CardDB const & cardDB);
                     ~RunCommand();
-                
-                    int execute();
+
+                    int execute(Core::CardDB const & cardDB);
                     void abort();
             };
         }
     }
-    
+
 #endif

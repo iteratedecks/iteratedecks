@@ -1,5 +1,6 @@
 #include <iostream>
 #include "optionParser.hpp"
+#include "../CORE/cardDB.hpp"
 #ifdef _POSIX_SOURCE
     #include <csignal>
 #endif
@@ -24,7 +25,15 @@ Command::Ptr theCommand;
 int main(int const argc, char * const * const argv)
 {
     try {
-        Command::Ptr command = parseArguments(argc, argv);
+        CardDB cardDB;
+
+        cardDB.LoadAchievementXML("achievements.xml");
+        cardDB.LoadCardXML("cards.xml");
+        cardDB.LoadMissionXML("missions.xml");
+        cardDB.LoadRaidXML("raids.xml");
+        cardDB.LoadQuestXML("quests.xml");
+
+        Command::Ptr command = parseArguments(cardDB, argc, argv);
         ::theCommand = command;
         #ifdef _POSIX_SOURCE
             struct sigaction action, oldIntAction, oldTermAction;
@@ -35,9 +44,9 @@ int main(int const argc, char * const * const argv)
             sigaction(SIGINT, &action, &oldIntAction);
             sigaction(SIGTERM, &action, &oldTermAction);
             //std::clog << "Signal handlers installed." << std::endl;
-        #endif        
+        #endif
 
-        command->execute();
+        command->execute(cardDB);
 
         #ifdef _POSIX_SOURCE
             sigaction(SIGINT, &oldIntAction, 0);
@@ -45,11 +54,11 @@ int main(int const argc, char * const * const argv)
             //std::clog << "Signal handlers removed." << std::endl;
         #endif
         ::theCommand = NULL;
-        
+
     } catch(Exception const & e) {
         std::cerr << "Exception:" << std::endl;
         std::cerr << e.what() << std::endl;
         e.printStacktrace(std::cerr);
-        return -1;    
+        return -1;
     }
 }

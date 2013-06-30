@@ -4,6 +4,8 @@
     #include <memory>
     #include <boost/program_options.hpp>
 
+    #include "../CORE/cardDB.hpp"
+
     namespace IterateDecks {
         namespace CLI3 {
 
@@ -12,24 +14,24 @@
                     bool aborted;
                 protected:
                     bool isAborted();
-                
+
                 public:
                     typedef std::shared_ptr<Command> Ptr;
                 public:
                     Command();
                     virtual ~Command();
-                    virtual int execute() = 0;
+                    virtual int execute(Core::CardDB const & cardDB) = 0;
                     virtual void abort();
             };
 
             class VersionCommand : public Command {
                 public:
-                    int execute();
+                    int execute(Core::CardDB const & cardDB);
             };
 
             class CoreVersionCommand : public Command {
                 public:
-                    int execute();
+                    int execute(Core::CardDB const & cardDB);
             };
 
             class HelpCommand : public Command {
@@ -37,7 +39,7 @@
                     boost::program_options::options_description desc;
                 public:
                     HelpCommand(boost::program_options::options_description const & desc);
-                    int execute();
+                    int execute(Core::CardDB const & cardDB);
             };
 
         }
