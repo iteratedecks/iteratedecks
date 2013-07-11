@@ -33,6 +33,9 @@
 #include "missionIdDeckTemplate.hpp"
 #include "runCommand.hpp"
 #include "simpleOrderedDeckTemplate.hpp"
+#include "../CORE/multiDeckTemplate.hpp"
+
+#include "deckParser.hpp"
 
 namespace po = boost::program_options;
 using namespace IterateDecks::Core;
@@ -142,6 +145,7 @@ namespace IterateDecks {
              }
         }
 
+        #if 0
         bool splitOnceAfterChar(char const delimiter
                               ,std::string const & subject
                               ,std::string & first
@@ -261,9 +265,116 @@ namespace IterateDecks {
             }
         }
 
-        DeckTemplate::Ptr parseDeck(std::string const & deckDescription
-                                   ,Core::CardDB const & cardDB)
+        DeckTemplate::Ptr parseDeckFromStream(std::istream & stream
+                                             ,Core::CardDB const & cardDB
+                                             )
         {
+            unsigned int openBraces = 0;
+            std::stringstream oneDeck;
+            while (true) {
+                if(stream.eof()) {
+                    std::clog << "eof" << std::endl;
+                    if (openBraces == 0) {
+                        return parseDeck(oneDeck.str(), cardDB);
+                    } else {
+                        throw InvalidUserInputError("Missing '}'");
+                    }
+                }
+                char chr = static_cast<char>(stream.peek());
+                std::clog << "found " << chr << " openbraces=" << openBraces << " buffer=" << oneDeck.str() << std::endl;
+                switch (chr) {
+                    case '{':
+                        openBraces++;
+                        stream.get();
+                        oneDeck << chr;
+                        break;
+                    case '}':
+                        if (openBraces > 0) {
+                            openBraces--;
+                            stream.get();
+                            oneDeck << chr;
+                        } else {
+                            // done
+                            return parseDeck(oneDeck.str(), cardDB);
+                        }
+                        break;
+                    case ';':
+                    case '=':
+                        if (openBraces > 0) {
+                            stream.get();
+                            oneDeck << chr;
+                        } else {
+                            // done
+                            return parseDeck(oneDeck.str(), cardDB);
+                        }
+                        break;
+                    default:
+                        stream.get();
+                        oneDeck << chr;
+                }
+            }
+        }
+
+        DeckTemplate::Ptr parseMultiDeck(std::string const & description
+                                        ,Core::CardDB const & cardDB
+                                        )
+        {
+            //std::clog << "trying to parse multi deck with data " << description << std::endl;
+            // format?
+            // MULTI:{deck1}=2;deck2
+            // i.e,
+            // a deck description, optionally enclosed in {}
+            // followed by either = or ;
+            // after = follows a number, then ;
+            // the last ; is optional
+            std::multiset<DeckTemplate::Ptr> decks;
+            std::stringstream ssDescription(description);
+            //std::string::const_iterator iter = description:begin();
+            // we expect a deck description
+            while (true) {
+                DeckTemplate::Ptr deck = parseDeckFromStream(ssDescription, cardDB);
+                // now we may have eof, '}', ';' or '='
+                if (ssDescription.eof()) {
+                    decks.insert(deck);
+                    return DeckTemplate::Ptr(new Core::MultiDeckTemplate(decks));
+                } else if (ssDescription.peek() == '}') {
+                    decks.insert(deck);
+                    return DeckTemplate::Ptr(new Core::MultiDeckTemplate(decks));
+                } else if (ssDescription.peek() == ';') {
+                    ssDescription.get();
+                    decks.insert(deck);
+                } else if (ssDescription.peek() == '=') {
+                    ssDescription.get();
+                    unsigned int count;
+                    ssDescription >> count;
+                    for(size_t i = 0;i < count; i++) {
+                        decks.insert(deck);
+                    }
+                    // eof or ';'
+                    if (ssDescription.eof()) {
+                        return DeckTemplate::Ptr(new Core::MultiDeckTemplate(decks));
+                    } else if (ssDescription.peek() == '}') {
+                        return DeckTemplate::Ptr(new Core::MultiDeckTemplate(decks));
+                    } else if (ssDescription.peek() == ';') {
+                        ssDescription.get();
+                    } else {
+                        throw InvalidUserInputError("expected EOF or ';'");
+                    }
+                } else {
+                    throw InvalidUserInputError("expected EOF, ';' or '='");
+                }
+            }
+        }
+        #endif
+
+        DeckTemplate::Ptr parseDeck(std::string const & deckDescription
+                                   ,Core::CardDB const & cardDB
+                                   )
+        {
+            //std::clog << "trying to parse deck with data " << deckDescription << std::endl;
+            std::stringstream ssDescription(deckDescription);
+            return parseDeckFromStream(ssDescription, cardDB);
+            /*
             // valid deck descriptions start with a string part describing what type of deck this is
             // the format is: IDENTIFIER:DATA
             std::string identifier, data;
@@ -296,6 +407,8 @@ namespace IterateDecks {
             } else if (identifier.compare("QUESTID") == 0) {
                 unsigned int questId = boost::lexical_cast<unsigned int>(data);
                 return DeckTemplate::Ptr(new QuestDeck(questId, cardDB));
+            } else if (identifier.compare("MULTI") == 0) {
+                return parseMultiDeck(data, cardDB);
             } else {
                 std::stringstream ssMessage;
                 ssMessage << "Identifier '" << identifier << "' not supported." << std::endl;
@@ -305,8 +418,9 @@ namespace IterateDecks {
                 ssMessage << "\t'MISSIONID', for missions, use the id, not the name" << std::endl;
                 ssMessage << "\t'RAIDID', for raids, use the id, not the name" << std::endl;
                 ssMessage << "\t'QUESTID', for quest steps, use the id, not the name" << std::endl;
+                ssMessage << "\t'MULTI', for multiple decks" << std::endl;
                 throw InvalidUserInputError(ssMessage.str());
-            }
+            }*/
         }
 
 
