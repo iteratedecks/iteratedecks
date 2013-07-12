@@ -25,6 +25,8 @@
                     virtual DeckTemplate::Ptr withoutCardAtIndex(size_t index) const;
                     virtual unsigned int getCommander() const;
                     virtual DeckTemplate::Ptr swapCards(size_t i, size_t j) const;
+
+                    std::multiset<DeckTemplate::Ptr> const & getDecks() const;
                 
             };
 

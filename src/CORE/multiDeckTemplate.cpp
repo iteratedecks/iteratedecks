@@ -75,5 +75,11 @@ namespace IterateDecks {
 			throw Exception("Not Implemented.");
 		}
 
+        std::multiset<DeckTemplate::Ptr> const &
+        MultiDeckTemplate::getDecks() const
+        {
+            return this->decks;
+        }
+
     }
 }
