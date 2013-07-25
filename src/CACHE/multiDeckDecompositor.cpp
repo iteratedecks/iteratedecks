@@ -95,7 +95,7 @@ namespace IterateDecks {
                 while(iter != decks.end()) {
                     DeckTemplate::Ptr const currentDeck = *iter;
                     size_t const currentDeckCount = decks.count(currentDeck);
-                    std::clog << "current deck: " << currentDeck->toString() << " cardinality " << currentDeckCount << std::endl;
+                    //std::clog << "current deck: " << currentDeck->toString() << " cardinality " << currentDeckCount << std::endl;
                     unsigned long currentIterations = static_cast<unsigned int>(std::ceil(
                                                         static_cast<double>(numberOfIterations)
                                                         * currentDeckCount
@@ -124,7 +124,7 @@ namespace IterateDecks {
                     unsigned long const currentIterationsForSingleItem = currentResult.numberOfGames / count;
                     double const factor = static_cast<double>(minIterationsForSingleItem)
                                         / static_cast<double>(currentIterationsForSingleItem);
-                    std::clog << "scaling result with factor " << factor << std::endl;
+                    //std::clog << "scaling result with factor " << factor << std::endl;
                     Result scaled = currentResult * factor;
                     combinedResult += scaled;
                 }
