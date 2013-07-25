@@ -7,6 +7,7 @@
 #include "../CORE/Logger.hpp"
 #include <fstream>
 #include "ownedCardsParser.hpp"
+#include "../CACHE/multiDeckDecompositor.hpp"
 
 using namespace IterateDecks::Cache;
 using namespace IterateDecks::Opt;
@@ -24,13 +25,17 @@ namespace IterateDecks {
         , optimizeDefender(false)
         , verbosity(verbosity)
         {
+            // the core
             IterateDecksCore::Ptr idSim = IterateDecksCore::Ptr (new IterateDecksCore(cardDB));
             SimulatorCore::Ptr sim = idSim;
+            // the cache
             DiskBackedCache::Ptr cache = DiskBackedCache::Ptr(
                 new DiskBackedCache(sim)
             );
             cache->setDontReadCache(dontReadCache);
-            this->simulator = cache;
+            // the decompositor
+            MultiDeckDecompositor::Ptr decompositor = MultiDeckDecompositor::Ptr (new MultiDeckDecompositor(cache));
+            this->simulator = decompositor;
 
             PraetorianMutator::Ptr mutator;
             // owned cards?

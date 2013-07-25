@@ -33,6 +33,9 @@
 #include "missionIdDeckTemplate.hpp"
 #include "runCommand.hpp"
 #include "simpleOrderedDeckTemplate.hpp"
+#include "../CORE/multiDeckTemplate.hpp"
+
+#include "deckParser.hpp"
 
 namespace po = boost::program_options;
 using namespace IterateDecks::Core;
@@ -142,171 +145,13 @@ namespace IterateDecks {
              }
         }
 
-        bool splitOnceAfterChar(char const delimiter
-                              ,std::string const & subject
-                              ,std::string & first
-                              ,std::string & remainder
-                              )
-        {
-            size_t const position = subject.find(delimiter);
-            if (position != std::string::npos) {
-                first = subject.substr(0,position);
-                remainder = subject.substr(position+1);
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        std::list<unsigned int> base64RLEMinusEncodingToIdList(std::string const & hash)
-        {
-            std::list<unsigned int> list;
-            size_t len = hash.size();
-
-            //std::clog << "parsing hash " << hash << std::endl;
-
-            unsigned int lastid;
-            for (UCHAR i = 0; i < len; i+=2) {
-                //std::clog << "current character is '" << hash[i] << "'" << std::endl;
-                if (hash[i] == '.') break; // delimeter
-                if (isspace(hash[i])) {
-                    assertX(false);
-                }
-                unsigned int tid = 0;
-                bool isCardOver4000 = false;
-                if(hash[i] == '-') {
-                    i++;
-                    isCardOver4000 = true;
-                    tid = 4000;
-                }
-                assertX(i + 1u < len); // make sure we have a full hash
-                //std::clog << "reading characters '" << hash[i] << hash[i+1] << "' ";
-                unsigned short cardHash = (hash[i] << 8) + hash[i + 1];
-                tid += base64ToId(cardHash);
-                //std::clog << "tid is " << tid << std::endl;
-                if (i==0) {
-                    // first card is commander
-                    assertX(tid < CARD_MAX_ID);
-                    assertX((tid >= 1000) && (tid < 2000)); // commander Id boundaries
-                    //std::clog << "adding commander " << tid << std::endl;
-                    list.push_back(tid);
-                } else {
-                    // later cards are not commander
-                    assertX(i>0 || (tid < CARD_MAX_ID)); // commander card can't be encoded with RLE
-
-                    if (tid < 4000 || isCardOver4000) {
-                        // this is a (non commander) card
-                        list.push_back(tid);
-                        //std::clog << "adding card " << tid << " the first time " << std::endl;
-                        lastid = tid;
-                    } else {
-                        // this is a RLE
-                        for (unsigned int k = 4000+1; k < tid; k++) {
-                            // decode RLE, +1 because we already added one card
-                            list.push_back(lastid);
-                            //std::clog << "adding card " << lastid << " again " << std::endl;
-                        } // for RLE
-                    }
-                }
-            } // for
-
-            //for(std::list<unsigned int>::const_iterator i = list.begin(); i != list.end(); i++) {
-            //    std::clog << *i << " ";
-            //}
-            //std::clog << std::endl;
-            return list;
-        }
-
-        /**
-         * Parse a deck from a string representation.
-         */
-        DeckTemplate::Ptr parseDeckFromIds(std::string const & data, bool ordered = false) {
-            // we expect ids (numbers) seperated by commata
-            std::list<unsigned int> ids;
-            std::string remainder = data;
-            while (true) {
-                std::string number;
-                bool splitSuccess = splitOnceAfterChar(',', remainder, number, remainder);
-                if (!splitSuccess) {
-                    // last one
-                    number = remainder;
-                }
-                try {
-                    unsigned int id = boost::lexical_cast<unsigned int>(number);
-                    ids.push_back(id);
-                } catch (boost::bad_lexical_cast &e)    {
-                    throw InvalidUserInputError("Bad input format, use positive numbers separated by commata.");
-                }
-                if (!splitSuccess) {
-                    break;
-                }
-            } // while
-            if (!ordered) {
-                return DeckTemplate::Ptr( new AutoDeckTemplate(ids) );
-            } else {
-                return DeckTemplate::Ptr( new SimpleOrderedDeckTemplate(ids) );
-            }
-        }
-
-        DeckTemplate::Ptr
-        parseDeckFromStrangeBase64RLEMinusEncoding(std::string const & base64RLEMinusEncoding
-                                                  ,bool ordered = false
-                                                  )
-        {
-            std::list<unsigned int> ids = base64RLEMinusEncodingToIdList(base64RLEMinusEncoding);
-            if (!ordered) {
-                return DeckTemplate::Ptr( new AutoDeckTemplate(ids) );
-            } else {
-                return DeckTemplate::Ptr( new SimpleOrderedDeckTemplate(ids) );
-            }
-        }
-
         DeckTemplate::Ptr parseDeck(std::string const & deckDescription
-                                   ,Core::CardDB const & cardDB)
+                                   ,Core::CardDB const & cardDB
+                                   )
         {
-            // valid deck descriptions start with a string part describing what type of deck this is
-            // the format is: IDENTIFIER:DATA
-            std::string identifier, data;
-            bool splitSuccess = splitOnceAfterChar(':', deckDescription, identifier, data);
-            if (!splitSuccess) {
-                throw InvalidUserInputError("Deck description '" + deckDescription + "' has invalid form. Format is 'IDENTIFIER:DATA'");
-            }
-            //std::clog << "Identifier is " << identifier << std::endl;
-            //std::clog << "data is " << data << std::endl;
-            if (identifier.compare("IDS") == 0) {
-                // IDS, thats good
-                return parseDeckFromIds(data);
-            } else if (identifier.compare("ORDERED_IDS") == 0
-                    || identifier.compare("IDS_ORDERED") == 0 ) {
-                // ORDERED_IDS, thats ok
-                return parseDeckFromIds(data, true);
-            } else if (identifier.compare("BASE64RLEMINUS") == 0) {
-                // freaky base64 encoding
-                return parseDeckFromStrangeBase64RLEMinusEncoding(data);
-            } else if (identifier.compare("ORDERED_BASE64RLEMINUS") == 0
-                    || identifier.compare("BASE64RLEMINUS_ORDERED") == 0) {
-                // freaky base64 encoding
-                return parseDeckFromStrangeBase64RLEMinusEncoding(data, true);
-            } else if (identifier.compare("MISSIONID") == 0) {
-                unsigned int missionId = boost::lexical_cast<unsigned int>(data);
-                return DeckTemplate::Ptr(new MissionIdDeckTemplate(missionId));
-            } else if (identifier.compare("RAIDID") == 0) {
-                unsigned int raidId = boost::lexical_cast<unsigned int>(data);
-                return DeckTemplate::Ptr(new RaidDeck(raidId, cardDB));
-            } else if (identifier.compare("QUESTID") == 0) {
-                unsigned int questId = boost::lexical_cast<unsigned int>(data);
-                return DeckTemplate::Ptr(new QuestDeck(questId, cardDB));
-            } else {
-                std::stringstream ssMessage;
-                ssMessage << "Identifier '" << identifier << "' not supported." << std::endl;
-                ssMessage << "Try one of the following:" << std::endl;
-                ssMessage << "\t'IDS', 'ORDERED_IDS', 'IDS_ORDERED' for id based input" << std::endl;
-                ssMessage << "\t'BASE64RLEMINUS', 'ORDERED_BASE64RLEMINUS', 'BASE64RLEMINUS_ORDERED', for some strange base64 encoding with an extra minus" << std::endl;
-                ssMessage << "\t'MISSIONID', for missions, use the id, not the name" << std::endl;
-                ssMessage << "\t'RAIDID', for raids, use the id, not the name" << std::endl;
-                ssMessage << "\t'QUESTID', for quest steps, use the id, not the name" << std::endl;
-                throw InvalidUserInputError(ssMessage.str());
-            }
+            //std::clog << "trying to parse deck with data " << deckDescription << std::endl;
+            std::stringstream ssDescription(deckDescription);
+            return parseDeckFromStream(ssDescription, cardDB);
         }
 
 
