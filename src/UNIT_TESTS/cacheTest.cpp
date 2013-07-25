@@ -12,7 +12,8 @@ using namespace IterateDecks::Cache;
 
 BOOST_AUTO_TEST_CASE( test_simulator_cache ) { try {
 
-    IterateDecksCore::Ptr core = IterateDecksCore::Ptr(new IterateDecksCore());
+    CardDB cardDB;
+    IterateDecksCore::Ptr core = IterateDecksCore::Ptr(new IterateDecksCore(cardDB));
     SimulatorCore::Ptr core2 = core;
     DiskBackedCache::Ptr cache = DiskBackedCache::Ptr(
         new DiskBackedCache(core2)
