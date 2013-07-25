@@ -10,8 +10,8 @@
 using namespace IterateDecks::Core;
 
 BOOST_AUTO_TEST_CASE( test_simulator_direct ) { try {
-
-    IterateDecksCore::Ptr simulator = IterateDecksCore::Ptr(new IterateDecksCore());
+    CardDB cardDB;
+    IterateDecksCore::Ptr simulator = IterateDecksCore::Ptr(new IterateDecksCore(cardDB));
 
     SimulationTaskClass task;
 
