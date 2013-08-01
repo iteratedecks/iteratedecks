@@ -318,9 +318,9 @@ namespace IterateDecks {
                     // certainly no time bonus on stalls
                 }
                 // damage
-                std::clog << "damage for attacker. "
-                          << "manual=" << attManualDamageToCommander << " "
-                          << "auto=" << attAutoDamageToCommander << std::endl;
+                //std::clog << "damage for attacker. "
+                //          << "manual=" << attManualDamageToCommander << " "
+                //          << "auto=" << attAutoDamageToCommander << std::endl;
                 unsigned int attManualDamagePoints;
                 unsigned int attAutoDamagePoints;
                 unsigned int defManualDamagePoints;
