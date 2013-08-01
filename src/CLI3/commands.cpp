@@ -26,6 +26,16 @@ namespace IterateDecks {
 
         int VersionCommand::execute(Core::CardDB const & cardDB)
         {
+            //human readable
+            std::cout << "human readable version description:" << std::endl;
+            std::cout << "\t" << ITERATEDECKS_VERSION_DESCRIBE;
+            if (ITERATEDECKS_DIRTY_HEAD) {
+                std::cout << "+";
+                std::cout << ITERATEDECKS_DIRTY_HASH;
+            }
+            std::cout << std::endl;
+
+            // commit-ish
             std::cout << "iteratedecks-cli3 version hash:" << std::endl;
             std::cout << '\t' << ITERATEDECKS_VERSION;
             if (ITERATEDECKS_DIRTY_HEAD) {
@@ -33,8 +43,12 @@ namespace IterateDecks {
                 std::cout << ITERATEDECKS_DIRTY_HASH;
             }
             std::cout << std::endl;
-            std::cout << "Tags pointing at this version: " << std::endl;
-            std::cout << '\t' << ITERATEDECKS_VERSION_TAGS << std::endl;
+
+            // tags
+            if (!ITERATEDECKS_DIRTY_HEAD) {
+                std::cout << "Tags pointing at this version: " << std::endl;
+                std::cout << '\t' << ITERATEDECKS_VERSION_TAGS << std::endl;
+            }
 
             // TODO Obviously if we want to allow exchangable core we would need a better way here.
             SimulatorCore::Ptr core = SimulatorCore::Ptr( new IterateDecksCore(cardDB) );
@@ -64,7 +78,7 @@ namespace IterateDecks {
             // TODO Obviously if we want to allow exchangable core we would need a better way here.
             SimulatorCore::Ptr core = SimulatorCore::Ptr( new IterateDecksCore(cardDB) );
 
-            std::cout << core->getCoreVersion() << std::endl;
+            std::cout << core->getCoreVersionHumanReadable() << std::endl;
             return 0;
         }
 

@@ -38,6 +38,12 @@ namespace IterateDecks {
             return this->delegate->getCoreVersion();
         }
 
+        std::string
+        MultiDeckDecompositor::getCoreVersionHumanReadable() const
+        {
+            return this->delegate->getCoreVersionHumanReadable();
+        }
+
         SimulationTaskClass
         taskWithIterationsAndDeck
             (SimulationTaskClass const & original

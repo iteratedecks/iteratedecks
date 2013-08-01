@@ -74,6 +74,7 @@
 
                     virtual std::string getCoreName() const = 0;
                     virtual std::string getCoreVersion() const = 0;
+                    virtual std::string getCoreVersionHumanReadable() const = 0;
                     virtual std::map<std::string,std::string> getXMLVersions() const;
             };
 
@@ -99,6 +100,7 @@
 
                     std::string getCoreName() const;
                     std::string getCoreVersion() const;
+                    std::string getCoreVersionHumanReadable() const;
 
                     CardDB const & getCardDB() const;
                 private:

@@ -56,32 +56,8 @@ VERSION.h: VERSION.h.auto
         cp ${input} ${output}; \
     fi
 
-VERSION.h.auto: FORCE
-    echo -n "#define ITERATEDECKS_VERSION " > ${output}
-    echo "\"${GIT_HASH}\"" >> ${output}
-    echo -n "#define ITERATEDECKS_VERSION_TAGS \"" >> ${output}
-    git tag --points-at HEAD | tr "\n" " " >> ${output}
-    echo  "\"" >> ${output}
-    #
-    echo -n "#define ITERATEDECKS_DIRTY_HEAD " >> ${output}
-    @if [ `git diff HEAD | wc --chars` -gt 0 ]; then \
-        echo true >> ${output}; \
-    else \
-        echo false >> ${output}; \
-    fi
-    echo -n "#define ITERATEDECKS_DIRTY_HASH \"" >> ${output}
-    git diff HEAD | sha1sum | cut -d " " -f 1 | tr -d "\n" >> ${output}
-    echo  "\"" >> ${output}
-    #
-    echo -n "#define ITERATEDECKS_DIRTY_HEAD_CORE " >> ${output}
-    @if [ `git diff HEAD -- ../../src/CORE | wc --chars` -gt 0 ]; then \
-        echo true >> ${output}; \
-    else \
-        echo false >> ${output}; \
-    fi
-    echo -n "#define ITERATEDECKS_DIRTY_HASH_CORE \"" >> ${output}
-    git diff HEAD -- ../../src/CORE | sha1sum | cut -d " " -f 1 | tr -d "\n" >> ${output}
-    echo  "\"" >> ${output}
+VERSION.h.auto: FORCE ../createVersionH.sh
+    ../createVersionH.sh > ${output}
 
 $(phony FORCE):
     @true

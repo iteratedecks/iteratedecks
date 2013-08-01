@@ -20,8 +20,10 @@
                     C::SimulatorCore::Ptr getDelegate() const;
                     std::string getCoreName() const;
                     std::string getCoreVersion() const;
+                    std::string getCoreVersionHumanReadable() const;
                     virtual C::Result simulate(C::SimulationTaskClass const &) = 0;
                     virtual C::Result simulate(C::SimulationTaskClass const &, unsigned long numberOfNewSamples) = 0;
+
                     virtual void abort() = 0;
             };
         }

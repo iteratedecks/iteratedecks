@@ -375,6 +375,17 @@ namespace IterateDecks {
             return ssVersion.str();
         }
 
+        std::string IterateDecksCore::getCoreVersionHumanReadable() const
+        {
+            std::stringstream ssVersion;
+            ssVersion << ITERATEDECKS_VERSION_DESCRIBE;
+            if(ITERATEDECKS_DIRTY_HEAD_CORE) {
+                ssVersion << "+";
+                ssVersion << ITERATEDECKS_DIRTY_HASH_CORE;
+            }
+            return ssVersion.str();            
+        }
+
         CardDB const &
         IterateDecksCore::getCardDB() const
         {

@@ -29,5 +29,11 @@ namespace IterateDecks {
             return this->delegate->getCoreVersion();
         }
 
+                std::string
+        SimulatorCache::getCoreVersionHumanReadable() const
+        {
+            return this->delegate->getCoreVersionHumanReadable();
+        }
+
     }
 }
