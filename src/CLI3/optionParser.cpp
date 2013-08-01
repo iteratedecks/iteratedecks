@@ -34,11 +34,13 @@
 #include "runCommand.hpp"
 #include "simpleOrderedDeckTemplate.hpp"
 #include "../CORE/multiDeckTemplate.hpp"
+#include "../OPT/optimizer.hpp"
 
 #include "deckParser.hpp"
 
 namespace po = boost::program_options;
 using namespace IterateDecks::Core;
+using namespace IterateDecks::Opt;
 namespace IterateDecks {
     namespace CLI3 {
 
@@ -53,6 +55,7 @@ namespace IterateDecks {
                 unsigned int battleGroundId;
                 int achievementId;
                 bool allowInvalidDecks;
+                bool useRaidRules;
 
                 po::options_description desc("Allowed options");
                 desc.add_options()
@@ -89,6 +92,9 @@ namespace IterateDecks {
                     ("optimize-defender"
                     ,"optimize the defender's deck"
                     )
+                    ("optimize-anp"
+                    ,"optimize manual anp"
+                    )
                     ("no-cache-read"
                     ,"do not read from the cache"
                     )
@@ -98,6 +104,10 @@ namespace IterateDecks {
                     )
                     ("allow-invalid-decks"
                     ,"allows invalid decks for the simulator. These are usually pointless but allow special test cases."
+                    )
+                    ("raid-rules"
+                    ,po::value<bool>(&useRaidRules)->default_value(false)
+                    ,"use raid rules"
                     )
                 ;
 
@@ -126,6 +136,8 @@ namespace IterateDecks {
                 command->task.defender->allowInvalid = allowInvalidDecks;
                 command->task.surge = vm.count("surge") > 0;
                 command->task.battleGround = static_cast<BattleGroundEffect>(battleGroundId);
+                command->task.numberOfRounds = !useRaidRules ? DEFAULT_NUMBER_OF_ROUNDS : 30;
+                command->task.useRaidRules = useRaidRules;
                 if (vm.count("achievement-id") > 0) {
                     command->task.achievementOptions.enableCheck(achievementId);
                 }
@@ -133,6 +145,9 @@ namespace IterateDecks {
                 bool optimizeDefender = vm.count("optimize-defender") > 0;
                 if(optimizeAttacker && optimizeDefender) {
                     throw InvalidUserInputError("Can not optimize both attacker and defender!");
+                }
+                if (vm.count("optimize-anp") > 0) {
+                    command->optimizationTarget = OptimizationTarget::MANUAL_ANP;
                 }
                 command->optimizeAttacker = optimizeAttacker;
                 command->optimizeDefender = optimizeDefender;

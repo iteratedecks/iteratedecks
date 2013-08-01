@@ -23,6 +23,7 @@ namespace IterateDecks {
                               )
         : optimizeAttacker(false)
         , optimizeDefender(false)
+        , optimizationTarget(OptimizationTarget::WINRATE)
         , verbosity(verbosity)
         {
             // the core
@@ -79,21 +80,31 @@ namespace IterateDecks {
 
                 DeckTemplate::Ptr optimizedDeck;
                 if (this->optimizeAttacker) {
-                    optimizedDeck = this->optimizer->optimizeMany(this->task, true);
+                    optimizedDeck = this->optimizer->optimizeMany(this->task, true, this->optimizationTarget);
                 } else {
-                    optimizedDeck = this->optimizer->optimizeMany(this->task, false);
+                    optimizedDeck = this->optimizer->optimizeMany(this->task, false, this->optimizationTarget);
                 }
                 std::cout << "Optimization finished, found:" << std::endl;
                 std::cout << optimizedDeck->toString() << std::endl;
                 return 0;
             } else {
                 Result r = this->simulator->simulate(this->task);
-                std::cout << "Games won:     " << std::setw(11) << r.gamesWon
-                          << " /" << std::setw(11) << r.numberOfGames << " " << std::endl;
-                std::cout << "Games lost:    " << std::setw(11) << r.gamesLost
-                          << " /" << std::setw(11) << r.numberOfGames << " " << std::endl;
-                std::cout << "Games stalled: " << std::setw(11) << r.gamesStalled
-                          << " /" << std::setw(11) << r.numberOfGames << " " << std::endl;
+                std::cout << "Games played:                    " << std::setw(11) << r.numberOfGames
+                          << std::endl;
+                std::cout << "Games won:                       " << std::setw(11) << r.gamesWon
+                          << " " << r.getWinRate() << std::endl;
+                std::cout << "Games lost:                      " << std::setw(11) << r.gamesLost
+                          << " " << r.getLossRate() << std::endl;
+                std::cout << "Games stalled:                   " << std::setw(11) << r.gamesStalled
+                          << " " << r.getStallRate() << std::endl;
+                std::cout << "Points for attacker on manual: " << std::setw(13) << r.pointsAttacker
+                          << " " << r.getManualANPAttacker() << std::endl;
+                std::cout << "Points for attacker on auto:   " << std::setw(13) << r.pointsAttackerAuto
+                          << " " << r.getAutoANPAttacker() << std::endl;
+                std::cout << "Points for defender on manual: " << std::setw(13) << r.pointsDefender
+                          << " " << r.getManualANPDefender() << std::endl;
+                std::cout << "Points for defender on auto:   " << std::setw(13) << r.pointsDefenderAuto
+                          << " " << r.getAutoANPDefender() << std::endl;
                 return 0;
             }
         }

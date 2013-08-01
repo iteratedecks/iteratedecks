@@ -56,6 +56,42 @@ namespace IterateDecks {
             return static_cast<double>(this->gamesWon) / static_cast<double>(this->numberOfGames);
         }
 
+        double
+        Result::getLossRate() const
+        {
+            return static_cast<double>(this->gamesLost) / static_cast<double>(this->numberOfGames);
+        }
+
+        double
+        Result::getStallRate() const
+        {
+            return static_cast<double>(this->gamesStalled) / static_cast<double>(this->numberOfGames);
+        }
+
+        double
+        Result::getAutoANPAttacker() const
+        {
+            return static_cast<double>(this->pointsAttackerAuto) / static_cast<double>(this->numberOfGames);
+        }
+
+        double
+        Result::getAutoANPDefender() const
+        {
+            return static_cast<double>(this->pointsDefenderAuto) / static_cast<double>(this->numberOfGames);
+        }
+
+        double
+        Result::getManualANPAttacker() const
+        {
+            return static_cast<double>(this->pointsAttacker) / static_cast<double>(this->numberOfGames);
+        }
+
+        double
+        Result::getManualANPDefender() const
+        {
+            return static_cast<double>(this->pointsDefender) / static_cast<double>(this->numberOfGames);
+        }
+
         SimulationTaskClass::SimulationTaskClass()
         : minimalNumberOfGames(1000)
         , surge(false)
@@ -63,6 +99,8 @@ namespace IterateDecks {
         , battleGround(BattleGroundEffect::normal)
         , achievementOptions()
         , randomSeed(0)
+        , numberOfRounds(DEFAULT_NUMBER_OF_ROUNDS)
+        , useRaidRules(false)
         {
         }
 
@@ -193,7 +231,7 @@ namespace IterateDecks {
             unsigned int defAutoDamageToCommander = 0;
             unsigned int lastManualTurn = 1;
             unsigned int i;
-            for(i = 1; i <= 50; i++) {
+            for(i = 1; i <= task.numberOfRounds; i++) {
 
                 // reset damage done and update last manual turn counter
                 // P: I'm not sure whether I like this.
@@ -242,59 +280,80 @@ namespace IterateDecks {
             bool const defenderAlive = defender.isAlive();
             assertX(attackerAlive || defenderAlive);
 
-            if(!attackerAlive) {
-                // defender won
-                result.gamesLost++;
-                result.pointsDefender     += 10u;
-                result.pointsDefenderAuto += 10u;
-                // time bonus?
-                if(i < lastManualTurn + 10) {
-                    LOG(this->logger,scoreTime(false, false, 5u));
-                    result.pointsDefender     += 5u;
+            if (!task.useRaidRules) {
+                if(!attackerAlive) {
+                    // defender won
+                    result.gamesLost++;
+                    result.pointsDefender     += 10u;
+                    result.pointsDefenderAuto += 10u;
+                    // time bonus?
+                    if(i < lastManualTurn + 10) {
+                        LOG(this->logger,scoreTime(false, false, 5u));
+                        result.pointsDefender     += 5u;
+                    }
+                    if(i <= 10) {
+                        LOG(this->logger,scoreTime(false, true, 5u));
+                        result.pointsDefenderAuto += 5u;
+                    }
+                } else if(!defenderAlive) {
+                    // attacker won
+                    //std::clog << "awarding points to attacker for winning" << std::endl;
+                    result.gamesWon++;
+                    result.pointsAttacker     += surge ? 30u : 10u;
+                    result.pointsAttackerAuto += surge ? 30u : 10u;
+                    // time bonus?
+                    if(i < lastManualTurn + 10) {
+                        LOG(this->logger,scoreTime(true, false, 5u));
+                        result.pointsAttacker     += 5u;
+                    }
+                    if(i <= 10) {
+                        LOG(this->logger,scoreTime(true, true, 5u));
+                        result.pointsAttackerAuto += 5u;
+                    }
+                } else {
+                    // both alive
+                    result.gamesStalled++;
+                    result.pointsDefender     += 10u;
+                    result.pointsDefenderAuto += 10u;
+                    // certainly no time bonus on stalls
                 }
-                if(i <= 10) {
-                    LOG(this->logger,scoreTime(false, true, 5u));
-                    result.pointsDefenderAuto += 5u;
-                }
-            } else if(!defenderAlive) {
-                // attacker won
-                //std::clog << "awarding points to attacker for winning" << std::endl;
-                result.gamesWon++;
-                result.pointsAttacker     += surge ? 30u : 10u;
-                result.pointsAttackerAuto += surge ? 30u : 10u;
-                // time bonus?
-                if(i < lastManualTurn + 10) {
-                    LOG(this->logger,scoreTime(true, false, 5u));
-                    result.pointsAttacker     += 5u;
-                }
-                if(i <= 10) {
-                    LOG(this->logger,scoreTime(true, true, 5u));
-                    result.pointsAttackerAuto += 5u;
-                }
+                // damage
+                std::clog << "damage for attacker. "
+                          << "manual=" << attManualDamageToCommander << " "
+                          << "auto=" << attAutoDamageToCommander << std::endl;
+                unsigned int attManualDamagePoints;
+                unsigned int attAutoDamagePoints;
+                unsigned int defManualDamagePoints;
+                unsigned int defAutoDamagePoints;
+                attManualDamagePoints = std::min(attManualDamageToCommander, 10u);
+                attAutoDamagePoints = std::min(attAutoDamageToCommander, 10u);
+                defManualDamagePoints = std::min(defManualDamageToCommander, 10u);
+                defAutoDamagePoints = std::min(defAutoDamageToCommander, 10u);
+                LOG(this->logger, scoreDamage(true , false, attManualDamagePoints));
+                LOG(this->logger, scoreDamage(true , true , attAutoDamagePoints));
+                LOG(this->logger, scoreDamage(false, false, defManualDamagePoints));
+                LOG(this->logger, scoreDamage(false, true , defAutoDamagePoints));
+                result.pointsAttacker     += attManualDamagePoints;
+                result.pointsAttackerAuto += attAutoDamagePoints;
+                result.pointsDefender     += defManualDamagePoints;
+                result.pointsDefenderAuto += defAutoDamagePoints;
             } else {
-                // both alive
-                result.gamesStalled++;
-                result.pointsDefender     += 10u;
-                result.pointsDefenderAuto += 10u;
-                // certainly no time bonus on stalls
+                if(!attackerAlive) {
+                    result.gamesLost++;
+                } else if(!defenderAlive) {
+                    // attacker won
+                    result.gamesWon++;
+                    unsigned int const score = defender.Commander.GetOriginalCard()->GetHealth() + 50;
+                    result.pointsAttacker += score;
+                    result.pointsAttackerAuto += score;
+                } else {
+                    result.gamesStalled++;
+                    result.pointsAttacker += attAutoDamageToCommander;
+                    result.pointsAttackerAuto += attAutoDamageToCommander;
+                }
             }
 
-            // damage
-            //std::clog << "damage for attacker. "
-            //          << "manual=" << attManualDamageToCommander << " "
-            //          << "auto=" << attAutoDamageToCommander << std::endl;
-            unsigned int const attManualDamagePoints = std::min(attManualDamageToCommander, 10u);
-            unsigned int const attAutoDamagePoints = std::min(attAutoDamageToCommander, 10u);
-            unsigned int const defManualDamagePoints = std::min(defManualDamageToCommander, 10u);
-            unsigned int const defAutoDamagePoints = std::min(defAutoDamageToCommander, 10u);
-            LOG(this->logger, scoreDamage(true , false, attManualDamagePoints));
-            LOG(this->logger, scoreDamage(true , true , attAutoDamagePoints));
-            LOG(this->logger, scoreDamage(false, false, defManualDamagePoints));
-            LOG(this->logger, scoreDamage(false, true , defAutoDamagePoints));
-            result.pointsAttacker     += attManualDamagePoints;
-            result.pointsAttackerAuto += attAutoDamagePoints;
-            result.pointsDefender     += defManualDamagePoints;
-            result.pointsDefenderAuto += defAutoDamagePoints;
+
 
             // also increase number of games
             result.numberOfGames++;

@@ -8,6 +8,25 @@ using namespace IterateDecks::Core;
 namespace IterateDecks {
     namespace Opt {
 
+        double
+        getValue
+            (Result const & result
+            ,bool optimizeAttacker
+            ,OptimizationTarget optimizationTarget
+            )
+        {
+            switch(optimizationTarget) {
+                case OptimizationTarget::WINRATE:
+                    return optimizeAttacker ? result.getWinRate() : result.getLossRate();
+                case OptimizationTarget::AUTO_ANP:
+                    return optimizeAttacker ? result.getAutoANPAttacker() : result.getAutoANPDefender();
+                case OptimizationTarget::MANUAL_ANP:
+                    return optimizeAttacker ? result.getManualANPAttacker() : result.getManualANPDefender();
+                default:
+                    throw LogicError("switch");
+            }
+        }
+
         PraetorianOptimizer::PraetorianOptimizer(SimulatorCore::Ptr const & simulator
                                                 ,Mutator::Ptr const & mutator
                                                 )
@@ -50,17 +69,26 @@ namespace IterateDecks {
 
         struct Compare {
             std::map<DeckTemplate::Ptr, Result> const results;
+            bool const optimizeAttacker;
+            OptimizationTarget optimizationTarget;
 
-            Compare(std::map<DeckTemplate::Ptr, Result> const & results)
+            Compare
+                (std::map<DeckTemplate::Ptr, Result> const & results
+                ,bool optimizeAttacker
+                ,OptimizationTarget optimizationTarget)
             : results(results)
+            , optimizeAttacker(optimizeAttacker)
+            , optimizationTarget(optimizationTarget)
             {
             }
-            
+
             bool operator() (DeckTemplate::Ptr const &a, DeckTemplate::Ptr const & b) {
                 try {
-                    Result resultA = results.at(a);
-                    Result resultB = results.at(b);
-                    return resultA.getWinRate() > resultB.getWinRate();
+                    Result const & resultA = results.at(a);
+                    Result const & resultB = results.at(b);
+                    double const valueA = getValue(resultA, this->optimizeAttacker, this->optimizationTarget);
+                    double const valueB = getValue(resultB, this->optimizeAttacker, this->optimizationTarget);
+                    return valueA > valueB;
                 } catch (std::out_of_range &e) {
                     std::stringstream ssMessage;
                     ssMessage << "caught a std::out_of_range: " << e.what();
@@ -77,6 +105,7 @@ namespace IterateDecks {
                                        ,unsigned long totalNumberOfIterations
                                        ,unsigned long minimalNumberOfIterationsEach
                                        ,bool optimizeAttacker
+                                       ,OptimizationTarget optimizationTarget
                                        )
        {
             size_t const initialCount = decks.size();
@@ -99,7 +128,7 @@ namespace IterateDecks {
             unsigned long const realTotalNumberOfIterations = numberOfIterations * initialCount;
 
             // first we need to simulate them all
-            std::map<DeckTemplate::Ptr, Result> results;            
+            std::map<DeckTemplate::Ptr, Result> results;
             std::clog << "\t\tBeginning simulations of ";
             std::clog << std::setw(4) << initialCount << " decks with ";
             std::clog << std::setw(10) << numberOfIterations << " iterations each." << std::endl;
@@ -137,9 +166,9 @@ namespace IterateDecks {
             // next we need to sort them
 
             // that somehow failes, unclear why.
-            //Compare comparator(results);
-            //std::sort(decks.begin(), decks.end(), comparator);
-            
+            Compare comparator(results, optimizeAttacker, optimizationTarget);
+            std::sort(decks.begin(), decks.end(), comparator);
+
             {
                 unsigned int done = 0;
                 unsigned int lastDone = 0;
@@ -152,7 +181,9 @@ namespace IterateDecks {
                         DeckTemplate::Ptr const b = decks[i+1];
                         Result const & ra = results.at(a);
                         Result const & rb = results.at(b);
-                        if (ra.getWinRate() < rb.getWinRate()) {
+                        double const valueA = getValue(ra, optimizeAttacker, optimizationTarget);
+                        double const valueB = getValue(rb, optimizeAttacker, optimizationTarget);
+                        if (valueA < valueB) {
                             decks[i] = b;
                             decks[i+1] = a;
                             newN = i+1;
@@ -168,12 +199,24 @@ namespace IterateDecks {
             }
             std::clog << "done ";
 
-            double oldMin = results.at(decks[initialCount-1]).getWinRate();
-            double max = results.at(decks[0]).getWinRate();
-            
+            double oldMin = getValue
+                (results.at(decks[initialCount-1])
+                ,optimizeAttacker
+                ,optimizationTarget
+                );
+            double max = getValue
+                (results.at(decks[0])
+                ,optimizeAttacker
+                ,optimizationTarget
+                );
+
             decks.resize(targetCount);
 
-            double newMin = results.at(decks[targetCount-1]).getWinRate();
+            double newMin = getValue
+                    (results.at(decks[targetCount-1])
+                    ,optimizeAttacker
+                    ,optimizationTarget
+                    );
             std::clog << "from [" << oldMin << ";" << max << "] to ";
             std::clog << "[" << newMin << ";" << max << "]";
             std::clog << std::endl;
@@ -182,17 +225,18 @@ namespace IterateDecks {
             assertEQ(decks.size(), targetCount);
        }
 
-                                                
+
         DeckTemplate::Ptr
         PraetorianOptimizer::optimizeOnce(SimulationTaskClass const & initialTask
                                          ,bool optimizeAttacker
+                                         ,OptimizationTarget optimizationTarget
                                          ,double const factor
                                          )
         {
             unsigned long totalNumberOfIterations = initialTask.minimalNumberOfGames;
 
             std::clog << "\tGenerating mutations... " << std::endl;
-            
+
             DeckTemplate::Ptr initialDeck = optimizeAttacker ? initialTask.attacker : initialTask.defender;
             DeckSet candidateSet = this->mutator->mutate(initialDeck);
             std::vector<DeckTemplate::Ptr> candidateVector(candidateSet.begin(), candidateSet.end());
@@ -210,8 +254,9 @@ namespace IterateDecks {
                                 ,totalNumberOfIterations
                                 ,cropRound+1
                                 ,optimizeAttacker
-                                );                
-                
+                                ,optimizationTarget
+                                );
+
                 if (this->aborted) {
                     std::cerr << "\tAborted in optimizeOnce" << std::endl;
                     return candidateVector.front();
@@ -223,7 +268,11 @@ namespace IterateDecks {
         }
 
         DeckTemplate::Ptr
-        PraetorianOptimizer::optimizeMany(SimulationTaskClass const & task, bool optimizeAttacker)
+        PraetorianOptimizer::optimizeMany
+            (SimulationTaskClass const & task
+            ,bool optimizeAttacker
+            ,OptimizationTarget optimizationTarget
+            )
         {
             double const factor = 0.5;
             // remember old deck
@@ -240,6 +289,7 @@ namespace IterateDecks {
                 DeckTemplate::Ptr newDeckTemplate = this->optimizeOnce(
                     optimizationTask
                    ,optimizeAttacker
+                   ,optimizationTarget
                    ,std::pow(factor,1.0 / (1+sameRound))
                 );
 
@@ -265,10 +315,15 @@ namespace IterateDecks {
                     break;
                 }
 
-                std::clog << "old deck " << oldDeckTemplate->toString() << " with winrate " << oldResult.getWinRate() << std::endl;
-                std::clog << "new deck " << newDeckTemplate->toString() << " with winrate " << newResult.getWinRate() << std::endl;
+                double const oldValue = getValue(oldResult, optimizeAttacker, optimizationTarget);
+                double const newValue = getValue(newResult, optimizeAttacker, optimizationTarget);
 
-                if (oldResult.getWinRate() > newResult.getWinRate()) {
+                std::clog << "old deck " << oldDeckTemplate->toString() << " with value "
+                          << oldValue << std::endl;
+                std::clog << "new deck " << newDeckTemplate->toString() << " with value "
+                          << newValue << std::endl;
+
+                if (oldValue >= newValue) {
                     // new deck is not better :(
                     sameRound++;
                 } else {
@@ -287,6 +342,6 @@ namespace IterateDecks {
             this->aborted = true;
         }
 
-        
+
     }
 }

@@ -24,6 +24,7 @@
                                    ,unsigned long totalNumberOfIterations
                                    ,unsigned long minimalNumberOfIterationsEach
                                    ,bool optimizeAttacker
+                                   ,OptimizationTarget optimizationTarget
                                    );
 
                 public:
@@ -32,8 +33,19 @@
                 public:
                     PraetorianOptimizer(IterateDecks::Core::SimulatorCore::Ptr const & simulator, Mutator::Ptr const & mutator);
                 
-                    virtual IterateDecks::Core::DeckTemplate::Ptr optimizeOnce(IterateDecks::Core::SimulationTaskClass const & initial, bool optimizeAttacker = true, double const cropFactor = 0.5);
-                    virtual IterateDecks::Core::DeckTemplate::Ptr optimizeMany(IterateDecks::Core::SimulationTaskClass const & task, bool optimizeAttacker = true);
+                    virtual IterateDecks::Core::DeckTemplate::Ptr
+                    optimizeOnce
+                        (IterateDecks::Core::SimulationTaskClass const & initial
+                        ,bool optimizeAttacker = true
+                        ,OptimizationTarget optimizationTarget = OptimizationTarget::WINRATE
+                        ,double const cropFactor = 0.5
+                        );
+                    virtual IterateDecks::Core::DeckTemplate::Ptr
+                    optimizeMany
+                        (IterateDecks::Core::SimulationTaskClass const & task
+                        ,bool optimizeAttacker = true
+                        ,OptimizationTarget optimizationTarget = OptimizationTarget::WINRATE
+                        );
                     virtual void abort();
                     virtual ~PraetorianOptimizer() {};
             };

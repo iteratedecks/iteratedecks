@@ -26,6 +26,8 @@ namespace IterateDecks {
             ssCreateTable << ", " << "delayFirstCard bool NOT NULL";
             ssCreateTable << ", " << "battleGroundId int DEFAULT 0";
             ssCreateTable << ", " << "achievementId int DEFAULT -1";
+            ssCreateTable << ", " << "numberOfRounds int DEFAULT 50";
+            ssCreateTable << ", " << "useRaidRules bool NOT NULL";
             ssCreateTable << ", " << "numberOfGames int NOT NULL";
             ssCreateTable << ", " << "gamesWon int NOT NULL";
             ssCreateTable << ", " << "gamesStalled int NOT NULL";
@@ -48,6 +50,8 @@ namespace IterateDecks {
             ssCreateIndex << " ," << "delayFirstCard";
             ssCreateIndex << " ," << "battleGroundId";
             ssCreateIndex << " ," << "achievementId";
+            ssCreateIndex << " ," << "numberOfRounds";
+            ssCreateIndex << " ," << "useRaidRules";
             ssCreateIndex << ")";
             database.execute(ssCreateIndex.str());
 
@@ -56,6 +60,7 @@ namespace IterateDecks {
             ssInsert << "(coreName, coreVersion, xmlVersions";
             ssInsert << ", attacker, defender, surge, delayFirstCard";
             ssInsert << ", battleGroundId, achievementId";
+            ssInsert << ", numberOfRounds, useRaidRules";
             ssInsert << ", numberOfGames, gamesWon, gamesStalled, gamesLost";
             ssInsert << ", pointsAttacker, pointsAttackerAuto, pointsDefender, pointsDefenderAuto";
             ssInsert << ") ";
@@ -63,6 +68,7 @@ namespace IterateDecks {
             ssInsert << "(?, ?, ?";
             ssInsert << ", ?, ?, ?, ?";
             ssInsert << ", ?, ?";
+            ssInsert << ", ?, ?"; // numberOfRounds, useRaidRules
             ssInsert << ", ?, ?, ?, ?";
             ssInsert << ", ?, ?, ?, ?";
             ssInsert << ")";
@@ -103,6 +109,8 @@ namespace IterateDecks {
             ssSelect << "AND delayFirstCard = ? ";
             ssSelect << "AND battleGroundId = ? ";
             ssSelect << "AND achievementId = ? ";
+            ssSelect << "AND numberOfRounds = ? ";
+            ssSelect << "AND useRaidRules = ? ";
             ssSelect << ";";
             this->selectStatement = database.prepareStatement(ssSelect.str());
             this->selectStatement->bindText(1, this->delegate->getCoreName());
@@ -111,7 +119,7 @@ namespace IterateDecks {
 
             this->randomData = static_cast<unsigned int>(time(0));
         }
-        
+
         DiskBackedCache::~DiskBackedCache()
         {
         }
@@ -133,6 +141,8 @@ namespace IterateDecks {
             } else {
                 this->selectStatement->bindInt(9, -1);
             }
+            this->selectStatement->bindInt(10, task.numberOfRounds);
+            this->selectStatement->bindInt(11, task.useRaidRules);
             SQLResults sqlResults = this->selectStatement->query();
             Result result;
 
@@ -177,14 +187,16 @@ namespace IterateDecks {
             } else {
                 this->insertStatement->bindInt(9, -1);
             }
-            this->insertStatement->bindInt(10, freshResult.numberOfGames);
-            this->insertStatement->bindInt(11, freshResult.gamesWon);
-            this->insertStatement->bindInt(12, freshResult.gamesStalled);
-            this->insertStatement->bindInt(13, freshResult.gamesLost);
-            this->insertStatement->bindInt(14, freshResult.pointsAttacker);
-            this->insertStatement->bindInt(15, freshResult.pointsAttackerAuto);
-            this->insertStatement->bindInt(16, freshResult.pointsDefender);
-            this->insertStatement->bindInt(17, freshResult.pointsDefenderAuto);
+            this->insertStatement->bindInt(10, task.numberOfRounds);
+            this->insertStatement->bindInt(11, task.useRaidRules);
+            this->insertStatement->bindInt(12, freshResult.numberOfGames);
+            this->insertStatement->bindInt(13, freshResult.gamesWon);
+            this->insertStatement->bindInt(14, freshResult.gamesStalled);
+            this->insertStatement->bindInt(15, freshResult.gamesLost);
+            this->insertStatement->bindInt(16, freshResult.pointsAttacker);
+            this->insertStatement->bindInt(17, freshResult.pointsAttackerAuto);
+            this->insertStatement->bindInt(18, freshResult.pointsDefender);
+            this->insertStatement->bindInt(19, freshResult.pointsDefenderAuto);
             this->insertStatement->execute();
         }
 

@@ -35,6 +35,12 @@
                 Result & operator+=(Result const & rhs);
 
                 double getWinRate() const;
+                double getLossRate() const;
+                double getStallRate() const;
+                double getAutoANPAttacker() const;
+                double getAutoANPDefender() const;
+                double getManualANPAttacker() const;
+                double getManualANPDefender() const;
             };
 
             Result const operator+(Result const & lhs, Result const & rhs);
@@ -47,6 +53,8 @@
                     BattleGroundEffect battleGround;
                     AchievementOptions achievementOptions;
                     unsigned int randomSeed;
+                    unsigned int numberOfRounds;
+                    bool useRaidRules;
 
                     DeckTemplate::Ptr attacker;
                     DeckTemplate::Ptr defender;

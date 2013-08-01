@@ -20,6 +20,8 @@
             #define FILENAME_MAX_LENGTH		50 //
             #define CARD_ABILITIES_MAX		100u // must sync it with CARD_ABILITIES_MAX in interface
 
+            #define DEFAULT_NUMBER_OF_ROUNDS 50
+
             enum Abilities {
                 SPECIAL_ATTACK = 0,
                 ABILITY_ENABLED = 1,

@@ -16,6 +16,7 @@
                     IterateDecks::Core::SimulationTaskClass task;
                     bool optimizeAttacker;
                     bool optimizeDefender;
+                    IterateDecks::Opt::OptimizationTarget optimizationTarget;
                     int verbosity;
                     IterateDecks::Core::Logger* logger;
                 private:
